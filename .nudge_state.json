@@ -1,8 +1,8 @@
 {
-  "turns_since_memory": 15,
-  "tasks_since_skill": 8,
-  "last_memory_nudge": 1774833726.487659,
-  "last_skill_nudge": 1774833726.4886122,
+  "turns_since_memory": 0,
+  "tasks_since_skill": 14,
+  "last_memory_nudge": 1774835540.0192544,
+  "last_skill_nudge": 1774835540.0446293,
   "context_warned_70": false,
   "context_warned_90": false
 }
