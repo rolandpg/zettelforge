@@ -10,49 +10,9 @@
       "confidence": "MEDIUM",
       "source_reliability": "B",
       "url": null
-    },
-    {
-      "type": "HIGH_EPSS",
-      "severity": "CRITICAL",
-      "title": "CVE-2023-23752 (EPSS 95.00%)",
-      "description": "An issue was discovered in Joomla! 4.0.0 through 4.2.7. An improper access check allows unauthorized",
-      "source": "FIRST.org EPSS",
-      "confidence": "MEDIUM",
-      "source_reliability": "B",
-      "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-23752"
-    },
-    {
-      "type": "HIGH_EPSS",
-      "severity": "CRITICAL",
-      "title": "CVE-2021-22054 (EPSS 94.00%)",
-      "description": "VMware Workspace ONE UEM console 20.0.8 prior to 20.0.8.37, 20.11.0 prior to 20.11.0.40, 21.2.0 prio",
-      "source": "FIRST.org EPSS",
-      "confidence": "MEDIUM",
-      "source_reliability": "B",
-      "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-22054"
-    },
-    {
-      "type": "HIGH_EPSS",
-      "severity": "CRITICAL",
-      "title": "CVE-2021-43798 (EPSS 94.00%)",
-      "description": "Grafana is an open-source platform for monitoring and observability. Grafana versions 8.0.0-beta1 th",
-      "source": "FIRST.org EPSS",
-      "confidence": "MEDIUM",
-      "source_reliability": "B",
-      "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-43798"
-    },
-    {
-      "type": "HIGH_EPSS",
-      "severity": "CRITICAL",
-      "title": "CVE-2021-21311 (EPSS 94.00%)",
-      "description": "Adminer is an open-source database management in a single PHP file. In adminer from version 4.0.0 an",
-      "source": "FIRST.org EPSS",
-      "confidence": "MEDIUM",
-      "source_reliability": "B",
-      "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-21311"
     }
   ],
-  "total": 6,
-  "timestamp": "2026-03-30T01:00:01.499757",
+  "total": 1,
+  "timestamp": "2026-03-30T02:04:02.114107",
   "cti_metadata": true
 }
