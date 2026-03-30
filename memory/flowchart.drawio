@@ -1,0 +1,207 @@
+<mxfile host="app.diagrams.net" modified="2026-03-20T19:06:00-05:00" agent="OpenClaw Subagent" etag="v1" version="20.3.0" type="device">
+  <diagram id="memory-system-flowchart" name="Roland Fleet Agentic Memory System">
+    <mxGraphModel dx="1112" dy="670" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        
+        <!-- Legend -->
+        <mxCell id="legend" value="Legend" style="shape=ellipse;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="180" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend-hot" value="Hot Tier Components" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;" vertex="1" parent="1">
+          <mxGeometry x="40" y="50" width="140" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend-cold" value="Cold Tier Components" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#FCE4D6;strokeColor=#D79B00;" vertex="1" parent="1">
+          <mxGeometry x="40" y="80" width="140" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend-llm" value="LLM Operations" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#E4D5F5;strokeColor=#9673A6;" vertex="1" parent="1">
+          <mxGeometry x="40" y="110" width="140" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend-agent" value="Agent Components" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;" vertex="1" parent="1">
+          <mxGeometry x="40" y="140" width="140" height="25" as="geometry"/>
+        </mxCell>
+        
+        <!-- Primary Agent (Patton) -->
+        <mxCell id="primary-agent" value="Primary Agent (Patton)\nOwns memory exclusively" style="shape=ellipse;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="250" y="50" width="180" height="60" as="geometry"/>
+        </mxCell>
+        
+        <!-- Memory Manager API -->
+        <mxCell id="memory-manager" value="Memory Manager API\n• remember\n• recall\n• get_context\n• ingest_subagent_output" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="500" y="50" width="180" height="80" as="geometry"/>
+        </mxCell>
+        
+        <!-- Vector Retriever -->
+        <mxCell id="vector-retriever" value="Vector Retriever\nEmbedding similarity search\nwith link expansion" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="750" y="50" width="180" height="60" as="geometry"/>
+        </mxCell>
+        
+        <!-- Hot Tier Storage -->
+        <mxCell id="jsonl-store" value="JSONL Store\nHot tier storage\nSSD: /home/rolandpg/\n.openclaw/workspace/memory/" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="500" y="180" width="180" height="60" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="lancedb" value="LanceDB\nVector database on SSD" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="750" y="180" width="180" height="50" as="geometry"/>
+        </mxCell>
+        
+        <!-- LLM Operations -->
+        <mxCell id="note-constructor" value="Note Constructor\nLLM generates:\n• Keywords\n• Tags\n• Context\n• Entities" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#E4D5F5;strokeColor=#9673A6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="250" y="180" width="180" height="60" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="link-generator" value="Link Generator\nFinds conceptual relationships:\n• SUPPORTS\n• CONTRADICTS\n• EXTENDS\n• CAUSES\n• RELATED" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#E4D5F5;strokeColor=#9673A6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="250" y="280" width="180" height="80" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="memory-evolver" value="Memory Evolver\nAssesses if existing memories\nshould be refined based on new info" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#E4D5F5;strokeColor=#9673A6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="250" y="400" width="180" height="60" as="geometry"/>
+        </mxCell>
+        
+        <!-- Cold Tier Storage -->
+        <mxCell id="cold-storage" value="Cold Storage\n8TB HDD Archive\n/media/rolandpg/USB-HDD/" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#FCE4D6;strokeColor=#D79B00;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="500" y="300" width="180" height="60" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="archive" value="archive/\n(evolved versions)" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#FCE4D6;strokeColor=#D79B00;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="300" y="380" width="120" height="40" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="snapshots" value="snapshots/\n(daily exports)" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#FCE4D6;strokeColor=#D79B00;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="500" y="380" width="120" height="40" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="backups" value="backups/weekly/\n(full backups)" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#FCE4D6;strokeColor=#D79B00;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="700" y="380" width="120" height="40" as="geometry"/>
+        </mxCell>
+        
+        <!-- Ephemeral Subagents -->
+        <mxCell id="subagents" value="Ephemeral Subagents\n• Spawn for tasks\n• Get scoped read-only\n  memory context\n• Return output" style="shape=ellipse;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="750" y="300" width="180" height="60" as="geometry"/>
+        </mxCell>
+        
+        <!-- Maintenance Operations -->
+        <mxCell id="daily-maintenance" value="Daily Maintenance\n(snapshot, decay, stats)\nvia systemd timers" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="250" y="500" width="180" height="50" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="weekly-maintenance" value="Weekly Maintenance\n(backup, reindex, purge)\nvia systemd timers" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="500" y="500" width="180" height="50" as="geometry"/>
+        </mxCell>
+        
+        <!-- User Input -->
+        <mxCell id="user-input" value="User Input" style="shape=ellipse;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="100" y="100" width="100" height="40" as="geometry"/>
+        </mxCell>
+        
+        <!-- Connections -->
+        <!-- User Input to Primary Agent -->
+        <mxCell id="edge1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#666666;" edge="1" source="user-input" target="primary-agent" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <!-- Primary Agent to Memory Manager API -->
+        <mxCell id="edge2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#666666;" edge="1" source="primary-agent" target="memory-manager" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <!-- Primary Agent to Vector Retriever -->
+        <mxCell id="edge3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#666666;" edge="1" source="primary-agent" target="vector-retriever" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <!-- Vector Retriever to Hot Tier Storage -->
+        <mxCell id="edge4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#666666;" edge="1" source="vector-retriever" target="jsonl-store" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="edge5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#666666;" edge="1" source="vector-retriever" target="lancedb" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <!-- Hot Tier Storage to Note Constructor -->
+        <mxCell id="edge6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#666666;" edge="1" source="jsonl-store" target="note-constructor" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <!-- Note Constructor to Link Generator -->
+        <mxCell id="edge7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#666666;" edge="1" source="note-constructor" target="link-generator" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <!-- Link Generator to Memory Evolver -->
+        <mxCell id="edge8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#666666;" edge="1" source="link-generator" target="memory-evolver" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <!-- Memory Evolver back to Storage -->
+        <mxCell id="edge9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#666666;" edge="1" source="memory-evolver" target="jsonl-store" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <!-- Memory Evolver to LanceDB -->
+        <mxCell id="edge10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#666666;" edge="1" source="memory-evolver" target="lancedb" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <!-- Storage to Cold Storage -->
+        <mxCell id="edge11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#666666;" edge="1" source="jsonl-store" target="cold-storage" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="edge12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#666666;" edge="1" source="lancedb" target="cold-storage" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <!-- Cold Storage subdivisions -->
+        <mxCell id="edge13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#666666;dashed=1;" edge="1" source="cold-storage" target="archive" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="edge14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#666666;dashed=1;" edge="1" source="cold-storage" target="snapshots" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="edge15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#666666;dashed=1;" edge="1" source="cold-storage" target="backups" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <!-- Primary Agent to Subagents (spawn) -->
+        <mxCell id="edge16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#006600;" edge="1" source="primary-agent" target="subagents" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <!-- Subagents to Primary Agent (return output) -->
+        <mxCell id="edge17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#006600;" edge="1" source="subagents" target="primary-agent" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <!-- Primary Agent Ingests Subagent Output -->
+        <mxCell id="edge18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#666666;" edge="1" source="subagents" target="memory-manager" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <!-- Maintenance connections -->
+        <mxCell id="edge19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#999999;dashed=1;" edge="1" source="daily-maintenance" target="cold-storage" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="edge20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#999999;dashed=1;" edge="1" source="weekly-maintenance" target="cold-storage" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <!-- Direct path annotation -->
+        <mxCell id="direct-path" value="Handle Directly" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#E8F8F5;strokeColor=#4ECDC4;fontSize=9;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="430" y="220" width="100" height="25" as="geometry"/>
+        </mxCell>
+        
+        <!-- Subagent path annotation -->
+        <mxCell id="subagent-path" value="Spawn Subagent" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#E8F8F5;strokeColor=#4ECDC4;fontSize=9;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="630" y="220" width="100" height="25" as="geometry"/>
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

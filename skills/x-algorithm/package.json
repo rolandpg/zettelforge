@@ -1,0 +1,42 @@
+{
+  "name": "x-algorithm",
+  "version": "1.0.3",
+  "description": "X (Twitter) algorithm rules & viral strategies for AI agents. Boost engagement, avoid reach death. Works with Cursor, Claude, ChatGPT, Copilot. Vibe-coding ready.",
+  "main": "SKILL.md",
+  "keywords": [
+    "x",
+    "twitter",
+    "algorithm",
+    "viral",
+    "engagement",
+    "social-media",
+    "growth",
+    "content-strategy",
+    "ai-agent",
+    "ai-coding",
+    "claude",
+    "cursor",
+    "copilot",
+    "github-copilot",
+    "chatgpt",
+    "openclaw",
+    "moltbot",
+    "marketing",
+    "creator",
+    "influencer",
+    "automation",
+    "llm",
+    "vibe-coding",
+    "ai-tools",
+    "developer-tools",
+    "devtools",
+    "typescript"
+  ],
+  "author": "tytaninc7",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NextFrontierBuilds/x-algorithm"
+  },
+  "homepage": "https://github.com/NextFrontierBuilds/x-algorithm#readme"
+}

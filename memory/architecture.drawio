@@ -1,0 +1,210 @@
+<mxfile host="app.diagrams.net" modified="2026-03-20T19:09:00.000Z" agent="Roland Fleet" version="22.1.0">
+  <diagram name="Roland Fleet Memory System" id="memory-architecture">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- LEGEND -->
+        <mxCell id="legend-bg" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="180" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-title" value="LEGEND" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="30" y="25" width="80" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-agent" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#00B300;strokeColor=#006600;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="30" y="55" width="20" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-agent-t" value="Agent" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="55" y="55" width="60" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-hot" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6C8EEF;strokeColor=#2C5AA0;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="30" y="75" width="20" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-hot-t" value="Hot Tier (SSD)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="55" y="75" width="100" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-cold" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFA500;strokeColor=#CC7000;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="30" y="95" width="20" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-cold-t" value="Cold Tier (HDD)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="55" y="95" width="100" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-llm" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9370DB;strokeColor=#6A0DAD;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="30" y="115" width="20" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-llm-t" value="LLM Operation" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="55" y="115" width="100" height="15" as="geometry" />
+        </mxCell>
+
+        <!-- USER INPUT -->
+        <mxCell id="user" value="User Input" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#00B300;strokeColor=#006600;fontColor=#ffffff;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="550" y="30" width="120" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- PRIMARY AGENT -->
+        <mxCell id="agent" value="Primary Agent&#xa;(Patton)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#00B300;strokeColor=#006600;fontColor=#ffffff;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="550" y="120" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- USER TO AGENT -->
+        <mxCell id="ua-edge" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#333333;strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1" source="user" target="agent">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- MEMORY MANAGER -->
+        <mxCell id="mm" value="Memory Manager&#xa;API" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#00B300;strokeColor=#006600;fontColor=#ffffff;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="250" y="120" width="100" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- AGENT TO MM -->
+        <mxCell id="am-edge" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#333333;strokeWidth=2;endArrow=classic;endFill=1;dashed=1;" edge="1" parent="1" source="agent" target="mm">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- MEMORY OPERATIONS BOX -->
+        <mxCell id="mem-ops-bg" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f0f0f0;strokeColor=#999999;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="100" width="380" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="mem-ops-title" value="Memory Operations (Hot Tier)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=11;italic=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="105" width="200" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- NOTE CONSTRUCTOR -->
+        <mxCell id="nc" value="Note Constructor&#xa;(LLM Semantic&#xa;Enrichment)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9370DB;strokeColor=#6A0DAD;fontColor=#ffffff;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="50" y="200" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- LINK GENERATOR -->
+        <mxCell id="lg" value="Link Generator&#xa;(SUPPORTS,&#xa;EXTENDS, etc.)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9370DB;strokeColor=#6A0DAD;fontColor=#ffffff;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="50" y="270" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- EVOLVER -->
+        <mxCell id="ev" value="Memory Evolver&#xa;(Versioning,&#xa;Confidence)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9370DB;strokeColor=#6A0DAD;fontColor=#ffffff;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="200" y="270" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- RETRIEVER -->
+        <mxCell id="rt" value="Vector Retriever&#xa;(Embedding&#xa;Similarity)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9370DB;strokeColor=#6A0DAD;fontColor=#ffffff;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="200" y="200" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- NC to LG -->
+        <mxCell id="nc-lg" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6A0DAD;strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1" source="nc" target="lg">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- LG to EV -->
+        <mxCell id="lg-ev" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6A0DAD;strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1" source="lg" target="ev">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- MM to Operations -->
+        <mxCell id="mm-ops" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#00B300;strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1" source="mm" target="rt">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- SUBAGENT -->
+        <mxCell id="subagent" value="Ephemeral&#xa;Subagent" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#00B300;strokeColor=#006600;fontColor=#ffffff;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="450" y="200" width="90" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- AGENT TO SUBAGENT -->
+        <mxCell id="ag-sa" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#00B300;strokeWidth=2;endArrow=classic;endFill=1;dashed=1;" edge="1" parent="1" source="agent" target="subagent">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ag-sa-label" value="Spawn&#xa;Scoped&#xa;Context" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#006600;" vertex="1" parent="1">
+          <mxGeometry x="460" y="150" width="60" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- SUBAGENT TO AGENT -->
+        <mxCell id="sa-ag" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#00B300;strokeWidth=2;endArrow=classic;endFill=1;dashed=1;" edge="1" parent="1" source="subagent" target="agent">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sa-ag-label" value="Output +&#xa;Observations" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#006600;" vertex="1" parent="1">
+          <mxGeometry x="460" y="250" width="70" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- HOT STORAGE -->
+        <mxCell id="hot-bg" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d0e0ff;strokeColor=#2C5AA0;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="350" width="380" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="hot-title" value="HOT TIER (1TB NVMe SSD)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=11;fontColor=#2C5AA0;" vertex="1" parent="1">
+          <mxGeometry x="30" y="355" width="200" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="jsonl" value="JSONL Store&#xa;(notes.jsonl)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6C8EEF;strokeColor=#2C5AA0;fontColor=#ffffff;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="50" y="400" width="90" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="lance" value="LanceDB&#xa;(Vectors)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6C8EEF;strokeColor=#2C5AA0;fontColor=#ffffff;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="170" y="400" width="90" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="embed" value="Embedding&#xa;Cache" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6C8EEF;strokeColor=#2C5AA0;fontColor=#ffffff;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="290" y="400" width="90" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- Operations to Hot Storage -->
+        <mxCell id="ops-hot" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6C8EEF;strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1" source="rt" target="jsonl">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ops-hot2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6C8EEF;strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1" source="ev" target="lance">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ops-hot3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6C8EEF;strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1" source="nc" target="embed">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- COLD STORAGE -->
+        <mxCell id="cold-bg" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe0b0;strokeColor=#CC7000;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="500" y="350" width="380" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="cold-title" value="COLD TIER (8TB USB 3.2 HDD)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=11;fontColor=#CC7000;" vertex="1" parent="1">
+          <mxGeometry x="510" y="355" width="250" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="archive" value="archive/&#xa;(Evolved&#xa;Versions)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFA500;strokeColor=#CC7000;fontColor=#ffffff;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="520" y="400" width="80" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="snapshots" value="snapshots/&#xa;(Daily&#xa;Exports)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFA500;strokeColor=#CC7000;fontColor=#ffffff;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="620" y="400" width="80" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="backups" value="backups/weekly/&#xa;(Full&#xa;Backups)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFA500;strokeColor=#CC7000;fontColor=#ffffff;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="720" y="400" width="80" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="rawlogs" value="raw_logs/&#xa;(Conversation&#xa;Logs)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFA500;strokeColor=#CC7000;fontColor=#ffffff;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="820" y="400" width="80" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Evolver to Cold -->
+        <mxCell id="ev-cold" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#FFA500;strokeWidth=2;endArrow=classic;endFill=1;dashed=1;" edge="1" parent="1" source="ev" target="archive">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- MAINTENANCE -->
+        <mxCell id="maint-bg" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e8e8e8;strokeColor=#666666;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="520" width="860" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="maint-title" value="MAINTENANCE (systemd timers)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="30" y="525" width="250" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="daily" value="DAILY (6:00 AM)&#xa;• Snapshot&#xa;• Confidence decay&#xa;• Stats logging" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#808080;strokeColor=#404040;fontColor=#ffffff;fontSize=9;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="50" y="555" width="150" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="weekly" value="WEEKLY (Mon 6AM)&#xa;• Full backup&#xa;• Reindex&#xa;• Orphan check" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#808080;strokeColor=#404040;fontColor=#ffffff;fontSize=9;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="230" y="555" width="150" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Title -->
+        <mxCell id="title" value="Roland Fleet Agentic Memory System Architecture" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=18;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="350" y="650" width="400" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="A-MEM inspired Zettelkasten memory with evolution and versioning | DGX Spark GB10" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#666666;italic=1;" vertex="1" parent="1">
+          <mxGeometry x="350" y="680" width="400" height="20" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

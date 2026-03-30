@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "skills": {
+    "find-skills": {
+      "version": "0.1.0",
+      "installedAt": 1774045405768
+    },
+    "proactive-agent": {
+      "version": "3.1.0",
+      "installedAt": 1774045704137
+    },
+    "x-algorithm": {
+      "version": "1.0.3",
+      "installedAt": 1774046569920
+    },
+    "x-articles": {
+      "version": "1.1.2",
+      "installedAt": 1774046655575
+    },
+    "ai-viral-trend-hijacker": {
+      "version": "1.0.0",
+      "installedAt": 1774046701125
+    },
+    "clawddocs": {
+      "version": "1.2.2",
+      "installedAt": 1774047091242
+    },
+    "news-summary": {
+      "version": "1.0.1",
+      "installedAt": 1774047145772
+    },
+    "blogwatcher": {
+      "version": "1.0.0",
+      "installedAt": 1774047159430
+    },
+    "ai-humanizer": {
+      "version": "2.1.0",
+      "installedAt": 1774047295315
+    },
+    "agent-browser": {
+      "version": "0.2.0",
+      "installedAt": 1774047435930
+    },
+    "gog": {
+      "version": "1.0.0",
+      "installedAt": 1774047447203
+    },
+    "auto-updater": {
+      "version": "1.0.0",
+      "installedAt": 1774047482162
+    }
+  }
+}
