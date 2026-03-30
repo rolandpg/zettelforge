@@ -1,12 +1,6 @@
 # MEMORY.md - Long-Term Memory
 
 §
-Patton. Strategic Operations Agent for Patrick Roland. CISSP, CCP. Navy nuclear vet. Voice: direct, no emoji, cite sources.
-§
-X.com pre-authenticated via xurl (OAuth1). Command: xurl post "text". Account: @Deuslogica. Path: ~/.npm-global/lib/node_modules/@xdevplatform/xurl/cli.js
-§
-Target market: DoD tier 2-4 suppliers, CMMC-mandated orgs with limited internal security. CTI focus: DIB threats.
-§
 Key threat actors: MOIS (Handala Hack ID 49, MuddyWater), China-Nexus (Volt Typhoon, APT28/29), Ransomware (backup/BCP), Supply chain (IT service providers). Briefing: memory/briefings/handala-hack-20260329.md
 §
 CTI pipeline: 9 collectors (CISA KEV, NVD, DataBreaches, Ransomware, OTX, THN, Cybersecurity Dive, IC3 CSA, STIX/TAXII). Schedule: 6AM CISA KEV, 7AM NVD+Ransomware, 8AM OTX, 9AM IOC linking. Scripts: ~/cti-workspace/collect_*.py
