@@ -587,3 +587,103 @@ Source: CyberScoop/Google TI
 - Confidence Level: MEDIUM
 - Source Reliability: F
 - Calibrated Language: medium confidence
+
+---
+Timestamp: 2026-03-31T17:24:42.169537
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: TrueConf Zero-Day Exploited in Attacks on Southeast Asian Government Networks
+
+## Draft Post
+Critical security flaw in TrueConf exploited against Southeast Asian government networks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-03-31T17:24:44.329270
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Silver Fox Expands Asia Cyber Campaign with AtlasCross RAT and Fake Domains
+
+## Draft Post
+Critical threat actor activity with AtlasCross RAT and fake domains impersonating trusted software.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-03-31T17:24:45.256760
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Axios Supply Chain Attack Pushes Cross-Platform RAT via Compromised npm Account
+
+## Draft Post
+A supply chain attack via Axios has introduced a malicious dependency in npm packages, potentially enabling the deployment of a remote access trojan.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-03-31T17:24:51.274260
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers compromise Axios npm package to drop cross-platform malware
+
+## Draft Post
+Critical Axios npm package compromised for cross-platform malware delivery.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-03-31T17:24:55.235248
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New RoadK1ll WebSocket implant used to pivot on breached networks
+
+## Draft Post
+New ransomware campaign detected using WebSocket implant for lateral movement.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
