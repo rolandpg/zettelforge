@@ -1,8 +1,8 @@
 {
   "action": "send_triage_alert",
-  "alert_text": "New ransomware campaign detected using WebSocket implant for lateral movement.",
-  "title": "New RoadK1ll WebSocket implant used to pivot on breached networks",
+  "alert_text": "Critical Axios npm package compromised, delivering cross-platform malware.",
+  "title": "Hackers compromise Axios npm package to drop cross-platform malware",
   "url": "",
   "source": "THN via CTI Triage Agent (Qwen3.5:9b)",
-  "timestamp": "2026-03-31T17:24:55.234955"
+  "timestamp": "2026-03-31T18:00:14.936543"
 }

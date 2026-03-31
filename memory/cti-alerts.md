@@ -455,3 +455,13 @@ No alerts triggered.
 No alerts triggered.
 No alerts triggered.
 No alerts triggered.
+
+## Alerts: 1 found | 2026-03-31T23:00:01.259752
+
+### 🔴 CRITICAL_CVE | Severity: CRITICAL
+**Summary:** CVE-CVE-2026-3055 - CVSS 9.0
+**Description:** Citrix NetScaler ADC (formerly Citrix ADC), NetScaler Gateway (formerly Citrix Gateway) and NetScaler ADC FIPS and NDcPP contain an out-of-bounds reads vulnerability when configured as a SAML IDP lead
+**Source:** NVD
+**Action:** RESEARCH
+
+📭 No alerts ready for social media yet

@@ -43,22 +43,29 @@ def skill_manager():
     return SkillManager()
 
 
+def memory_manager():
+    """Initialize A-MEM MemoryManager with cross-session vector recall."""
+    from memory.memory_manager import get_memory_manager
+    return get_memory_manager()
+
+
 def init_all() -> Tuple:
     """
-    Initialize all three memory modules.
-    Returns: (EnhancedMemoryStore, NudgeManager, SkillManager)
+    Initialize all memory modules.
+    Returns: (EnhancedMemoryStore, NudgeManager, SkillManager, MemoryManager)
     """
     store = enhanced_memory()
     nm = nudge_manager()
     sm = skill_manager()
-    return store, nm, sm
+    mm = memory_manager()
+    return store, nm, sm, mm
 
 
 if __name__ == "__main__":
     print("=== Memory Module Bootstrap ===\n")
     
     # Init all
-    store, nm, sm = init_all()
+    store, nm, sm, mm = init_all()
     
     # EMS stats
     stats = store.get_stats()
@@ -79,3 +86,11 @@ if __name__ == "__main__":
     print(f"\nSkillManager: {len(skills)} skills loaded")
     for s in skills:
         print(f"  - {s.identifier}: {s.description[:60]}")
+
+    # MemoryManager
+    mm_stats = mm.get_stats()
+    print(f"\nMemoryManager:")
+    print(f"  Total notes: {mm_stats.get('notes_created', mm.store.count_notes())}")
+    # Test cross-session recall
+    recall_test = mm.recall('threat actors', k=3)
+    print(f"  Cross-session recall (threat actors): {len(recall_test)} results")

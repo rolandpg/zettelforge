@@ -74,23 +74,29 @@ class MemoryStore:
     def _index_in_lance(self, note: MemoryNote) -> None:
         """Index note in LanceDB vector store"""
         try:
+            import pyarrow as pa
+            import lancedb
+
             table_name = f"notes_{note.metadata.domain}"
-            if table_name not in self.lancedb.table_names():
-                self.lancedb.create_table(table_name, schema={
-                    "id": "string",
-                    "vector": "vector<float, 768>",
-                    "content": "string",
-                    "context": "string",
-                    "keywords": "string",
-                    "tags": "string",
-                    "created_at": "string"
-                })
-            
+            tables = self.lancedb.list_tables()
+
+            if table_name not in tables:
+                schema = pa.schema([
+                    ("id", pa.string()),
+                    ("vector", pa.list_(pa.float32(), 768)),
+                    ("content", pa.string()),
+                    ("context", pa.string()),
+                    ("keywords", pa.string()),
+                    ("tags", pa.string()),
+                    ("created_at", pa.string()),
+                ])
+                self.lancedb.create_table(table_name, schema=schema)
+
             table = self.lancedb.open_table(table_name)
             table.add([{
                 "id": note.id,
                 "vector": note.embedding.vector if note.embedding.vector else [0.0] * 768,
-                "content": note.content.raw[:500],  # Truncate for index
+                "content": note.content.raw[:500],
                 "context": note.semantic.context,
                 "keywords": ",".join(note.semantic.keywords),
                 "tags": ",".join(note.semantic.tags),

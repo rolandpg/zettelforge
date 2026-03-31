@@ -14,8 +14,9 @@ Before doing anything else:
 2. Load MEMORY.md and USER.md using EnhancedMemoryStore — captures frozen snapshot
 3. Initialize NudgeManager — tracks proactive prompts for memory saves and skill creation
 4. Initialize SkillManager — lists available procedural skills from `workspace/skills/`
-5. Read `memory/YYYY-MM-DD.md` (today + yesterday) for recent context
-6. **If in MAIN SESSION** (direct chat with your human): Also read `MEMORY.md`
+5. Initialize MemoryManager — cross-session vector memory for semantic recall
+6. Read `memory/YYYY-MM-DD.md` (today + yesterday) for recent context
+7. **If in MAIN SESSION** (direct chat with your human): Also read `MEMORY.md`
 
 Don't ask permission. Just do it.
 
@@ -25,19 +26,24 @@ Import the consolidated init helper:
 
 ```python
 from memory_init import init_all
-store, nm, sm = init_all()
+store, nm, sm, mm = init_all()
 # store = EnhancedMemoryStore (frozen snapshot via store.get_snapshot())
 # nm = NudgeManager (check nm.check_turn() each turn)
 # sm = SkillManager (skills = sm.list_skills())
+# mm = MemoryManager (cross-session semantic recall via mm.recall(query))
 ```
 
 Or import individually:
 ```python
-from memory_init import enhanced_memory, nudge_manager, skill_manager
+from memory_init import enhanced_memory, nudge_manager, skill_manager, memory_manager
 store = enhanced_memory()  # auto-loads MEMORY.md + USER.md
 nm = nudge_manager()
 sm = skill_manager()
+mm = memory_manager()  # 46 notes, vector search, cross-session
 skills = sm.list_skills()  # all available skills
+# Cross-session recall:
+#   results = mm.recall('what did we decide about x')
+#   context = mm.get_context('CTI pipeline decisions')
 ```
 
 ## Memory
