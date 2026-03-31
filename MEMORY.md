@@ -17,6 +17,6 @@ Hermes Agent: ~/hermes-agent. Nousnet: ~/nousnet. Security assessments complete.
 §
 Key learnings: xurl auth = OAuth1 pre-configured. Django models: check field names first. Systemd: copy service files. CISA KEV: 1551 entries.
 §
-Hermes learning phases 1-3: EnhancedMemoryStore (bounded 2200 chars, § delimited, injection scanned), NudgeManager (proactive prompts at 10 turns), SkillManager (skills/ dir, 3 skills). Phase 4: wired into OpenClaw boot via BOOT.md + memory_init.py.
+Hermes phases 1-3: EnhancedMemoryStore (bounded 2200 chars, § delimited), NudgeManager (10 turns), SkillManager (3 skills). Phase 4: MemoryManager (vector recall) wired into boot via init_all(). Similarity threshold: 0.30. Historical notes: 36 real, 11 archived. 
 §
 Qualys TRU: Broken Physics of Remediation (Mar 2026) - TTE -1 day, 6.5x KEV vol, 88% defender loss. Sub-1% of CVEs weaponized. Risk Mass (exposure-days) > MTTR. ROC = embedded intel + exploit confirmation + autonomous remediation. Briefing: memory/briefings/qualys-remediation-physics-20260331.md
