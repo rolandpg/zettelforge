@@ -2,6 +2,46 @@
   "action": "send_telegram_alert",
   "alerts": [
     {
+      "type": "ACTOR_ACTIVITY",
+      "severity": "HIGH",
+      "title": "UNC1069 - 3 new IOCs",
+      "description": "New indicators: axios@1.14.1, axios@0.30.4, plain-crypto-js@4.2....",
+      "source": "Roland Fleet CTI",
+      "confidence": "MEDIUM",
+      "source_reliability": "B",
+      "url": null
+    },
+    {
+      "type": "DIB_BREACH",
+      "severity": "HIGH",
+      "title": "DIB-relevant: plain-crypto-js@4.2.1",
+      "description": "[DIB] Cross-platform RAT loader injected via axios supply chain compromise",
+      "source": "CyberScoop/Google TI",
+      "confidence": "MEDIUM",
+      "source_reliability": "F",
+      "url": null
+    },
+    {
+      "type": "DIB_BREACH",
+      "severity": "HIGH",
+      "title": "DIB-relevant: axios@0.30.4",
+      "description": "[DIB] Malicious version injected plain-crypto-js@4.2.1 loader",
+      "source": "CyberScoop/Google TI",
+      "confidence": "MEDIUM",
+      "source_reliability": "F",
+      "url": null
+    },
+    {
+      "type": "DIB_BREACH",
+      "severity": "HIGH",
+      "title": "DIB-relevant: axios@1.14.1",
+      "description": "[DIB] Malicious version injected plain-crypto-js@4.2.1 loader",
+      "source": "CyberScoop/Google TI",
+      "confidence": "MEDIUM",
+      "source_reliability": "F",
+      "url": null
+    },
+    {
       "type": "HIGH_EPSS",
       "severity": "CRITICAL",
       "title": "CVE-2021-22054 (EPSS 94.00%)",
@@ -12,7 +52,7 @@
       "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-22054"
     }
   ],
-  "total": 1,
-  "timestamp": "2026-03-31T17:00:01.441798",
+  "total": 5,
+  "timestamp": "2026-03-31T21:29:50.098919",
   "cti_metadata": true
 }

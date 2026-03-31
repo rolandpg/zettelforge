@@ -483,3 +483,107 @@ Link: https://nvd.nist.gov/vuln/detail/CVE-2026-3055
 - Confidence Level: HIGH
 - Source Reliability: A
 - Calibrated Language: high confidence
+
+---
+Timestamp: 2026-03-31T21:29:50.098652
+Type: ACTOR_ACTIVITY
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 - 3 new IOCs
+
+## Draft Post
+🔴 UNC1069 | medium confidence
+
+New activity detected.
+
+New indicators: axios@1.14.1, axios@0.30.4, plain-crypto-js@4.2....
+
+Monitor for related IOCs.
+
+Source: Roland Fleet CTI | Reliability: B
+
+#threatintel #DFIR #cybersecurity
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+
+---
+Timestamp: 2026-03-31T21:29:50.098812
+Type: DIB_BREACH
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: F
+Title: DIB-relevant: plain-crypto-js@4.2.1
+
+## Draft Post
+⚠️ DIB SECURITY ALERT | medium confidence
+
+DIB-relevant: plain-crypto-js@4.2.1
+
+[DIB] Cross-platform RAT loader injected via axios supply chain compromise
+
+Source: CyberScoop/Google TI | Reliability: F
+
+Source: CyberScoop/Google TI
+
+#DIB #cybersecurity #infosec #threatintel
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: F
+- Calibrated Language: medium confidence
+
+---
+Timestamp: 2026-03-31T21:29:50.098833
+Type: DIB_BREACH
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: F
+Title: DIB-relevant: axios@0.30.4
+
+## Draft Post
+⚠️ DIB SECURITY ALERT | medium confidence
+
+DIB-relevant: axios@0.30.4
+
+[DIB] Malicious version injected plain-crypto-js@4.2.1 loader
+
+Source: CyberScoop/Google TI | Reliability: F
+
+Source: CyberScoop/Google TI
+
+#DIB #cybersecurity #infosec #threatintel
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: F
+- Calibrated Language: medium confidence
+
+---
+Timestamp: 2026-03-31T21:29:50.098851
+Type: DIB_BREACH
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: F
+Title: DIB-relevant: axios@1.14.1
+
+## Draft Post
+⚠️ DIB SECURITY ALERT | medium confidence
+
+DIB-relevant: axios@1.14.1
+
+[DIB] Malicious version injected plain-crypto-js@4.2.1 loader
+
+Source: CyberScoop/Google TI | Reliability: F
+
+Source: CyberScoop/Google TI
+
+#DIB #cybersecurity #infosec #threatintel
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: F
+- Calibrated Language: medium confidence
