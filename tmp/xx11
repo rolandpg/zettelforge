@@ -1,0 +1,28 @@
+---
+Timestamp: 2026-03-30T11:11:47.241088
+Type: HIGH_EPSS
+Severity: CRITICAL
+Confidence: MEDIUM
+Source Reliability: B
+Title: CVE-2024-20767 (EPSS 94.00%)
+
+## Draft Post
+🔴 EPSS 94.0% | Almost certainly exploitation | medium confidence
+
+CVE-2024-20767 (EPSS 94.00%)
+
+ColdFusion versions 2023.6, 2021.12 and earlier are affected by an Improper Access Control vulnerability that could result in arbitrary file system re
+
+Highest risk of all CVEs by exploitation likelihood
+
+Source: FIRST.org EPSS | Reliability: B
+
+Link: https://nvd.nist.gov/vuln/detail/CVE-2024-20767
+
+#EPSS #threatintel #CVE #cybersecurity
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+

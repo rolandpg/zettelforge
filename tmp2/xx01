@@ -1,0 +1,27 @@
+Timestamp: 2026-03-30T11:11:47.241521
+Type: HIGH_EPSS
+Severity: CRITICAL
+Confidence: MEDIUM
+Source Reliability: B
+Title: CVE-2024-9474 (EPSS 94.00%)
+
+## Draft Post
+🔴 EPSS 94.0% | Almost certainly exploitation | medium confidence
+
+CVE-2024-9474 (EPSS 94.00%)
+
+A privilege escalation vulnerability in Palo Alto Networks PAN-OS software allows a PAN-OS administrator with access to the management web interface t
+
+Highest risk of all CVEs by exploitation likelihood
+
+Source: FIRST.org EPSS | Reliability: B
+
+Link: https://nvd.nist.gov/vuln/detail/CVE-2024-9474
+
+#EPSS #threatintel #CVE #cybersecurity
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+

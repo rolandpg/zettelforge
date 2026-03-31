@@ -17,12 +17,6 @@ Hermes Agent: ~/hermes-agent. Nousnet: ~/nousnet. Security assessments complete.
 §
 Key learnings: xurl auth = OAuth1 pre-configured. Django models: check field names first. Systemd: copy service files. CISA KEV: 1551 entries.
 §
-Hermes learning phases 1-3: EnhancedMemoryStore (bounded 2200 chars, § delimited, injection scanned), NudgeManager, SkillManager (skills/ dir).
-
-
-## Key Learnings (Updated Mar 30, 2026 - 5:38 AM CST)
-1. **CTI Platform Fix**: Resolved HTTP 500 errors on /intel/iocs/ and actor detail pages by excluding threat actors with empty slugs in Django views. Applied to dashboard, cve_detail, company_detail, search, and actors views.
-2. **Alert Queue**: One high-priority alert queued at 02:04 AM CST: Handala Hack actor activity (12 new IOCs). Draft post prepared for 12 PM engagement block.
-3. **Collection Schedule**: 6:00 AM CISA KEV collector pending (due in ~22 minutes). All other collectors scheduled as normal.
-4. **System Health**: All CTI web endpoints now return 200. Threat alert scanner running normally (last run 5:00 AM CST processed 0 new high-priority threats).
-
+Hermes learning phases 1-3: EnhancedMemoryStore (bounded 2200 chars, § delimited, injection scanned), NudgeManager (proactive prompts at 10 turns), SkillManager (skills/ dir, 3 skills). Phase 4: wired into OpenClaw boot via BOOT.md + memory_init.py.
+§
+Qualys TRU: Broken Physics of Remediation (Mar 2026) - TTE -1 day, 6.5x KEV vol, 88% defender loss. Sub-1% of CVEs weaponized. Risk Mass (exposure-days) > MTTR. ROC = embedded intel + exploit confirmation + autonomous remediation. Briefing: memory/briefings/qualys-remediation-physics-20260331.md

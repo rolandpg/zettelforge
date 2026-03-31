@@ -1,17 +1,26 @@
+---
+Timestamp: 2026-03-30T02:04:01.877438
+Type: ACTOR_ACTIVITY
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Handala Hack - 12 new IOCs
 
-⚠️ CISA KEV UPDATE | high confidence
+## Draft Post
+🔴 Handala Hack | medium confidence
 
-CVE-2020-10189 added to CISA KEV
+New activity detected.
 
-Zoho ManageEngine Desktop Central before 10.0.474 allows remote code execution because of deserialization of untrusted data in getChartImage in the FileStorage 
+New indicators: 82.25.35.25, 31.57.35.223, 107.189.19.52...
 
-ACTIVE EXPLOITATION CONFIRMED
+Monitor for related IOCs.
 
-ATT&CK: Exploit Public-Facing Application (T1190)
+Source: Roland Fleet CTI | Reliability: B
 
-Source: CISA KEV | Reliability: A
+#threatintel #DFIR #cybersecurity
 
-Link: https://nvd.nist.gov/vuln/detail/CVE-2020-10189
-
-#CVE #CISA #KEV #threatintel #infosec
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
 

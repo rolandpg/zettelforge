@@ -458,3 +458,28 @@ Link: https://nvd.nist.gov/vuln/detail/CVE-2020-0618
 - Confidence Level: MEDIUM
 - Source Reliability: B
 - Calibrated Language: medium confidence
+
+---
+Timestamp: 2026-03-31T11:10:41.396535
+Type: HIGH_CVE
+Severity: HIGH
+Confidence: HIGH
+Source Reliability: A
+Title: CVE-2026-3055 (CVSS 9.0)
+
+## Draft Post
+CVE-2026-3055 (CVSS 9.0) [KEV]
+
+Citrix NetScaler ADC (formerly Citrix ADC), NetScaler Gateway (formerly Citrix Gateway) and NetScaler ADC FIPS and NDcPP contain an out-of-bounds reads vulnerability when configure
+
+high confidence | Source: CISA KEV | Reliability: A
+
+Source: CISA KEV
+Link: https://nvd.nist.gov/vuln/detail/CVE-2026-3055
+
+#CVE #infosec #cybersecurity #threatintel
+
+## CTI Metadata
+- Confidence Level: HIGH
+- Source Reliability: A
+- Calibrated Language: high confidence

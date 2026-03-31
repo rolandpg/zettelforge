@@ -67,3 +67,9 @@ Mid-tier and SMB government contractors — DoD tier 2-4, CMMC-mandated, limited
 | ATT&CK TTP auto-mapping | Partial | CVETechnique links exist |
 | Check Point RSS | Done | Use ollama_web_fetch on article URLs |
 | Feedback loop | Not started | Track IOC accuracy |
+
+## 2026-03-30
+### Engagement Blocks
+- 12 PM: Posted thread of 5 CISA KEV additions (tweet IDs: 2038667672464818392 -> 2038670483168661662)
+- 6 PM: Posted thread of 6 High EPSS alerts (conversation_id: 2038713950506832174)
+- Checked mentions and planned tomorrow's content during 6 PM block.

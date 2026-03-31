@@ -2,57 +2,17 @@
   "action": "send_telegram_alert",
   "alerts": [
     {
-      "type": "KEV_ADDITION",
+      "type": "HIGH_EPSS",
       "severity": "CRITICAL",
-      "title": "CVE-2019-8394 added to CISA KEV",
-      "description": "Zoho ManageEngine ServiceDesk Plus (SDP) before 10.0 build 10012 allows remote attackers to upload a",
-      "source": "CISA KEV",
-      "confidence": "HIGH",
-      "source_reliability": "A",
-      "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-8394"
-    },
-    {
-      "type": "KEV_ADDITION",
-      "severity": "CRITICAL",
-      "title": "CVE-2020-10189 added to CISA KEV",
-      "description": "Zoho ManageEngine Desktop Central before 10.0.474 allows remote code execution because of deserializ",
-      "source": "CISA KEV",
-      "confidence": "HIGH",
-      "source_reliability": "A",
-      "url": "https://nvd.nist.gov/vuln/detail/CVE-2020-10189"
-    },
-    {
-      "type": "KEV_ADDITION",
-      "severity": "CRITICAL",
-      "title": "CVE-2021-40539 added to CISA KEV",
-      "description": "Zoho ManageEngine ADSelfService Plus version 6113 and prior is vulnerable to REST API authentication",
-      "source": "CISA KEV",
-      "confidence": "HIGH",
-      "source_reliability": "A",
-      "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-40539"
-    },
-    {
-      "type": "KEV_ADDITION",
-      "severity": "CRITICAL",
-      "title": "CVE-2019-9978 added to CISA KEV",
-      "description": "The social-warfare plugin before 3.5.3 for WordPress has stored XSS via the wp-admin/admin-post.php?",
-      "source": "CISA KEV",
-      "confidence": "HIGH",
-      "source_reliability": "A",
-      "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-9978"
-    },
-    {
-      "type": "KEV_ADDITION",
-      "severity": "CRITICAL",
-      "title": "CVE-2020-11738 added to CISA KEV",
-      "description": "The Snap Creek Duplicator plugin before 1.3.28 for WordPress (and Duplicator Pro before 3.8.7.1) all",
-      "source": "CISA KEV",
-      "confidence": "HIGH",
-      "source_reliability": "A",
-      "url": "https://nvd.nist.gov/vuln/detail/CVE-2020-11738"
+      "title": "CVE-2021-22054 (EPSS 94.00%)",
+      "description": "VMware Workspace ONE UEM console 20.0.8 prior to 20.0.8.37, 20.11.0 prior to 20.11.0.40, 21.2.0 prio",
+      "source": "FIRST.org EPSS",
+      "confidence": "MEDIUM",
+      "source_reliability": "B",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-22054"
     }
   ],
-  "total": 15,
-  "timestamp": "2026-03-30T13:42:46.036331",
+  "total": 1,
+  "timestamp": "2026-03-31T17:00:01.441798",
   "cti_metadata": true
 }
