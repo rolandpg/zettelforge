@@ -190,6 +190,19 @@ def main():
     phase_results = test_results.get('phase_results', {})
     next_action = get_next_action(phase_results, test_passed)
 
+    # Build phase status display from test results
+    phase_statuses = {}
+    for phase, pr in sorted(phase_results.items(), key=lambda x: int(x[0])):
+        if pr.get('failed', 0) == 0:
+            phase_statuses[phase] = '✅'
+        elif pr.get('failed', 0) > 0:
+            phase_statuses[phase] = '❌'
+        else:
+            phase_statuses[phase] = '⚪'
+    for phase in ['1', '2', '3', '4', '5']:
+        if phase not in phase_statuses:
+            phase_statuses[phase] = '⚪'
+
     # Build log entry
     entry = {
         'timestamp': timestamp,
@@ -218,7 +231,14 @@ def main():
     if 'error' in test_results:
         print(f"  Test error: {test_results['error']}")
 
-    print(f"\nPRD: {prd_info.get('phases', {})}")
+    # Patch phase status indicators into PRD phase text
+    prd_phases = prd_info.get('phases', {})
+    for phase, status in phase_statuses.items():
+        if phase in prd_phases and not prd_phases[phase].startswith(status):
+            # Prepend status if not already present
+            prd_phases[phase] = f"{status} {prd_phases[phase]}"
+
+    print(f"\nPRD: {prd_phases}")
 
     print(f"\nNext action: {next_action}")
 
