@@ -1,0 +1,14 @@
+{
+  "lastChecks": {
+    "cti-health": 1743472129,
+    "cti-collection": 1743472129,
+    "x-engagement": null,
+    "memory-maint": 1743472129
+  },
+  "checkIntervals": {
+    "cti-health": 3600,
+    "cti-collection": 14400,
+    "x-engagement": 21600,
+    "memory-maint": 86400
+  }
+}
