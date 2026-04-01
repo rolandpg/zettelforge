@@ -1085,3 +1085,31 @@ Link:
 - Source Reliability: B
 - Calibrated Language: medium confidence
 - Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T02:39:06.866501
+Type: KEV_ADDITION
+Severity: CRITICAL
+Confidence: HIGH
+Source Reliability: A
+Title: CVE-2026-3055 added to CISA KEV
+
+## Draft Post
+⚠️ CISA KEV UPDATE | high confidence
+
+CVE-2026-3055 added to CISA KEV
+
+Citrix NetScaler ADC (formerly Citrix ADC), NetScaler Gateway (formerly Citrix Gateway) and NetScaler ADC FIPS and NDcPP contain an out-of-bounds reads vulnerab
+
+ACTIVE EXPLOITATION CONFIRMED
+
+Source: CISA KEV | Reliability: A
+
+Link: https://nvd.nist.gov/vuln/detail/CVE-2026-3055
+
+#CVE #CISA #KEV #threatintel #infosec
+
+## CTI Metadata
+- Confidence Level: HIGH
+- Source Reliability: A
+- Calibrated Language: high confidence
