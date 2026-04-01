@@ -1,135 +1,200 @@
 #!/usr/bin/env python3
 """
 Memory Plan Reviewer — iterates on the memory system improvement plan.
-Reads MEMORY_PLAN.md, checks current state, logs iteration, suggests next step.
 
-Run via cron: 0 6 * * 1  (every Monday at 6 AM CDT)
+Runs the full test suite, reports phase-by-phase status, logs iterations,
+and recommends next action. Designed to run every 30 minutes until the
+PRD is fully commissioned.
+
+Run via cron: */30 * * * *  (every 30 minutes)
 """
 import json
+import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
 
 # Setup paths
 MEMORY_DIR = Path("/home/rolandpg/.openclaw/workspace/memory")
-PLAN_PATH = MEMORY_DIR / "MEMORY_PLAN.md"
-ENTITY_INDEX = MEMORY_DIR / "entity_index.json"
-DEDUP_LOG = MEMORY_DIR / "dedup_log.jsonl"
+WORKSPACE = Path("/home/rolandpg/.openclaw/workspace")
+PLAN_PATH = MEMORY_DIR / "MEMORY_PRD.md"
 STATS_LOG = MEMORY_DIR / "plan_iterations.jsonl"
 
-# Add workspace to path
-sys.path.insert(0, str(MEMORY_DIR))
 
+def run_tests() -> dict:
+    """Run the test suite and parse results."""
+    test_script = MEMORY_DIR / "test_memory_system.py"
+    if not test_script.exists():
+        return {"error": "test_memory_system.py not found"}
 
-def get_entity_stats():
     try:
-        from entity_indexer import EntityIndexer
-        idx = EntityIndexer()
-        idx.load()
-        return idx.stats()
+        result = subprocess.run(
+            [sys.executable, str(test_script)],
+            capture_output=True,
+            text=True,
+            timeout=120,
+            cwd=str(WORKSPACE)
+        )
+        output = result.stdout + result.stderr
+
+        # Parse test summary
+        total = passed = failed = 0
+        phase_results = {}
+        in_summary = False
+
+        for line in output.split('\n'):
+            # Strip ANSI codes
+            import re
+            line_clean = re.sub(r'\x1b\[[0-9;]*m', '', line).strip()
+
+            if 'Memory System Test Suite — Summary' in line_clean:
+                in_summary = True
+                continue
+
+            if in_summary:
+                if line_clean.startswith('Tests:'):
+                    # "Tests: 28 passed / 0 failed (22.0s)"
+                    parts = line_clean.split()
+                    for i, p in enumerate(parts):
+                        if p == 'Tests:':
+                            total = int(parts[i+1])
+                        elif p == 'passed':
+                            passed = int(parts[i-1])
+                        elif p == 'failed':
+                            failed_val = parts[i-1].split('/')[0]
+                            failed = int(failed_val)
+                elif '✓ Phase' in line_clean or '✗ Phase' in line_clean:
+                    # "  [✓ Phase 0[0m: 6/6 requirements" or "✓ Phase 1: 14/14 requirements"
+                    # Extract phase number and ratio
+                    parts = line_clean.replace('✓', '').replace('✗', '').split(':')
+                    if len(parts) >= 2:
+                        phase_part = parts[0].strip().replace('Phase', '').strip()
+                        phase_num = phase_part
+                        ratio_part = parts[1].split('/')[0].strip()
+                        total_r = parts[1].split('/')[0].strip()
+                        req_r = parts[1].split('/')[1].replace('requirements', '').strip()
+                        phase_results[phase_num] = {
+                            'passed': int(total_r),
+                            'failed': int(req_r) - int(total_r),
+                            'total': int(req_r)
+                        }
+                elif 'FAILED' in line_clean or 'PASSED' in line_clean or 'ALL TESTS' in line_clean:
+                    in_summary = False
+
+        return {
+            'total': total,
+            'passed': passed,
+            'failed': failed,
+            'phase_results': phase_results,
+            'output_preview': output[-500:] if len(output) > 500 else output
+        }
+
+    except subprocess.TimeoutExpired:
+        return {"error": "Test suite timed out (>120s)"}
     except Exception as e:
         return {"error": str(e)}
 
 
-def get_memory_stats():
+def get_memory_stats() -> dict:
+    """Get current memory system stats."""
     try:
-        from memory_manager import get_memory_manager
+        sys.path.insert(0, str(MEMORY_DIR))
+        sys.path.insert(0, str(WORKSPACE))
+        from memory.memory_manager import get_memory_manager
         mm = get_memory_manager()
         stats = mm.get_stats()
-        return stats
+        entity_stats = mm.get_entity_stats() if hasattr(mm, 'get_entity_stats') else {}
+        return {
+            'total_notes': stats.get('total_notes', 0),
+            'notes_created': stats.get('notes_created', 0),
+            'duplicates_skipped': stats.get('duplicates_skipped', 0),
+            'entity_index': entity_stats.get('total_entities', 0),
+            'entity_breakdown': entity_stats.get('by_type', {})
+        }
     except Exception as e:
-        return {"error": str(e)}
+        return {'error': str(e)}
 
 
-def count_dedup_events():
-    """Count dedup events in log"""
-    if not DEDUP_LOG.exists():
-        return {"total": 0, "skipped": 0, "similar": 0}
-    skipped = 0
-    similar = 0
-    with open(DEDUP_LOG) as f:
-        for line in f:
-            if line.strip():
-                e = json.loads(line)
-                if e.get("action") == "skipped":
-                    skipped += 1
-                elif "similar" in e.get("reason", ""):
-                    similar += 1
-    total = skipped + similar
-    return {"total": total, "skipped": skipped, "similar": similar}
+def get_next_action(phase_results: dict, test_passed: bool) -> str:
+    """Determine next action based on current state."""
+    if not test_passed:
+        # Find the first failing phase
+        for phase in sorted(phase_results.keys(), key=lambda x: int(x)):
+            pr = phase_results[phase]
+            if pr.get('failed', 0) > 0:
+                failures = pr.get('failed', 0)
+                return (f"Phase {phase}: {failures} requirement(s) failing — "
+                        f"run 'python3 memory/test_memory_system.py --phase {phase} --verbose' "
+                        f"to identify specific failures")
+        return "Tests failed but no specific phase identified — run test suite manually"
+
+    # All tests passing — advance to next incomplete phase
+    completed = [p for p, r in phase_results.items() if r.get('failed', 0) == 0]
+    if '3' not in completed:
+        return "Phase 3 (Date-Aware Retrieval) — implement supersedes tracking"
+    if '4' not in completed:
+        return "Phase 4 (Mid-Session Snapshot Refresh) — implement write-through snapshot"
+    if '5' not in completed:
+        return "Phase 5 (Cold Archive) — implement auto-archival of low-confidence notes"
+    return "ALL PHASES COMPLETE — PRD fully commissioned"
 
 
-def current_phase() -> str:
-    """Determine current active phase from plan"""
-    plan = PLAN_PATH.read_text() if PLAN_PATH.exists() else ""
-    if "Phase 1" in plan and "✅" in plan:
-        if "Phase 2" in plan and "🔧" not in plan:
-            return "Phase 2"
-        return "Phase 1"
-    if "Phase 2" in plan:
-        return "Phase 2"
-    return "Planning"
-
-
-def next_action(phase: str, entity_count: int, total_notes: int) -> str:
-    """Recommend next action based on current state"""
-    if entity_count < 10:
-        return "Build entity index from scratch (Phase 1)"
-
-    if phase == "Phase 1":
-        # Check if Phase 1 is complete (entity index built, dedup wired)
-        if entity_count > 20:
-            return "Phase 1 complete → move to Phase 2 (link generator integration)"
-        return "Continue Phase 1: add more entity patterns, tune deduplication threshold"
-
-    if phase == "Phase 2":
-        return "Phase 2: wire link_generator into save flow, ensure evolution writes back to JSONL"
-
-    return "Review MEMORY_PLAN.md for next priority"
-
-
-def log_iteration(
-    phase: str,
-    entity_stats: dict,
-    memory_stats: dict,
-    dedup_stats: dict,
-    next_step: str
-) -> dict:
-    """Log iteration to plan_iterations.jsonl"""
-    entry = {
-        "timestamp": datetime.now().isoformat(),
-        "phase": phase,
-        "entities_total": entity_stats.get("total_entities", 0),
-        "entity_breakdown": entity_stats.get("by_type", {}),
-        "total_notes": memory_stats.get("total_notes", 0),
-        "notes_created": memory_stats.get("notes_created", 0),
-        "duplicates_skipped": dedup_stats.get("skipped", 0),
-        "similar_warned": dedup_stats.get("similar", 0),
-        "next_action": next_step
-    }
-
+def log_iteration(entry: dict):
+    """Append to plan_iterations.jsonl"""
     with open(STATS_LOG, 'a') as f:
         f.write(json.dumps(entry) + '\n')
 
-    return entry
 
+def main():
+    timestamp = datetime.now().isoformat()
+    print(f"Memory Plan Review — {timestamp}")
 
-def print_report(entry: dict):
-    print("=== Memory Plan Review ===")
-    print(f"Phase: {entry['phase']}")
-    print(f"Entities indexed: {entry['entities_total']} ({entry['entity_breakdown']})")
-    print(f"Total notes: {entry['total_notes']}")
-    print(f"Duplicates skipped: {entry['duplicates_skipped']}")
-    print(f"Similar warned: {entry['similar_warned']}")
-    print(f"Next action: {entry['next_action']}")
+    # Run tests
+    test_results = run_tests()
+    test_passed = test_results.get('failed', 999) == 0 and 'error' not in test_results
+
+    # Get memory stats
+    mem_stats = get_memory_stats()
+
+    # Determine next action
+    phase_results = test_results.get('phase_results', {})
+    next_action = get_next_action(phase_results, test_passed)
+
+    # Build entry
+    entry = {
+        'timestamp': timestamp,
+        'tests_passed': test_passed,
+        'tests_total': test_results.get('total', 0),
+        'tests_failed': test_results.get('failed', 0),
+        'phase_results': phase_results,
+        'memory_stats': mem_stats,
+        'next_action': next_action
+    }
+
+    # Print summary
+    print(f"Tests: {test_results.get('passed', 0)}/{test_results.get('total', 0)} passed")
+    if test_results.get('failed', 0) > 0:
+        print(f"  FAILED: {test_results['failed']} requirement(s)")
+        for phase, pr in sorted(phase_results.items(), key=lambda x: int(x[0])):
+            if pr.get('failed', 0) > 0:
+                print(f"  Phase {phase}: {pr['failed']} requirement(s) failing")
+    else:
+        print("  All tests passing")
+
+    print(f"Memory: {mem_stats.get('total_notes', '?')} notes, "
+          f"{mem_stats.get('entity_index', '?')} entities indexed")
+
+    if 'error' in test_results:
+        print(f"  Test error: {test_results['error']}")
+
+    print(f"\nNext action: {next_action}")
+
+    # Log
+    log_iteration(entry)
+
+    # Exit code: 0 if all passing, 1 if failures
+    return 0 if test_passed else 1
 
 
 if __name__ == "__main__":
-    entity_stats = get_entity_stats()
-    memory_stats = get_memory_stats()
-    dedup_stats = count_dedup_events()
-    phase = current_phase()
-    next_step = next_action(phase, entity_stats.get("total_entities", 0), memory_stats.get("total_notes", 0))
-
-    entry = log_iteration(phase, entity_stats, memory_stats, dedup_stats, next_step)
-    print_report(entry)
+    sys.exit(main())

@@ -847,3 +847,161 @@ Link:
 - Source Reliability: B
 - Calibrated Language: medium confidence
 - Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T01:00:01.807130
+Type: DIB_BREACH
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: F
+Title: DIB-relevant: plain-crypto-js@4.2.1
+
+## Draft Post
+⚠️ DIB SECURITY ALERT | medium confidence
+
+DIB-relevant: plain-crypto-js@4.2.1
+
+[DIB] Cross-platform RAT loader injected via axios supply chain compromise
+
+Source: CyberScoop/Google TI | Reliability: F
+
+Source: CyberScoop/Google TI
+
+#DIB #cybersecurity #infosec #threatintel
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: F
+- Calibrated Language: medium confidence
+
+---
+Timestamp: 2026-04-01T01:00:01.807170
+Type: DIB_BREACH
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: F
+Title: DIB-relevant: axios@0.30.4
+
+## Draft Post
+⚠️ DIB SECURITY ALERT | medium confidence
+
+DIB-relevant: axios@0.30.4
+
+[DIB] Malicious version injected plain-crypto-js@4.2.1 loader
+
+Source: CyberScoop/Google TI | Reliability: F
+
+Source: CyberScoop/Google TI
+
+#DIB #cybersecurity #infosec #threatintel
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: F
+- Calibrated Language: medium confidence
+
+---
+Timestamp: 2026-04-01T01:00:01.807209
+Type: DIB_BREACH
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: F
+Title: DIB-relevant: axios@1.14.1
+
+## Draft Post
+⚠️ DIB SECURITY ALERT | medium confidence
+
+DIB-relevant: axios@1.14.1
+
+[DIB] Malicious version injected plain-crypto-js@4.2.1 loader
+
+Source: CyberScoop/Google TI | Reliability: F
+
+Source: CyberScoop/Google TI
+
+#DIB #cybersecurity #infosec #threatintel
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: F
+- Calibrated Language: medium confidence
+
+---
+Timestamp: 2026-03-31T20:00:08.689156
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: TrueConf Zero-Day Exploited in Attacks on Southeast Asian Government Networks
+
+## Draft Post
+TrueConf Zero-Day Exploited in Attacks on Government Networks. Urgent review and patching required.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-03-31T20:00:13.081466
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Silver Fox Expands Asia Cyber Campaign with AtlasCross RAT and Fake Domains
+
+## Draft Post
+Critical ransomware campaign using fake domains and remote access trojan targeting Chinese-speaking users.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-03-31T20:00:14.624944
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Axios Supply Chain Attack Pushes Cross-Platform RAT via Compromised npm Account
+
+## Draft Post
+Critical supply chain attack via Axios introduces a cross-platform RAT leveraging compromised npm package.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-03-31T20:00:32.678326
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers compromise Axios npm package to drop cross-platform malware
+
+## Draft Post
+Critical Axios npm package compromised for ransomware delivery.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
