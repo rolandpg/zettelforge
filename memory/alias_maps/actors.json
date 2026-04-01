@@ -1,0 +1,183 @@
+{
+  "_meta": {
+    "version": "1.0",
+    "updated": "2026-03-31",
+    "source": "test",
+    "entity_type": "actor"
+  },
+  "aliases": {
+    "muddywater": {
+      "mitre_id": "G0069",
+      "canonical": "muddywater",
+      "names": [
+        "muddywater",
+        "muddy water",
+        "mercury",
+        "mango sandstorm",
+        "temp.zagros",
+        "tempzagros",
+        "seedworm",
+        "static kitten",
+        "boggy serpens",
+        "clever zer0",
+        "mowlaudit"
+      ]
+    },
+    "volt typhoon": {
+      "mitre_id": "G1017",
+      "canonical": "volt typhoon",
+      "names": [
+        "volt typhoon",
+        "volty typhoon",
+        "vult typhoon",
+        "vanguard panda",
+        "bronze silhouette",
+        "dev-0391",
+        "insidious taurus",
+        "uat-5647",
+        "pink tempest"
+      ]
+    },
+    "apt28": {
+      "mitre_id": "G0005",
+      "canonical": "apt28",
+      "names": [
+        "apt28",
+        "sofacy",
+        "fancy bear",
+        "sednit",
+        "pawn storm",
+        "group 74",
+        "tsar team",
+        "swallowtail"
+      ]
+    },
+    "apt29": {
+      "mitre_id": "G0016",
+      "canonical": "apt29",
+      "names": [
+        "apt29",
+        "cozy bear",
+        "the dukes",
+        "nobelium",
+        "yttrium",
+        "stellarparticle",
+        "cloak"
+      ]
+    },
+    "apt41": {
+      "mitre_id": "G0096",
+      "canonical": "apt41",
+      "names": [
+        "apt41",
+        "barium",
+        "winnti",
+        "wicked panda",
+        "wicked spider",
+        "passing hollow"
+      ]
+    },
+    "lazarus": {
+      "mitre_id": "G0032",
+      "canonical": "lazarus",
+      "names": [
+        "lazarus",
+        "lazarus group",
+        "hidden cobra",
+        "labyrinth chollima"
+      ]
+    },
+    "kimsuky": {
+      "mitre_id": "G0094",
+      "canonical": "kimsuky",
+      "names": [
+        "kimsuky",
+        "thallium",
+        "velvet chollima",
+        "black banshee"
+      ]
+    },
+    "turla": {
+      "mitre_id": "G0010",
+      "canonical": "turla",
+      "names": [
+        "turla",
+        "waterbug",
+        "kyrill",
+        "snake",
+        "uroboros"
+      ]
+    },
+    "fin7": {
+      "mitre_id": "G0046",
+      "canonical": "fin7",
+      "names": [
+        "fin7",
+        "carbanak",
+        "carbon spider",
+        "navigator"
+      ]
+    },
+    "phosphorus": {
+      "mitre_id": "G0054",
+      "canonical": "phosphorus",
+      "names": [
+        "phosphorus",
+        "ajax",
+        "charming kitten",
+        "pargasite"
+      ]
+    },
+    "lockbit": {
+      "mitre_id": "G0145",
+      "canonical": "lockbit",
+      "names": [
+        "lockbit",
+        "lockbit 3.0",
+        "lockbit 2.0"
+      ]
+    },
+    "alphv": {
+      "mitre_id": null,
+      "canonical": "alphv",
+      "names": [
+        "alphv",
+        "blackcat"
+      ]
+    },
+    "revil": {
+      "mitre_id": null,
+      "canonical": "revil",
+      "names": [
+        "revil",
+        "sodinokibi"
+      ]
+    },
+    "wizard spider": {
+      "mitre_id": "G0102",
+      "canonical": "wizard spider",
+      "names": [
+        "wizard spider",
+        "conti",
+        "conty"
+      ]
+    },
+    "handala": {
+      "mitre_id": null,
+      "canonical": "handala",
+      "names": [
+        "handala",
+        "handala hack",
+        "handala team",
+        "killnet"
+      ]
+    },
+    "rhysida": {
+      "mitre_id": null,
+      "canonical": "rhysida",
+      "names": [
+        "rhysida"
+      ]
+    }
+  }
+}

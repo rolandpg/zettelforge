@@ -23,6 +23,7 @@ from link_generator import LinkGenerator
 from memory_evolver import MemoryEvolver, EvolutionDecider
 from vector_retriever import VectorRetriever
 from entity_indexer import EntityIndexer, Deduplicator
+from alias_resolver import AliasResolver, resolve_all
 
 
 class MemoryManager:
@@ -49,6 +50,9 @@ class MemoryManager:
         self.indexer = EntityIndexer()
         self.indexer.load()
         self.dedup = Deduplicator(self.indexer)
+
+        # Alias resolution for actors/tools/campaigns
+        self.resolver = AliasResolver()
 
         self.cold_path = cold_path
 
@@ -110,8 +114,10 @@ class MemoryManager:
         self.store.write_note(note)
         self.stats['notes_created'] += 1
 
-        # Entity index the new note
-        self.indexer.add_note(note.id, note.content.raw)
+        # Entity index the new note (alias-resolved)
+        raw_entities = self.indexer.extractor.extract_all(note.content.raw)
+        resolved_entities = resolve_all(raw_entities, self.resolver)
+        self.indexer.add_note_resolved(note.id, resolved_entities)
 
         # Generate links
         candidates = [n for n in self.store.iterate_notes() if n.id != note.id]
@@ -186,16 +192,19 @@ class MemoryManager:
         return self.recall_entity('cve', cve_id.upper(), k, exclude_superseded)
 
     def recall_actor(self, actor_name: str, k: int = 5, exclude_superseded: bool = True) -> List[MemoryNote]:
-        """Fast lookup by threat actor name"""
-        return self.recall_entity('actor', actor_name.lower(), k, exclude_superseded)
+        """Fast lookup by threat actor name (alias-resolved)"""
+        canonical = self.resolver.resolve('actor', actor_name)
+        return self.recall_entity('actor', canonical.lower(), k, exclude_superseded)
 
     def recall_tool(self, tool_name: str, k: int = 5, exclude_superseded: bool = True) -> List[MemoryNote]:
-        """Fast lookup by tool/campaign name"""
-        return self.recall_entity('tool', tool_name.lower(), k, exclude_superseded)
+        """Fast lookup by tool/campaign name (alias-resolved)"""
+        canonical = self.resolver.resolve('tool', tool_name)
+        return self.recall_entity('tool', canonical.lower(), k, exclude_superseded)
 
     def recall_campaign(self, campaign_name: str, k: int = 5, exclude_superseded: bool = True) -> List[MemoryNote]:
-        """Fast lookup by campaign name"""
-        return self.recall_entity('campaign', campaign_name.lower(), k, exclude_superseded)
+        """Fast lookup by campaign name (alias-resolved)"""
+        canonical = self.resolver.resolve('campaign', campaign_name)
+        return self.recall_entity('campaign', canonical.lower(), k, exclude_superseded)
 
     def recall_sector(self, sector: str, k: int = 5, exclude_superseded: bool = True) -> List[MemoryNote]:
         """Fast lookup by sector tag"""

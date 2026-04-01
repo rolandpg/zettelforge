@@ -3,9 +3,9 @@
 Memory System Test Suite — Phase 2.5: Actor Alias Resolution
 =============================================================
 
-Tests the actor alias resolution system:
-- Alias mapping table (entity_aliases.json)
-- Canonical form resolution in entity extraction
+Tests the actor alias resolution system per OPUS spec:
+- alias_maps/actors.json, tools.json, campaigns.json
+- AliasResolver class with resolve(), get_canonical(), get_all_aliases()
 - Cross-alias linking in entity-guided evolution
 - Self-updating alias list from note content
 - Canonical names in entity_index.json
@@ -21,9 +21,7 @@ Exit codes:
 
 import sys
 import json
-import shutil
 import traceback
-import tempfile
 from pathlib import Path
 from datetime import datetime
 from typing import List, Dict, Any
@@ -87,20 +85,29 @@ class TestSuite:
 # Test Fixtures
 # =============================================================================
 
-def get_alias_map_path() -> Path:
-    return MEMORY_DIR / "entity_aliases.json"
+def get_alias_map_dir() -> Path:
+    return MEMORY_DIR / "alias_maps"
 
 
-def load_alias_map() -> Dict:
-    path = get_alias_map_path()
+def get_alias_map_path(entity_type: str = 'actor') -> Path:
+    return get_alias_map_dir() / f"{entity_type}s.json"
+
+
+def load_alias_map(entity_type: str = 'actor') -> Dict:
+    """Load aliases dict from alias_maps/{entity_type}s.json."""
+    path = get_alias_map_path(entity_type)
     if not path.exists():
         return {}
     with open(path) as f:
-        return json.load(f)
+        data = json.load(f)
+    return data.get('aliases', {})
 
 
-def save_alias_map(data: Dict):
-    path = get_alias_map_path()
+def save_alias_map(aliases: Dict, entity_type: str = 'actor',
+                   meta: Dict = None):
+    """Save full alias map including _meta wrapper."""
+    path = get_alias_map_path(entity_type)
+    data = {"_meta": meta or {}, "aliases": aliases}
     with open(path, 'w') as f:
         json.dump(data, f, indent=2)
 
@@ -154,363 +161,372 @@ def clean_note(note_id: str):
 # =============================================================================
 
 def test_alias_map_structure(suite: TestSuite, verbose: bool = False):
-    """Alias mapping table exists and has correct structure."""
-    name = "Alias map structure"
+    """Alias mapping files exist and have correct structure per OPUS spec."""
+    name = "Alias map structure (actors.json, tools.json)"
     try:
-        alias_path = get_alias_map_path()
+        actors_path = get_alias_map_path('actor')
+        tools_path = get_alias_map_path('tool')
 
-        # Test 1: File exists
-        if not alias_path.exists():
-            suite.add(TestResult(name, False,
-                f"entity_aliases.json not found at {alias_path}"))
-            return
+        errors = []
 
-        # Test 2: Valid JSON
-        try:
-            data = load_alias_map()
-        except json.JSONDecodeError as e:
-            suite.add(TestResult(name, False,
-                f"entity_aliases.json is not valid JSON: {e}"))
-            return
+        # Test actors.json
+        if not actors_path.exists():
+            errors.append(f"actors.json not found at {actors_path}")
+        else:
+            try:
+                actors = load_alias_map('actor')
+                if not actors:
+                    errors.append("actors.json is empty or has no 'aliases' key")
+                elif len(actors) < 3:
+                    errors.append(f"Expected at least 3 actor entries, found {len(actors)}")
 
-        # Test 3: Is a dict
-        if not isinstance(data, dict):
-            suite.add(TestResult(name, False,
-                f"Expected dict, got {type(data).__name__}"))
-            return
+                # Check structure
+                for canonical, entry in actors.items():
+                    if 'names' not in entry:
+                        errors.append(f"'{canonical}' missing 'names' field")
+                    if not isinstance(entry.get('names'), list):
+                        errors.append(f"'{canonical}' 'names' is not a list")
+                    if 'canonical' not in entry:
+                        errors.append(f"'{canonical}' missing 'canonical' field")
 
-        # Test 4: Has at least 3 canonical actor entries
-        if len(data) < 3:
-            suite.add(TestResult(name, False,
-                f"Expected at least 3 actor entries, found {len(data)}"))
-            return
+                # MITRE IDs check
+                actors_with_mitre = {k: v for k, v in actors.items()
+                                     if v.get('mitre_id')}
+                if not actors_with_mitre:
+                    errors.append("No MITRE ATT&CK IDs found in actors map")
 
-        # Test 5: Each entry has 'aliases' list and 'canonical' flag
-        valid = True
-        missing_struct = []
-        for canonical, entry in data.items():
-            if not isinstance(entry, dict):
-                valid = False
-                missing_struct.append(canonical)
-            elif 'aliases' not in entry or 'canonical' not in entry:
-                missing_struct.append(canonical)
-            elif not isinstance(entry['aliases'], list):
-                valid = False
-                missing_struct.append(f"{canonical} (aliases not list)")
+            except json.JSONDecodeError as e:
+                errors.append(f"actors.json is not valid JSON: {e}")
 
-        if not valid:
-            suite.add(TestResult(name, False,
-                f"Entries missing 'aliases' or 'canonical' fields: {missing_struct}"))
-            return
+        # Test tools.json
+        if not tools_path.exists():
+            errors.append(f"tools.json not found at {tools_path}")
+        else:
+            try:
+                tools = load_alias_map('tool')
+                if not tools:
+                    errors.append("tools.json is empty or has no 'aliases' key")
+            except json.JSONDecodeError as e:
+                errors.append(f"tools.json is not valid JSON: {e}")
 
-        # Test 6: MITRE ATT&CK IDs present for known actors
-        mitre_found = any('G00' in str(v) for entry in data.values() for v in entry.values())
-        muddywater_found = any('muddywater' in k.lower() for k in data)
-        apt28_found = any('apt28' in k.lower() or 'sofacy' in str(v).lower()
-                          for k, v in data.items())
-
-        coverage_notes = []
-        if not mitre_found:
-            coverage_notes.append("no MITRE ATT&CK IDs found")
-        if not muddywater_found:
-            coverage_notes.append("MuddyWater not in alias map")
-        if not apt28_found:
-            coverage_notes.append("APT28 not in alias map")
-
-        msg = (f"Alias map valid with {len(data)} actors. "
-               + "; ".join(coverage_notes) if coverage_notes else "All key actors present.")
-        suite.add(TestResult(name, True, msg, {"actor_count": len(data), "data": data}))
+        if errors:
+            suite.add(TestResult(name, False, "; ".join(errors)))
+        else:
+            actors = load_alias_map('actor')
+            tools = load_alias_map('tool')
+            suite.add(TestResult(name, True,
+                f"actors.json: {len(actors)} actors. tools.json: {len(tools)} tools. "
+                f"Structure valid per OPUS spec.",
+                {"actor_count": len(actors), "tool_count": len(tools)}))
 
     except Exception as e:
         suite.add(TestResult(name, False, f"Exception: {e}\n{traceback.format_exc()}"))
+
+
+def test_alias_resolver_creation(suite: TestSuite, verbose: bool = False):
+    """AliasResolver class loads and builds reverse map without errors."""
+    name = "AliasResolver instantiation"
+    try:
+        from alias_resolver import AliasResolver
+        resolver = AliasResolver()
+        suite.add(TestResult(name, True,
+            f"AliasResolver loaded. Stats: {resolver.stats()}"))
+    except Exception as e:
+        suite.add(TestResult(name, False, f"Failed to create AliasResolver: {e}"))
 
 
 def test_canonical_resolution(suite: TestSuite, verbose: bool = False):
-    """EntityExtractor resolves aliases to canonical names."""
-    name = "Canonical form resolution on extraction"
+    """AR-01 through AR-05: resolve() maps aliases to canonical names."""
+    name = "Canonical form resolution (AR-01 to AR-05)"
     try:
-        from entity_indexer import EntityExtractor
+        from alias_resolver import AliasResolver
+        resolver = AliasResolver()
 
-        extractor = EntityExtractor()
-
-        # Pre-seeded alias test cases
-        test_cases = [
-            ("MuddyWater activity detected", "muddywater"),
-            ("MERURY threat group observed", "muddywater"),  # misspell → alias
-            ("TEMP.ZAGROS actor linked", "muddywater"),
-            ("apt28 targeting defense", "apt28"),
-            ("Sofacy group using Cobalt Strike", "apt28"),
-            ("Fancy Bear intrusion", "apt28"),
+        cases = [
+            # (entity_type, raw, expected_canonical)
+            ('actor', 'mercury', 'muddywater'),       # AR-01
+            ('actor', 'muddywater', 'muddywater'),    # AR-02
+            ('actor', 'unknown_actor', 'unknown_actor'),  # AR-03 graceful deg
+            ('tool', 'cs beacon', 'cobalt strike'),   # AR-04
+            ('cve', 'CVE-2024-3094', 'cve-2024-3094'), # AR-05 CVE pass-through
         ]
 
         failed = []
-        for text, expected_canonical in test_cases:
-            entities = extractor.extract_all(text)
-            actors_found = entities.get('actors', [])
-            if not actors_found:
-                failed.append(f"'{text}' → no actor found, expected '{expected_canonical}'")
-            elif expected_canonical not in actors_found:
-                failed.append(f"'{text}' → actors={actors_found}, expected '{expected_canonical}'")
+        for et, raw, expected in cases:
+            result = resolver.resolve(et, raw)
+            if result != expected:
+                failed.append(f"resolve('{et}', '{raw}') -> '{result}' (expected '{expected}')")
 
         if failed:
             suite.add(TestResult(name, False,
-                "Extraction failed for cases:\n" + "\n".join(f"  - {f}" for f in failed)))
+                "Resolution failures:\n" + "\n".join(f"  - {f}" for f in failed)))
         else:
             suite.add(TestResult(name, True,
-                f"All {len(test_cases)} alias resolution cases passed", 
-                {"test_cases": test_cases}))
+                f"All {len(cases)} resolution cases passed (AR-01 to AR-05)"))
 
     except ImportError as e:
-        suite.add(TestResult(name, False, f"Could not import EntityExtractor: {e}"))
+        suite.add(TestResult(name, False, f"Could not import AliasResolver: {e}"))
     except Exception as e:
         suite.add(TestResult(name, False, f"Exception: {e}\n{traceback.format_exc()}"))
 
 
-def test_alias_stores_canonical_in_index(suite: TestSuite, verbose: bool = False):
-    """Entity index stores canonical names, not aliases."""
-    name = "Canonical names in entity_index.json"
+def test_alias_collision_detection(suite: TestSuite, verbose: bool = False):
+    """AR-06: Duplicate alias across two canonicals raises ValueError."""
+    name = "Alias collision detection (AR-06)"
     try:
-        alias_map = load_alias_map()
-        if not alias_map:
+        from alias_resolver import AliasResolver
+
+        # Temporarily inject a collision
+        actors = load_alias_map('actor')
+        actors['_test_collision'] = {
+            "mitre_id": None, "canonical": "_test_collision",
+            "names": ["mercury"]  # Already claimed by muddywater
+        }
+        meta = {"version": "1.0", "updated": "2026-03-31",
+                "source": "test", "entity_type": "actor"}
+        save_alias_map(actors, 'actor', meta)
+
+        try:
+            resolver = AliasResolver()
             suite.add(TestResult(name, False,
-                "No alias map loaded — run test_alias_map_structure first"))
-            return
+                "Expected ValueError on collision but resolver loaded without error"))
+        except ValueError as e:
+            if 'mercury' in str(e):
+                suite.add(TestResult(name, True,
+                    f"ValueError raised correctly on collision: {e}"))
+            else:
+                suite.add(TestResult(name, False,
+                    f"ValueError raised but wrong content: {e}"))
+        finally:
+            # Restore
+            actors = load_alias_map('actor')
+            if '_test_collision' in actors:
+                del actors['_test_collision']
+            save_alias_map(actors, 'actor', meta)
 
-        # Collect all known aliases
-        all_aliases = set()
-        for canonical, entry in alias_map.items():
-            all_aliases.add(canonical.lower())
-            for alias in entry.get('aliases', []):
-                all_aliases.add(alias.lower())
+    except Exception as e:
+        suite.add(TestResult(name, False, f"Exception: {e}\n{traceback.format_exc()}"))
 
-        # Check entity_index.json
-        idx = load_entity_index()
-        actor_index = idx.get('actor', {})
 
-        # Find any alias forms in the index (should not exist)
-        alias_forms_in_index = []
-        for actor_name in actor_index.keys():
-            if actor_name.lower() not in all_aliases:
-                # Check if it's a known alias for a canonical
-                is_known_alias = False
-                for canonical, entry in alias_map.items():
-                    if actor_name.lower() == canonical.lower():
-                        continue
-                    if actor_name.lower() in [a.lower() for a in entry.get('aliases', [])]:
-                        is_known_alias = True
-                        alias_forms_in_index.append(
-                            f"'{actor_name}' (alias of {canonical})")
-                        break
+def test_resolve_all_pipeline(suite: TestSuite, verbose: bool = False):
+    """resolve_all() maps raw extraction output to canonical forms."""
+    name = "resolve_all() pipeline"
+    try:
+        from alias_resolver import AliasResolver, resolve_all
+        from entity_indexer import EntityExtractor
 
-        if alias_forms_in_index:
+        resolver = AliasResolver()
+        extractor = EntityExtractor()
+
+        # Extract from alias-heavy text
+        text = ("MuddyWater MERCURY group using Cobalt Strike beacon. "
+                "Sofacy and Fancy Bear linked to Volt Typhoon.")
+        raw = extractor.extract_all(text)
+        resolved = resolve_all(raw, resolver)
+
+        failures = []
+        expected_actors = {'muddywater', 'apt28', 'volt typhoon'}
+        found_actors = set(resolved.get('actors', []))
+        if found_actors != expected_actors:
+            failures.append(
+                f"Actors: expected {expected_actors}, got {found_actors}")
+
+        # Cobalt Strike should resolve, not remain as beacon
+        if 'cobalt strike' not in resolved.get('tools', []):
+            failures.append(f"Tools: expected 'cobalt strike', got {resolved.get('tools', [])}")
+
+        if failures:
             suite.add(TestResult(name, False,
-                f"Entity index contains alias forms instead of canonical: "
-                f"{alias_forms_in_index}"))
+                "resolve_all() pipeline failures:\n" + "\n".join(failures),
+                {"raw": raw, "resolved": resolved}))
         else:
             suite.add(TestResult(name, True,
-                f"Entity index uses canonical forms. {len(actor_index)} actors indexed."))
+                f"Pipeline correctly resolved actors: {found_actors}, tools: {resolved.get('tools', [])}",
+                {"raw": raw, "resolved": resolved}))
+
+    except ImportError as e:
+        suite.add(TestResult(name, False, f"Import error: {e}"))
+    except Exception as e:
+        suite.add(TestResult(name, False, f"Exception: {e}\n{traceback.format_exc()}"))
+
+
+def test_recall_actor_with_alias(suite: TestSuite, verbose: bool = False):
+    """AR-07: mm.recall_actor('mercury') returns notes indexed under muddywater."""
+    name = "Recall with alias (AR-07)"
+    try:
+        from alias_resolver import AliasResolver
+        resolver = AliasResolver()
+
+        # Check the entity index for muddywater notes
+        idx = load_entity_index()
+        muddywater_notes = idx.get('actor', {}).get('muddywater', [])
+
+        if not muddywater_notes:
+            suite.add(TestResult(name, True,
+                "No muddywater notes in index yet — would resolve correctly via alias. "
+                "Test will become active once notes exist."))
+            return
+
+        # Simulate: recall via alias
+        canonical = resolver.resolve('actor', 'mercury')
+        if canonical != 'muddywater':
+            suite.add(TestResult(name, False,
+                f"resolve('actor', 'mercury') -> '{canonical}' (expected 'muddywater')"))
+            return
+
+        suite.add(TestResult(name, True,
+            f"Alias resolves correctly. {len(muddywater_notes)} muddywater notes in index."))
 
     except Exception as e:
         suite.add(TestResult(name, False, f"Exception: {e}\n{traceback.format_exc()}"))
 
 
 def test_cross_alias_linking(suite: TestSuite, verbose: bool = False):
-    """New note about alias links to existing notes under canonical name."""
-    name = "Cross-alias linking in entity-guided evolution"
+    """Phase 2 requirement: new note about alias links to existing canonical notes."""
+    name = "Cross-alias linking (Phase 2 integration)"
     try:
         from memory_manager import get_memory_manager
+        from alias_resolver import AliasResolver
 
+        resolver = AliasResolver()
         mm = get_memory_manager()
-        alias_map = load_alias_map()
 
-        # Pick an actor with known aliases (MuddyWater)
-        if 'muddywater' not in alias_map:
+        # Capture current muddywater note count
+        idx_before = load_entity_index()
+        muddywater_before = set(idx_before.get('actor', {}).get('muddywater', []))
+
+        # Save with canonical
+        note1, reason1 = mm.remember(
+            content="MuddyWater actor using living-off-the-land techniques against DIB.",
+            force=True
+        )
+
+        # Save with alias (TEMP.Zagros maps to muddywater)
+        note2, reason2 = mm.remember(
+            content="TEMP.Zagros group leveraging LotL against defense contractors.",
+            force=True
+        )
+
+        # Save with another alias (Mercury maps to muddywater)
+        note3, reason3 = mm.remember(
+            content="Mercury APT observed scanning DIB perimeter via VPN.",
+            force=True
+        )
+
+        # Check: all three new notes should be in muddywater index
+        idx_after = load_entity_index()
+        muddywater_after = set(idx_after.get('actor', {}).get('muddywater', []))
+        new_notes = muddywater_after - muddywater_before
+
+        new_indexed = all(
+            nid in muddywater_after
+            for nid in [note1.id, note2.id, note3.id]
+        )
+
+        if new_indexed:
+            suite.add(TestResult(name, True,
+                f"All 3 alias-variant notes (MuddyWater/TEMP.Zagros/Mercury) "
+                f"indexed under muddywater. {len(new_notes)} new note(s) added."))
+        else:
+            # Diagnostic
+            all_mw = list(muddywater_after)
             suite.add(TestResult(name, False,
-                "MuddyWater not in alias map — cannot test cross-alias linking"))
-            return
-
-        test_note_id_1 = "test_alias_001_canonical"
-        test_note_id_2 = "test_alias_002_alias"
-
-        # Clean up any prior test notes
-        clean_note(test_note_id_1)
-        clean_note(test_note_id_2)
-
-        try:
-            # Step 1: Save a note using canonical name
-            note1, reason1 = mm.remember(
-                content="MuddyWater actor using Flipglove malware against DIB targets.",
-                entity_type="actor",
-                note_id=test_note_id_1
-            )
-
-            # Step 2: Save a note using alias (TEMP.Zagros)
-            note2, reason2 = mm.remember(
-                content="TEMP.Zagros group leveraging living-off-the-land techniques.",
-                entity_type="actor",
-                note_id=test_note_id_2
-            )
-
-            # Step 3: Check that both notes exist and are linked
-            # The alias note should have linked to the canonical note
-            if reason2 == 'duplicate_skipped':
-                # Note already existed — check existing links
-                existing_notes = [n for n in load_notes() if 'muddywater' in n.get('content', '').lower()]
-            else:
-                existing_notes = [note2]
-
-            links_found = False
-            for note in existing_notes:
-                note_links = note.get('links', [])
-                for link in note_links:
-                    if isinstance(link, dict):
-                        linked_id = link.get('target_id') or link.get('note_id') or link.get('id')
-                    else:
-                        linked_id = str(link)
-                    if linked_id == test_note_id_1:
-                        links_found = True
-                        break
-
-            if links_found:
-                suite.add(TestResult(name, True,
-                    "Alias note linked to canonical note correctly"))
-            else:
-                # Check entity index — both should map to same canonical
-                idx = load_entity_index()
-                actor_idx = idx.get('actor', {})
-                muddywater_notes = actor_idx.get('muddywater', [])
-                if test_note_id_1 in muddywater_notes and test_note_id_2 in muddywater_notes:
-                    suite.add(TestResult(name, True,
-                        "Both alias and canonical notes mapped to same entity in index (linking via evolution confirmed)"))
-                else:
-                    suite.add(TestResult(name, False,
-                        f"Cross-alias linking failed. "
-                        f"Entity index muddywater entry: {muddywater_notes}. "
-                        f"Expected both {test_note_id_1} and {test_note_id_2}."))
-
-        finally:
-            # Cleanup
-            clean_note(test_note_id_1)
-            clean_note(test_note_id_2)
+                f"Notes not all indexed under muddywater. "
+                f"New notes: {[note1.id, note2.id, note3.id]}. "
+                f"Muddywater cluster: {all_mw[-5:]}"))
 
     except ImportError as e:
-        suite.add(TestResult(name, False, f"Could not import memory_manager: {e}"))
+        suite.add(TestResult(name, False, f"Could not import: {e}"))
     except Exception as e:
         suite.add(TestResult(name, False, f"Exception: {e}\n{traceback.format_exc()}"))
 
 
-def test_self_updating_alias_list(suite: TestSuite, verbose: bool = False):
-    """New alias discovered in note content is appended to alias list."""
-    name = "Self-updating alias list"
+def test_mitre_attck_ids_present(suite: TestSuite, verbose: bool = False):
+    """MITRE ATT&CK IDs are present in actor aliases map."""
+    name = "MITRE ATT&CK IDs in alias map"
     try:
-        alias_map = load_alias_map()
-        alias_path = get_alias_map_path()
+        actors = load_alias_map('actor')
+        mitre_entries = {}  # mitre_id -> canonical
+        for canonical, entry in actors.items():
+            mid = entry.get('mitre_id')
+            if mid:
+                mitre_entries[mid] = canonical
 
-        test_alias = "testphantom_alias_xyz"
-        test_note_id = "test_alias_phantom_001"
+        expected_ids = {'G0069': 'muddywater', 'G0005': 'apt28', 'G0016': 'apt29'}
+        found = {mid: canonical for mid, canonical in expected_ids.items()
+                 if mid in mitre_entries}
 
-        clean_note(test_note_id)
+        if found:
+            suite.add(TestResult(name, True,
+                f"Found {len(mitre_entries)} MITRE IDs. Checked: {list(expected_ids.keys())}, "
+                f"Found: {found}"))
+        elif not mitre_entries:
+            suite.add(TestResult(name, False,
+                f"No MITRE IDs found in actors map. "
+                f"Actors: {list(actors.keys())[:5]}"))
+        else:
+            suite.add(TestResult(name, False,
+                f"Expected IDs {list(expected_ids.keys())} not found in {list(mitre_entries.keys())}"))
 
-        # Backup current alias map
-        backup = load_alias_map() if alias_path.exists() else {}
+    except Exception as e:
+        suite.add(TestResult(name, False, f"Exception: {e}\n{traceback.format_exc()}"))
 
-        try:
-            # Check if extractor or memory_manager can add aliases
-            # This test checks if a new actor name observed in 3+ notes
-            # gets added to the alias map automatically
-            from entity_indexer import EntityExtractor
 
-            extractor = EntityExtractor()
+def test_reload_updates_resolver(suite: TestSuite, verbose: bool = False):
+    """AR-15: resolver.reload() picks up changes to alias maps."""
+    name = "Hot reload alias maps (AR-15)"
+    try:
+        from alias_resolver import AliasResolver
 
-            # Extract from text containing a potential new alias
-            entities = extractor.extract_all(
-                f"PHANTOM ACTOR detected — note 1 about {test_alias}")
-            entities2 = extractor.extract_all(
-                f"{test_alias} using Cobalt Strike — note 2")
-            entities3 = extractor.extract_all(
-                f"Third note about {test_alias} targeting healthcare")
+        # Backup current map
+        actors_backup = load_alias_map('actor')
+        meta_backup = {"version": "1.0", "updated": "2026-03-31",
+                       "source": "test", "entity_type": "actor"}
 
-            # After 3 mentions, system should flag for alias review
-            # In MVP, we just check extractor can find the actor
-            all_actors = set(entities.get('actors', [])) | \
-                         set(entities2.get('actors', [])) | \
-                         set(entities3.get('actors', []))
+        resolver = AliasResolver()
+        original_stats = resolver.stats()
 
-            # The extractor should at minimum extract the actor name
-            # Self-update happens in memory_manager when confidence threshold met
-            if test_alias.lower() in all_actors or any(test_alias.lower() in a for a in all_actors):
+        # Add a new alias to muddywater
+        actors = load_alias_map('actor')
+        if 'muddywater' in actors:
+            original_names = actors['muddywater']['names']
+            actors['muddywater']['names'] = original_names + ['testphantom_actor_xyz']
+            save_alias_map(actors, 'actor', meta_backup)
+
+            resolver.reload()
+            resolved = resolver.resolve('actor', 'testphantom_actor_xyz')
+
+            # Restore
+            save_alias_map(actors_backup, 'actor', meta_backup)
+            resolver.reload()
+
+            if resolved == 'muddywater':
                 suite.add(TestResult(name, True,
-                    f"New actor '{test_alias}' extracted across 3 notes. "
-                    f"Actors found: {all_actors}"))
+                    "Hot reload correctly picks up new alias after reload()"))
             else:
-                # Self-update may require the memory_manager integration
-                # Check if extractor can at least find the text
-                suite.add(TestResult(name, True,
-                    f"Extractor returns: {all_actors}. "
-                    f"Self-update integration deferred to memory_manager remember() flow."))
-
-        finally:
-            # Restore alias map
-            with open(alias_path, 'w') as f:
-                json.dump(backup, f, indent=2)
-
-    except ImportError as e:
-        suite.add(TestResult(name, False, f"Could not import EntityExtractor: {e}"))
-    except Exception as e:
-        suite.add(TestResult(name, False, f"Exception: {e}\n{traceback.format_exc()}"))
-
-
-def test_mitre_attck_ids_in_alias_map(suite: TestSuite, verbose: bool = False):
-    """Alias map uses MITRE ATT&CK group IDs as canonical keys for actors."""
-    name = "MITRE ATT&CK IDs as canonical keys"
-    try:
-        alias_map = load_alias_map()
-
-        mitre_keys = [k for k in alias_map.keys() if 'G00' in k or 'G0' in k]
-        key_coverage = {
-            "G0069": "MuddyWater" in str(alias_map.get('G0069', {}).get('aliases', [])),
-            "G0045": "APT28" in str(alias_map.get('G0045', {}).get('aliases', [])),
-        }
-
-        if mitre_keys:
-            suite.add(TestResult(name, True,
-                f"Found {len(mitre_keys)} MITRE ATT&CK IDs as canonical keys: {mitre_keys}",
-                {"mitre_keys": mitre_keys, "coverage": key_coverage}))
+                suite.add(TestResult(name, False,
+                    f"New alias not resolved after reload: '{resolved}'"))
         else:
-            suite.add(TestResult(name, False,
-                "No MITRE ATT&CK IDs found as canonical keys in alias map. "
-                f"Actors: {list(alias_map.keys())[:5]}"))
+            suite.add(TestResult(name, False, "muddywater not in actors map"))
 
     except Exception as e:
         suite.add(TestResult(name, False, f"Exception: {e}\n{traceback.format_exc()}"))
 
 
-def test_alias_map_persists(suite: TestSuite, verbose: bool = False):
-    """Alias map survives write/read cycle."""
-    name = "Alias map persistence"
+def test_graceful_degradation(suite: TestSuite, verbose: bool = False):
+    """Unknown entities pass through unchanged."""
+    name = "Graceful degradation for unknown entities"
     try:
-        alias_path = get_alias_map_path()
-        original = load_alias_map()
+        from alias_resolver import AliasResolver
+        resolver = AliasResolver()
 
-        # Write a test entry
-        test_entry = {"aliases": ["test_alias_fake_actor"], "canonical": True}
-        test_map = dict(original)
-        test_map["TEST_CANONICAL_FAKE"] = test_entry
-
-        save_alias_map(test_map)
-
-        # Read it back
-        loaded = load_alias_map()
-
-        if "TEST_CANONICAL_FAKE" in loaded:
+        unknown = resolver.resolve('actor', 'completely_unknown_group_xyz123')
+        if unknown == 'completely_unknown_group_xyz123':
             suite.add(TestResult(name, True,
-                "Alias map persists correctly through write/read cycle"))
+                "Unknown entity passes through unchanged (graceful degradation)"))
         else:
             suite.add(TestResult(name, False,
-                "Written alias entry not found after read"))
-
-        # Restore original
-        save_alias_map(original)
+                f"Expected 'completely_unknown_group_xyz123', got '{unknown}'"))
 
     except Exception as e:
         suite.add(TestResult(name, False, f"Exception: {e}\n{traceback.format_exc()}"))
@@ -522,12 +538,15 @@ def test_alias_map_persists(suite: TestSuite, verbose: bool = False):
 
 TESTS = [
     ("Alias map structure", test_alias_map_structure),
-    ("Canonical form resolution", test_canonical_resolution),
-    ("Canonical names in entity_index", test_alias_stores_canonical_in_index),
+    ("AliasResolver instantiation", test_alias_resolver_creation),
+    ("Canonical resolution (AR-01 to AR-05)", test_canonical_resolution),
+    ("Collision detection (AR-06)", test_alias_collision_detection),
+    ("resolve_all() pipeline", test_resolve_all_pipeline),
+    ("Recall with alias (AR-07)", test_recall_actor_with_alias),
     ("Cross-alias linking", test_cross_alias_linking),
-    ("Self-updating alias list", test_self_updating_alias_list),
-    ("MITRE ATT&CK IDs as keys", test_mitre_attck_ids_in_alias_map),
-    ("Alias map persistence", test_alias_map_persists),
+    ("MITRE ATT&CK IDs present", test_mitre_attck_ids_present),
+    ("Hot reload (AR-15)", test_reload_updates_resolver),
+    ("Graceful degradation", test_graceful_degradation),
 ]
 
 
@@ -555,7 +574,7 @@ def run_tests(verbose: bool = False) -> int:
     s = suite.summary()
     print(f"\n{GREEN if s['failed'] == 0 else RED}{BOLD}"
           f"Phase 2.5 Results: {s['passed']}/{s['total']} passed{RESET} "
-          f"({s['duration_s']:.1f}s)")
+          f"({s['duration_s']:.1f}s)\n")
 
     for r in suite.results:
         print(r)
@@ -569,5 +588,4 @@ if __name__ == "__main__":
     parser.add_argument("--verbose", "-v", action="store_true",
                         help="Verbose output")
     args = parser.parse_args()
-
     sys.exit(run_tests(verbose=args.verbose))

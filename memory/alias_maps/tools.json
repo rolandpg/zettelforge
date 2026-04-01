@@ -1,0 +1,123 @@
+{
+  "_meta": {
+    "version": "1.0",
+    "updated": "2026-03-31",
+    "source": "MITRE ATT&CK Software v16 + DIB-relevant tool tracking",
+    "entity_type": "tool"
+  },
+  "aliases": {
+    "cobalt strike": {
+      "mitre_id": "S0154",
+      "canonical": "cobalt strike",
+      "names": [
+        "cobalt strike",
+        "cobaltstrike",
+        "cs beacon",
+        "cs"
+      ]
+    },
+    "mimikatz": {
+      "mitre_id": "S0002",
+      "canonical": "mimikatz",
+      "names": [
+        "mimikatz",
+        "sekurlsa"
+      ]
+    },
+    "bloodhound": {
+      "mitre_id": "S0521",
+      "canonical": "bloodhound",
+      "names": [
+        "bloodhound",
+        "azure bloodhound",
+        "sharphound"
+      ]
+    },
+    "seatbelt": {
+      "mitre_id": null,
+      "canonical": "seatbelt",
+      "names": [
+        "seatbelt"
+      ]
+    },
+    "koadic": {
+      "mitre_id": "S0250",
+      "canonical": "koadic",
+      "names": [
+        "koadic"
+      ]
+    },
+    "empire": {
+      "mitre_id": "S0363",
+      "canonical": "empire",
+      "names": [
+        "empire",
+        "powershell empire"
+      ]
+    },
+    "covenant": {
+      "mitre_id": "S0482",
+      "canonical": "covenant",
+      "names": [
+        "covenant"
+      ]
+    },
+    "sliver": {
+      "mitre_id": "S0493",
+      "canonical": "sliver",
+      "names": [
+        "sliver",
+        "sliver c2"
+      ]
+    },
+    "metasploit": {
+      "mitre_id": "S0092",
+      "canonical": "metasploit",
+      "names": [
+        "metasploit",
+        "msf",
+        "metasploit framework"
+      ]
+    },
+    "havoc": {
+      "mitre_id": null,
+      "canonical": "havoc",
+      "names": [
+        "havoc",
+        "havoc c2"
+      ]
+    },
+    "asyncrat": {
+      "mitre_id": "S0483",
+      "canonical": "asyncrat",
+      "names": [
+        "asyncrat",
+        "async rat"
+      ]
+    },
+    "xworm": {
+      "mitre_id": null,
+      "canonical": "xworm",
+      "names": [
+        "xworm",
+        "x-worm"
+      ]
+    },
+    "brute ratel": {
+      "mitre_id": "S1014",
+      "canonical": "brute ratel",
+      "names": [
+        "brute ratel",
+        "brute ratel c4",
+        "bratel"
+      ]
+    },
+    "powertool": {
+      "mitre_id": null,
+      "canonical": "powertool",
+      "names": [
+        "powertool"
+      ]
+    }
+  }
+}

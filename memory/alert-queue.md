@@ -1005,3 +1005,83 @@ Link:
 - Source Reliability: B
 - Calibrated Language: medium confidence
 - Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-03-31T21:00:08.183875
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: TrueConf Zero-Day Exploited in Attacks on Southeast Asian Government Networks
+
+## Draft Post
+Critical security flaw in TrueConf exploited against Southeast Asian government networks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-03-31T21:00:12.011772
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Silver Fox Expands Asia Cyber Campaign with AtlasCross RAT and Fake Domains
+
+## Draft Post
+Critical threat actor activity detected with AtlasCross RAT and fake domains impersonating trusted software.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-03-31T21:00:13.553554
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Axios Supply Chain Attack Pushes Cross-Platform RAT via Compromised npm Account
+
+## Draft Post
+A supply chain attack via Axios has introduced a malicious dependency that could compromise multiple systems.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-03-31T21:00:29.141734
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers compromise Axios npm package to drop cross-platform malware
+
+## Draft Post
+Critical Axios npm package compromised for ransomware delivery across platforms.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b

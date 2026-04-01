@@ -89,6 +89,10 @@ class EntityExtractor:
             r'Operation\s+([A-Za-z0-9]+)',
             re.IGNORECASE
         )
+        # Load alias mappings
+        self.alias_map = self._load_alias_map()
+        # Initialize alias resolver
+        self.alias_resolver = self._init_alias_resolver()
 
     def extract_all(self, text: str) -> Dict[str, List[str]]:
         """Extract all entities from text"""
@@ -111,9 +115,39 @@ class EntityExtractor:
 
     def _extract_actors(self, text: str) -> List[str]:
         found = set()
+
+        # First pass: extract known actors using pattern matching
         for match in self.actor_pattern.finditer(text):
-            found.add(match.group().lower())
+            actor_name = match.group().lower()
+            # Resolve alias to canonical form
+            canonical = self._resolve_actor_alias(actor_name)
+            found.add(canonical)
+
+        # Second pass: look for known aliases that aren't in KNOWN_ACTORS
+        # This handles cases where only the alias appears in text, not the canonical name
+        if self.alias_resolver:
+            # Get all known aliases from the alias map
+            all_aliases = self._get_all_known_aliases()
+            for alias in all_aliases:
+                if alias.lower() in text.lower():
+                    canonical = self._resolve_actor_alias(alias)
+                    found.add(canonical)
+
         return sorted(found)
+
+    def _get_all_known_aliases(self) -> List[str]:
+        """Get all known aliases from the alias resolver"""
+        if not self.alias_resolver:
+            return []
+
+        try:
+            aliases = []
+            actor_map = self.alias_resolver._maps.get('actor', {})
+            for canonical, entry in actor_map.items():
+                aliases.extend(entry.get('names', []))
+            return aliases
+        except:
+            return []
 
     def _extract_tools(self, text: str) -> List[str]:
         found = set()
@@ -136,6 +170,50 @@ class EntityExtractor:
                     found.add(sector)
                     break
         return sorted(found)
+
+    def _load_alias_map(self) -> Dict:
+        """Load actor alias mappings from file (legacy method)"""
+        alias_path = Path("/home/rolandpg/.openclaw/workspace/memory/memory/alias_maps/actors.json")
+        if not alias_path.exists():
+            return {}
+        try:
+            with open(alias_path) as f:
+                return json.load(f)
+        except Exception as e:
+            print(f"Warning: Could not load alias map: {e}")
+            return {}
+
+    def _init_alias_resolver(self):
+        """Initialize AliasResolver for canonical name resolution"""
+        try:
+            from alias_resolver import AliasResolver
+            return AliasResolver()
+        except Exception as e:
+            print(f"Warning: Could not initialize AliasResolver: {e}")
+            return None
+
+    def _resolve_actor_alias(self, actor_name: str) -> str:
+        """Resolve actor alias to canonical form using AliasResolver"""
+        if self.alias_resolver:
+            return self.alias_resolver.resolve('actor', actor_name)
+
+        # Fallback to legacy method if AliasResolver not available
+        if not self.alias_map:
+            return actor_name.lower()
+
+        # Check if this is a known alias
+        actor_lower = actor_name.lower()
+        for canonical, entry in self.alias_map.items():
+            canonical_lower = canonical.lower()
+            if actor_lower == canonical_lower:
+                return canonical_lower
+            if 'aliases' in entry:
+                for alias in entry['aliases']:
+                    if actor_lower == alias.lower():
+                        return canonical_lower
+
+        # If not found in alias map, return as-is
+        return actor_lower
 
 
 class EntityIndexer:
@@ -183,6 +261,11 @@ class EntityIndexer:
         self._index_note_entities(note_id, entities)
         self._save()
         return entities
+
+    def add_note_resolved(self, note_id: str, resolved_entities: Dict[str, List[str]]) -> None:
+        """Index a note with pre-resolved (canonical) entities. Saves immediately."""
+        self._index_note_entities(note_id, resolved_entities)
+        self._save()
 
     def remove_note(self, note_id: str) -> None:
         """Remove note from index"""

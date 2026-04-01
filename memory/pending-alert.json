@@ -1,8 +1,8 @@
 {
   "action": "send_triage_alert",
-  "alert_text": "Critical Axios npm package compromised for ransomware delivery.",
+  "alert_text": "Critical Axios npm package compromised for ransomware delivery across platforms.",
   "title": "Hackers compromise Axios npm package to drop cross-platform malware",
   "url": "",
   "source": "THN via CTI Triage Agent (Qwen3.5:9b)",
-  "timestamp": "2026-03-31T20:00:32.677836"
+  "timestamp": "2026-03-31T21:00:29.141342"
 }
