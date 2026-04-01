@@ -1,71 +1,53 @@
 # Memory System Improvement Plan
-**Status:** Active — Version 1.0
+**Status:** Active — Version 1.1
 **Created:** 2026-03-31
+**Updated:** 2026-03-31 (Phase 2 complete)
 **Owner:** Patton (Roland Fleet Memory System)
-**Review cadence:** Weekly via cron
+**Review cadence:** Weekly via cron — `0 11 * * 1` (Mondays 6 AM CDT)
 
 ---
 
 ## The Problem
 
-The memory system has no entity indexing and no deduplication. This causes:
-1. Near-duplicate notes created from repeated observations of the same entity
+The memory system had no entity indexing and no deduplication. This caused:
+1. Near-duplicate notes from repeated observations of the same entity
 2. No fast lookup by known entity (CVE-ID, actor name, tool)
 3. No supersedes tracking when decisions change over time
-4. Manual linking that should be automatic
+4. Manual linking that should have been automatic
 
 ---
 
 ## Improvement Roadmap
 
-### Phase 1: Entity Indexing ✅ (This Session)
+### Phase 1: Entity Indexing ✅ — Done 2026-03-31
 **Goal:** Enable instant lookup by known entity type without semantic search.
 
-**Components:**
-- `entity_indexer.py` — extracts entities from note content (CVE-IDs, threat actors, tools, sectors, campaigns)
-- `entity_index.json` — persistent secondary index mapping entity → note IDs
-- `mm.recall_entity(entity_type, entity_value)` — fast lookup
-- `mm.recall_cve(cve_id)`, `mm.recall_actor(actor_name)` — typed lookups
+**Components built:**
+- `entity_indexer.py` — EntityExtractor + EntityIndexer + Deduplicator
+  - Extracts: CVE-IDs, threat actors, tools, campaigns, sectors
+  - Pattern matching on 50+ actors, 30+ tools, sector keywords
+  - Persistent `entity_index.json` mapping entity → note IDs
+- `memory_manager.py` fully integrated:
+  - `mm.recall_cve()`, `mm.recall_actor()`, `mm.recall_tool()`, `mm.recall_campaign()`
+  - `mm.remember()` now deduplicates by CVE before saving
+  - `mm.get_entity_stats()`, `mm.rebuild_entity_index()`
+  - Daily maintenance rebuilds entity index
+- **Verified:** recall_cve(CVE-2024-3094) → 5 notes instantly; duplicate CVE → skipped
 
-**Entities to track:**
-| Entity Type | Examples | Detection Pattern |
-|---|---|---|
-| CVE-ID | CVE-2024-3094, CVE-2026-3055 | `CVE-\d{4}-\d{4,}` |
-| Threat Actor | Volt Typhoon, MuddyWater, APT29 | Named entity extraction |
-| Tool/Campaign | Havoc, Cobalt Strike, TrueChaos | Named entity extraction |
-| Sector | DIB, MSSP, Healthcare | Domain keyword match |
-| Campaign | Operation NoVoice, Operation DualScript | Named extraction |
-
-**Deduplication rules:**
-- Before saving: check if note about same CVE-ID exists → skip duplicate
-- Before saving: compute content similarity vs. recent 50 notes → if >0.85 similarity, warn or skip
-- When skipping: log to deduplication log with reason
-
-**Supersedes tracking:**
-- `note.links.superseded_by` field already exists in schema — use it
-- When a newer note contradicts an older one (same CVE, different conclusion), mark old as superseded
-
-**Status:** Built, needs integration into memory_manager.py save flow
+**Result:** 24 entities indexed across 40 notes. Instant typed lookup replacing semantic search.
 
 ---
 
-### Phase 2: Working Link Generator Integration 🔧 (Next Session)
-**Goal:** Automatic concept links created at save time, not as a separate step.
+### Phase 2: Working Link Generator Integration ✅ — Done 2026-03-31
+**Goal:** Automatic concept links at save time, entity-guided candidate retrieval.
 
-**Current state:** `link_generator.py` exists but isn't called during `mm.remember()`. The code in `memory_manager.py` calls it but only against in-memory candidates — not against the full note store efficiently.
+**What was built:**
+- `_get_entity_correlated_notes()` in link_generator.py: pulls notes sharing same CVE/actor/tool/campaign even if not yet linked — uses entity_index.json
+- `_get_entity_related_notes()` in memory_evolver.py: same logic for evolution assessment
+- `generate_links()`: prioritizes entity-matched candidates for LLM prompt
+- `run_evolution_cycle()`: now also assesses entity-correlated notes even if not yet linked
 
-**What works:**
-- `NoteConstructor` — enriches with semantic context, keywords, tags, entities
-- `LinkGenerator` — SUPPORTS / CONTRADICTS / EXTENDS / CAUSES / RELATED
-- `MemoryEvolver` — confidence decay, flagging
-
-**What's broken:**
-- Link generation only runs against notes in memory, not the full JSONL store efficiently
-- Evolution runs but results aren't persisted back correctly
-
-**Fix:**
-- Batch link generation for new notes against top-k similar notes (not full scan)
-- Ensure evolution results write back to JSONL
+**Result:** New MuddyWater note linked to 9 related notes (Volt Typhoon/CISA advisory cluster) via entity correlation. Previously: only semantic similarity candidates.
 
 ---
 
@@ -74,7 +56,7 @@ The memory system has no entity indexing and no deduplication. This causes:
 
 **Mechanism:**
 - Add `supersedes: List[str]` field to note metadata
-- When retrieving, filter out notes that are superseded by a more recent note on the same entity
+- When retrieving, filter out notes superseded by a more recent note on the same entity
 - Sort by date, prefer recent
 
 ---
@@ -99,21 +81,25 @@ The memory system has no entity indexing and no deduplication. This causes:
 
 ---
 
-## Current Entity Index State
+## Current State (v1.1)
 
-**Index path:** `memory/entity_index.json`
-**Last rebuilt:** Not yet built (Phase 1 pending integration)
-**Entities tracked:** 0 (index empty)
-
-## Deduplication Log
-
-**Path:** `memory/dedup_log.jsonl`
-**Last entry:** None
+| Component | Status |
+|---|---|
+| Entity extraction | ✅ 24 entities (3 CVEs, 9 actors, 3 tools, 9 sectors) |
+| Entity index | ✅ entity_index.json persistent |
+| Fast lookup | ✅ mm.recall_cve/actor/tool/campaign() |
+| Deduplication | ✅ CVE deduplication before save |
+| Entity-guided linking | ✅ Phase 2 complete |
+| Evolution → entity notes | ✅ Phase 2 complete |
+| Date-aware retrieval | ⚪ Future |
+| Mid-session refresh | ⚪ Future |
+| Cold archive | ⚪ Future |
 
 ---
 
-## Improvement Iterations (Cron Log)
+## Iteration Log
 
-| Date | Iter | Actions | Notes |
-|---|---|---|---|
-| 2026-03-31 | v1.0 | Plan created, entity_indexer.py drafted | Phase 1 in progress |
+| Date | Iter | Phase | Entities | Notes | Dups Skipped | Action |
+|---|---|---|---|---|---|---|
+| 2026-03-31 | v1.0 | Phase 1 | 22 | 37 | — | Plan created, entity_indexer.py built |
+| 2026-03-31 | v1.1 | Phase 2 | 24 | 42 | 2 | Link generator + evolution use entity index |
