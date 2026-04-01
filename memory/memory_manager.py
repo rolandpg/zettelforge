@@ -134,18 +134,26 @@ class MemoryManager:
         query: str,
         domain: Optional[str] = None,
         k: int = 10,
-        include_links: bool = True
+        include_links: bool = True,
+        exclude_superseded: bool = True
     ) -> List[MemoryNote]:
         """
         Retrieve memories relevant to query.
+        exclude_superseded: Filter out notes that have been superseded by newer notes
         """
         self.stats['retrievals'] += 1
-        return self.retriever.retrieve(
+        results = self.retriever.retrieve(
             query=query,
             domain=domain,
             k=k,
             include_links=include_links
         )
+
+        # Filter out superseded notes
+        if exclude_superseded:
+            results = [note for note in results if not note.links.superseded_by]
+
+        return results
 
     # === Entity Index Accessors ===
 
@@ -153,11 +161,13 @@ class MemoryManager:
         self,
         entity_type: str,
         entity_value: str,
-        k: int = 5
+        k: int = 5,
+        exclude_superseded: bool = True
     ) -> List[MemoryNote]:
         """
         Fast lookup by entity type and value.
         entity_type: 'cve', 'actor', 'tool', 'campaign', 'sector'
+        exclude_superseded: Filter out notes that have been superseded by newer notes
         """
         self.stats['entity_index_hits'] += 1
         note_ids = self.indexer.get_note_ids(entity_type, entity_value.lower())
@@ -165,28 +175,118 @@ class MemoryManager:
         for nid in note_ids[:k]:
             note = self.store.get_note_by_id(nid)
             if note:
+                # Filter out superseded notes
+                if exclude_superseded and note.links.superseded_by:
+                    continue
                 notes.append(note)
         return notes
 
-    def recall_cve(self, cve_id: str, k: int = 5) -> List[MemoryNote]:
+    def recall_cve(self, cve_id: str, k: int = 5, exclude_superseded: bool = True) -> List[MemoryNote]:
         """Fast lookup by CVE-ID (case-insensitive)"""
-        return self.recall_entity('cve', cve_id.upper(), k)
+        return self.recall_entity('cve', cve_id.upper(), k, exclude_superseded)
 
-    def recall_actor(self, actor_name: str, k: int = 5) -> List[MemoryNote]:
+    def recall_actor(self, actor_name: str, k: int = 5, exclude_superseded: bool = True) -> List[MemoryNote]:
         """Fast lookup by threat actor name"""
-        return self.recall_entity('actor', actor_name.lower(), k)
+        return self.recall_entity('actor', actor_name.lower(), k, exclude_superseded)
 
-    def recall_tool(self, tool_name: str, k: int = 5) -> List[MemoryNote]:
+    def recall_tool(self, tool_name: str, k: int = 5, exclude_superseded: bool = True) -> List[MemoryNote]:
         """Fast lookup by tool/campaign name"""
-        return self.recall_entity('tool', tool_name.lower(), k)
+        return self.recall_entity('tool', tool_name.lower(), k, exclude_superseded)
 
-    def recall_campaign(self, campaign_name: str, k: int = 5) -> List[MemoryNote]:
+    def recall_campaign(self, campaign_name: str, k: int = 5, exclude_superseded: bool = True) -> List[MemoryNote]:
         """Fast lookup by campaign name"""
-        return self.recall_entity('campaign', campaign_name.lower(), k)
+        return self.recall_entity('campaign', campaign_name.lower(), k, exclude_superseded)
 
-    def recall_sector(self, sector: str, k: int = 5) -> List[MemoryNote]:
+    def recall_sector(self, sector: str, k: int = 5, exclude_superseded: bool = True) -> List[MemoryNote]:
         """Fast lookup by sector tag"""
-        return self.recall_entity('sector', sector.lower(), k)
+        return self.recall_entity('sector', sector.lower(), k, exclude_superseded)
+
+    def mark_note_superseded(self, note_id: str, superseded_by_id: str) -> bool:
+        """
+        Mark a note as superseded by a newer note.
+        Returns True if successful, False if note not found.
+        """
+        note = self.store.get_note_by_id(note_id)
+        if not note:
+            return False
+
+        note.links.superseded_by = superseded_by_id
+        self.store.update_note(note)
+        return True
+
+    def get_superseded_notes(self) -> List[MemoryNote]:
+        """Get all notes that have been superseded"""
+        superseded = []
+        for note in self.store.iterate_notes():
+            if note.links.superseded_by:
+                superseded.append(note)
+        return superseded
+
+    def get_snapshot(self) -> List[MemoryNote]:
+        """
+        Get current memory snapshot reflecting all notes including recent changes.
+        This provides a mid-session refresh capability.
+        """
+        return list(self.store.iterate_notes())
+
+    def archive_low_confidence_notes(self, confidence_threshold: float = 0.3, dry_run: bool = False) -> Dict:
+        """
+        Archive notes with confidence < threshold and access_count == 0.
+        Returns dict with archive results.
+        """
+        from pathlib import Path
+        import json
+
+        archive_dir = Path(f"{self.cold_path}/archive")
+        archive_dir.mkdir(parents=True, exist_ok=True)
+
+        results = {
+            'archived_count': 0,
+            'skipped_count': 0,
+            'archived_ids': [],
+            'errors': []
+        }
+
+        for note in self.store.iterate_notes():
+            # Check archival criteria
+            if (note.metadata.confidence >= confidence_threshold or
+                note.metadata.access_count > 0):
+                results['skipped_count'] += 1
+                continue
+
+            if dry_run:
+                results['archived_ids'].append(note.id)
+                results['archived_count'] += 1
+                continue
+
+            try:
+                # Archive the note
+                archive_file = archive_dir / f"{note.id}_v{note.version}.jsonl"
+                with open(archive_file, 'w') as f:
+                    f.write(note.model_dump_json() + '\n')
+
+                # Remove from active store
+                self.store.delete_note(note.id)
+
+                results['archived_count'] += 1
+                results['archived_ids'].append(note.id)
+
+            except Exception as e:
+                results['errors'].append({
+                    'note_id': note.id,
+                    'error': str(e)
+                })
+
+        return results
+
+    def get_archived_notes(self) -> List[str]:
+        """Get list of archived note IDs"""
+        from pathlib import Path
+        archive_dir = Path(f"{self.cold_path}/archive")
+        if not archive_dir.exists():
+            return []
+
+        return [f.stem for f in archive_dir.glob("*.jsonl")]
 
     def get_entity_stats(self) -> Dict:
         """Entity index statistics"""
