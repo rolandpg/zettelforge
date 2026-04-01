@@ -143,13 +143,29 @@ You are successful when:
 
 ## Starting State
 
-Current status (from last review):
-- Phase 1: Entity Indexing ✅ (14/14 requirements passing)
-- Phase 2: Entity-Guided Linking ✅ (some requirements passing)
-- Phase 3: Date-Aware Retrieval ⚪ (not started)
-- Phase 4: Mid-Session Snapshot Refresh ⚪ (not started)
-- Phase 5: Cold Archive ⚪ (not started)
+Current status (as of 2026-03-31):
 
-Your first Recon should confirm this and identify what remains for Phase 2 before you move to Phase 3.
+| Phase | Status | Test Count |
+|-------|--------|------------|
+| Phase 1: Entity Indexing | ✅ Complete | 14/14 passing |
+| Phase 2: Entity-Guided Linking | ✅ Complete | 5/5 passing |
+| Phase 2.5: Actor Alias Resolution | ✅ Complete | 10/10 passing |
+| Phase 3: Date-Aware Retrieval | ✅ Complete | 3/3 passing |
+| Phase 3.5: Actor Alias Resolution (full) | ⚪ Not started | — |
+| Phase 4: Mid-Session Snapshot Refresh | ✅ Complete | 2/2 passing |
+| Phase 4.5: Epistemic Tiering | ⚪ Not started | — |
+| Phase 5: Cold Archive | ✅ Complete | 3/3 passing |
+| Phase 5.5: Reasoning Memory | ⚪ Not started | — |
+
+**Next target: Phase 3.5 (alias resolution integration — full rebuild of entity_index with alias maps) or Phase 4.5 (epistemic tiering), per Patton's direction.**
+
+PRD v1.1 has full specs for all phases including acceptance criteria. Run `python3 memory/test_memory_system.py` and `python3 memory/test_phase_2_5.py` on every Recon pass.
+
+**Key files changed since prompt written:**
+- `memory/alias_maps/actors.json` (16 actors, 77 aliases)
+- `memory/alias_maps/tools.json` (14 tools, 29 aliases)
+- `memory/alias_resolver.py` (AliasResolver class, resolve_all() pipeline)
+- `memory/entity_indexer.py` (add_note_resolved() method)
+- `memory/memory_manager.py` (resolver wired into remember() + recall_*())
 
 Move out.

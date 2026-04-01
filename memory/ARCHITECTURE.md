@@ -12,6 +12,7 @@ Platform: ASUS Ascent DGX Spark GB10 (Homelab)
 
 - **1.0** (2026-03-20): Initial architecture design
 - **1.1** (2026-03-20): Removed LUKS encryption (homelab environment)
+- **1.2** (2026-03-31): Added alias resolution layer (Phase 2.5) — alias_maps/, alias_resolver.py, canonical entity indexing
 
 ---
 
@@ -355,6 +356,9 @@ print(mm.get_stats())
 | Component | Path |
 |-----------|------|
 | Active notes | `/home/rolandpg/.openclaw/workspace/memory/notes.jsonl` |
+| Entity index | `/home/rolandpg/.openclaw/workspace/memory/entity_index.json` |
+| Alias maps | `/home/rolandpg/.openclaw/workspace/memory/alias_maps/` |
+| Alias resolver | `/home/rolandpg/.openclaw/workspace/memory/alias_resolver.py` |
 | Vector DB | `/home/rolandpg/.openclaw/workspace/vectordb/` |
 | Cold archive | `/media/rolandpg/USB-HDD/archive/` |
 | Daily logs | `/media/rolandpg/USB-HDD/daily/` |
