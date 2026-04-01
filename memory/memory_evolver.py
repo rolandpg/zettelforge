@@ -203,16 +203,73 @@ Response: """
         merged = list(set(existing_tags + new_tags))
         return merged[:5]  # Max 5 tags
     
+
+    def _get_entity_related_notes(
+        self,
+        new_note: MemoryNote
+    ) -> List[MemoryNote]:
+        """Get notes that share entities with new_note but aren't linked yet"""
+        try:
+            import sys
+            sys.path.insert(0, '/home/rolandpg/.openclaw/workspace/memory')
+            from entity_indexer import EntityExtractor, EntityIndexer
+            
+            extractor = EntityExtractor()
+            entities = extractor.extract_all(new_note.content.raw)
+            
+            if not entities or all(not v for v in entities.values()):
+                return []
+            
+            idx = EntityIndexer()
+            idx.load()
+            
+            related = []
+            related_ids = set(new_note.links.related)
+            related_ids.add(new_note.id)
+            
+            entity_map = [
+                ('cves', 'cve'),
+                ('actors', 'actor'),
+                ('tools', 'tool'),
+                ('campaigns', 'campaign'),
+            ]
+            
+            for src_key, dst_type in entity_map:
+                for entity in entities.get(src_key, []):
+                    for nid in idx.get_note_ids(dst_type, entity.lower()):
+                        if nid not in related_ids:
+                            note = self._get_note_by_id(nid)
+                            if note and note.id not in {n.id for n in related}:
+                                related.append(note)
+                                related_ids.add(nid)
+            
+            return related
+            
+        except Exception as e:
+            print(f"Entity correlation for evolution failed: {e}")
+            return []
+    
+    def _get_note_by_id(self, note_id: str) -> Optional[MemoryNote]:
+        """Retrieve a note by ID from the store"""
+        try:
+            store = MemoryStore()
+            return store.get_note_by_id(note_id)
+        except Exception:
+            return None
+
     def run_evolution_cycle(self, new_note: MemoryNote) -> Dict:
         """
         Run full evolution cycle: assess all related notes, apply updates.
+        Now also checks entity-correlated notes (same CVE/actor/tool/campaign)
+        even if they aren't yet linked.
         Returns summary of changes made.
         """
         
         print(f"\n=== Evolution Cycle for {new_note.id} ===")
         
-        # Get all existing notes
-        all_notes = list(self.store.iterate_notes())
+        # Get all existing notes (deduplicate by id)
+        all_notes_map = {n.id: n for n in self.store.iterate_notes()}
+        all_notes = list(all_notes_map.values())
         
         # Find related notes via links
         related_ids = set(new_note.links.related)
@@ -220,6 +277,12 @@ Response: """
         # Also find notes that link TO this new note
         for note in all_notes:
             if new_note.id in note.links.related:
+                related_ids.add(note.id)
+        
+        # NEW: Add entity-correlated notes to evolution assessment
+        entity_related = self._get_entity_related_notes(new_note)
+        for note in entity_related:
+            if note.id != new_note.id:
                 related_ids.add(note.id)
         
         if not related_ids:

@@ -55,8 +55,16 @@ Only include pairs with meaningful relationships. Empty array if none found."""
         # Limit candidates
         candidates = candidate_notes[:max_candidates]
         
-        # Build prompt with note content
-        prompt = self._build_link_prompt(new_note, candidates)
+        # Also pull entity-matched candidates for more targeted linking
+        entity_candidates = self._get_entity_correlated_notes(new_note, candidate_notes)
+        
+        # Deduplicate — entity candidates are already in candidate_notes but prioritizing them
+        candidate_ids = {n.id for n in candidates}
+        prioritized = candidates + [n for n in entity_candidates if n.id not in candidate_ids]
+        prioritized = prioritized[:max_candidates + 5]
+        
+        # Build prompt with note content (use prioritized candidates)
+        prompt = self._build_link_prompt(new_note, prioritized)
         
         # Get LLM analysis
         try:
@@ -101,9 +109,10 @@ Only include pairs with meaningful relationships. Empty array if none found."""
             # Validate and filter links
             valid_links = []
             valid_relationships = {'SUPPORTS', 'CONTRADICTS', 'EXTENDS', 'CAUSES', 'RELATED'}
+            valid_ids = {n.id for n in prioritized}
             
             for link in links:
-                if isinstance(link, dict) and link.get('target_id') in [n.id for n in candidates]:
+                if isinstance(link, dict) and link.get('target_id') in valid_ids:
                     if link.get('relationship') in valid_relationships:
                         valid_links.append({
                             'target_id': link['target_id'],
@@ -119,6 +128,62 @@ Only include pairs with meaningful relationships. Empty array if none found."""
             traceback.print_exc()
             return []
     
+    def _get_entity_correlated_notes(
+        self,
+        new_note: MemoryNote,
+        candidate_notes: List[MemoryNote]
+    ) -> List[MemoryNote]:
+        """
+        Pull entity-correlated notes for targeted link generation.
+        Uses entity index for fast lookup of same CVE/actor/tool/campaign notes.
+        """
+        try:
+            import sys
+            sys.path.insert(0, '/home/rolandpg/.openclaw/workspace/memory')
+            from entity_indexer import EntityExtractor, EntityIndexer
+            
+            extractor = EntityExtractor()
+            entities = extractor.extract_all(new_note.content.raw)
+            
+            if not entities or all(not v for v in entities.values()):
+                return []
+            
+            idx = EntityIndexer()
+            idx.load()
+            
+            correlated = []
+            candidate_ids = {n.id for n in candidate_notes}
+            
+            entity_map = [
+                ('cves', 'cve'),
+                ('actors', 'actor'),
+                ('tools', 'tool'),
+                ('campaigns', 'campaign'),
+            ]
+            
+            for src_key, dst_type in entity_map:
+                for entity in entities.get(src_key, []):
+                    for nid in idx.get_note_ids(dst_type, entity.lower()):
+                        if nid not in candidate_ids and nid != new_note.id:
+                            note = self._get_note_by_id(nid)
+                            if note and note.id not in {c.id for c in correlated}:
+                                correlated.append(note)
+            
+            return correlated
+            
+        except Exception as e:
+            print(f"Entity correlation failed: {e}")
+            return []
+    
+    def _get_note_by_id(self, note_id: str) -> Optional[MemoryNote]:
+        """Retrieve a note by ID from the store"""
+        try:
+            from memory_store import MemoryStore
+            store = MemoryStore()
+            return store.get_note_by_id(note_id)
+        except Exception:
+            return None
+
     def _build_link_prompt(self, new_note: MemoryNote, candidates: List[MemoryNote]) -> str:
         """Build prompt for link analysis"""
         
