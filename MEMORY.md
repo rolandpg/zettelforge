@@ -3,7 +3,7 @@
 §
 Key threat actors: MOIS (Handala Hack ID 49, MuddyWater), China-Nexus (Volt Typhoon, APT28/29), Ransomware (backup/BCP), Supply chain (IT service providers). Briefing: memory/briefings/handala-hack-20260329.md
 §
-CTI pipeline: 9 collectors (CISA KEV, NVD, DataBreaches, Ransomware, OTX, THN, Cybersecurity Dive, IC3 CSA, STIX/TAXII). Schedule: 6AM CISA KEV, 7AM NVD+Ransomware, 8AM OTX, 9AM IOC linking. Scripts: ~/cti-workspace/collect_*.py
+CTI pipeline: 14 collectors (CISA KEV, NVD, DataBreaches, Ransomware, OTX, THN, Cybersecurity Dive, IC3 CSA, STIX/TAXII, RSS x5, DoD x3). Schedule: 6AM CISA KEV, 7AM CFR rules, 8AM NVD+Ransomware+THN+RSS. Scripts: ~/cti-workspace/collect_*.py. DoD feeds: war.gov (Contracts, News Stories, News Releases). RSS: DarkReading, SecurityWeek, Threatpost, SANS ISC, KrebsOnSecurity.
 §
 Storage: Hot SSD (/home/rolandpg/.openclaw/workspace/), Cold HDD (/media/rolandpg/USB-HDD/).
 §

@@ -1,6 +1,60 @@
 {
   "alerts": [
     {
+      "title": "Federal Acquisition Regulation: Prohibition on Certain Semiconductor Products and Services",
+      "document_number": "2026-03065",
+      "type": "Proposed Rule",
+      "publication_date": "2026-02-17",
+      "agencies": [
+        "Management and Budget Office",
+        "Federal Procurement Policy Office",
+        "Defense Department",
+        "General Services Administration",
+        "National Aeronautics and Space Administration"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/02/17/2026-03065/federal-acquisition-regulation-prohibition-on-certain-semiconductor-products-and-services",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-02-17/pdf/2026-03065.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "DFARS",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Medicare Program; End-Stage Renal Disease Prospective Payment System, Payment for Renal Dialysis Services Furnished to Individuals With Acute Kidney Injury, End-Stage Renal Disease Quality Incentive Program, and End-Stage Renal Disease Treatment Choices Model",
+      "document_number": "2025-20681",
+      "type": "Rule",
+      "publication_date": "2025-11-24",
+      "agencies": [
+        "Health and Human Services Department",
+        "Centers for Medicare & Medicaid Services"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2025/11/24/2025-20681/medicare-program-end-stage-renal-disease-prospective-payment-system-payment-for-renal-dialysis",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-11-24/pdf/2025-20681.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "DFARS",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Medicare and Medicaid Programs; CY 2026 Payment Policies Under the Physician Fee Schedule and Other Changes to Part B Payment and Coverage Policies; Medicare Shared Savings Program Requirements; and Medicare Prescription Drug Inflation Rebate Program",
+      "document_number": "2025-19787",
+      "type": "Rule",
+      "publication_date": "2025-11-05",
+      "agencies": [
+        "Health and Human Services Department",
+        "Centers for Medicare & Medicaid Services"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2025/11/05/2025-19787/medicare-and-medicaid-programs-cy-2026-payment-policies-under-the-physician-fee-schedule-and-other",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-11-05/pdf/2025-19787.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "DFARS",
+      "feed": "cfr_monitor"
+    },
+    {
       "title": "Defense Federal Acquisition Regulation Supplement: Assessing Contractor Implementation of Cybersecurity Requirements (DFARS Case 2019-D041)",
       "document_number": "2025-17359",
       "type": "Rule",
@@ -35,6 +89,23 @@
       "feed": "cfr_monitor"
     },
     {
+      "title": "Defense Federal Acquisition Regulation Supplement: Disclosure of DoD Funding in Technical Publications (DFARS Case 2024-D003)",
+      "document_number": "2025-16208",
+      "type": "Proposed Rule",
+      "publication_date": "2025-08-25",
+      "agencies": [
+        "Defense Department",
+        "Defense Acquisition Regulations System"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2025/08/25/2025-16208/defense-federal-acquisition-regulation-supplement-disclosure-of-dod-funding-in-technical",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-08-25/pdf/2025-16208.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "DFARS",
+      "feed": "cfr_monitor"
+    },
+    {
       "title": "Defense Federal Acquisition Regulation Supplement: Limitation on Certain Institutes of Higher Education (DFARS Case 2024-D023)",
       "document_number": "2025-16207",
       "type": "Rule",
@@ -52,6 +123,41 @@
       "feed": "cfr_monitor"
     },
     {
+      "title": "Federal Acquisition Regulation: Controlled Unclassified Information",
+      "document_number": "2024-30437",
+      "type": "Proposed Rule",
+      "publication_date": "2025-01-15",
+      "agencies": [
+        "Defense Department",
+        "General Services Administration",
+        "National Aeronautics and Space Administration"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2025/01/15/2024-30437/federal-acquisition-regulation-controlled-unclassified-information",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-01-15/pdf/2024-30437.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "800-171",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Health Data, Technology, and Interoperability: Trusted Exchange Framework and Common Agreement (TEFCA)",
+      "document_number": "2024-29163",
+      "type": "Rule",
+      "publication_date": "2024-12-16",
+      "agencies": [
+        "Health and Human Services Department",
+        ""
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2024/12/16/2024-29163/health-data-technology-and-interoperability-trusted-exchange-framework-and-common-agreement-tefca",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2024-12-16/pdf/2024-29163.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "800-171",
+      "feed": "cfr_monitor"
+    },
+    {
       "title": "Defense Federal Acquisition Regulation Supplement: Inapplicability of Additional Defense-Unique Laws and Certain Non-Statutory DFARS Clauses to Commercial Item Contracts (DFARS Case 2018-D074)",
       "document_number": "2024-26054",
       "type": "Rule",
@@ -63,6 +169,22 @@
       "excerpt": "",
       "fr_url": "https://www.federalregister.gov/documents/2024/11/15/2024-26054/defense-federal-acquisition-regulation-supplement-inapplicability-of-additional-defense-unique-laws",
       "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2024-11-15/pdf/2024-26054.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "800-171",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Provisions Pertaining to Preventing Access to U.S. Sensitive Personal Data and Government-Related Data by Countries of Concern or Covered Persons",
+      "document_number": "2024-24582",
+      "type": "Proposed Rule",
+      "publication_date": "2024-10-29",
+      "agencies": [
+        "Justice Department"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2024/10/29/2024-24582/provisions-pertaining-to-preventing-access-to-us-sensitive-personal-data-and-government-related-data",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2024-10-29/pdf/2024-24582.pdf",
       "significance": "",
       "cited_cfr": [],
       "search_term": "800-171",
@@ -86,6 +208,256 @@
       "feed": "cfr_monitor"
     },
     {
+      "title": "Defense Federal Acquisition Regulation Supplement: Assessing Contractor Implementation of Cybersecurity Requirements (DFARS Case 2019-D041)",
+      "document_number": "2024-18110",
+      "type": "Proposed Rule",
+      "publication_date": "2024-08-15",
+      "agencies": [
+        "Defense Department",
+        "Defense Acquisition Regulations System"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2024/08/15/2024-18110/defense-federal-acquisition-regulation-supplement-assessing-contractor-implementation-of",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2024-08-15/pdf/2024-18110.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "800-171",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Health Data, Technology, and Interoperability: Patient Engagement, Information Sharing, and Public Health Interoperability",
+      "document_number": "2024-14975",
+      "type": "Proposed Rule",
+      "publication_date": "2024-08-05",
+      "agencies": [
+        "Health and Human Services Department",
+        ""
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2024/08/05/2024-14975/health-data-technology-and-interoperability-patient-engagement-information-sharing-and-public-health",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2024-08-05/pdf/2024-14975.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "800-171",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Defense Federal Acquisition Regulation Supplement; Technical Amendments",
+      "document_number": "2024-11516",
+      "type": "Rule",
+      "publication_date": "2024-05-30",
+      "agencies": [
+        "Defense Department",
+        "Defense Acquisition Regulations System"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2024/05/30/2024-11516/defense-federal-acquisition-regulation-supplement-technical-amendments",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2024-05-30/pdf/2024-11516.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "800-171",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Cyber Incident Reporting for Critical Infrastructure Act (CIRCIA) Reporting Requirements",
+      "document_number": "2024-06526",
+      "type": "Proposed Rule",
+      "publication_date": "2024-04-04",
+      "agencies": [
+        "Homeland Security Department"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2024/04/04/2024-06526/cyber-incident-reporting-for-critical-infrastructure-act-circia-reporting-requirements",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2024-04-04/pdf/2024-06526.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "800-171",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Order No. 919; Virtualization Reliability Standards",
+      "document_number": "2026-05716",
+      "type": "Rule",
+      "publication_date": "2026-03-24",
+      "agencies": [
+        "Energy Department",
+        "Federal Energy Regulatory Commission"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/03/24/2026-05716/order-no-919-virtualization-reliability-standards",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-03-24/pdf/2026-05716.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "NIST framework",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Administrative Simplification; Adoption of Standards for Health Care Claims Attachments Transactions and Electronic Signatures",
+      "document_number": "2026-05676",
+      "type": "Rule",
+      "publication_date": "2026-03-24",
+      "agencies": [
+        "Health and Human Services Department",
+        ""
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/03/24/2026-05676/administrative-simplification-adoption-of-standards-for-health-care-claims-attachments-transactions",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-03-24/pdf/2026-05676.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "NIST framework",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Patient Protection and Affordable Care Act, HHS Notice of Benefit and Payment Parameters for 2027; and Basic Health Program",
+      "document_number": "2026-02769",
+      "type": "Proposed Rule",
+      "publication_date": "2026-02-11",
+      "agencies": [
+        "Health and Human Services Department",
+        "Centers for Medicare & Medicaid Services",
+        ""
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/02/11/2026-02769/patient-protection-and-affordable-care-act-hhs-notice-of-benefit-and-payment-parameters-for-2027-and",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-02-11/pdf/2026-02769.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "NIST framework",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Medicaid Program; Preserving Medicaid Funding for Vulnerable Populations-Closing a Health Care-Related Tax Loophole",
+      "document_number": "2026-02040",
+      "type": "Rule",
+      "publication_date": "2026-02-02",
+      "agencies": [
+        "Health and Human Services Department",
+        "Centers for Medicare & Medicaid Services"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/02/02/2026-02040/medicaid-program-preserving-medicaid-funding-for-vulnerable-populations-closing-a-health",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-02-02/pdf/2026-02040.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "NIST framework",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Removing Obsolete Regulations Related to the Voluntary Consumer Product Information Labeling Program",
+      "document_number": "2026-00686",
+      "type": "Rule",
+      "publication_date": "2026-01-15",
+      "agencies": [
+        "Commerce Department"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/01/15/2026-00686/removing-obsolete-regulations-related-to-the-voluntary-consumer-product-information-labeling-program",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-01-15/pdf/2026-00686.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "NIST framework",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Health Data, Technology, and Interoperability: ASTP/ONC Deregulatory Actions To Unleash Prosperity",
+      "document_number": "2025-23896",
+      "type": "Proposed Rule",
+      "publication_date": "2025-12-29",
+      "agencies": [
+        "Health and Human Services Department",
+        ""
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2025/12/29/2025-23896/health-data-technology-and-interoperability-astponc-deregulatory-actions-to-unleash-prosperity",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-12-29/pdf/2025-23896.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "NIST framework",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "National Emission Standards for Hazardous Air Pollutants From Hazardous Waste Combustors: Residual Risk and Technology Review; Withdrawal of Proposed Revisions to Standards for Periods of Malfunction",
+      "document_number": "2025-19815",
+      "type": "Proposed Rule",
+      "publication_date": "2025-11-10",
+      "agencies": [
+        "Environmental Protection Agency"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2025/11/10/2025-19815/national-emission-standards-for-hazardous-air-pollutants-from-hazardous-waste-combustors-residual",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-11-10/pdf/2025-19815.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "NIST framework",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Review of Submarine Cable Landing License Rules and Procedures To Assess Evolving National Security, Law Enforcement, Foreign Policy, and Trade Policy Risks",
+      "document_number": "2025-19658",
+      "type": "Rule",
+      "publication_date": "2025-10-27",
+      "agencies": [
+        "Federal Communications Commission"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2025/10/27/2025-19658/review-of-submarine-cable-landing-license-rules-and-procedures-to-assess-evolving-national-security",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-10-27/pdf/2025-19658.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "NIST framework",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Review of Submarine Cable Landing License Rules and Procedures To Assess Evolving National Security, Law Enforcement, Foreign Policy, and Trade Policy Risks",
+      "document_number": "2025-19657",
+      "type": "Proposed Rule",
+      "publication_date": "2025-10-27",
+      "agencies": [
+        "Federal Communications Commission"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2025/10/27/2025-19657/review-of-submarine-cable-landing-license-rules-and-procedures-to-assess-evolving-national-security",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-10-27/pdf/2025-19657.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "NIST framework",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Collection of Biometric Data From Aliens Upon Entry to and Departure From the United States",
+      "document_number": "2025-19655",
+      "type": "Rule",
+      "publication_date": "2025-10-27",
+      "agencies": [
+        "Homeland Security Department"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2025/10/27/2025-19655/collection-of-biometric-data-from-aliens-upon-entry-to-and-departure-from-the-united-states",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-10-27/pdf/2025-19655.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "NIST framework",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Virtualization Reliability Standards",
+      "document_number": "2025-18395",
+      "type": "Proposed Rule",
+      "publication_date": "2025-09-23",
+      "agencies": [
+        "Energy Department",
+        "Federal Energy Regulatory Commission"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2025/09/23/2025-18395/virtualization-reliability-standards",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-09-23/pdf/2025-18395.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "NIST framework",
+      "feed": "cfr_monitor"
+    },
+    {
       "title": "Supply Chain Risk Management Reliability Standards Revisions; Equipment and Services Produced or Provided by Certain Entities Identified as Risks to National Security",
       "document_number": "2025-18394",
       "type": "Rule",
@@ -100,6 +472,422 @@
       "significance": "",
       "cited_cfr": [],
       "search_term": "NIST framework",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Risk-Informed, Technology-Inclusive Regulatory Framework for Advanced Reactors",
+      "document_number": "2026-06048",
+      "type": "Rule",
+      "publication_date": "2026-03-30",
+      "agencies": [
+        "Nuclear Regulatory Commission"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/03/30/2026-06048/risk-informed-technology-inclusive-regulatory-framework-for-advanced-reactors",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-03-30/pdf/2026-06048.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "cybersecurity contractor",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Accidental Release Prevention Requirements: Risk Management Programs Under the Clean Air Act; Common Sense Approach to Chemical Accident Prevention",
+      "document_number": "2026-03633",
+      "type": "Proposed Rule",
+      "publication_date": "2026-02-24",
+      "agencies": [
+        "Environmental Protection Agency"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/02/24/2026-03633/accidental-release-prevention-requirements-risk-management-programs-under-the-clean-air-act-common",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-02-24/pdf/2026-03633.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "cybersecurity contractor",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Investments in and Licensing of Permitted Payment Stablecoins Issuers",
+      "document_number": "2026-02868",
+      "type": "Proposed Rule",
+      "publication_date": "2026-02-12",
+      "agencies": [
+        "National Credit Union Administration"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/02/12/2026-02868/investments-in-and-licensing-of-permitted-payment-stablecoins-issuers",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-02-12/pdf/2026-02868.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "cybersecurity contractor",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Exercise of Time-Limited Authority To Increase the Fiscal Year 2026 Numerical Limitation for the H-2B Temporary Nonagricultural Worker Program",
+      "document_number": "2026-02131",
+      "type": "Rule",
+      "publication_date": "2026-02-03",
+      "agencies": [
+        "Homeland Security Department",
+        "Labor Department",
+        "Employment and Training Administration"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/02/03/2026-02131/exercise-of-time-limited-authority-to-increase-the-fiscal-year-2026-numerical-limitation-for-the",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-02-03/pdf/2026-02131.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "cybersecurity contractor",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Pipeline Safety: Class Location Change Requirements",
+      "document_number": "2026-00566",
+      "type": "Rule",
+      "publication_date": "2026-01-14",
+      "agencies": [
+        "Transportation Department",
+        "Pipeline and Hazardous Materials Safety Administration"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/01/14/2026-00566/pipeline-safety-class-location-change-requirements",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-01-14/pdf/2026-00566.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "cybersecurity contractor",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Hazardous Materials: Modernizing Regulations To Facilitate Transportation of Hazardous Materials Using Highly Automated Transportation Systems",
+      "document_number": "2025-21970",
+      "type": "Proposed Rule",
+      "publication_date": "2025-12-04",
+      "agencies": [
+        "Transportation Department",
+        "Pipeline and Hazardous Materials Safety Administration"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2025/12/04/2025-21970/hazardous-materials-modernizing-regulations-to-facilitate-transportation-of-hazardous-materials",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-12-04/pdf/2025-21970.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "cybersecurity contractor",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Protecting Against National Security Threats to the Communications Supply Chain Through the Equipment Authorization Program",
+      "document_number": "2025-21928",
+      "type": "Proposed Rule",
+      "publication_date": "2025-12-04",
+      "agencies": [
+        "Federal Communications Commission"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2025/12/04/2025-21928/protecting-against-national-security-threats-to-the-communications-supply-chain-through-the",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-12-04/pdf/2025-21928.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "cybersecurity contractor",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Medicare and Medicaid Programs; Calendar Year 2026 Home Health Prospective Payment System (HH PPS) Rate Update; Requirements for the HH Quality Reporting Program and the HH Value-Based Purchasing Expanded Model; Durable Medical Equipment, Prosthetics, Orthotics, and Supplies (DMEPOS) Competitive Bidding Program Updates; DMEPOS Accreditation Requirements; Provider Enrollment; and Other Medicare and Medicaid Policies",
+      "document_number": "2025-21767",
+      "type": "Rule",
+      "publication_date": "2025-12-02",
+      "agencies": [
+        "Health and Human Services Department",
+        "Centers for Medicare & Medicaid Services"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2025/12/02/2025-21767/medicare-and-medicaid-programs-calendar-year-2026-home-health-prospective-payment-system-hh-pps-rate",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-12-02/pdf/2025-21767.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "cybersecurity contractor",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Medicare Program: Hospital Outpatient Prospective Payment and Ambulatory Surgical Center Payment Systems; Quality Reporting Programs; Overall Hospital Quality Star Rating; Hospital Price Transparency; and Notice of Closure of a Teaching Hospital and Opportunity To Apply for Available Slots",
+      "document_number": "2025-20907",
+      "type": "Rule",
+      "publication_date": "2025-11-25",
+      "agencies": [
+        "Health and Human Services Department",
+        "Centers for Medicare & Medicaid Services",
+        ""
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2025/11/25/2025-20907/medicare-program-hospital-outpatient-prospective-payment-and-ambulatory-surgical-center-payment",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-11-25/pdf/2025-20907.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "cybersecurity contractor",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Air Plan Approval; Iowa; Revisions to Iowa Air Quality Regulations",
+      "document_number": "2026-05875",
+      "type": "Proposed Rule",
+      "publication_date": "2026-03-26",
+      "agencies": [
+        "Environmental Protection Agency"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/03/26/2026-05875/air-plan-approval-iowa-revisions-to-iowa-air-quality-regulations",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-03-26/pdf/2026-05875.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "controlled unclassified information",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Effective Date of Requirement for Premarket Approval Applications for Blood Irradiators Intended To Prevent Metastasis",
+      "document_number": "2026-05322",
+      "type": "Proposed Rule",
+      "publication_date": "2026-03-18",
+      "agencies": [
+        "Health and Human Services Department",
+        "Food and Drug Administration"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/03/18/2026-05322/effective-date-of-requirement-for-premarket-approval-applications-for-blood-irradiators-intended-to",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-03-18/pdf/2026-05322.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "controlled unclassified information",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Medical Devices; Radiology Devices; Classification of Blood Irradiators",
+      "document_number": "2026-05320",
+      "type": "Proposed Rule",
+      "publication_date": "2026-03-18",
+      "agencies": [
+        "Health and Human Services Department",
+        "Food and Drug Administration"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/03/18/2026-05320/medical-devices-radiology-devices-classification-of-blood-irradiators",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-03-18/pdf/2026-05320.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "controlled unclassified information",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Small Business Size Standards: Revised Size Standards Methodology",
+      "document_number": "2024-20228",
+      "type": "Rule",
+      "publication_date": "2024-09-12",
+      "agencies": [
+        "Small Business Administration"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2024/09/12/2024-20228/small-business-size-standards-revised-size-standards-methodology",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2024-09-12/pdf/2024-20228.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "CMMC",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Improving Government Regulations; Unified Agenda of Federal Regulatory and Deregulatory Actions",
+      "document_number": "2024-16449",
+      "type": "Proposed Rule",
+      "publication_date": "2024-08-16",
+      "agencies": [
+        "Defense Department"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2024/08/16/2024-16449/improving-government-regulations-unified-agenda-of-federal-regulatory-and-deregulatory-actions",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2024-08-16/pdf/2024-16449.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "CMMC",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Posting of Informational Video: Cybersecurity Maturity Model Certification (CMMC) Program",
+      "document_number": "2024-03460",
+      "type": "Proposed Rule",
+      "publication_date": "2024-02-21",
+      "agencies": [
+        "Defense Department",
+        ""
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2024/02/21/2024-03460/posting-of-informational-video-cybersecurity-maturity-model-certification-cmmc-program",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2024-02-21/pdf/2024-03460.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "CMMC",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Improving Government Regulations; Unified Agenda of Federal Regulatory and Deregulatory Actions",
+      "document_number": "2024-00516",
+      "type": "Proposed Rule",
+      "publication_date": "2024-02-09",
+      "agencies": [
+        "Defense Department"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2024/02/09/2024-00516/improving-government-regulations-unified-agenda-of-federal-regulatory-and-deregulatory-actions",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2024-02-09/pdf/2024-00516.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "CMMC",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Introduction to the Unified Agenda of Federal Regulatory and Deregulatory Actions-Fall 2023",
+      "document_number": "2024-00476",
+      "type": "Proposed Rule",
+      "publication_date": "2024-02-09",
+      "agencies": [
+        "Regulatory Information Service Center"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2024/02/09/2024-00476/introduction-to-the-unified-agenda-of-federal-regulatory-and-deregulatory-actions-fall-2023",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2024-02-09/pdf/2024-00476.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "CMMC",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Cybersecurity Maturity Model Certification (CMMC) Program",
+      "document_number": "2023-27280",
+      "type": "Proposed Rule",
+      "publication_date": "2023-12-26",
+      "agencies": [
+        "Defense Department",
+        ""
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2023/12/26/2023-27280/cybersecurity-maturity-model-certification-cmmc-program",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2023-12-26/pdf/2023-27280.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "CMMC",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Modernization of the Nation's Alerting Systems",
+      "document_number": "2025-16333",
+      "type": "Proposed Rule",
+      "publication_date": "2025-08-26",
+      "agencies": [
+        "Federal Communications Commission"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2025/08/26/2025-16333/modernization-of-the-nations-alerting-systems",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-08-26/pdf/2025-16333.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "defense contractor cybersecurity",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Small Business Size Standards: Monetary-Based Industry Size Standards",
+      "document_number": "2025-16142",
+      "type": "Proposed Rule",
+      "publication_date": "2025-08-22",
+      "agencies": [
+        "Small Business Administration"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2025/08/22/2025-16142/small-business-size-standards-monetary-based-industry-size-standards",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-08-22/pdf/2025-16142.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "defense contractor cybersecurity",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Normalizing Unmanned Aircraft Systems Beyond Visual Line of Sight Operations",
+      "document_number": "2025-14992",
+      "type": "Proposed Rule",
+      "publication_date": "2025-08-07",
+      "agencies": [
+        "Transportation Department",
+        "Federal Aviation Administration",
+        "Homeland Security Department",
+        "Transportation Security Administration"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2025/08/07/2025-14992/normalizing-unmanned-aircraft-systems-beyond-visual-line-of-sight-operations",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-08-07/pdf/2025-14992.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "defense contractor cybersecurity",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Promoting the Integrity and Security of Telecommunications Certification Bodies, Measurement Facilities, and the Equipment Authorization Program",
+      "document_number": "2025-14970",
+      "type": "Rule",
+      "publication_date": "2025-08-07",
+      "agencies": [
+        "Federal Communications Commission"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2025/08/07/2025-14970/promoting-the-integrity-and-security-of-telecommunications-certification-bodies-measurement",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-08-07/pdf/2025-14970.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "defense contractor cybersecurity",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Filing of Color Additive Petition From the International Association of Color Manufacturers; Request To Amend the Color Additive Regulations To Remove the Solvents Methylene Chloride, Trichloroethylene, and Ethylene Dichloride",
+      "document_number": "2026-06295",
+      "type": "Proposed Rule",
+      "publication_date": "2026-04-01",
+      "agencies": [
+        "Health and Human Services Department",
+        "Food and Drug Administration"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/04/01/2026-06295/filing-of-color-additive-petition-from-the-international-association-of-color-manufacturers-request",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-04-01/pdf/2026-06295.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "supply chain security",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Renewable Fuel Standard (RFS) Program: Standards for 2026 and 2027, Partial Waiver of 2025 Cellulosic Biofuel Volume Requirement, and Other Changes",
+      "document_number": "2026-06275",
+      "type": "Rule",
+      "publication_date": "2026-04-01",
+      "agencies": [
+        "Environmental Protection Agency"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/04/01/2026-06275/renewable-fuel-standard-rfs-program-standards-for-2026-and-2027-partial-waiver-of-2025-cellulosic",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-04-01/pdf/2026-06275.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "supply chain security",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Whistleblower Incentives and Protections",
+      "document_number": "2026-06271",
+      "type": "Proposed Rule",
+      "publication_date": "2026-04-01",
+      "agencies": [
+        "Treasury Department",
+        "Financial Crimes Enforcement Network"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/04/01/2026-06271/whistleblower-incentives-and-protections",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-04-01/pdf/2026-06271.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "supply chain security",
       "feed": "cfr_monitor"
     },
     {
@@ -118,9 +906,211 @@
       "cited_cfr": [],
       "search_term": "supply chain security",
       "feed": "cfr_monitor"
+    },
+    {
+      "title": "Order No. 917; Filing Process and Data Collection for the Electric Quarterly Report",
+      "document_number": "2026-05709",
+      "type": "Rule",
+      "publication_date": "2026-03-24",
+      "agencies": [
+        "Energy Department",
+        "Federal Energy Regulatory Commission"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/03/24/2026-05709/order-no-917-filing-process-and-data-collection-for-the-electric-quarterly-report",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-03-24/pdf/2026-05709.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "supply chain security",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Application of the Federal Securities Laws to Certain Types of Crypto Assets and Certain Transactions Involving Crypto Assets",
+      "document_number": "2026-05635",
+      "type": "Rule",
+      "publication_date": "2026-03-23",
+      "agencies": [
+        "Commodity Futures Trading Commission",
+        "Securities and Exchange Commission"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/03/23/2026-05635/application-of-the-federal-securities-laws-to-certain-types-of-crypto-assets-and-certain",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-03-23/pdf/2026-05635.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "supply chain security",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "National Emission Standards for Hazardous Air Pollutants: Ethylene Oxide Emissions Standards for Sterilization Facilities Residual Risk and Technology Review Reconsideration",
+      "document_number": "2026-05167",
+      "type": "Proposed Rule",
+      "publication_date": "2026-03-17",
+      "agencies": [
+        "Environmental Protection Agency"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/03/17/2026-05167/national-emission-standards-for-hazardous-air-pollutants-ethylene-oxide-emissions-standards-for",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-03-17/pdf/2026-05167.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "supply chain security",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Risk Management and Financial Assurance for OCS Lease and Grant Obligations",
+      "document_number": "2026-04517",
+      "type": "Proposed Rule",
+      "publication_date": "2026-03-09",
+      "agencies": [
+        "Interior Department",
+        "Ocean Energy Management Bureau"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/03/09/2026-04517/risk-management-and-financial-assurance-for-ocs-lease-and-grant-obligations",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-03-09/pdf/2026-04517.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "supply chain security",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Revising the National Drug Code Format and Drug Label Barcode Requirements",
+      "document_number": "2026-04368",
+      "type": "Rule",
+      "publication_date": "2026-03-05",
+      "agencies": [
+        "Health and Human Services Department",
+        "Food and Drug Administration"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/03/05/2026-04368/revising-the-national-drug-code-format-and-drug-label-barcode-requirements",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-03-05/pdf/2026-04368.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "supply chain security",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Improving Transparency Into Pharmacy Benefit Manager Fee Disclosure; Extension of Comment Period",
+      "document_number": "2026-04084",
+      "type": "Proposed Rule",
+      "publication_date": "2026-03-02",
+      "agencies": [
+        "Labor Department",
+        "Employee Benefits Security Administration"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/03/02/2026-04084/improving-transparency-into-pharmacy-benefit-manager-fee-disclosure-extension-of-comment-period",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-03-02/pdf/2026-04084.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "supply chain security",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Improving Wage Protections for the Temporary and Permanent Employment of Certain Foreign Nationals in the United States",
+      "document_number": "2026-06017",
+      "type": "Proposed Rule",
+      "publication_date": "2026-03-27",
+      "agencies": [
+        "Labor Department",
+        "Employment and Training Administration"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/03/27/2026-06017/improving-wage-protections-for-the-temporary-and-permanent-employment-of-certain-foreign-nationals",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-03-27/pdf/2026-06017.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "federal contractor security",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Preparer Tax Identification Number (PTIN) User Fee Update; Hearing",
+      "document_number": "2026-05896",
+      "type": "Proposed Rule",
+      "publication_date": "2026-03-26",
+      "agencies": [
+        "Treasury Department",
+        "Internal Revenue Service"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/03/26/2026-05896/preparer-tax-identification-number-ptin-user-fee-update-hearing",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-03-26/pdf/2026-05896.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "federal contractor security",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Permitting Reform-Environmental Review Process",
+      "document_number": "2026-05791",
+      "type": "Proposed Rule",
+      "publication_date": "2026-03-25",
+      "agencies": [
+        "Surface Transportation Board"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/03/25/2026-05791/permitting-reform-environmental-review-process",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-03-25/pdf/2026-05791.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "federal contractor security",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Reforming Legacy Rules for an All-IP Future; Accelerating Network Modernization",
+      "document_number": "2026-05727",
+      "type": "Proposed Rule",
+      "publication_date": "2026-03-24",
+      "agencies": [
+        "Federal Communications Commission"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/03/24/2026-05727/reforming-legacy-rules-for-an-all-ip-future-accelerating-network-modernization",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-03-24/pdf/2026-05727.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "federal contractor security",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Endangered and Threatened Wildlife and Plants; Designation of Critical Habitat for 22 Species in the Commonwealth of the Northern Mariana Islands and the Territory of Guam",
+      "document_number": "2026-05678",
+      "type": "Proposed Rule",
+      "publication_date": "2026-03-24",
+      "agencies": [
+        "Interior Department",
+        "Fish and Wildlife Service"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/03/24/2026-05678/endangered-and-threatened-wildlife-and-plants-designation-of-critical-habitat-for-22-species-in-the",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-03-24/pdf/2026-05678.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "federal contractor security",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Retirement Security Rule: Definition of an Investment Advice Fiduciary: Notice of Court Vacatur",
+      "document_number": "2026-05492",
+      "type": "Rule",
+      "publication_date": "2026-03-20",
+      "agencies": [
+        "Labor Department",
+        "Employee Benefits Security Administration"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/03/20/2026-05492/retirement-security-rule-definition-of-an-investment-advice-fiduciary-notice-of-court-vacatur",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-03-20/pdf/2026-05492.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "federal contractor security",
+      "feed": "cfr_monitor"
     }
   ],
-  "total": 7,
-  "last_updated": "2026-04-01T12:31:13.110325",
-  "note": "DIB-specific rules only: DFARS, CMMC, FAR/CUI, supply chain, critical infrastructure"
+  "total": 66,
+  "last_updated": "2026-04-01T17:57:16.717718+00:00",
+  "date_range": "2026-03-02 to 2026-04-01",
+  "note": "CFR rulemaking from last 30 days matching DIB-specific terms"
 }
