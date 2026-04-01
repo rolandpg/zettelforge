@@ -39,8 +39,28 @@ mm = get_memory_manager()
 |--------|-----|---------|
 | `mm.recall(query, k=5)` | Semantic search across all sessions | List[MemoryNote] |
 | `mm.get_context(query, k=5)` | Formatted string for context injection | str |
-| `mm.remember(text, domain='security_ops')` | Save a new cross-session memory | MemoryNote |
-| `mm.get_recent(limit=10)` | Most recent memories | List[MemoryNote] |
+| `mm.remember(text, domain='security_ops')` | Save a new cross-session memory | (MemoryNote, reason) |
+| `mm.get_stats()` | Memory system stats + entity index stats | Dict |
+
+## Entity Index Methods (Phase 1 — Active)
+
+| Method | Use | Returns |
+|--------|-----|---------|
+| `mm.recall_cve('CVE-2024-3094')` | Fast CVE lookup | List[MemoryNote] |
+| `mm.recall_actor('Volt Typhoon')` | Fast actor lookup | List[MemoryNote] |
+| `mm.recall_tool('Cobalt Strike')` | Fast tool lookup | List[MemoryNote] |
+| `mm.recall_campaign('Operation NoVoice')` | Fast campaign lookup | List[MemoryNote] |
+| `mm.recall_entity('cve', 'CVE-2024-3094')` | Typed entity lookup | List[MemoryNote] |
+| `mm.get_entity_stats()` | Entity index breakdown | Dict |
+| `mm.rebuild_entity_index()` | Force rebuild from JSONL | Dict |
+
+**Deduplication:** `mm.remember()` now checks for duplicate CVEs before saving. Returns `(note, 'duplicate_skipped:reason')` if dup found.
+
+## Plan Review
+
+- Cron: `0 11 * * 1` (every Monday 6 AM CDT) — `memory/memory_plan_reviewer.py`
+- Reviews MEMORY_PLAN.md, logs iteration, recommends next step
+- Iteration log: `memory/plan_iterations.jsonl`
 
 ## When to Use
 
