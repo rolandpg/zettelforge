@@ -198,3 +198,75 @@ Memory: 60 notes, 25 entities indexed
 PRD: {'1': '✅ Entity Indexing ✅\n| Requirement | Test |\n|---|---|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| Entity index p', '2': '✅ Entity-Guided Linking ✅\n| Requirement | Test |\n|---|---|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates include entit', '3': '✅ Date-Aware Retrieval ⚪\n| Requirement | Test |\n|---|---|\n| Supersedes tracking | Newer note on same entity marks older as superseded |\n| Retrieval excludes superseded notes | `recall()` filters out not', '4': '✅ Mid-Session Snapshot Refresh ⚪\n| Requirement | Test |\n|---|---|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on recall | `rec', '5': '✅ Cold Archive ⚪\n| Requirement | Test |\n|---|---|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from active recal'}
 
 Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-01T08:30:01.266089
+Tests: 33/33 passed
+  All tests passing
+Memory: 60 notes, 25 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n| Requirement | Test |\n|---|---|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| Entity index p', '2': '✅ Entity-Guided Linking ✅\n| Requirement | Test |\n|---|---|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates include entit', '3': '✅ Date-Aware Retrieval ⚪\n| Requirement | Test |\n|---|---|\n| Supersedes tracking | Newer note on same entity marks older as superseded |\n| Retrieval excludes superseded notes | `recall()` filters out not', '4': '✅ Mid-Session Snapshot Refresh ⚪\n| Requirement | Test |\n|---|---|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on recall | `rec', '5': '✅ Cold Archive ⚪\n| Requirement | Test |\n|---|---|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from active recal'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-01T09:00:01.785098
+Tests: 33/33 passed
+  All tests passing
+Memory: 60 notes, 25 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n| Requirement | Test |\n|---|---|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| Entity index p', '2': '✅ Entity-Guided Linking ✅\n| Requirement | Test |\n|---|---|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates include entit', '3': '✅ Date-Aware Retrieval ⚪\n| Requirement | Test |\n|---|---|\n| Supersedes tracking | Newer note on same entity marks older as superseded |\n| Retrieval excludes superseded notes | `recall()` filters out not', '4': '✅ Mid-Session Snapshot Refresh ⚪\n| Requirement | Test |\n|---|---|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on recall | `rec', '5': '✅ Cold Archive ⚪\n| Requirement | Test |\n|---|---|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from active recal'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-01T09:30:01.758641
+Tests: 33/33 passed
+  All tests passing
+Memory: 60 notes, 25 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n| Requirement | Test |\n|---|---|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| Entity index p', '2': '✅ Entity-Guided Linking ✅\n| Requirement | Test |\n|---|---|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates include entit', '3': '✅ Date-Aware Retrieval ⚪\n| Requirement | Test |\n|---|---|\n| Supersedes tracking | Newer note on same entity marks older as superseded |\n| Retrieval excludes superseded notes | `recall()` filters out not', '4': '✅ Mid-Session Snapshot Refresh ⚪\n| Requirement | Test |\n|---|---|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on recall | `rec', '5': '✅ Cold Archive ⚪\n| Requirement | Test |\n|---|---|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from active recal'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-01T10:00:01.456207
+Tests: 33/33 passed
+  All tests passing
+Memory: 60 notes, 25 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n| Requirement | Test |\n|---|---|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| Entity index p', '2': '✅ Entity-Guided Linking ✅\n| Requirement | Test |\n|---|---|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates include entit', '3': '✅ Date-Aware Retrieval ⚪\n| Requirement | Test |\n|---|---|\n| Supersedes tracking | Newer note on same entity marks older as superseded |\n| Retrieval excludes superseded notes | `recall()` filters out not', '4': '✅ Mid-Session Snapshot Refresh ⚪\n| Requirement | Test |\n|---|---|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on recall | `rec', '5': '✅ Cold Archive ⚪\n| Requirement | Test |\n|---|---|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from active recal'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-01T10:30:01.872718
+Tests: 33/33 passed
+  All tests passing
+Memory: 60 notes, 25 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n| Requirement | Test |\n|---|---|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| Entity index p', '2': '✅ Entity-Guided Linking ✅\n| Requirement | Test |\n|---|---|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates include entit', '3': '✅ Date-Aware Retrieval ⚪\n| Requirement | Test |\n|---|---|\n| Supersedes tracking | Newer note on same entity marks older as superseded |\n| Retrieval excludes superseded notes | `recall()` filters out not', '4': '✅ Mid-Session Snapshot Refresh ⚪\n| Requirement | Test |\n|---|---|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on recall | `rec', '5': '✅ Cold Archive ⚪\n| Requirement | Test |\n|---|---|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from active recal'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-01T11:00:01.955180
+Tests: 33/33 passed
+  All tests passing
+Memory: 60 notes, 25 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n| Requirement | Test |\n|---|---|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| Entity index p', '2': '✅ Entity-Guided Linking ✅\n| Requirement | Test |\n|---|---|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates include entit', '3': '✅ Date-Aware Retrieval ⚪\n| Requirement | Test |\n|---|---|\n| Supersedes tracking | Newer note on same entity marks older as superseded |\n| Retrieval excludes superseded notes | `recall()` filters out not', '4': '✅ Mid-Session Snapshot Refresh ⚪\n| Requirement | Test |\n|---|---|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on recall | `rec', '5': '✅ Cold Archive ⚪\n| Requirement | Test |\n|---|---|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from active recal'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-01T11:30:01.809859
+Tests: 33/33 passed
+  All tests passing
+Memory: 60 notes, 25 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n| Requirement | Test |\n|---|---|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| Entity index p', '2': '✅ Entity-Guided Linking ✅\n| Requirement | Test |\n|---|---|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates include entit', '3': '✅ Date-Aware Retrieval ⚪\n| Requirement | Test |\n|---|---|\n| Supersedes tracking | Newer note on same entity marks older as superseded |\n| Retrieval excludes superseded notes | `recall()` filters out not', '4': '✅ Mid-Session Snapshot Refresh ⚪\n| Requirement | Test |\n|---|---|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on recall | `rec', '5': '✅ Cold Archive ⚪\n| Requirement | Test |\n|---|---|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from active recal'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-01T12:00:01.268246
+Tests: 33/33 passed
+  All tests passing
+Memory: 60 notes, 25 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n| Requirement | Test |\n|---|---|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| Entity index p', '2': '✅ Entity-Guided Linking ✅\n| Requirement | Test |\n|---|---|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates include entit', '3': '✅ Date-Aware Retrieval ⚪\n| Requirement | Test |\n|---|---|\n| Supersedes tracking | Newer note on same entity marks older as superseded |\n| Retrieval excludes superseded notes | `recall()` filters out not', '4': '✅ Mid-Session Snapshot Refresh ⚪\n| Requirement | Test |\n|---|---|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on recall | `rec', '5': '✅ Cold Archive ⚪\n| Requirement | Test |\n|---|---|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from active recal'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-01T12:30:01.154088
+Tests: 33/33 passed
+  All tests passing
+Memory: 60 notes, 25 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n| Requirement | Test |\n|---|---|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| Entity index p', '2': '✅ Entity-Guided Linking ✅\n| Requirement | Test |\n|---|---|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates include entit', '3': '✅ Date-Aware Retrieval ⚪\n| Requirement | Test |\n|---|---|\n| Supersedes tracking | Newer note on same entity marks older as superseded |\n| Retrieval excludes superseded notes | `recall()` filters out not', '4': '✅ Mid-Session Snapshot Refresh ⚪\n| Requirement | Test |\n|---|---|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on recall | `rec', '5': '✅ Cold Archive ⚪\n| Requirement | Test |\n|---|---|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from active recal'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned

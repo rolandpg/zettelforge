@@ -1,0 +1,126 @@
+{
+  "alerts": [
+    {
+      "title": "Defense Federal Acquisition Regulation Supplement: Assessing Contractor Implementation of Cybersecurity Requirements (DFARS Case 2019-D041)",
+      "document_number": "2025-17359",
+      "type": "Rule",
+      "publication_date": "2025-09-10",
+      "agencies": [
+        "Defense Department",
+        "Defense Acquisition Regulations System"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2025/09/10/2025-17359/defense-federal-acquisition-regulation-supplement-assessing-contractor-implementation-of",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-09-10/pdf/2025-17359.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "DFARS",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Defense Federal Acquisition Regulation Supplement: Limitation on Certain Institutes of Higher Education (DFARS Case 2024-D023); Correction",
+      "document_number": "2025-16518",
+      "type": "Rule",
+      "publication_date": "2025-08-28",
+      "agencies": [
+        "Defense Department",
+        "Defense Acquisition Regulations System"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2025/08/28/2025-16518/defense-federal-acquisition-regulation-supplement-limitation-on-certain-institutes-of-higher",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-08-28/pdf/2025-16518.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "DFARS",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Defense Federal Acquisition Regulation Supplement: Limitation on Certain Institutes of Higher Education (DFARS Case 2024-D023)",
+      "document_number": "2025-16207",
+      "type": "Rule",
+      "publication_date": "2025-08-25",
+      "agencies": [
+        "Defense Department",
+        "Defense Acquisition Regulations System"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2025/08/25/2025-16207/defense-federal-acquisition-regulation-supplement-limitation-on-certain-institutes-of-higher",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-08-25/pdf/2025-16207.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "DFARS",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Defense Federal Acquisition Regulation Supplement: Inapplicability of Additional Defense-Unique Laws and Certain Non-Statutory DFARS Clauses to Commercial Item Contracts (DFARS Case 2018-D074)",
+      "document_number": "2024-26054",
+      "type": "Rule",
+      "publication_date": "2024-11-15",
+      "agencies": [
+        "Defense Department",
+        "Defense Acquisition Regulations System"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2024/11/15/2024-26054/defense-federal-acquisition-regulation-supplement-inapplicability-of-additional-defense-unique-laws",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2024-11-15/pdf/2024-26054.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "800-171",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Cybersecurity Maturity Model Certification (CMMC) Program",
+      "document_number": "2024-22905",
+      "type": "Rule",
+      "publication_date": "2024-10-15",
+      "agencies": [
+        "Defense Department",
+        ""
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2024/10/15/2024-22905/cybersecurity-maturity-model-certification-cmmc-program",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2024-10-15/pdf/2024-22905.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "800-171",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Supply Chain Risk Management Reliability Standards Revisions; Equipment and Services Produced or Provided by Certain Entities Identified as Risks to National Security",
+      "document_number": "2025-18394",
+      "type": "Rule",
+      "publication_date": "2025-09-23",
+      "agencies": [
+        "Energy Department",
+        "Federal Energy Regulatory Commission"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2025/09/23/2025-18394/supply-chain-risk-management-reliability-standards-revisions-equipment-and-services-produced-or",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-09-23/pdf/2025-18394.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "NIST framework",
+      "feed": "cfr_monitor"
+    },
+    {
+      "title": "Order No. 918; Critical Infrastructure Protection Reliability Standard CIP-003-11-Cyber Security-Security Management Controls",
+      "document_number": "2026-05711",
+      "type": "Rule",
+      "publication_date": "2026-03-24",
+      "agencies": [
+        "Energy Department",
+        "Federal Energy Regulatory Commission"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/03/24/2026-05711/order-no-918-critical-infrastructure-protection-reliability-standard-cip-003-11-cyber",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-03-24/pdf/2026-05711.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "supply chain security",
+      "feed": "cfr_monitor"
+    }
+  ],
+  "total": 7,
+  "last_updated": "2026-04-01T12:31:13.110325",
+  "note": "DIB-specific rules only: DFARS, CMMC, FAR/CUI, supply chain, critical infrastructure"
+}

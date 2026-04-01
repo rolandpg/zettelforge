@@ -1,1 +1,8 @@
-{"alerts": [], "total": 0, "last_updated": "2026-04-01T13:18:00-05:00", "note": "Cleared stale CVEs (all >1 year old). axios/WAVESHAPER thread posted."}
+{
+  "action": "send_triage_alert",
+  "alert_text": "High alert: Google fixes another critical Chrome RCE flaw.",
+  "title": "Google fixes fourth Chrome zero-day exploited in attacks in 2026",
+  "url": "",
+  "source": "THN via CTI Triage Agent (Qwen3.5:9b)",
+  "timestamp": "2026-04-01T12:00:28.663750"
+}
