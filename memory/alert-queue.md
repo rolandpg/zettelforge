@@ -1113,3 +1113,1083 @@ Link: https://nvd.nist.gov/vuln/detail/CVE-2026-3055
 - Confidence Level: HIGH
 - Source Reliability: A
 - Calibrated Language: high confidence
+
+---
+Timestamp: 2026-03-31T22:00:11.746408
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: TrueConf Zero-Day Exploited in Attacks on Southeast Asian Government Networks
+
+## Draft Post
+TrueConf Zero-Day Exploited in Attacks on Government Networks in Southeast Asia.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-03-31T22:00:15.813997
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Silver Fox Expands Asia Cyber Campaign with AtlasCross RAT and Fake Domains
+
+## Draft Post
+Critical threat actor activity detected with AtlasCross RAT and fake domains impersonating trusted software.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-03-31T22:00:17.603977
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Axios Supply Chain Attack Pushes Cross-Platform RAT via Compromised npm Account
+
+## Draft Post
+A supply chain attack via Axios has been identified, introducing a cross-platform RAT with potential for mass deployment.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-03-31T22:00:33.514398
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers compromise Axios npm package to drop cross-platform malware
+
+## Draft Post
+Critical Axios npm package compromised for ransomware delivery across platforms.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-03-31T23:00:16.702617
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: TrueConf Zero-Day Exploited in Attacks on Southeast Asian Government Networks
+
+## Draft Post
+Critical security flaw in TrueConf exploited against Southeast Asian government targets.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-03-31T23:00:20.940329
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Silver Fox Expands Asia Cyber Campaign with AtlasCross RAT and Fake Domains
+
+## Draft Post
+Critical threat actor activity with AtlasCross RAT and fake domains impersonating trusted software.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-03-31T23:00:22.522333
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Axios Supply Chain Attack Pushes Cross-Platform RAT via Compromised npm Account
+
+## Draft Post
+A supply chain attack via Axios has introduced a malicious dependency that could enable remote code execution across multiple platforms.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-03-31T23:00:38.848136
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers compromise Axios npm package to drop cross-platform malware
+
+## Draft Post
+Critical Axios npm package compromised for ransomware delivery.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T00:00:16.446585
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: TrueConf Zero-Day Exploited in Attacks on Southeast Asian Government Networks
+
+## Draft Post
+Critical security flaw in TrueConf exploited against Southeast Asian government targets.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T00:00:20.327776
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Silver Fox Expands Asia Cyber Campaign with AtlasCross RAT and Fake Domains
+
+## Draft Post
+Critical ransomware campaign using fake domains and remote access trojan targeting Chinese-speaking users.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T00:00:21.668881
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Axios Supply Chain Attack Pushes Cross-Platform RAT via Compromised npm Account
+
+## Draft Post
+A supply chain attack via Axios has been identified, introducing a cross-platform RAT with potential for mass deployment.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T00:00:38.129040
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers compromise Axios npm package to drop cross-platform malware
+
+## Draft Post
+Critical Axios npm package compromised for ransomware delivery across platforms.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T01:00:10.468890
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: TrueConf Zero-Day Exploited in Attacks on Southeast Asian Government Networks
+
+## Draft Post
+TrueConf zero-day flaw exploited in attacks on Southeast Asian government networks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T01:00:14.826786
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Silver Fox Expands Asia Cyber Campaign with AtlasCross RAT and Fake Domains
+
+## Draft Post
+Critical threat actor activity detected with AtlasCross RAT and fake domains impersonating trusted software.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T01:00:16.554347
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Axios Supply Chain Attack Pushes Cross-Platform RAT via Compromised npm Account
+
+## Draft Post
+A supply chain attack via Axios has been identified, introducing a cross-platform RAT with potential for mass deployment.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T01:00:32.893000
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers compromise Axios npm package to drop cross-platform malware
+
+## Draft Post
+Critical Axios npm package compromised for cross-platform malware delivery.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T02:00:16.997878
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: TrueConf Zero-Day Exploited in Attacks on Southeast Asian Government Networks
+
+## Draft Post
+Critical security flaw in TrueConf exploited against Southeast Asian government targets.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T02:00:20.846019
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Silver Fox Expands Asia Cyber Campaign with AtlasCross RAT and Fake Domains
+
+## Draft Post
+Critical threat actor activity with AtlasCross RAT and fake domains impersonating trusted software.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T02:00:22.234215
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Axios Supply Chain Attack Pushes Cross-Platform RAT via Compromised npm Account
+
+## Draft Post
+A supply chain attack via Axios has been identified, introducing a cross-platform RAT with potential for mass deployment.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T02:00:39.864853
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers compromise Axios npm package to drop cross-platform malware
+
+## Draft Post
+Critical Axios npm package compromised for ransomware delivery across platforms.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T03:00:16.932834
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: TrueConf Zero-Day Exploited in Attacks on Southeast Asian Government Networks
+
+## Draft Post
+Critical security flaw in TrueConf exploited for nation-state DIB targeting.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T03:00:20.893241
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Silver Fox Expands Asia Cyber Campaign with AtlasCross RAT and Fake Domains
+
+## Draft Post
+Critical threat actor activity with AtlasCross RAT and fake domains impersonating trusted software.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T03:00:22.411650
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Axios Supply Chain Attack Pushes Cross-Platform RAT via Compromised npm Account
+
+## Draft Post
+Axios supply chain attack via compromised npm package introduces a cross-platform RAT.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T03:00:39.352949
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers compromise Axios npm package to drop cross-platform malware
+
+## Draft Post
+Hackers compromised Axios npm package for widespread cross-platform malware delivery.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T04:00:12.994338
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google Attributes Axios npm Supply Chain Attack to North Korean Group UNC1069
+
+## Draft Post
+Google has identified a ransomware campaign involving the Axios npm package, linked to the North Korean threat group UNC1069.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T04:00:17.039726
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: TrueConf Zero-Day Exploited in Attacks on Southeast Asian Government Networks
+
+## Draft Post
+TrueConf Zero-Day Exploited in Attacks on Government Networks in Southeast Asia.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T04:00:20.920347
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Silver Fox Expands Asia Cyber Campaign with AtlasCross RAT and Fake Domains
+
+## Draft Post
+Critical threat actor activity with AtlasCross RAT and fake domains impersonating trusted software.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T04:00:22.063646
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Axios Supply Chain Attack Pushes Cross-Platform RAT via Compromised npm Account
+
+## Draft Post
+Axios supply chain attack via compromised npm account introduces a cross-platform RAT.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T04:00:38.813500
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers compromise Axios npm package to drop cross-platform malware
+
+## Draft Post
+Critical Axios npm package compromised for ransomware delivery across platforms.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T05:00:13.402543
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google Attributes Axios npm Supply Chain Attack to North Korean Group UNC1069
+
+## Draft Post
+Google has identified a ransomware campaign involving the Axios npm package, linked to the North Korean threat group UNC1069.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T05:00:17.424590
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: TrueConf Zero-Day Exploited in Attacks on Southeast Asian Government Networks
+
+## Draft Post
+Critical security flaw in TrueConf exploited for targeted attacks on Southeast Asian governments.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T05:00:21.154139
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Silver Fox Expands Asia Cyber Campaign with AtlasCross RAT and Fake Domains
+
+## Draft Post
+Critical threat actor activity with AtlasCross RAT and fake domains impersonating trusted software.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T05:00:22.401106
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Axios Supply Chain Attack Pushes Cross-Platform RAT via Compromised npm Account
+
+## Draft Post
+Axios supply chain attack via compromised npm account introduces a cross-platform RAT.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T05:00:37.890625
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers compromise Axios npm package to drop cross-platform malware
+
+## Draft Post
+Hackers compromised Axios npm package for widespread cross-platform malware delivery.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T06:00:13.856955
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google Attributes Axios npm Supply Chain Attack to North Korean Group UNC1069
+
+## Draft Post
+Google has identified a ransomware campaign targeting Axios, an npm package used by popular news site Axios, linked to North Korean threat actors UNC1069.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T06:00:17.727885
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: TrueConf Zero-Day Exploited in Attacks on Southeast Asian Government Networks
+
+## Draft Post
+Critical security flaw in TrueConf exploited against Southeast Asian governments.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T06:00:21.768295
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Silver Fox Expands Asia Cyber Campaign with AtlasCross RAT and Fake Domains
+
+## Draft Post
+Critical threat actor activity with AtlasCross RAT and fake domains impersonating trusted software.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T06:00:23.362898
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Axios Supply Chain Attack Pushes Cross-Platform RAT via Compromised npm Account
+
+## Draft Post
+Axios supply chain attack via compromised npm package introduces a cross-platform RAT.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T06:00:28.025819
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google fixes fourth Chrome zero-day exploited in attacks in 2026
+
+## Draft Post
+Google has patched a critical Remote Code Execution (RCE) vulnerability exploited in recent zero-day attacks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T07:00:14.940390
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google Attributes Axios npm Supply Chain Attack to North Korean Group UNC1069
+
+## Draft Post
+Google has identified a ransomware campaign targeting Axios npm package by North Korean threat actor UNC1069.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T07:00:18.363637
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: TrueConf Zero-Day Exploited in Attacks on Southeast Asian Government Networks
+
+## Draft Post
+Critical security flaw in TrueConf exploited against Southeast Asian government targets.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T07:00:22.920840
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Silver Fox Expands Asia Cyber Campaign with AtlasCross RAT and Fake Domains
+
+## Draft Post
+Critical threat actor activity with AtlasCross RAT and fake domains.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T07:00:24.361323
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Axios Supply Chain Attack Pushes Cross-Platform RAT via Compromised npm Account
+
+## Draft Post
+Critical Axios update compromise suggests widespread RCE risk.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T07:00:27.268107
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google fixes fourth Chrome zero-day exploited in attacks in 2026
+
+## Draft Post
+High alert: Google fixes another critical RCE flaw used in ongoing attacks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T08:00:17.729059
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google Attributes Axios npm Supply Chain Attack to North Korean Group UNC1069
+
+## Draft Post
+Google has identified a ransomware campaign involving the Axios npm package, linked to the North Korean threat actor cluster UNC1069.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T08:00:21.672847
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: TrueConf Zero-Day Exploited in Attacks on Southeast Asian Government Networks
+
+## Draft Post
+Immediate review and patching recommended for TrueConf users.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T08:00:25.544443
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Silver Fox Expands Asia Cyber Campaign with AtlasCross RAT and Fake Domains
+
+## Draft Post
+Critical threat actor activity with AtlasCross RAT and fake domains.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T08:00:26.962245
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Axios Supply Chain Attack Pushes Cross-Platform RAT via Compromised npm Account
+
+## Draft Post
+A supply chain attack via Axios has been identified, introducing a cross-platform RAT with potential for mass exploitation.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T08:00:31.010145
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google fixes fourth Chrome zero-day exploited in attacks in 2026
+
+## Draft Post
+High alert: Google fixes another critical RCE flaw in Chrome.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T08:12:13.432763
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google Attributes Axios npm Supply Chain Attack to North Korean Group UNC1069
+
+## Draft Post
+Google has identified a ransomware campaign targeting Axios npm package by North Korean threat actor UNC1069.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T08:12:15.337039
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: TrueConf Zero-Day Exploited in Attacks on Southeast Asian Government Networks
+
+## Draft Post
+TrueConf Zero-Day Exploited in Attacks on Government Networks. Immediate review and patching required.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T08:12:17.540344
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Silver Fox Expands Asia Cyber Campaign with AtlasCross RAT and Fake Domains
+
+## Draft Post
+Critical threat actor activity detected with AtlasCross RAT and fake domains impersonating trusted software.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T08:12:18.345920
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Axios Supply Chain Attack Pushes Cross-Platform RAT via Compromised npm Account
+
+## Draft Post
+A supply chain attack via Axios has introduced a malicious dependency that could compromise multiple applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T08:12:20.380819
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google fixes fourth Chrome zero-day exploited in attacks in 2026
+
+## Draft Post
+Google has patched a critical Remote Code Execution (RCE) vulnerability, which was exploited as a zero-day attack in 2026.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b

@@ -1,14 +1,15 @@
 {
   "lastChecks": {
-    "cti-health": 1743472129,
-    "cti-collection": 1743472129,
-    "x-engagement": null,
-    "memory-maint": 1743472129
+    "email": null,
+    "calendar": null,
+    "weather": null,
+    "cti_collection": 1743523200,
+    "tor": 1743523200,
+    "gateway": 1743523200
   },
-  "checkIntervals": {
-    "cti-health": 3600,
-    "cti-collection": 14400,
-    "x-engagement": 21600,
-    "memory-maint": 86400
+  "notes": {
+    "tor": "Circuit broken - IP leaking. Needs sudo systemctl restart tor",
+    "gateway": "Laggy but operational. Tamara model fix applied.",
+    "xurl": "Working via sh -c wrapper"
   }
 }
