@@ -407,13 +407,17 @@ class Deduplicator:
         Find notes with similar content.
         Returns: [(note_id, similarity, context), ...]
         """
-        # Import here to avoid circular
+        # Import here to avoid circular - try multiple path options
         try:
             from vector_retriever import VectorRetriever
         except ImportError:
-            import sys
-            sys.path.insert(0, '/home/rolandpg/.openclaw/workspace/memory')
-            from vector_retriever import VectorRetriever
+            try:
+                import sys
+                sys.path.insert(0, '/home/rolandpg/.openclaw/workspace/memory')
+                from vector_retriever import VectorRetriever
+            except ImportError:
+                # Fallback: skip vector retrieval, use basic similarity
+                return []
 
         retriever = VectorRetriever()
         results = retriever.retrieve(query=content, k=k)
