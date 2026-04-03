@@ -30,7 +30,7 @@ Respond ONLY with valid JSON array of link pairs:
 
 Only include pairs with meaningful relationships. Empty array if none found."""
 
-    def __init__(self, llm_model: str = "nemotron-3-nano", similarity_threshold: float = 0.65):
+    def __init__(self, llm_model: str = "qwen2.5:3b", similarity_threshold: float = 0.65):
         self.llm_model = llm_model
         self.similarity_threshold = similarity_threshold
         self._embedder = None  # Lazy load

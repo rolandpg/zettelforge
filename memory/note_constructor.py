@@ -16,6 +16,15 @@ from embedding_utils import EmbeddingGenerator
 class NoteConstructor:
     """Construct structured memory notes from raw content"""
     
+    # Tier assignment rules (Phase 4.5)
+    TIER_RULES = {
+        'A': {'user.md', 'briefing', 'advisory', 'cve_alert', 'kev', 'nist', 'cisa_advisory',
+              'observation', 'ingestion', 'human', 'tool', 'manual'},
+        'B': {'conversation', 'subagent_output', 'task_output', 'cti_ingestion', 'agent'},
+        'C': {'summary', 'synthesis', 'generated', 'review'},
+    }
+    DEFAULT_TIER = 'B'
+    
     SYSTEM_PROMPT = """You are a semantic enrichment assistant for a memory system.
 Given raw content, generate:
 - context: A single sentence summarizing the key information (max 100 chars)
@@ -27,7 +36,7 @@ Given raw content, generate:
 Respond ONLY with valid JSON in this format:
 {"context": "...", "keywords": [...], "tags": [...], "entities": [...]}"""
     
-    def __init__(self, llm_model: str = "nemotron-3-nano"):
+    def __init__(self, llm_model: str = "qwen2.5:3b"):
         self.llm_model = llm_model
         self.embedder = EmbeddingGenerator()
     
@@ -48,6 +57,9 @@ Respond ONLY with valid JSON in this format:
         
         # Compute input hash
         input_hash = self._compute_input_hash(raw_content, semantic)
+        
+        # Assign tier (Phase 4.5)
+        tier = self._assign_tier(source_type, source_ref)
         
         # Build note
         note = MemoryNote(
@@ -70,10 +82,29 @@ Respond ONLY with valid JSON in this format:
                 input_hash=input_hash
             ),
             links=Links(),
-            metadata=Metadata(domain=domain)
+            metadata=Metadata(domain=domain, tier=tier)
         )
         
+        # Log tier assignment (Phase 5.5)
+        try:
+            from reasoning_logger import get_reasoning_logger
+            logger = get_reasoning_logger()
+            logger.log_tier_assignment(note.id, tier, source_type, auto=True)
+        except Exception:
+            pass  # Don't fail note creation if logger unavailable
+        
         return note
+    
+    def _assign_tier(self, source_type: str, source_ref: str = "") -> str:
+        """Assign epistemic tier based on source type and ref (Phase 4.5)"""
+        st = source_type.lower()
+        sr = source_ref.lower()
+        # Tier A: authoritative human documents
+        if st in self.TIER_RULES['A'] or 'user.md' in sr or 'briefing' in sr:
+            return 'A'
+        if st in self.TIER_RULES['C']:
+            return 'C'
+        return self.DEFAULT_TIER
     
     def _generate_semantic(self, raw_content: str) -> Semantic:
         """Use LLM to generate semantic enrichment"""
