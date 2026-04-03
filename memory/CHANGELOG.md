@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Documentation suite (docs/) with 14 comprehensive documents
 - `PARALLEL_EVOLUTION.md` — Performance optimization RFC
 - `PRD_PRODUCTPLAN_COMPARISON.md` — Alignment analysis between PRD and Product Plan
+- **Validation Error Resilience** — Graceful handling of LLM output format variations
+  - Entity normalization: dict-to-string conversion for malformed LLM responses
+  - Pre-validation slicing: keywords/tags truncated before Pydantic validation
+  - Import fallback: vector_retriever import errors handled gracefully
 
 ### Changed
 - **MAJOR PERFORMANCE**: LLM model upgraded from `nemotron-3-nano` to `qwen2.5:3b` (10x faster per call)
