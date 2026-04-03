@@ -80,7 +80,7 @@ References:
                 source_url=f"https://nvd.nist.gov/vuln/detail/{cve.cve_id}"
             )
             
-            if result.success:
+            if result.status in ("created", "duplicate_skipped"):
                 count += 1
                 if count % 10 == 0:
                     print(f"      Progress: {count}/{limit} CVEs ingested")
@@ -113,7 +113,7 @@ Description:
 {actor.description or 'No description available'}
 
 Known Aliases:
-{actor.aliases or 'No aliases recorded'}
+{actor.aka or 'No aliases recorded'}
 
 Origin:
 {actor.origin or 'Unknown'}
@@ -128,7 +128,7 @@ Motivation:
                 source_ref=f"actor-{actor.name.lower().replace(' ', '-')}"
             )
             
-            if result.success:
+            if result.status in ("created", "duplicate_skipped"):
                 count += 1
             else:
                 errors += 1
@@ -169,10 +169,10 @@ Details:
                 content=content,
                 source_type="cisa_advisory",
                 source_ref=f"alert-{alert.id}",
-                source_url=alert.details.get('url') if alert.details else None
+                source_url=None
             )
             
-            if result.success:
+            if result.status in ("created", "duplicate_skipped"):
                 count += 1
             else:
                 errors += 1
@@ -230,7 +230,7 @@ Publisher: {doc.get('publisher', {}).get('name', 'Unknown')}
                 source_ref=adv_id
             )
             
-            if result.success:
+            if result.status in ("created", "duplicate_skipped"):
                 count += 1
             else:
                 errors += 1
@@ -269,7 +269,7 @@ Last Seen: {ioc.last_seen or 'Unknown'}
                 source_ref=f"ioc-{ioc.id}"
             )
             
-            if result.success:
+            if result.status in ("created", "duplicate_skipped"):
                 count += 1
             else:
                 errors += 1
