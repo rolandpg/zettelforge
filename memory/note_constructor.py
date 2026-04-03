@@ -119,11 +119,28 @@ Respond ONLY with valid JSON in this format:
             )
             
             data = json.loads(response['response'])
+            
+            # Normalize entities: handle both string and dict formats
+            raw_entities = data.get('entities', [])
+            normalized_entities = []
+            for entity in raw_entities:
+                if isinstance(entity, str):
+                    normalized_entities.append(entity)
+                elif isinstance(entity, dict):
+                    # Extract entity name from dict (common LLM formats)
+                    entity_name = entity.get('entity') or entity.get('value') or entity.get('name')
+                    if entity_name:
+                        normalized_entities.append(str(entity_name))
+            
+            # Slice before Pydantic validation to avoid max_length errors
+            keywords = data.get('keywords', [])[:7]
+            tags = data.get('tags', [])[:5]
+            
             return Semantic(
                 context=data.get('context', '')[:100],
-                keywords=data.get('keywords', [])[:7],
-                tags=data.get('tags', [])[:5],
-                entities=data.get('entities', [])
+                keywords=keywords,
+                tags=tags,
+                entities=normalized_entities
             )
         except Exception as e:
             print(f"LLM enrichment failed: {e}")
