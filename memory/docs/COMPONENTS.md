@@ -270,6 +270,11 @@ mm.get_archived_notes() -> List[str]
 | **Latency** | ~1s for semantic enrichment (vs ~10s with nemotron-3-nano) |
 | **Error Behavior** | Falls back to basic extraction on LLM failure |
 
+**Validation Resilience (2026-04-02):**
+- **Entity Normalization**: LLM-returned dict entities (`{"entity": "..."}`) are automatically converted to strings
+- **Pre-Validation Slicing**: Keywords/tags are sliced to schema limits (7/5 max) before Pydantic validation
+- **Graceful Degradation**: Schema violations are corrected rather than causing failures
+
 **Tier Assignment Rules:**
 - Tier A: human, tool, observation, ingestion, manual, briefing, advisory, cisa_advisory
 - Tier B: conversation, subagent_output, task_output, cti_ingestion, agent
