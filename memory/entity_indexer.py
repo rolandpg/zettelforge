@@ -408,9 +408,12 @@ class Deduplicator:
         Returns: [(note_id, similarity, context), ...]
         """
         # Import here to avoid circular
-        import sys
-        sys.path.insert(0, '/home/rolandpg/.openclaw/workspace')
-        from memory.vector_retriever import VectorRetriever
+        try:
+            from vector_retriever import VectorRetriever
+        except ImportError:
+            import sys
+            sys.path.insert(0, '/home/rolandpg/.openclaw/workspace/memory')
+            from vector_retriever import VectorRetriever
 
         retriever = VectorRetriever()
         results = retriever.retrieve(query=content, k=k)

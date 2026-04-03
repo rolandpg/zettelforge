@@ -115,11 +115,14 @@ Description:
 Known Aliases:
 {actor.aka or 'No aliases recorded'}
 
-Origin:
-{actor.origin or 'Unknown'}
+Country:
+{actor.country or 'Unknown'}
 
-Motivation:
-{actor.motivation or 'Unknown'}
+Actor Type:
+{actor.actor_type or 'Unknown'}
+
+Risk Level:
+{actor.risk_level or 'Unknown'}
 """
             
             result = harness.ingest(
