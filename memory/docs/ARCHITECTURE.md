@@ -1,7 +1,7 @@
 # ThreatRecall — Architecture and System Flow Document
 
-**Version:** 1.4  
-**Date:** 2026-04-02  
+**Version:** 1.5  
+**Date:** 2026-04-03  
 **Project:** ThreatRecall (built on A-MEM architecture)  
 **Foundation:** A-MEM (Agentic Memory) research
 

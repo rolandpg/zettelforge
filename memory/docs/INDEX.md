@@ -1,8 +1,8 @@
-# A-MEM Documentation Index
+# ThreatRecall Documentation Index
 
-**Generated:** 2026-04-02  
+**Generated:** 2026-04-03  
 **Commit:** a3a4953 (git worktree state)  
-**Project:** A-MEM (Agentic Memory) - Roland Fleet Agentic Memory System
+**Project:** ThreatRecall (built on A-MEM architecture)
 
 ---
 

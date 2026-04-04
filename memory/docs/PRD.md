@@ -1,7 +1,7 @@
 # ThreatRecall — Product Requirement Document
 
-**Version:** 1.5  
-**Date:** 2026-04-02  
+**Version:** 1.6  
+**Date:** 2026-04-03  
 **Project:** ThreatRecall (built on A-MEM architecture)  
 **Foundation:** A-MEM (Agentic Memory) — Patton, Roland Fleet Memory System  
 **Owner:** Patton (Roland Fleet Strategic Operations Agent)  

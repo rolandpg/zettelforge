@@ -1,7 +1,7 @@
 # ThreatRecall — Product Architecture & Roadmap
-**Version:** 2.1
+**Version:** 2.2
 **Status:** Active
-**Created:** 2026-04-01 | **Rebuilt:** 2026-04-02 | **Updated:** 2026-04-02
+**Created:** 2026-04-01 | **Rebuilt:** 2026-04-02 | **Updated:** 2026-04-03
 **Owner:** Patrick Roland
 **Classification:** Confidential (Tier 3 per GOV-021)
 **Governance Alignment:** GOV-001 through GOV-022
@@ -107,11 +107,11 @@ Implemented **parallel evolution assessment** reducing `remember()` latency from
 | ~~Bug fixes (alias collision, atomic writes, soft-pass tests, rollback)~~ | ✅ **Complete** | ~~Burn-in start~~ | — | GOV-011 |
 | ~~Phase 6 implementation (ontology, knowledge graph, IEP)~~ | ✅ **Complete** | ~~Differentiation~~ | — | GOV-016 |
 | ~~Phase 7 implementation (synthesis layer)~~ | ✅ **Complete** | ~~Differentiation~~ | — | GOV-016 |
-| 30-day burn-in test | Next | Operational proof metrics | 30 days (parallel) | GOV-007 |
-| API layer (FastAPI, auth, tenant isolation) | Pending | Product access | 40-60 hours | GOV-005 |
-| OpenAPI 3.1 spec (contract-first per GOV-005) | Pending | API documentation | 8-12 hours | GOV-005 |
-| OCSF-schema audit logging | Pending | Compliance requirement | 6-8 hours | GOV-012 |
-| Secrets abstraction (Vault/Key Vault/env) | Pending | Production auth | 4-6 hours | GOV-014 |
+| 30-day burn-in test | 🔄 **In Progress (concurrent)** | Operational proof metrics | 30 days | GOV-007 |
+| Secrets abstraction (Vault/Key Vault/env) | ✅ **Complete** | Production auth | 4-6 hours | GOV-014 |
+| API layer (FastAPI, auth, tenant isolation) | 🔄 **In Progress** | Product access | 40-60 hours | GOV-005 |
+| OpenAPI 3.1 spec (contract-first per GOV-005) | 🔄 **In Progress (TR-API-001 drafted)** | API documentation | 8-12 hours | GOV-005 |
+| OCSF-schema audit logging | 🔄 **Partial (middleware stub + structlog)** | Compliance requirement | 6-8 hours | GOV-012 |
 | Dockerfile + deployment pipeline | Pending | Deployment | 4-6 hours | GOV-008 |
 | THIRD_PARTY_NOTICES file | Pending | Legal compliance | 2 hours | IP Risk Register |
 | Customer-facing docs + Python SDK | Pending | Onboarding | 8-12 hours | GOV-005 |
@@ -137,7 +137,7 @@ No competitor has this. Mem0 raised $24M and has 80,000 developers. They do not 
 | Mem0 | Horizontal memory for all AI apps | $24M funded, 80K devs, AWS exclusive | No security domain, no compliance framework, no IEP, no entity resolution, no MITRE mapping, cannot sell to DIB |
 | A-MEM (academic) | Research prototype | NeurIPS 2025 paper | No production features, no governance, no commercial intent |
 | MemGPT / Letta | Virtual context management | Tiered memory hierarchy | Generic paging, no security enrichment, no compliance |
-| ThreatRecall | FedRAMP-aligned cybersecurity agent memory | Entity indexing, alias resolution, MITRE mapping, epistemic tiering, IEP governance, knowledge graph, 22-doc compliance framework, DIB operator credibility | Pre-revenue, single operator, no API layer yet |
+| ThreatRecall | FedRAMP-aligned cybersecurity agent memory | Entity indexing, alias resolution, MITRE mapping, epistemic tiering, IEP governance, knowledge graph, 22-doc compliance framework, DIB operator credibility | Pre-revenue, API layer in progress |
 
 ---
 
@@ -411,7 +411,7 @@ Success: Customer signs up, pays, uses ThreatRecall without talking to Patrick.
 | 1-4 | Alias resolver, wiring, dedup, acceptance tests | Done | ✅ COMPLETE (59/59) | GOV-007 |
 | 5 | Fix Patton 4 bug findings (alias rollback) | 4-6 | ✅ **COMPLETE** — Commit db8da6e | GOV-011 |
 | 6 | Rerun all tests (now 143) | 1 | ✅ COMPLETE | GOV-007 |
-| 7 | Start 30-day burn-in | 30 days | 🔄 **NEXT** | GOV-007 |
+| 7 | Start 30-day burn-in | 30 days | 🔄 **CONCURRENT** | GOV-007 |
 | 8 | Implement Phase 6 (ontology, graph, IEP) | 30-50 | ✅ **COMPLETE** — 36/36 tests | GOV-016 |
 | 9 | Phase 6 tests | 8-12 | ✅ COMPLETE (124.3s) | GOV-007 |
 | 9b | Implement Phase 7 (synthesis layer) | 20-30 | ✅ **COMPLETE** — 21/21 tests | GOV-016 |
@@ -439,7 +439,7 @@ Success: Customer signs up, pays, uses ThreatRecall without talking to Patrick.
 | 30 | Deploy to Azure or Cloudflare Tunnel | 4 | After 27 | GOV-018 |
 | 31 | Onboard first pilot customer | 4 | After 29,30 | -- |
 
-Critical path: Steps 5-9c (bug fixes, Phase 6/7, parallel evolution) are **COMPLETE**. Current focus: Step 7 (30-day burn-in) and Step 10 (technical whitepaper). API layer is 11-27 (~55-70 hours). At 15-20 hrs/week, first pilot approximately **2-3 months** from today (accelerated by early Phase 6/7 completion).
+Critical path: Steps 5-9c (bug fixes, Phase 6/7, parallel evolution) are **COMPLETE**. **Burn-in and API development run concurrently** — burn-in does not gate API progress. API layer is Steps 11-27 (~55-70 hours). Secrets abstraction (Step 14) is complete. OpenAPI spec (Step 11) is in draft. At 15-20 hrs/week, first pilot approximately **2-3 months** from today.
 
 ---
 
