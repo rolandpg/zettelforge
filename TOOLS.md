@@ -29,13 +29,20 @@
 - **Models:** `IOC`, `ThreatActor`, `CVE`, `Sector`, `ThreatAlert`
 - **Check fields:** `python3 manage.py shell -c "from intel.models import Model; print([f.name for f in Model._meta.get_fields()])"`
 
-## HashiCorp Vault (Planned)
-- Status: Not yet deployed
-- MCP: hashicorp/vault-mcp-server (GitHub: hashicorp/vault-mcp-server)
-- Install: `go install github.com/hashicorp/vault-mcp-server@latest` or Docker
-- Auth: Token-based initially; AppRole/Kubernetes when production
-- Config: `openclaw mcp set vault '{"command":"/path/to/vault-mcp-server","env":{"VAULT_ADDR":"http://localhost:8200"}}`
-- Skill to build when deployed: vault-read, vault-write, vault-policy-check
+## HashiCorp Vault — ACTIVE
+- **Status:** Deployed and operational (2026-04-04)
+- **Container:** `vault-dev` (Docker, auto-restart)
+- **Address:** `http://127.0.0.1:8200`
+- **Root token:** `patton-vault-dev-root` (homelab only, never use in prod)
+- **KV Engine:** `secret/` (KV v2)
+- **Auth:** AppRole enabled
+- **Credentials:** `~/.openclaw/vault-credentials/{agent}.json`
+- **Policies:** per-agent least-privilege (`patton`, `tamara`, `vigil`, `nexus`)
+- **CLI helper:** `python3 scripts/vault_helper.py [read|write|list|auth-check]`
+- **Setup script:** `scripts/vault-setup.sh`
+- **Skills:** `skills/vault-read/SKILL.md`, `skills/vault-write/SKILL.md`, `skills/vault-setup/SKILL.md`
+- **Onboarding:** `fleet/vault_agent_onboarding.md`
+- **Next:** MCP server (hashicorp/vault-mcp-server) for direct tool integration
 
 ## Knowledge Base
 - **Location:** '`~/workspace/governance-documentation-package/governance/`

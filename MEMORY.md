@@ -19,6 +19,6 @@ Key learnings: xurl auth = OAuth1 pre-configured. Django models: check field nam
 §
 Qualys TRU: Broken Physics of Remediation (Mar 2026) — TTE -1 day, 6.5x KEV vol, 88% defender loss. Sub-1% of CVEs weaponized. Risk Mass (exposure-days) > MTTR. Full briefing: memory/briefings/qualys-remediation-physics-20260331.md
 §
-Planned infrastructure: HashiCorp Vault (local homelab, not yet installed). Patrick planning deployment. MCP server: hashicorp/vault-mcp-server. When deployed: create skill vault-read, vault-write, vault-policy-check wrapping MCP tools.
+HashiCorp Vault: ACTIVE (2026-04-04). Docker container `vault-dev` on host network, auto-restart. KV v2 at secret/, AppRole auth. Per-agent policies: patton, tamara, vigil, nexus (least privilege). Credentials: ~/.openclaw/vault-credentials/{agent}.json. Skills: vault-read, vault-write, vault-setup. Helper: scripts/vault_helper.py. Setup script: scripts/vault-setup.sh. Onboarding: fleet/vault_agent_onboarding.md. All agents notified and confirmed. Next: MCP server (vault-mcp-server) for direct tool integration.
 §
 OpenClaw Multi-Agent: Each agent has isolated workspace + agentDir + sessions. Routing via bindings (most-specific wins). Agent-to-agent messaging requires `tools.agentToAgent.enabled=true` + allowlist. Fleet pattern: shared file sync for daily summaries, `sessions_send` for urgent alerts. Current fleet: main (Patton, default), tamara (social), vigil (CTI, background), nexus (AI research). A2A enabled 2026-04-03. Full reference: notes/openclaw-multi-agent.md
