@@ -1,8 +1,8 @@
 {
   "action": "send_triage_alert",
-  "alert_text": "High alert: Google fixes another critical Chrome RCE flaw.",
-  "title": "Google fixes fourth Chrome zero-day exploited in attacks in 2026",
+  "alert_text": "Drift Protocol hit by ransomware, potentially losing $280 million.",
+  "title": "Drift loses $280 million as North Korean hackers seize Security Council powers",
   "url": "",
   "source": "THN via CTI Triage Agent (Qwen3.5:9b)",
-  "timestamp": "2026-04-01T14:04:23.797614"
+  "timestamp": "2026-04-03T22:00:26.686458"
 }

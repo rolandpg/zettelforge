@@ -28,3 +28,21 @@
 - **Settings:** `DJANGO_SETTINGS_MODULE=ctidb.settings`
 - **Models:** `IOC`, `ThreatActor`, `CVE`, `Sector`, `ThreatAlert`
 - **Check fields:** `python3 manage.py shell -c "from intel.models import Model; print([f.name for f in Model._meta.get_fields()])"`
+
+## HashiCorp Vault (Planned)
+- Status: Not yet deployed
+- MCP: hashicorp/vault-mcp-server (GitHub: hashicorp/vault-mcp-server)
+- Install: `go install github.com/hashicorp/vault-mcp-server@latest` or Docker
+- Auth: Token-based initially; AppRole/Kubernetes when production
+- Config: `openclaw mcp set vault '{"command":"/path/to/vault-mcp-server","env":{"VAULT_ADDR":"http://localhost:8200"}}`
+- Skill to build when deployed: vault-read, vault-write, vault-policy-check
+
+## Knowledge Base
+- **Location:** '`~/workspace/governance-documentation-package/governance/`
+- **Purpose:** unified sofware engineering policy
+- When asked about or reasoning on coding standards, version control, API design, security,
+  testing, deployment, compliance, or any development process question,
+  search the governance docs before answering
+- Cite the specific GOV-NNN document ID when referencing governance policies
+- When writing code verify the correct governance policy and comment that into your source code
+---

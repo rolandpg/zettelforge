@@ -142,14 +142,6 @@ You are successful when:
 ---
 
 ## Starting State
-
-Current status (from last review):
-- Phase 1: Entity Indexing ✅ (14/14 requirements passing)
-- Phase 2: Entity-Guided Linking ✅ (some requirements passing)
-- Phase 3: Date-Aware Retrieval ⚪ (not started)
-- Phase 4: Mid-Session Snapshot Refresh ⚪ (not started)
-- Phase 5: Cold Archive ⚪ (not started)
-
 Your first Recon should confirm this and identify what remains for Phase 2 before you move to Phase 3.
 
 Move out.

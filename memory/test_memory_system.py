@@ -407,9 +407,9 @@ def integration_tests(suite: TestSuite, verbose: bool = False):
     ), suite, verbose)
 
     run_test(0, "MEMORY_PRD.md exists", lambda: (
-        (MEMORY_DIR / "MEMORY_PRD.md").exists(),
-        "MEMORY_PRD.md found",
-        str(MEMORY_DIR / "MEMORY_PRD.md")
+        (MEMORY_DIR / "docs" / "PRD.md").exists(),
+        "PRD.md found",
+        str(MEMORY_DIR / "docs" / "PRD.md")
     ), suite, verbose)
 
     run_test(0, "Recall works end-to-end (semantic search)", lambda: (

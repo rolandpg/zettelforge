@@ -72,6 +72,16 @@ def main():
         }, f, indent=2)
     
     print(f"\n   Logged to: {log_file}")
+    
+    # 5. Cold archive low-confidence notes (Phase 5)
+    print("\n5. Archiving low-confidence notes to cold storage...")
+    try:
+        archive_result = mm.archive_low_confidence_notes(confidence_threshold=0.3, dry_run=False)
+        print(f"   Archived: {archive_result.get('archived_count', 0)} notes")
+        print(f"   Cold storage path: {archive_result.get('archive_path', 'N/A')}")
+    except Exception as e:
+        print(f"   Archive error (non-critical): {e}")
+    
     print("\n=== Daily Maintenance Complete ===")
 
 

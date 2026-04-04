@@ -160,13 +160,15 @@ class MemoryStore:
             return sum(1 for line in f if line.strip())
     
     def _rewrite_note(self, note: MemoryNote) -> None:
-        """Rewrite a note in place (for updates)"""
-        notes = []
-        updated = False
+        """Rewrite a note in place (for updates) — atomic via temp file + os.replace()."""
+        import tempfile, os
         
         if not self.jsonl_path.exists():
             return
         
+        # Read all notes
+        notes = []
+        updated = False
         with open(self.jsonl_path, "r") as f:
             for line in f:
                 if line.strip():
@@ -183,9 +185,18 @@ class MemoryStore:
         if not updated:
             notes.append(note.model_dump())
         
-        with open(self.jsonl_path, "w") as f:
-            for n in notes:
-                f.write(json.dumps(n) + "\n")
+        # Write to temp file in same directory, then atomically replace
+        dir_path = self.jsonl_path.parent
+        fd, tmp_path = tempfile.mkstemp(suffix='.jsonl', dir=str(dir_path))
+        try:
+            with os.fdopen(fd, 'w') as f:
+                for n in notes:
+                    f.write(json.dumps(n) + "\n")
+            os.replace(tmp_path, self.jsonl_path)  # atomic on POSIX
+        except:
+            if os.path.exists(tmp_path):
+                os.unlink(tmp_path)
+            raise
     
     def export_snapshot(self, output_path: str) -> None:
         """Export full memory state for cold storage"""

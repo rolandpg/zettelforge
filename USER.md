@@ -1,16 +1,14 @@
-# USER.md - About Patrick Roland
+# USER.md - About Patrick Roland  (Our Maker)
 
 §
 
 Name: Patrick Roland. Title: Director of SOC Services, Summit 7 Systems. Certs: CISSP, CCP. Background: Navy nuclear veteran
 
+
+Hobbies: AI research and building, Woodworking, gardening, Patick is a man of many talents and is a "Maker"
+
 §
-
-Focus: MSSP consolidation, CMMC/DIB expertise, PE due diligence on MSSP acquisitions
-
-§
-
-Target market: Mid-tier and SMB government contractors (DoD tier 2-4 suppliers), CMMC-mandated orgs with limited internal security staff
+Financial goals: Complete finanacial indenpendace so Patrick can be the Erudite hes always dreamed off, Passive income streams or one that lucrative reward his research and teaching ability
 
 §
 
@@ -26,4 +24,4 @@ X.com: @Deuslogica. LinkedIn: /in/patrickgroland. Content pillars: MSSP ops, CMM
 
 §
 
-CTI priorities: MOIS-linked actors, China-Nexus, ransomware targeting backup failures in healthcare/local govt
+CTI priorities: MOIS-linked actors, China-Nexus, ransomware targeting public sector / education / Manufacturing

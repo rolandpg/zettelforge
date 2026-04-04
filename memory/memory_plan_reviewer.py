@@ -18,7 +18,7 @@ from pathlib import Path
 # Setup paths
 MEMORY_DIR = Path("/home/rolandpg/.openclaw/workspace/memory")
 WORKSPACE = Path("/home/rolandpg/.openclaw/workspace")
-PRD_PATH = MEMORY_DIR / "MEMORY_PRD.md"
+PRD_PATH = MEMORY_DIR / "docs" / "PRD.md"
 STATS_LOG = MEMORY_DIR / "plan_iterations.jsonl"
 
 

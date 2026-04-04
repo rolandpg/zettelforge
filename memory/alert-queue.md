@@ -2573,3 +2573,3933 @@ Link:
 - Source Reliability: B
 - Calibrated Language: medium confidence
 - Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T15:00:09.149631
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google Attributes Axios npm Supply Chain Attack to North Korean Group UNC1069
+
+## Draft Post
+Google has identified a ransomware campaign targeting Axios npm package by North Korean threat actor UNC1069.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T15:00:12.277779
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: TrueConf Zero-Day Exploited in Attacks on Southeast Asian Government Networks
+
+## Draft Post
+Critical security flaw in TrueConf exploited for targeted attacks on Southeast Asian governments.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T15:00:13.296717
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New EvilTokens service fuels Microsoft device code phishing attacks
+
+## Draft Post
+Critical Ransomware Campaign Exploits Microsoft Devices with Device Code Phishing.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T15:00:19.490439
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google fixes fourth Chrome zero-day exploited in attacks in 2026
+
+## Draft Post
+Google has patched a critical Remote Code Execution (RCE) vulnerability that was being exploited as a zero-day in 2026.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T21:00:01.862965
+Type: DIB_BREACH
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: F
+Title: DIB-relevant: https://www.federalregister.gov/d/2026-05935
+
+## Draft Post
+⚠️ DIB SECURITY ALERT | medium confidence
+
+DIB-relevant: https://www.federalregister.gov/d/2026-05935
+
+[DIB] [NOTICES] Defense Acquisition Regulations System: Defense Federal Acquisition Regulation Supplement; Rights in Technical Data and Computer Software, -
+
+Source: GovInfo-FR | Reliability: F
+
+Source: GovInfo-FR
+
+#DIB #cybersecurity #infosec #threatintel
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: F
+- Calibrated Language: medium confidence
+
+---
+Timestamp: 2026-04-01T21:00:01.863022
+Type: DIB_BREACH
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: F
+Title: DIB-relevant: https://www.federalregister.gov/d/2026-06020
+
+## Draft Post
+⚠️ DIB SECURITY ALERT | medium confidence
+
+DIB-relevant: https://www.federalregister.gov/d/2026-06020
+
+[DIB] [NOTICES] Veterans Affairs Department: Advisory Committee on Former Prisoners of War,
+
+Source: GovInfo-FR | Reliability: F
+
+Source: GovInfo-FR
+
+#DIB #cybersecurity #infosec #threatintel
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: F
+- Calibrated Language: medium confidence
+
+---
+Timestamp: 2026-04-01T21:00:01.863045
+Type: DIB_BREACH
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: F
+Title: DIB-relevant: https://www.federalregister.gov/d/2026-06132
+
+## Draft Post
+⚠️ DIB SECURITY ALERT | medium confidence
+
+DIB-relevant: https://www.federalregister.gov/d/2026-06132
+
+[DIB] [NOTICES] Nuclear Regulatory Commission: Meetings; Sunshine Act,
+
+Source: GovInfo-FR | Reliability: F
+
+Source: GovInfo-FR
+
+#DIB #cybersecurity #infosec #threatintel
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: F
+- Calibrated Language: medium confidence
+
+---
+Timestamp: 2026-04-01T21:00:01.863065
+Type: DIB_BREACH
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: F
+Title: DIB-relevant: https://www.federalregister.gov/d/2026-06048
+
+## Draft Post
+⚠️ DIB SECURITY ALERT | medium confidence
+
+DIB-relevant: https://www.federalregister.gov/d/2026-06048
+
+[DIB] [RULES] Nuclear Regulatory Commission: Risk-Informed, Technology-Inclusive Regulatory Framework for Advanced Reactors, -
+
+Source: GovInfo-FR | Reliability: F
+
+Source: GovInfo-FR
+
+#DIB #cybersecurity #infosec #threatintel
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: F
+- Calibrated Language: medium confidence
+
+---
+Timestamp: 2026-04-01T21:00:01.863084
+Type: DIB_BREACH
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: F
+Title: DIB-relevant: https://www.federalregister.gov/d/2026-06049
+
+## Draft Post
+⚠️ DIB SECURITY ALERT | medium confidence
+
+DIB-relevant: https://www.federalregister.gov/d/2026-06049
+
+[DIB] [RULES] Nuclear Regulatory Commission: Categorical Exclusions from Environmental Review, -
+
+Source: GovInfo-FR | Reliability: F
+
+Source: GovInfo-FR
+
+#DIB #cybersecurity #infosec #threatintel
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: F
+- Calibrated Language: medium confidence
+
+---
+Timestamp: 2026-04-01T16:00:09.852774
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google Attributes Axios npm Supply Chain Attack to North Korean Group UNC1069
+
+## Draft Post
+Google has identified a ransomware campaign targeting Axios npm package by North Korean threat actor UNC1069.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T16:00:13.346759
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: TrueConf Zero-Day Exploited in Attacks on Southeast Asian Government Networks
+
+## Draft Post
+Critical security flaw in TrueConf exploited against Southeast Asian governments.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T16:00:14.498714
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New EvilTokens service fuels Microsoft device code phishing attacks
+
+## Draft Post
+A new ransomware service, EvilTokens, is enabling sophisticated phishing attacks on Microsoft users.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T16:00:20.138182
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google fixes fourth Chrome zero-day exploited in attacks in 2026
+
+## Draft Post
+Google has addressed a critical Remote Code Execution (RCE) vulnerability, one of four fixed this year.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T17:00:08.407587
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google Attributes Axios npm Supply Chain Attack to North Korean Group UNC1069
+
+## Draft Post
+Google has confirmed that Axios npm package was compromised by a ransomware campaign linked to North Korean threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T17:00:10.949293
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: TrueConf Zero-Day Exploited in Attacks on Southeast Asian Government Networks
+
+## Draft Post
+Critical security flaw in TrueConf exploited for targeted attacks on Southeast Asian governments.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T17:00:13.650837
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit TrueConf zero-day to push malicious software updates
+
+## Draft Post
+Hackers are exploiting a critical Remote Code Execution (RCE) flaw in TrueConf conference servers to deploy malware.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T17:00:21.172344
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google fixes fourth Chrome zero-day exploited in attacks in 2026
+
+## Draft Post
+Google has patched a critical Remote Code Execution (RCE) vulnerability that was being exploited as a zero-day in 2026.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T18:00:08.897140
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google Attributes Axios npm Supply Chain Attack to North Korean Group UNC1069
+
+## Draft Post
+Google has identified a ransomware campaign involving the Axios npm package linked to North Korean threat actors UNC1069.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T18:00:11.422071
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: TrueConf Zero-Day Exploited in Attacks on Southeast Asian Government Networks
+
+## Draft Post
+Critical security flaw in TrueConf exploited against Southeast Asian governments. Immediate review and patching recommended.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T18:00:14.067074
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit TrueConf zero-day to push malicious software updates
+
+## Draft Post
+Hackers are exploiting a critical Remote Code Execution (RCE) flaw in TrueConf conference servers to deploy malware.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T18:00:21.310799
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google fixes fourth Chrome zero-day exploited in attacks in 2026
+
+## Draft Post
+Google has patched a critical Remote Code Execution (RCE) vulnerability that was being exploited as a zero-day in 2026.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T19:00:09.468784
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google Attributes Axios npm Supply Chain Attack to North Korean Group UNC1069
+
+## Draft Post
+Google has identified a ransomware campaign involving the Axios npm package linked to North Korean threat actors UNC1069.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T19:00:12.197017
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: TrueConf Zero-Day Exploited in Attacks on Southeast Asian Government Networks
+
+## Draft Post
+Critical security flaw in TrueConf exploited against government networks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T19:00:16.695518
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit TrueConf zero-day to push malicious software updates
+
+## Draft Post
+Hackers are exploiting a critical Remote Code Execution (RCE) flaw in TrueConf conference servers to deploy malware.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T19:00:24.151468
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google fixes fourth Chrome zero-day exploited in attacks in 2026
+
+## Draft Post
+Google has patched a critical Remote Code Execution (RCE) vulnerability that was being exploited as a zero-day in 2026.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T20:00:08.834062
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google Attributes Axios npm Supply Chain Attack to North Korean Group UNC1069
+
+## Draft Post
+Google has identified a ransomware campaign involving the Axios npm package, linked to a North Korean threat group UNC1069.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T20:00:11.224641
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: TrueConf Zero-Day Exploited in Attacks on Southeast Asian Government Networks
+
+## Draft Post
+Critical security flaw in TrueConf exploited against Southeast Asian government targets.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T20:00:15.807355
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit TrueConf zero-day to push malicious software updates
+
+## Draft Post
+Hackers are exploiting a critical Remote Code Execution (RCE) flaw in TrueConf conference servers to deploy malware.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T20:00:22.851796
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google fixes fourth Chrome zero-day exploited in attacks in 2026
+
+## Draft Post
+Google has patched a critical Remote Code Execution (RCE) vulnerability that was being exploited as a zero-day in 2026.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T21:00:09.458643
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google Attributes Axios npm Supply Chain Attack to North Korean Group UNC1069
+
+## Draft Post
+Google has identified a ransomware campaign involving the Axios npm package, linked to the North Korean threat actor group UNC1069.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T21:00:12.272621
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: TrueConf Zero-Day Exploited in Attacks on Southeast Asian Government Networks
+
+## Draft Post
+Critical security flaw in TrueConf exploited against Southeast Asian government targets.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T21:00:16.853245
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit TrueConf zero-day to push malicious software updates
+
+## Draft Post
+Hackers are exploiting a critical Remote Code Execution (RCE) flaw in TrueConf conference servers to deploy malware.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T21:00:25.029773
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google fixes fourth Chrome zero-day exploited in attacks in 2026
+
+## Draft Post
+Google has patched a critical Remote Code Execution (RCE) vulnerability from 2026, reducing its risk to systems and applications using Chrome.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T22:00:19.288409
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google Attributes Axios npm Supply Chain Attack to North Korean Group UNC1069
+
+## Draft Post
+Google has identified and attributed a ransomware campaign targeting Axios npm package to North Korean threat actors UNC1069.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T22:00:23.512670
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: TrueConf Zero-Day Exploited in Attacks on Southeast Asian Government Networks
+
+## Draft Post
+Critical security flaw in TrueConf exploited against Southeast Asian governments.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T22:00:27.872378
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit TrueConf zero-day to push malicious software updates
+
+## Draft Post
+Hackers are exploiting a critical RCE vulnerability in TrueConf conference servers to spread malware.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T22:00:34.974500
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google fixes fourth Chrome zero-day exploited in attacks in 2026
+
+## Draft Post
+Google has patched a critical Remote Code Execution (RCE) vulnerability that was being exploited as a zero-day in 2026.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T23:00:18.258499
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google Attributes Axios npm Supply Chain Attack to North Korean Group UNC1069
+
+## Draft Post
+Google has identified a ransomware campaign involving the Axios npm package, linked to the North Korean threat actor group UNC1069.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T23:00:22.268589
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: TrueConf Zero-Day Exploited in Attacks on Southeast Asian Government Networks
+
+## Draft Post
+Critical security flaw in TrueConf exploited against Southeast Asian governments.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T23:00:26.416269
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit TrueConf zero-day to push malicious software updates
+
+## Draft Post
+Hackers are exploiting a critical Remote Code Execution (RCE) vulnerability in TrueConf conference servers to deploy malware.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-01T23:00:33.810096
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google fixes fourth Chrome zero-day exploited in attacks in 2026
+
+## Draft Post
+Google has patched a critical Remote Code Execution (RCE) vulnerability that was being exploited as a zero-day in 2026.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T00:00:10.384180
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google Attributes Axios npm Supply Chain Attack to North Korean Group UNC1069
+
+## Draft Post
+Google has identified a ransomware campaign involving the Axios npm package linked to North Korean threat actors UNC1069.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T00:00:14.284695
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: TrueConf Zero-Day Exploited in Attacks on Southeast Asian Government Networks
+
+## Draft Post
+Critical security flaw in TrueConf exploited against Southeast Asian governments.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T00:00:18.633103
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit TrueConf zero-day to push malicious software updates
+
+## Draft Post
+Hackers are exploiting a critical Remote Code Execution (RCE) flaw in TrueConf conference servers to distribute malware.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T00:00:25.730541
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google fixes fourth Chrome zero-day exploited in attacks in 2026
+
+## Draft Post
+Google has patched a critical Remote Code Execution (RCE) vulnerability, one of four fixed this year.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T01:00:09.544301
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google Attributes Axios npm Supply Chain Attack to North Korean Group UNC1069
+
+## Draft Post
+Google has identified a ransomware campaign involving the Axios npm package linked to North Korean threat actors UNC1069.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T01:00:13.032288
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: TrueConf Zero-Day Exploited in Attacks on Southeast Asian Government Networks
+
+## Draft Post
+Critical security flaw in TrueConf exploited for nation-state DIB targeting.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T01:00:17.541821
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit TrueConf zero-day to push malicious software updates
+
+## Draft Post
+Hackers are exploiting a critical Remote Code Execution (RCE) flaw in TrueConf conference servers to deploy malware.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T01:00:24.978446
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google fixes fourth Chrome zero-day exploited in attacks in 2026
+
+## Draft Post
+Google has patched a critical Remote Code Execution (RCE) vulnerability that was being exploited as a zero-day in 2026.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T02:00:08.660106
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google Attributes Axios npm Supply Chain Attack to North Korean Group UNC1069
+
+## Draft Post
+Google has identified a ransomware campaign involving the Axios npm package, linked to the North Korean threat actor group UNC1069.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T02:00:11.093055
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: TrueConf Zero-Day Exploited in Attacks on Southeast Asian Government Networks
+
+## Draft Post
+Critical security flaw in TrueConf exploited against Southeast Asian governments.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T02:00:15.740947
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit TrueConf zero-day to push malicious software updates
+
+## Draft Post
+Hackers are exploiting a critical Remote Code Execution (RCE) flaw in TrueConf conference servers to deploy malware.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T02:00:23.204574
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google fixes fourth Chrome zero-day exploited in attacks in 2026
+
+## Draft Post
+Google has patched a critical Remote Code Execution (RCE) vulnerability that was being exploited as a zero-day in 2026.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T03:00:08.937855
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google Attributes Axios npm Supply Chain Attack to North Korean Group UNC1069
+
+## Draft Post
+Google has identified a ransomware campaign involving the Axios npm package, linked to the North Korean threat actor group UNC1069.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T03:00:11.588582
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New CrystalRAT malware adds RAT, stealer and prankware features
+
+## Draft Post
+A new ransomware-as-a-service, CrystalRAT, offers remote access, data theft, and other malicious features via Telegram.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T03:00:14.161557
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit TrueConf zero-day to push malicious software updates
+
+## Draft Post
+Hackers are exploiting a critical Remote Code Execution (RCE) flaw in TrueConf conference servers to deploy malware.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T03:00:21.785577
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google fixes fourth Chrome zero-day exploited in attacks in 2026
+
+## Draft Post
+Google has patched a critical Remote Code Execution (RCE) vulnerability that was being exploited as a zero-day in 2026.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T04:00:09.979284
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google Attributes Axios npm Supply Chain Attack to North Korean Group UNC1069
+
+## Draft Post
+Google has identified a ransomware campaign involving the Axios npm package, linked to the North Korean threat actor cluster UNC1069.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T04:00:12.987310
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Over 14,000 F5 BIG-IP APM instances still exposed to RCE attacks
+
+## Draft Post
+Over 14,000 F5 BIG-IP APM instances remain exposed to a critical remote code execution (RCE) vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T04:00:14.636984
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New CrystalRAT malware adds RAT, stealer and prankware features
+
+## Draft Post
+A new ransomware-as-a-service, CrystalRAT, offers remote access, data theft, keylogging, and clipboard hijacking.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T04:00:17.672478
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit TrueConf zero-day to push malicious software updates
+
+## Draft Post
+Hackers are exploiting a critical Remote Code Execution (RCE) flaw in TrueConf conference servers to deploy malware.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T04:00:24.629101
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google fixes fourth Chrome zero-day exploited in attacks in 2026
+
+## Draft Post
+Google has patched a critical Remote Code Execution (RCE) vulnerability exploited in recent zero-day attacks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T05:00:09.385316
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google Attributes Axios npm Supply Chain Attack to North Korean Group UNC1069
+
+## Draft Post
+Google has identified a ransomware campaign involving the Axios npm package, linked to the North Korean threat actor group UNC1069.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T05:00:13.156468
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Over 14,000 F5 BIG-IP APM instances still exposed to RCE attacks
+
+## Draft Post
+Over 14,000 F5 BIG-IP APM instances remain exposed to a critical remote code execution (RCE) vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T05:00:17.931607
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit TrueConf zero-day to push malicious software updates
+
+## Draft Post
+Hackers are exploiting a critical Remote Code Execution (RCE) flaw in TrueConf conference servers to distribute malware.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T05:00:25.215861
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google fixes fourth Chrome zero-day exploited in attacks in 2026
+
+## Draft Post
+Google has patched a critical Remote Code Execution (RCE) vulnerability, one of four fixed this year.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T06:00:10.778183
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google Attributes Axios npm Supply Chain Attack to North Korean Group UNC1069
+
+## Draft Post
+Google has identified a ransomware campaign involving the Axios npm package, linked to the North Korean threat actor cluster UNC1069.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T06:00:15.184534
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Over 14,000 F5 BIG-IP APM instances still exposed to RCE attacks
+
+## Draft Post
+Over 14,000 F5 BIG-IP APM instances remain exposed to a critical remote code execution (RCE) vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T06:00:19.770290
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit TrueConf zero-day to push malicious software updates
+
+## Draft Post
+Hackers are exploiting a critical Remote Code Execution (RCE) flaw in TrueConf conference servers to deploy malware.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T06:00:20.795349
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New EvilTokens service fuels Microsoft device code phishing attacks
+
+## Draft Post
+Critical Ransomware Campaign Exploits Microsoft Devices with Device Code Phishing.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T06:00:26.664166
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Google fixes fourth Chrome zero-day exploited in attacks in 2026
+
+## Draft Post
+Google has patched a critical Remote Code Execution (RCE) vulnerability, which was exploited as a zero-day attack in 2026.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T07:00:13.455068
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Critical Cisco IMC auth bypass gives attackers Admin access
+
+## Draft Post
+Cisco IMC authentication bypass allows attackers to escalate privileges to Admin level, critical for immediate patching.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T07:00:16.069658
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Over 14,000 F5 BIG-IP APM instances still exposed to RCE attacks
+
+## Draft Post
+Over 14,000 F5 BIG-IP APM instances remain exposed to a critical remote code execution (RCE) vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T07:00:17.579658
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New CrystalRAT malware adds RAT, stealer and prankware features
+
+## Draft Post
+A new ransomware-as-a-service called CrystalRAT is being promoted, providing remote access, data theft, keylogging, and clipboard hijacking.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T07:00:20.341433
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit TrueConf zero-day to push malicious software updates
+
+## Draft Post
+Hackers are exploiting a critical Remote Code Execution (RCE) flaw in TrueConf conference servers to spread malware.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T08:00:12.835860
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Critical Cisco IMC auth bypass gives attackers Admin access
+
+## Draft Post
+Cisco IMC authentication bypass allows attackers to escalate privileges to Admin level, critical for immediate patching.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T08:00:15.408571
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Over 14,000 F5 BIG-IP APM instances still exposed to RCE attacks
+
+## Draft Post
+Over 14,000 F5 BIG-IP APM instances remain exposed to a critical remote code execution (RCE) vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T08:00:17.191110
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New CrystalRAT malware adds RAT, stealer and prankware features
+
+## Draft Post
+A new ransomware-as-a-service called CrystalRAT is being promoted, providing remote access, data theft, keylogging, and clipboard hijacking.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T08:00:19.763298
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit TrueConf zero-day to push malicious software updates
+
+## Draft Post
+Hackers are exploiting a critical Remote Code Execution (RCE) flaw in TrueConf conference servers to spread malware.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T09:00:16.129875
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Critical Cisco IMC auth bypass gives attackers Admin access
+
+## Draft Post
+Cisco IMC authentication bypass allows attackers to escalate privileges to Admin level, critical for immediate patching.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T09:00:19.483843
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Over 14,000 F5 BIG-IP APM instances still exposed to RCE attacks
+
+## Draft Post
+Over 14,000 F5 BIG-IP APM instances remain exposed to a critical remote code execution (RCE) vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T09:00:20.874940
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New CrystalRAT malware adds RAT, stealer and prankware features
+
+## Draft Post
+A new ransomware-as-a-service, CrystalRAT, offers multiple malicious features including remote access, data theft, and keylogging.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T09:00:23.879724
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit TrueConf zero-day to push malicious software updates
+
+## Draft Post
+Hackers are exploiting a critical Remote Code Execution (RCE) flaw in TrueConf conference servers to distribute malware.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T10:00:18.989306
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Critical Cisco IMC auth bypass gives attackers Admin access
+
+## Draft Post
+Cisco IMC auth bypass flaw grants attackers full admin rights.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T10:00:21.433353
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Over 14,000 F5 BIG-IP APM instances still exposed to RCE attacks
+
+## Draft Post
+Over 14,000 F5 BIG-IP APM instances remain exposed to a critical remote code execution (RCE) vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T10:00:26.020347
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit TrueConf zero-day to push malicious software updates
+
+## Draft Post
+Hackers are exploiting a critical Remote Code Execution (RCE) flaw in TrueConf conference servers to deploy malware.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T10:00:27.315641
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New EvilTokens service fuels Microsoft device code phishing attacks
+
+## Draft Post
+Critical ransomware campaign using Microsoft devices for phishing attacks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T11:00:21.393413
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Critical Cisco IMC auth bypass gives attackers Admin access
+
+## Draft Post
+Cisco has issued a patch for a critical RCE vulnerability in IMC, allowing attackers to obtain Admin access.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T11:00:24.708018
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Over 14,000 F5 BIG-IP APM instances still exposed to RCE attacks
+
+## Draft Post
+Over 14,000 F5 BIG-IP APM instances remain exposed to a critical remote code execution (RCE) vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T11:00:29.132909
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit TrueConf zero-day to push malicious software updates
+
+## Draft Post
+Hackers are exploiting a critical Remote Code Execution (RCE) flaw in TrueConf conference servers to deploy malware.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T12:00:20.665912
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Critical Cisco IMC auth bypass gives attackers Admin access
+
+## Draft Post
+Cisco has issued a patch for a critical RCE vulnerability in the Integrated Management Controller (IMC).
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T12:00:23.589418
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Over 14,000 F5 BIG-IP APM instances still exposed to RCE attacks
+
+## Draft Post
+Over 14,000 F5 BIG-IP APM instances remain exposed to a critical remote code execution (RCE) vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T12:00:28.131870
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit TrueConf zero-day to push malicious software updates
+
+## Draft Post
+Hackers are exploiting a critical Remote Code Execution (RCE) flaw in TrueConf conference servers to distribute malware.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T13:00:22.246879
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Critical Cisco IMC auth bypass gives attackers Admin access
+
+## Draft Post
+Cisco IMC auth bypass patching is critical; immediate review and remediation recommended.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T13:00:24.848393
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Over 14,000 F5 BIG-IP APM instances still exposed to RCE attacks
+
+## Draft Post
+Over 14,000 F5 BIG-IP APM instances remain exposed to a critical remote code execution vulnerability, potentially allowing attackers to gain full control.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T13:00:29.387304
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit TrueConf zero-day to push malicious software updates
+
+## Draft Post
+Hackers are exploiting a critical Remote Code Execution (RCE) flaw in TrueConf conference servers to distribute malware.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T14:00:21.551137
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Critical Cisco IMC auth bypass gives attackers Admin access
+
+## Draft Post
+Cisco has issued a patch for a critical RCE vulnerability in the Integrated Management Controller (IMC).
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T14:00:24.254627
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Over 14,000 F5 BIG-IP APM instances still exposed to RCE attacks
+
+## Draft Post
+Over 14,000 F5 BIG-IP APM instances remain exposed to a critical remote code execution (RCE) vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T14:00:29.121854
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit TrueConf zero-day to push malicious software updates
+
+## Draft Post
+Hackers are exploiting a critical Remote Code Execution (RCE) flaw in TrueConf conference servers to distribute malware.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T15:00:32.199899
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Critical Cisco IMC auth bypass gives attackers Admin access
+
+## Draft Post
+Cisco IMC auth bypass patching is critical; immediate review and remediation recommended.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T15:00:34.926992
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Over 14,000 F5 BIG-IP APM instances still exposed to RCE attacks
+
+## Draft Post
+Over 14,000 F5 BIG-IP APM instances remain exposed to a critical remote code execution (RCE) vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T16:00:05.452049
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers Exploit CVE-2025-55182 to Breach 766 Next.js Hosts, Steal Credentials
+
+## Draft Post
+Hackers are exploiting CVE-2025-55182 to steal credentials from over 766 Next.js-hosted applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T16:00:30.839974
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Critical Cisco IMC auth bypass gives attackers Admin access
+
+## Draft Post
+Cisco IMC authentication bypass allows attackers to escalate privileges to Admin level, critical for immediate patching.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T16:00:34.088073
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Over 14,000 F5 BIG-IP APM instances still exposed to RCE attacks
+
+## Draft Post
+Over 14,000 F5 BIG-IP APM instances remain exposed to a critical remote code execution (RCE) vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T16:00:35.730172
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New CrystalRAT malware adds RAT, stealer and prankware features
+
+## Draft Post
+A new ransomware-as-a-service, CrystalRAT, offers multiple malicious functionalities including remote access, data theft, and keylogging.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T17:00:21.505412
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Critical Cisco IMC auth bypass gives attackers Admin access
+
+## Draft Post
+Cisco IMC auth bypass patching required for critical security update.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T17:00:24.539954
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Over 14,000 F5 BIG-IP APM instances still exposed to RCE attacks
+
+## Draft Post
+Over 14,000 F5 BIG-IP APM instances remain exposed to a critical remote code execution (RCE) vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T18:00:34.059525
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Critical Cisco IMC auth bypass gives attackers Admin access
+
+## Draft Post
+Cisco has issued a patch for a critical RCE vulnerability affecting its Integrated Management Controller (IMC).
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T18:00:36.707500
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Over 14,000 F5 BIG-IP APM instances still exposed to RCE attacks
+
+## Draft Post
+Over 14,000 F5 BIG-IP APM instances remain exposed to a critical remote code execution (RCE) vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T19:00:22.273667
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Critical Cisco IMC auth bypass gives attackers Admin access
+
+## Draft Post
+Cisco has issued a patch for a critical RCE vulnerability in the Integrated Management Controller (IMC).
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T19:00:25.283807
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Over 14,000 F5 BIG-IP APM instances still exposed to RCE attacks
+
+## Draft Post
+Over 14,000 F5 BIG-IP APM instances remain exposed to a critical remote code execution (RCE) vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T20:00:23.072336
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Critical Cisco IMC auth bypass gives attackers Admin access
+
+## Draft Post
+Cisco IMC auth bypass patching is critical; immediate review and remediation recommended.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T20:00:25.965516
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Over 14,000 F5 BIG-IP APM instances still exposed to RCE attacks
+
+## Draft Post
+Over 14,000 F5 BIG-IP APM instances remain exposed to a critical remote code execution (RCE) vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T21:00:20.431614
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Critical Cisco IMC auth bypass gives attackers Admin access
+
+## Draft Post
+Cisco IMC auth bypass allows attackers to escalate privileges with critical RCE.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T21:00:22.863256
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Over 14,000 F5 BIG-IP APM instances still exposed to RCE attacks
+
+## Draft Post
+Over 14,000 F5 BIG-IP APM instances remain exposed to a critical remote code execution (RCE) vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T22:00:35.989660
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Critical Cisco IMC auth bypass gives attackers Admin access
+
+## Draft Post
+Cisco IMC auth bypass allows attackers to escalate privileges with critical RCE.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T22:00:37.792727
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Over 14,000 F5 BIG-IP APM instances still exposed to RCE attacks
+
+## Draft Post
+Over 14,000 F5 BIG-IP APM instances remain exposed to a critical remote code execution vulnerability, potentially allowing attackers to gain full control.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T23:00:26.820270
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Critical Cisco IMC auth bypass gives attackers Admin access
+
+## Draft Post
+Cisco IMC auth bypass allows attackers to escalate privileges with critical RCE.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T23:00:28.113348
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Over 14,000 F5 BIG-IP APM instances still exposed to RCE attacks
+
+## Draft Post
+Over 14,000 F5 BIG-IP APM instances remain exposed to a critical remote code execution vulnerability, potentially allowing attackers to gain full control.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-02T23:00:28.938449
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New CrystalRAT malware adds RAT, stealer and prankware features
+
+## Draft Post
+A new ransomware-as-a-service, CrystalRAT, is being promoted with features for remote access, data theft, keylogging, and clipboard hijacking.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T00:00:27.787731
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Critical Cisco IMC auth bypass gives attackers Admin access
+
+## Draft Post
+Cisco IMC authentication bypass could grant unauthorized Admin access. Patch immediately if affected.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T00:00:29.053385
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Over 14,000 F5 BIG-IP APM instances still exposed to RCE attacks
+
+## Draft Post
+Over 14,000 F5 BIG-IP APM instances remain exposed to a critical remote code execution (RCE) vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T00:00:29.836298
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New CrystalRAT malware adds RAT, stealer and prankware features
+
+## Draft Post
+A new ransomware-as-a-service called CrystalRAT is being promoted, providing remote access, data theft, keylogging, and clipboard hijacking.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T01:00:25.295169
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift loses $280 million North Korean hackers seize Security Council powers
+
+## Draft Post
+Drift Protocol breach highlights ransomware attack on financial systems.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T01:00:29.266937
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Critical Cisco IMC auth bypass gives attackers Admin access
+
+## Draft Post
+A critical RCE vulnerability has been patched by Cisco, allowing attackers to gain Admin access to the Integrated Management Controller (IMC).
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T01:00:30.873572
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Over 14,000 F5 BIG-IP APM instances still exposed to RCE attacks
+
+## Draft Post
+Over 14,000 F5 BIG-IP APM instances remain exposed to a critical remote code execution vulnerability, potentially allowing attackers to gain full control.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T01:00:31.641601
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New CrystalRAT malware adds RAT, stealer and prankware features
+
+## Draft Post
+A new ransomware-as-a-service, CrystalRAT, offers remote access, data theft, keylogging, and clipboard hijacking.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T02:00:21.342591
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift loses $280 million North Korean hackers seize Security Council powers
+
+## Draft Post
+The Drift Protocol suffered a ransomware attack, seizing and potentially extorting $280 million from its users.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T02:00:25.095402
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Critical Cisco IMC auth bypass gives attackers Admin access
+
+## Draft Post
+Cisco IMC authentication bypass allows attackers to escalate privileges to Admin level, critical for immediate patching.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T02:00:26.571451
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Over 14,000 F5 BIG-IP APM instances still exposed to RCE attacks
+
+## Draft Post
+Over 14,000 F5 BIG-IP APM instances remain exposed to a critical remote code execution vulnerability, potentially allowing attackers to execute arbitrary code.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T03:00:22.394284
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift loses $280 million North Korean hackers seize Security Council powers
+
+## Draft Post
+Critical Ransomware attack on Drift Protocol compromises Security Council powers.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T03:00:26.083064
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Critical Cisco IMC auth bypass gives attackers Admin access
+
+## Draft Post
+Cisco has issued a patch for a critical RCE vulnerability in the Integrated Management Controller (IMC).
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T04:00:24.525238
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift loses $280 million North Korean hackers seize Security Council powers
+
+## Draft Post
+A ransomware attack on the Drift Protocol has resulted in significant financial loss and potential disruption to security council operations.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T04:00:28.306804
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Critical Cisco IMC auth bypass gives attackers Admin access
+
+## Draft Post
+Cisco IMC authentication bypass allows attackers to escalate privileges to Admin level, critical for immediate patching.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T05:00:05.055488
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T05:00:24.212664
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift loses $280 million North Korean hackers seize Security Council powers
+
+## Draft Post
+A ransomware attack on the Drift Protocol has resulted in significant financial loss and potential disruption to security council operations.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T05:00:28.003952
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Critical Cisco IMC auth bypass gives attackers Admin access
+
+## Draft Post
+Cisco IMC auth bypass patching is critical; immediate review and remediation recommended.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T06:00:04.694729
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T06:00:25.407157
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift loses $280 million North Korean hackers seize Security Council powers
+
+## Draft Post
+Critical Ransomware Campaign Targets High-Value Assets with $280 Million Loss.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T06:00:29.275512
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Critical Cisco IMC auth bypass gives attackers Admin access
+
+## Draft Post
+Cisco IMC authentication bypass allows attackers to escalate privileges to Admin level, critical for immediate patching.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T07:00:05.501046
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T07:00:25.491441
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift loses $280 million North Korean hackers seize Security Council powers
+
+## Draft Post
+Drift Protocol breach highlights ransomware attack on financial systems.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T08:00:03.982009
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A notable breach involving a high-value npm package due to a sophisticated social engineering attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T08:00:06.243406
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T08:00:24.774463
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift loses $280 million North Korean hackers seize Security Council powers
+
+## Draft Post
+The Drift Protocol suffered a ransomware attack, seizing and potentially extorting $280 million from its users.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T09:00:04.987351
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A high-profile npm package supply chain attack was executed through a targeted social engineering campaign by North Korean threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T09:00:07.339802
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T09:00:27.940488
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift loses $280 million North Korean hackers seize Security Council powers
+
+## Draft Post
+Critical breach involving ransomware attack on Drift Protocol's security council operations.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T10:00:04.555218
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain compromise through Axios npm package highlights a high-risk RCE vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T10:00:06.812417
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T10:00:27.525925
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift loses $280 million North Korean hackers seize Security Council powers
+
+## Draft Post
+Critical Ransomware Campaign Targets Drift Protocol with $280 Million Loss.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T11:00:04.571263
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain compromise of the Axios npm package suggests a sophisticated social engineering campaign by North Korean threat actors targeting a high-value asset.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T11:00:06.770505
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actor.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T11:00:26.037160
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift loses $280 million North Korean hackers seize Security Council powers
+
+## Draft Post
+Critical ransomware attack on Drift Protocol highlights need for enhanced security measures.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T12:00:04.233349
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain compromise through Axios npm package highlights a high-risk RCE vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T12:00:06.529262
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Why Third-Party Risk Is the Biggest Gap in Your Clients' Security Posture
+
+## Draft Post
+A major breach at clients' organizations may originate from trusted vendors rather than internal threats.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T12:00:10.790919
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T12:00:49.574989
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke German political party faces potential data breach due to Qilin ransomware attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T12:01:04.764926
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift loses $280 million North Korean hackers seize Security Council powers
+
+## Draft Post
+Critical Ransomware Campaign Targets Drift Protocol with $280 Million Loss.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T13:00:06.882261
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+High alert: UNC1069 social engineering attack led to npm supply chain compromise by North Korean threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T13:00:09.101353
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T13:00:19.479657
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms Qilin ransomware attack, potential data breach.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T13:00:24.918013
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift loses $280 million North Korean hackers seize Security Council powers
+
+## Draft Post
+Critical Ransomware Campaign Targets Drift Protocol with $280 Million Loss.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T14:00:06.074736
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain compromise through Axios npm package highlights a high-risk RCE vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T14:00:08.319143
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T14:00:23.235230
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms Qilin ransomware attack, potential data breach.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T14:00:28.684229
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift loses $280 million North Korean hackers seize Security Council powers
+
+## Draft Post
+Drift Protocol hit by ransomware, losing $280 million.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T16:00:05.953269
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain compromise through Axios npm package highlights a high-risk RCE vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T16:00:08.536661
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T16:00:20.705895
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms Qilin ransomware attack, potential data breach threat.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T16:00:26.113978
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift loses $280 million North Korean hackers seize Security Council powers
+
+## Draft Post
+Critical Ransomware Campaign Targets Drift Protocol with $280 Million Loss.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T17:00:06.074275
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+Axios maintainer compromised, suggesting active and targeted supply chain attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T17:00:08.355937
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T17:00:23.342877
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms Qilin ransomware attack, potential data breach.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T17:00:29.029332
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift loses $280 million as North Korean hackers seize Security Council powers
+
+## Draft Post
+Drift Protocol breach highlights critical vulnerabilities in security protocols.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T18:00:06.302571
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain compromise of the Axios npm package suggests a potential RCE or ransomware campaign by North Korean threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T18:00:08.584233
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T18:00:22.139074
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms Qilin ransomware attack, potential data breach imminent.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T18:00:27.205642
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift loses $280 million as North Korean hackers seize Security Council powers
+
+## Draft Post
+Drift Protocol hit by ransomware, potentially losing $280 million.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T19:00:06.583638
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+Axios maintainer compromised, suggesting active and targeted supply chain attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T19:00:09.009224
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T19:00:25.729295
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms Qilin ransomware attack, potential data breach.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T19:00:31.142065
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift loses $280 million as North Korean hackers seize Security Council powers
+
+## Draft Post
+Drift Protocol hit by ransomware, potentially exposing $280 million.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T20:00:06.429727
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain compromise through Axios npm package highlights a high-risk RCE vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T20:00:08.516962
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T20:00:22.981510
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms Qilin ransomware attack, potential data breach.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T20:00:28.481267
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift loses $280 million as North Korean hackers seize Security Council powers
+
+## Draft Post
+Drift Protocol hit by ransomware, potentially exposing $280 million.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T21:00:05.671889
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+High alert: Axios maintainer compromised due to targeted social engineering by North Korean threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T21:00:07.873827
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T21:00:22.382182
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms Qilin ransomware attack, potential data breach.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T21:00:27.751027
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift loses $280 million as North Korean hackers seize Security Council powers
+
+## Draft Post
+Drift Protocol breach highlights critical vulnerabilities in security protocols.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T22:00:06.320714
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain compromise of the Axios npm package suggests a sophisticated social engineering campaign by North Korean threat actors targeting critical infrastructure.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T22:00:08.506566
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T22:00:21.878427
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms data stolen in Qilin ransomware attack, causing system outages and potential data leaks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T22:00:26.686741
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift loses $280 million as North Korean hackers seize Security Council powers
+
+## Draft Post
+Drift Protocol hit by ransomware, potentially losing $280 million.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b

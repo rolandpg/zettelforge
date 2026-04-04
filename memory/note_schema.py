@@ -34,6 +34,7 @@ class Links(BaseModel):
     """Conceptual links to other notes"""
     related: List[str] = Field(default_factory=list)
     superseded_by: Optional[str] = None
+    supersedes: List[str] = Field(default_factory=list)  # Notes this note supersedes
     causal_chain: List[str] = Field(default_factory=list)
 
 
@@ -45,6 +46,7 @@ class Metadata(BaseModel):
     confidence: float = 1.0  # Decays for inferred/evolved content
     ttl: Optional[int] = None  # Time-to-live in days
     domain: str = "general"  # security_ops | project | personal | research
+    tier: str = "B"  # Epistemic tier: A (authoritative) | B (operational) | C (support)
 
 
 class MemoryNote(BaseModel):

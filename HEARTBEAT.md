@@ -205,6 +205,54 @@ Track CTI stack improvements in `notes/cti-improvements.md`:
 
 ---
 
+## Fleet Sync (Morning — 07:00 CDT)
+
+Read Tamara's daily sync:
+```bash
+cat ~/.openclaw/workspace-tamara/fleet/tamara_daily.md 2>/dev/null
+```
+
+Read Vigil's daily sync:
+```bash
+cat ~/.openclaw/workspace-vigil/fleet/vigil_daily.md 2>/dev/null
+```
+
+Read Nexus's daily sync:
+```bash
+cat ~/.openclaw/workspace-nexus/fleet/nexus_daily.md 2>/dev/null
+```
+
+Write my daily sync:
+```bash
+cat > ~/.openclaw/workspace/fleet/patton_daily.md << 'EOF'
+# Patton Daily Sync
+**Date:** $(date +%Y-%m-%d)
+
+## CTI Findings
+-
+
+## Infrastructure Alerts
+-
+
+## Strategy Shifts
+-
+
+## Open Items for Tamara
+-
+
+## Open Items for Vigil
+-
+
+## Open Items for Nexus
+-
+
+## Notes
+EOF
+```
+Cross-reference both syncs for alignment. Flag conflicts or open handoffs.
+
+---
+
 ## How to Use This File
 
 During every heartbeat, check ALL sections in this order:
@@ -215,5 +263,6 @@ During every heartbeat, check ALL sections in this order:
 5. X engagement (if 12 PM or 6 PM block)
 6. Gap analysis (always be hunting)
 7. Memory maintenance (if triggered)
+8. Fleet sync (morning block)
 
 **Never just say HEARTBEAT_OK — actually do the work.**

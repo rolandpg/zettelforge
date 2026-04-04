@@ -475,3 +475,53 @@ No alerts triggered.
 **Action:** RESEARCH
 
 📭 No alerts ready for social media yet
+
+## Alerts: 1 found | 2026-04-01T23:00:01.720677
+
+### 🔴 CRITICAL_CVE | Severity: CRITICAL
+**Summary:** CVE-CVE-2026-3055 - CVSS 9.0
+**Description:** Citrix NetScaler ADC (formerly Citrix ADC), NetScaler Gateway (formerly Citrix Gateway) and NetScaler ADC FIPS and NDcPP contain an out-of-bounds reads vulnerability when configured as a SAML IDP lead
+**Source:** NVD
+**Action:** RESEARCH
+
+📭 No alerts ready for social media yet
+
+## Alerts: 1 found | 2026-04-02T11:00:01.595249
+
+### 🔴 CRITICAL_CVE | Severity: CRITICAL
+**Summary:** CVE-CVE-2026-3055 - CVSS 9.0
+**Description:** Citrix NetScaler ADC (formerly Citrix ADC), NetScaler Gateway (formerly Citrix Gateway) and NetScaler ADC FIPS and NDcPP contain an out-of-bounds reads vulnerability when configured as a SAML IDP lead
+**Source:** NVD
+**Action:** RESEARCH
+
+📭 No alerts ready for social media yet
+
+## Alerts: 1 found | 2026-04-02T23:00:01.461658
+
+### 🔴 CRITICAL_CVE | Severity: CRITICAL
+**Summary:** CVE-CVE-2026-3055 - CVSS 9.0
+**Description:** Citrix NetScaler ADC (formerly Citrix ADC), NetScaler Gateway (formerly Citrix Gateway) and NetScaler ADC FIPS and NDcPP contain an out-of-bounds reads vulnerability when configured as a SAML IDP lead
+**Source:** NVD
+**Action:** RESEARCH
+
+📭 No alerts ready for social media yet
+
+## Alerts: 1 found | 2026-04-03T11:00:01.179433
+
+### 🔴 CRITICAL_CVE | Severity: CRITICAL
+**Summary:** CVE-CVE-2026-3055 - CVSS 9.0
+**Description:** Citrix NetScaler ADC (formerly Citrix ADC), NetScaler Gateway (formerly Citrix Gateway) and NetScaler ADC FIPS and NDcPP contain an out-of-bounds reads vulnerability when configured as a SAML IDP lead
+**Source:** NVD
+**Action:** RESEARCH
+
+📭 No alerts ready for social media yet
+
+## Alerts: 1 found | 2026-04-03T23:00:01.586912
+
+### 🔴 CRITICAL_CVE | Severity: CRITICAL
+**Summary:** CVE-CVE-2026-3055 - CVSS 9.0
+**Description:** Citrix NetScaler ADC (formerly Citrix ADC), NetScaler Gateway (formerly Citrix Gateway) and NetScaler ADC FIPS and NDcPP contain an out-of-bounds reads vulnerability when configured as a SAML IDP lead
+**Source:** NVD
+**Action:** RESEARCH
+
+📭 No alerts ready for social media yet

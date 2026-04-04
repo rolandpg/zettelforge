@@ -20,3 +20,5 @@ Key learnings: xurl auth = OAuth1 pre-configured. Django models: check field nam
 Qualys TRU: Broken Physics of Remediation (Mar 2026) — TTE -1 day, 6.5x KEV vol, 88% defender loss. Sub-1% of CVEs weaponized. Risk Mass (exposure-days) > MTTR. Full briefing: memory/briefings/qualys-remediation-physics-20260331.md
 §
 Planned infrastructure: HashiCorp Vault (local homelab, not yet installed). Patrick planning deployment. MCP server: hashicorp/vault-mcp-server. When deployed: create skill vault-read, vault-write, vault-policy-check wrapping MCP tools.
+§
+OpenClaw Multi-Agent: Each agent has isolated workspace + agentDir + sessions. Routing via bindings (most-specific wins). Agent-to-agent messaging requires `tools.agentToAgent.enabled=true` + allowlist. Fleet pattern: shared file sync for daily summaries, `sessions_send` for urgent alerts. Current fleet: main (Patton, default), tamara (social), vigil (CTI, background), nexus (AI research). A2A enabled 2026-04-03. Full reference: notes/openclaw-multi-agent.md

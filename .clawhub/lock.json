@@ -7,15 +7,15 @@
     },
     "proactive-agent": {
       "version": "3.1.0",
-      "installedAt": 1774045704137
+      "installedAt": 1775088528985
     },
     "x-algorithm": {
       "version": "1.0.3",
-      "installedAt": 1774046569920
+      "installedAt": 1775088399605
     },
     "x-articles": {
       "version": "1.1.2",
-      "installedAt": 1774046655575
+      "installedAt": 1775088405630
     },
     "ai-viral-trend-hijacker": {
       "version": "1.0.0",
@@ -48,6 +48,30 @@
     "auto-updater": {
       "version": "1.0.0",
       "installedAt": 1774047482162
+    },
+    "self-improving": {
+      "version": "1.2.16",
+      "installedAt": 1775088141044
+    },
+    "proactive-agent-lite": {
+      "version": "1.0.0",
+      "installedAt": 1775088142707
+    },
+    "humanizer": {
+      "version": "1.0.0",
+      "installedAt": 1775088458001
+    },
+    "ontology": {
+      "version": "1.0.4",
+      "installedAt": 1775088979334
+    },
+    "zapier": {
+      "version": "1.0.0",
+      "installedAt": 1775088975036
+    },
+    "AnswerOverflow": {
+      "version": "1.0.2",
+      "installedAt": 1775181606920
     }
   }
 }

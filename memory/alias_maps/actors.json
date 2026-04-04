@@ -178,6 +178,20 @@
       "names": [
         "rhysida"
       ]
+    },
+    "test_actor_xyz": {
+      "names": [
+        "test_alias_new_aau"
+      ],
+      "mitre_id": null,
+      "canonical": "test_actor_xyz"
+    },
+    "reload_test_actor": {
+      "names": [
+        "reload_test_alias_aaa"
+      ],
+      "mitre_id": null,
+      "canonical": "reload_test_actor"
     }
   }
 }

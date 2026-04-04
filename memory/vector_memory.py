@@ -25,20 +25,34 @@ from pathlib import Path
 
 # ── Embedding ──────────────────────────────────────────────────────────────────
 
-def get_embedding(text: str, model: str = 'nomic-embed-text-v2-moe:latest') -> list:
-    """Generate embedding via local Ollama."""
+LLAMA_SERVER_URL = "http://localhost:8080/embedding"
+
+
+def get_embedding(text: str, model: str = "nomic-embed-text-v2-moe") -> list:
+    """Generate embedding via llama-server (GPU-accelerated) or Ollama fallback."""
+    # Try llama-server first
+    try:
+        import requests
+        resp = requests.post(LLAMA_SERVER_URL, json={"content": text}, timeout=30)
+        resp.raise_for_status()
+        data = resp.json()
+        emb_list = data[0]["embedding"]
+        if emb_list and isinstance(emb_list[0], list):
+            return emb_list[0]
+        return emb_list
+    except Exception:
+        pass
+    # Fallback to Ollama
     import ollama
     resp = ollama.embeddings(model=model, prompt=text)
-    return resp.get('embedding', [])
+    return resp.get("embedding", [])
 
 
-def get_embedding_batch(texts: list, model: str = 'nomic-embed-text-v2-moe:latest') -> list:
-    """Batch embed multiple texts via Ollama."""
-    import ollama
+def get_embedding_batch(texts: list, model: str = "nomic-embed-text-v2-moe") -> list:
+    """Batch embed multiple texts via llama-server or Ollama fallback."""
     embeddings = []
     for text in texts:
-        resp = ollama.embeddings(model=model, prompt=text)
-        embeddings.append(resp.get('embedding', []))
+        embeddings.append(get_embedding(text, model))
     return embeddings
 
 

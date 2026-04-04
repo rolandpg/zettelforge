@@ -1,22 +1,74 @@
 """
 Embedding Generation Utilities
 Roland Fleet Agentic Memory Architecture V1.0
+
+Supports two backends:
+  - llama-server (GPU-accelerated, ~5ms/embed, port 8080)
+  - Ollama (CPU, ~73ms/embed)
+
+llama-server is used by default when available.
 """
 import ollama
+import requests
+import os
 import hashlib
-from typing import List
+from typing import List, Optional
 
 
 class EmbeddingGenerator:
-    """Generate embeddings using Ollama with nomic-embed-text"""
-    
-    def __init__(self, model: str = "nomic-embed-text-v2-moe"):
+    """Generate embeddings using llama-server or Ollama with nomic-embed-text"""
+
+    DEFAULT_MODEL = "nomic-embed-text-v2-moe"
+    LLAMA_SERVER_URL = os.environ.get(
+        "LLAMA_SERVER_URL",
+        "http://localhost:8080/embedding"
+    )
+
+    def __init__(
+        self,
+        model: str = DEFAULT_MODEL,
+        use_llama_server: Optional[bool] = None,
+    ):
         self.model = model
-    
+        # Auto-detect: use llama-server if available, unless overridden
+        if use_llama_server is None:
+            use_llama_server = self._check_llama_server()
+        self.use_llama_server = use_llama_server
+
+    def _check_llama_server(self) -> bool:
+        """Check if llama-server is reachable."""
+        try:
+            resp = requests.post(
+                self.LLAMA_SERVER_URL,
+                json={"content": "health"},
+                timeout=3,
+            )
+            return resp.status_code == 200
+        except Exception:
+            return False
+
     def embed(self, text: str) -> List[float]:
-        """Generate embedding vector for a single text"""
+        """Generate embedding vector for a single text."""
+        if self.use_llama_server:
+            return self._embed_via_llama_server(text)
+        else:
+            return self._embed_via_ollama(text)
+
+    def _embed_via_llama_server(self, text: str) -> List[float]:
+        """Generate embedding via llama-server (GPU-accelerated, ~5ms)."""
+        resp = requests.post(self.LLAMA_SERVER_URL, json={"content": text}, timeout=30)
+        resp.raise_for_status()
+        data = resp.json()
+        # llama-server returns [{"index": 0, "embedding": [[[...]]]]}]
+        emb_list = data[0]["embedding"]
+        if emb_list and isinstance(emb_list[0], list):
+            return emb_list[0]  # flatten first embedding
+        return emb_list
+
+    def _embed_via_ollama(self, text: str) -> List[float]:
+        """Generate embedding via Ollama (CPU, ~73ms)."""
         response = ollama.embeddings(model=self.model, prompt=text)
-        return response['embedding']
+        return response["embedding"]
     
     def embed_batch(self, texts: List[str]) -> List[List[float]]:
         """Generate embeddings for multiple texts"""

@@ -166,6 +166,99 @@ class AliasResolver:
                 }
         return stats
 
+    # -------------------------------------------------------------------------
+    # Auto-update alias list (Phase 3.5)
+    # Called by memory_manager when a new alias is observed in 3+ notes
+    # -------------------------------------------------------------------------
+
+    def add_alias(self, entity_type: str, canonical: str, alias: str) -> bool:
+        """
+        Add a new alias to an existing canonical entry.
+        Returns True if added, False if no change (alias already exists or
+        canonical not found).
+        """
+        if entity_type not in self._maps:
+            return False
+        if canonical not in self._maps[entity_type]:
+            return False
+
+        alias_lower = alias.lower().strip()
+        existing_names = [a.lower() for a in self._maps[entity_type][canonical].get('names', [])]
+        if alias_lower in existing_names:
+            return False  # Already present as alias for this canonical
+
+        # Raise on collision: alias already maps to a different canonical
+        if entity_type in self._reverse and alias_lower in self._reverse[entity_type]:
+            existing_canonical = self._reverse[entity_type][alias_lower]
+            if existing_canonical != canonical:
+                raise ValueError(
+                    f"Alias collision: '{alias}' already maps to '{existing_canonical}'; "
+                    f"cannot add as alias of '{canonical}'. "
+                    f"Resolve the collision first."
+                )
+
+        self._maps[entity_type][canonical]['names'].append(alias)
+        self._reverse.setdefault(entity_type, {})[alias_lower] = canonical
+
+        # Persist to disk
+        self._save_alias_map(entity_type)
+        return True
+
+    def add_canonical_with_alias(
+        self,
+        entity_type: str,
+        canonical: str,
+        alias: str,
+        mitre_id: Optional[str] = None
+    ) -> bool:
+        """
+        Add a new canonical entry with its first alias.
+        Used when a new actor/tool/campaign is discovered.
+        Returns True if created, False if canonical already exists.
+        """
+        if entity_type not in self._maps:
+            self._maps[entity_type] = {}
+        if canonical in self._maps[entity_type]:
+            return False  # Already exists
+
+        self._maps[entity_type][canonical] = {
+            'canonical': canonical,
+            'names': [alias.lower().strip()],
+            'mitre_id': mitre_id
+        }
+        self._reverse.setdefault(entity_type, {})[alias.lower().strip()] = canonical
+
+        # Persist to disk
+        self._save_alias_map(entity_type)
+        return True
+
+    def _save_alias_map(self, entity_type: str) -> None:
+        """Write alias map back to disk preserving _meta. Atomic via temp + rename."""
+        map_file = self.alias_map_dir / f"{entity_type}s.json"
+        if not map_file.exists():
+            map_file = self.alias_map_dir / f"{entity_type}.json"
+
+        output = {'_meta': self._meta.get(entity_type, {})}
+        output['aliases'] = self._maps.get(entity_type, {})
+
+        # Atomic write: temp file + rename
+        tmp_file = map_file.with_suffix('.json.tmp')
+        with open(tmp_file, 'w') as f:
+            json.dump(output, f, indent=2)
+        tmp_file.rename(map_file)
+
+    def is_known_alias(self, entity_type: str, name: str) -> bool:
+        """Check if a name is a known alias (in the reverse map)."""
+        if entity_type not in self._reverse:
+            return False
+        return name.lower().strip() in self._reverse[entity_type]
+
+    def is_known_canonical(self, entity_type: str, name: str) -> bool:
+        """Check if a name is a known canonical entity."""
+        if entity_type not in self._maps:
+            return False
+        return name.lower().strip() in self._maps[entity_type]
+
 
 # =============================================================================
 # resolve_all() — Pipeline Integration Function

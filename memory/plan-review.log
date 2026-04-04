@@ -294,3 +294,902 @@ Memory: 65 notes, 26 entities indexed
 PRD: {'1': '✅ Entity Indexing ✅\n| Requirement | Test |\n|---|---|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| Entity index p', '2': '✅ Entity-Guided Linking ✅\n| Requirement | Test |\n|---|---|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates include entit', '3': '✅ Date-Aware Retrieval ⚪\n| Requirement | Test |\n|---|---|\n| Supersedes tracking | Newer note on same entity marks older as superseded |\n| Retrieval excludes superseded notes | `recall()` filters out not', '4': '✅ Mid-Session Snapshot Refresh ⚪\n| Requirement | Test |\n|---|---|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on recall | `rec', '5': '✅ Cold Archive ⚪\n| Requirement | Test |\n|---|---|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from active recal'}
 
 Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-01T14:30:01.468559
+Tests: 33/33 passed
+  All tests passing
+Memory: 66 notes, 26 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n| Requirement | Test |\n|---|---|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| Entity index p', '2': '✅ Entity-Guided Linking ✅\n| Requirement | Test |\n|---|---|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates include entit', '3': '✅ Date-Aware Retrieval ⚪\n| Requirement | Test |\n|---|---|\n| Supersedes tracking | Newer note on same entity marks older as superseded |\n| Retrieval excludes superseded notes | `recall()` filters out not', '4': '✅ Mid-Session Snapshot Refresh ⚪\n| Requirement | Test |\n|---|---|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on recall | `rec', '5': '✅ Cold Archive ⚪\n| Requirement | Test |\n|---|---|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from active recal'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-01T15:00:01.217452
+Tests: 33/33 passed
+  All tests passing
+Memory: 66 notes, 26 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ⚪\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ⚪\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ⚪\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-01T15:30:01.658175
+Tests: 33/33 passed
+  All tests passing
+Memory: 66 notes, 26 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ⚪\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ⚪\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ⚪\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-01T16:00:01.783843
+Tests: 33/33 passed
+  All tests passing
+Memory: 66 notes, 26 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ⚪\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ⚪\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ⚪\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-01T16:30:01.790783
+Tests: 33/33 passed
+  All tests passing
+Memory: 66 notes, 26 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ⚪\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ⚪\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ⚪\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-01T17:00:01.072639
+Tests: 33/33 passed
+  All tests passing
+Memory: 66 notes, 26 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ⚪\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ⚪\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ⚪\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-01T17:30:01.982505
+Tests: 33/33 passed
+  All tests passing
+Memory: 66 notes, 26 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ⚪\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ⚪\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ⚪\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-01T18:00:01.644143
+Tests: 33/33 passed
+  All tests passing
+Memory: 66 notes, 26 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ⚪\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ⚪\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ⚪\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-01T18:30:01.734669
+Tests: 33/33 passed
+  All tests passing
+Memory: 66 notes, 26 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ⚪\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ⚪\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ⚪\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-01T19:00:01.774965
+Tests: 33/33 passed
+  All tests passing
+Memory: 66 notes, 26 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ⚪\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ⚪\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ⚪\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-01T19:30:01.246443
+Tests: 33/33 passed
+  All tests passing
+Memory: 66 notes, 26 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ⚪\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ⚪\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ⚪\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-01T20:00:01.611860
+Tests: 33/33 passed
+  All tests passing
+Memory: 66 notes, 26 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ⚪\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ⚪\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ⚪\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-01T20:30:01.777550
+Tests: 33/33 passed
+  All tests passing
+Memory: 70 notes, 26 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ⚪\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ⚪\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ⚪\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-01T21:00:01.863283
+Tests: 33/33 passed
+  All tests passing
+Memory: 72 notes, 26 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ⚪\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ⚪\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ⚪\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-01T21:30:01.113334
+Tests: 33/33 passed
+  All tests passing
+Memory: 83 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ⚪\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ⚪\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ⚪\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-01T22:00:01.964676
+Tests: 33/33 passed
+  All tests passing
+Memory: 94 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-01T22:30:01.198368
+Tests: 0/0 passed
+  All tests passing
+Memory: 99 notes, 27 entities indexed
+  Test error: Test suite timed out (>120s)
+
+PRD: {'1': '⚪ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '⚪ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '⚪ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '⚪ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '⚪ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: Tests failed — run test suite manually
+Memory Plan Review — 2026-04-01T23:00:01.501086
+Tests: 0/0 passed
+  All tests passing
+Memory: 114 notes, 27 entities indexed
+  Test error: Test suite timed out (>120s)
+
+PRD: {'1': '⚪ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '⚪ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '⚪ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '⚪ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '⚪ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: Tests failed — run test suite manually
+Memory Plan Review — 2026-04-01T23:30:01.814887
+Tests: 33/33 passed
+  All tests passing
+Memory: 114 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T00:00:01.598397
+Tests: 0/0 passed
+  All tests passing
+Memory: 114 notes, 27 entities indexed
+  Test error: Test suite timed out (>120s)
+
+PRD: {'1': '⚪ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '⚪ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '⚪ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '⚪ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '⚪ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: Tests failed — run test suite manually
+Memory Plan Review — 2026-04-02T00:30:01.994035
+Tests: 33/33 passed
+  All tests passing
+Memory: 114 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T01:00:01.689436
+Tests: 33/33 passed
+  All tests passing
+Memory: 114 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T01:30:01.191268
+Tests: 33/33 passed
+  All tests passing
+Memory: 114 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T02:00:01.333459
+Tests: 33/33 passed
+  All tests passing
+Memory: 114 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T02:30:01.751724
+Tests: 33/33 passed
+  All tests passing
+Memory: 114 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T03:00:01.198706
+Tests: 33/33 passed
+  All tests passing
+Memory: 114 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T03:30:01.909687
+Tests: 33/33 passed
+  All tests passing
+Memory: 114 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T04:00:02.000788
+Tests: 33/33 passed
+  All tests passing
+Memory: 114 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T04:30:01.739020
+Tests: 33/33 passed
+  All tests passing
+Memory: 114 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T05:00:01.417645
+Tests: 33/33 passed
+  All tests passing
+Memory: 114 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T05:30:01.159308
+Tests: 33/33 passed
+  All tests passing
+Memory: 114 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T06:00:01.500497
+Tests: 33/33 passed
+  All tests passing
+Memory: 114 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T06:30:01.345452
+Tests: 33/33 passed
+  All tests passing
+Memory: 114 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T07:00:01.284671
+Tests: 33/33 passed
+  All tests passing
+Memory: 114 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T07:30:01.073585
+Tests: 33/33 passed
+  All tests passing
+Memory: 114 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T08:00:01.706628
+Tests: 33/33 passed
+  All tests passing
+Memory: 114 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T08:30:01.944348
+Tests: 33/33 passed
+  All tests passing
+Memory: 114 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T09:00:01.147025
+Tests: 33/33 passed
+  All tests passing
+Memory: 114 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T09:30:01.281115
+Tests: 33/33 passed
+  All tests passing
+Memory: 114 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T10:00:01.653792
+Tests: 33/33 passed
+  All tests passing
+Memory: 114 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T10:30:01.294929
+Tests: 33/33 passed
+  All tests passing
+Memory: 114 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T11:00:01.651091
+Tests: 33/33 passed
+  All tests passing
+Memory: 114 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T11:30:01.119617
+Tests: 33/33 passed
+  All tests passing
+Memory: 114 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T12:00:01.328293
+Tests: 33/33 passed
+  All tests passing
+Memory: 114 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T12:30:01.692181
+Tests: 33/33 passed
+  All tests passing
+Memory: 114 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T13:00:01.751553
+Tests: 33/33 passed
+  All tests passing
+Memory: 114 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T13:30:01.377021
+Tests: 33/33 passed
+  All tests passing
+Memory: 114 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T14:00:01.464723
+Tests: 33/33 passed
+  All tests passing
+Memory: 114 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T14:30:01.145069
+Tests: 33/33 passed
+  All tests passing
+Memory: 114 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T15:00:01.345768
+Tests: 33/33 passed
+  All tests passing
+Memory: 129 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T15:30:01.379722
+Tests: 33/33 passed
+  All tests passing
+Memory: 131 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T16:00:01.380630
+Tests: 33/33 passed
+  All tests passing
+Memory: 160 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T16:30:01.347534
+Tests: 33/33 passed
+  All tests passing
+Memory: 164 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T17:00:01.043203
+Tests: 33/33 passed
+  All tests passing
+Memory: 164 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T17:30:01.950119
+Tests: 33/33 passed
+  All tests passing
+Memory: 164 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T18:00:01.377350
+Tests: 33/33 passed
+  All tests passing
+Memory: 164 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T18:30:01.222732
+Tests: 33/33 passed
+  All tests passing
+Memory: 167 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------', '6': 'Ontology and Knowledge Graph ⚪\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning and governance integration.\n\n| Requirement                        '}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T19:00:01.582517
+Tests: 33/33 passed
+  All tests passing
+Memory: 167 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement                             | Test                                                                                       |\n| --------------------------------------- | ', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement                                         | Test                                                            |\n| ---------------------------------------------------', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement                         | Test                                                          |\n| ----------------------------------- | --------------------------------', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement                    | Test                                                              |\n| ------------------------------ | ------------------------------', '5': '✅ Cold Archive ✅\n\n| Requirement                                | Test                                                                     |\n| ------------------------------------------ | ---------------', '6': 'Ontology and Knowledge Graph ⚪\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning and governance integration.\n\n| Requirement                        '}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T19:30:01.789683
+Tests: 33/33 passed
+  All tests passing
+Memory: 176 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ⚪\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T20:00:01.726699
+Tests: 33/33 passed
+  All tests passing
+Memory: 184 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ⚪\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T20:30:01.145533
+Tests: 33/33 passed
+  All tests passing
+Memory: 202 notes, 27 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ⚪\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T21:00:02.004431
+Tests: 33/33 passed
+  All tests passing
+Memory: 213 notes, 37 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ⚪\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T21:30:01.309158
+Tests: 33/33 passed
+  All tests passing
+Memory: 213 notes, 37 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ⚪\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T22:00:01.644664
+Tests: 33/33 passed
+  All tests passing
+Memory: 214 notes, 37 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T22:30:01.368515
+Tests: 33/33 passed
+  All tests passing
+Memory: 215 notes, 37 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T23:00:01.126607
+Tests: 33/33 passed
+  All tests passing
+Memory: 215 notes, 37 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-02T23:30:02.031609
+Tests: 33/33 passed
+  All tests passing
+Memory: 282 notes, 64 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T00:00:01.608899
+Tests: 33/33 passed
+  All tests passing
+Memory: 323 notes, 64 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T00:30:01.937114
+Tests: 33/33 passed
+  All tests passing
+Memory: 323 notes, 64 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T01:00:02.031943
+Tests: 33/33 passed
+  All tests passing
+Memory: 323 notes, 64 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T01:30:01.743277
+Tests: 33/33 passed
+  All tests passing
+Memory: 323 notes, 64 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T02:00:01.902010
+Tests: 33/33 passed
+  All tests passing
+Memory: 323 notes, 64 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T02:30:01.675179
+Tests: 33/33 passed
+  All tests passing
+Memory: 323 notes, 64 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T03:00:01.773012
+Tests: 33/33 passed
+  All tests passing
+Memory: 323 notes, 64 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T03:30:01.691559
+Tests: 33/33 passed
+  All tests passing
+Memory: 323 notes, 64 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T04:00:01.712277
+Tests: 33/33 passed
+  All tests passing
+Memory: 323 notes, 64 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T04:30:01.996893
+Tests: 33/33 passed
+  All tests passing
+Memory: 323 notes, 64 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T05:00:01.620828
+Tests: 33/33 passed
+  All tests passing
+Memory: 323 notes, 64 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T05:30:01.104399
+Tests: 33/33 passed
+  All tests passing
+Memory: 323 notes, 64 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T06:00:01.075588
+Tests: 33/33 passed
+  All tests passing
+Memory: 323 notes, 64 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T06:30:01.362211
+Tests: 33/33 passed
+  All tests passing
+Memory: 323 notes, 64 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T07:00:02.048661
+Tests: 33/33 passed
+  All tests passing
+Memory: 323 notes, 64 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T07:30:01.763161
+Tests: 33/33 passed
+  All tests passing
+Memory: 323 notes, 64 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T08:00:01.360687
+Tests: 33/33 passed
+  All tests passing
+Memory: 323 notes, 64 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T08:30:01.494502
+Tests: 33/33 passed
+  All tests passing
+Memory: 323 notes, 64 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T09:00:01.778058
+Tests: 33/33 passed
+  All tests passing
+Memory: 323 notes, 64 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T09:30:01.255407
+Tests: 33/33 passed
+  All tests passing
+Memory: 324 notes, 64 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T10:00:01.817477
+Tests: 33/33 passed
+  All tests passing
+Memory: 324 notes, 64 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T10:30:01.954835
+Tests: 33/33 passed
+  All tests passing
+Memory: 324 notes, 64 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T11:00:01.597189
+Tests: 33/33 passed
+  All tests passing
+Memory: 324 notes, 64 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T11:30:01.323524
+Tests: 33/33 passed
+  All tests passing
+Memory: 355 notes, 93 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T12:00:01.504232
+Tests: 33/33 passed
+  All tests passing
+Memory: 454 notes, 156 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T12:30:01.523944
+Tests: 33/33 passed
+  All tests passing
+Memory: 454 notes, 156 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T13:00:01.850987
+Tests: 33/33 passed
+  All tests passing
+Memory: 496 notes, 199 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T13:30:01.821662
+Tests: 33/33 passed
+  All tests passing
+Memory: 496 notes, 199 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T14:00:01.219074
+Tests: 33/33 passed
+  All tests passing
+Memory: 496 notes, 199 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T14:30:01.473447
+Tests: 33/33 passed
+  All tests passing
+Memory: 496 notes, 199 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T15:30:01.720350
+Tests: 33/33 passed
+  All tests passing
+Memory: 496 notes, 199 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T16:00:01.271277
+Tests: 33/33 passed
+  All tests passing
+Memory: 496 notes, 199 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T16:30:01.202115
+Tests: 33/33 passed
+  All tests passing
+Memory: 496 notes, 199 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T17:00:01.345724
+Tests: 33/33 passed
+  All tests passing
+Memory: 496 notes, 199 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T17:30:01.126698
+Tests: 33/33 passed
+  All tests passing
+Memory: 496 notes, 199 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T18:00:01.512646
+Tests: 33/33 passed
+  All tests passing
+Memory: 496 notes, 199 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T18:30:01.293924
+Tests: 33/33 passed
+  All tests passing
+Memory: 496 notes, 199 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T19:00:01.892744
+Tests: 33/33 passed
+  All tests passing
+Memory: 496 notes, 199 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T19:30:01.233622
+Tests: 33/33 passed
+  All tests passing
+Memory: 496 notes, 199 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T20:00:01.577067
+Tests: 33/33 passed
+  All tests passing
+Memory: 496 notes, 199 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T20:30:01.152481
+Tests: 33/33 passed
+  All tests passing
+Memory: 496 notes, 199 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T21:00:01.211180
+Tests: 33/33 passed
+  All tests passing
+Memory: 496 notes, 199 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T21:30:01.862585
+Tests: 33/33 passed
+  All tests passing
+Memory: 496 notes, 199 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T22:00:01.414282
+Tests: 33/33 passed
+  All tests passing
+Memory: 496 notes, 199 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned
+Memory Plan Review — 2026-04-03T22:30:01.773038
+Tests: 33/33 passed
+  All tests passing
+Memory: 496 notes, 199 entities indexed
+
+PRD: {'1': '✅ Entity Indexing ✅\n\n| Requirement | Test |\n|------------|------|\n| Entity extraction from note content | `extract_all()` returns correct entities for known CVE, actor, tool, campaign, sector text |\n| E', '2': '✅ Entity-Guided Linking ✅\n\n| Requirement | Test |\n|------------|------|\n| Link generator uses entity index for candidates | New note about actor links to existing actor notes |\n| Prioritized candidates ', '3': '✅ Date-Aware Retrieval ✅\n\n| Requirement | Test |\n|------------|------|\n| Supersedes tracking | Newer note on same entity marks older as superseding |\n| Retrieval excludes superseded notes | `recall()` f', '4': '✅ Mid-Session Snapshot Refresh ✅\n\n| Requirement | Test |\n|------------|------|\n| Snapshot reflects recent saves | Calling `get_snapshot()` after `remember()` returns updated notes |\n| Fresh snapshot on ', '5': '✅ Cold Archive ✅\n\n| Requirement | Test |\n|------------|------|\n| Low-confidence notes archived | Notes with confidence < 0.3 and access_count == 0 for > 30 days archived |\n| Archived notes excluded from', '6': 'Ontology, Knowledge Graph & IEP 2.0 ✅\n\n**Objective:** Add formal ontology layer with knowledge graph capabilities for multi-domain reasoning, governance integration, and FIRST IEP 2.0 threat actor int', '7': 'Synthesis Layer (RAG-as-Answer) ✅\n\n**Objective:** Implement LLM-based answer synthesis using vector retrieval + knowledge graph traversal for comprehensive intelligence delivery.\n\n**Phase 7 Implementa'}
+
+Next action: ALL PHASES COMPLETE — PRD v1.1 fully commissioned

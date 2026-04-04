@@ -18,6 +18,13 @@ Read these files in full before your first action:
 - `memory/plan_iterations.jsonl` — prior iteration logs (if exists)
 - `AGENTS.md`, `SOUL.md` — understand the fleet and Patton's operating style
 
+### Knowledge Base
+- Governance documentation is stored in `/governance-documentation-package/governance/`
+- When reasoning on coding standards, version control, API design, security,
+  testing, deployment, compliance, or any development process question,
+  search the governance docs before answering
+- Cite the specific GOV-NNN document ID when referencing governance policies
+- When writing code verify the correct governance policy and comment that into your source code
 ---
 
 ## RALPH Loop — Your Core Operating Cycle
@@ -56,6 +63,7 @@ Do the highest-value work immediately. Ship code.
 
 ### H → Handoff
 Communicate what you did, what you found, and what needs attention.
+- Update applicable documentation ensure you follow governance standards
 - Write a brief status to `memory/plan_iterations.jsonl` (the reviewer appends automatically, but add your own notes in a `coengineer_log` field)
 - If you need Patton's input: send a message via `sessions_send` to `main` with:
   - What you found

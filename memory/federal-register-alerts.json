@@ -275,6 +275,22 @@
       "feed": "cfr_monitor"
     },
     {
+      "title": "Lifeline and Link Up Reform and Modernization; Bridging the Digital Divide for Low-Income Consumers; Telecommunications Carriers Eligible for Universal Service Support; Affordable Connectivity Program; Emergency Broadband Benefit Program",
+      "document_number": "2026-06531",
+      "type": "Proposed Rule",
+      "publication_date": "2026-04-03",
+      "agencies": [
+        "Federal Communications Commission"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/04/03/2026-06531/lifeline-and-link-up-reform-and-modernization-bridging-the-digital-divide-for-low-income-consumers",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-04-03/pdf/2026-06531.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "NIST framework",
+      "feed": "cfr_monitor"
+    },
+    {
       "title": "Order No. 919; Virtualization Reliability Standards",
       "document_number": "2026-05716",
       "type": "Rule",
@@ -452,23 +468,6 @@
       "excerpt": "",
       "fr_url": "https://www.federalregister.gov/documents/2025/09/23/2025-18395/virtualization-reliability-standards",
       "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-09-23/pdf/2025-18395.pdf",
-      "significance": "",
-      "cited_cfr": [],
-      "search_term": "NIST framework",
-      "feed": "cfr_monitor"
-    },
-    {
-      "title": "Supply Chain Risk Management Reliability Standards Revisions; Equipment and Services Produced or Provided by Certain Entities Identified as Risks to National Security",
-      "document_number": "2025-18394",
-      "type": "Rule",
-      "publication_date": "2025-09-23",
-      "agencies": [
-        "Energy Department",
-        "Federal Energy Regulatory Commission"
-      ],
-      "excerpt": "",
-      "fr_url": "https://www.federalregister.gov/documents/2025/09/23/2025-18394/supply-chain-risk-management-reliability-standards-revisions-equipment-and-services-produced-or",
-      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-09-23/pdf/2025-18394.pdf",
       "significance": "",
       "cited_cfr": [],
       "search_term": "NIST framework",
@@ -841,6 +840,22 @@
       "feed": "cfr_monitor"
     },
     {
+      "title": "National Environmental Policy Act",
+      "document_number": "2026-06537",
+      "type": "Rule",
+      "publication_date": "2026-04-03",
+      "agencies": [
+        "Agriculture Department"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/04/03/2026-06537/national-environmental-policy-act",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-04-03/pdf/2026-06537.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "supply chain security",
+      "feed": "cfr_monitor"
+    },
+    {
       "title": "Filing of Color Additive Petition From the International Association of Color Manufacturers; Request To Amend the Color Additive Regulations To Remove the Solvents Methylene Chloride, Trichloroethylene, and Ethylene Dichloride",
       "document_number": "2026-06295",
       "type": "Proposed Rule",
@@ -992,23 +1007,6 @@
       "feed": "cfr_monitor"
     },
     {
-      "title": "Improving Transparency Into Pharmacy Benefit Manager Fee Disclosure; Extension of Comment Period",
-      "document_number": "2026-04084",
-      "type": "Proposed Rule",
-      "publication_date": "2026-03-02",
-      "agencies": [
-        "Labor Department",
-        "Employee Benefits Security Administration"
-      ],
-      "excerpt": "",
-      "fr_url": "https://www.federalregister.gov/documents/2026/03/02/2026-04084/improving-transparency-into-pharmacy-benefit-manager-fee-disclosure-extension-of-comment-period",
-      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-03-02/pdf/2026-04084.pdf",
-      "significance": "",
-      "cited_cfr": [],
-      "search_term": "supply chain security",
-      "feed": "cfr_monitor"
-    },
-    {
       "title": "Improving Wage Protections for the Temporary and Permanent Employment of Certain Foreign Nationals in the United States",
       "document_number": "2026-06017",
       "type": "Proposed Rule",
@@ -1092,25 +1090,87 @@
       "feed": "cfr_monitor"
     },
     {
-      "title": "Retirement Security Rule: Definition of an Investment Advice Fiduciary: Notice of Court Vacatur",
-      "document_number": "2026-05492",
+      "title": "Rescission of Obsolete Regulations Addressing Drug Addiction and Alcoholism Under Titles II and XVI of the Social Security Act",
+      "document_number": "2026-06557",
       "type": "Rule",
-      "publication_date": "2026-03-20",
+      "publication_date": "2026-04-03",
       "agencies": [
-        "Labor Department",
-        "Employee Benefits Security Administration"
+        "Social Security Administration"
+      ],
+      "agency_matches": [
+        "Social Security Administration"
       ],
       "excerpt": "",
-      "fr_url": "https://www.federalregister.gov/documents/2026/03/20/2026-05492/retirement-security-rule-definition-of-an-investment-advice-fiduciary-notice-of-court-vacatur",
-      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-03-20/pdf/2026-05492.pdf",
-      "significance": "",
-      "cited_cfr": [],
-      "search_term": "federal contractor security",
-      "feed": "cfr_monitor"
+      "fr_url": "https://www.federalregister.gov/documents/2026/04/03/2026-06557/rescission-of-obsolete-regulations-addressing-drug-addiction-and-alcoholism-under-titles-ii-and-xvi",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-04-03/pdf/2026-06557.pdf",
+      "relevant": true,
+      "feed": "federal_register"
+    },
+    {
+      "title": "Takes of Marine Mammals Incidental to Specified Activities; Taking Marine Mammals Incidental to Texas Parks and Wildlife Department Fisheries Research; Correction",
+      "document_number": "2026-06515",
+      "type": "Proposed Rule",
+      "publication_date": "2026-04-03",
+      "agencies": [
+        "Commerce Department",
+        "National Oceanic and Atmospheric Administration"
+      ],
+      "agency_matches": [
+        "Commerce Department",
+        "National Oceanic and Atmospheric Administration"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/04/03/2026-06515/takes-of-marine-mammals-incidental-to-specified-activities-taking-marine-mammals-incidental-to-texas",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-04-03/pdf/2026-06515.pdf",
+      "relevant": true,
+      "feed": "federal_register"
+    },
+    {
+      "title": "Takes of Marine Mammals Incidental to Specified Activities; Taking Marine Mammals Incidental to the Port of San Francisco Mission Bay Ferry Landing Project in San Francisco Bay, California",
+      "document_number": "2026-06484",
+      "type": "Notice",
+      "publication_date": "2026-04-03",
+      "agencies": [
+        "Commerce Department",
+        "National Oceanic and Atmospheric Administration"
+      ],
+      "agency_matches": [
+        "Commerce Department",
+        "National Oceanic and Atmospheric Administration"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/04/03/2026-06484/takes-of-marine-mammals-incidental-to-specified-activities-taking-marine-mammals-incidental-to-the",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-04-03/pdf/2026-06484.pdf",
+      "relevant": true,
+      "feed": "federal_register"
+    },
+    {
+      "title": "Takes of Marine Mammals Incidental to Specified Activities; Taking Marine Mammals Incidental to Eareckson Air Station Fuel Pier Repair in Alcan Harbor on Shemya Island, Alaska",
+      "document_number": "2026-06457",
+      "type": "Notice",
+      "publication_date": "2026-04-03",
+      "agencies": [
+        "Commerce Department",
+        "National Oceanic and Atmospheric Administration"
+      ],
+      "agency_matches": [
+        "Commerce Department",
+        "National Oceanic and Atmospheric Administration"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/04/03/2026-06457/takes-of-marine-mammals-incidental-to-specified-activities-taking-marine-mammals-incidental-to",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-04-03/pdf/2026-06457.pdf",
+      "relevant": true,
+      "feed": "federal_register"
     }
   ],
-  "total": 66,
-  "last_updated": "2026-04-01T17:57:16.717718+00:00",
-  "date_range": "2026-03-02 to 2026-04-01",
-  "note": "CFR rulemaking from last 30 days matching DIB-specific terms"
+  "total": 69,
+  "last_updated": "2026-04-03T12:02:35.605369+00:00",
+  "dates_checked": [
+    "2026-04-02",
+    "2026-04-01",
+    "2026-03-31",
+    "2026-03-30"
+  ],
+  "note": "Federal Register DIB-relevant documents from last 5 business days (merged with CFR rules)"
 }

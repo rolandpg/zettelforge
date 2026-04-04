@@ -24,6 +24,28 @@ from memory_evolver import MemoryEvolver, EvolutionDecider
 from vector_retriever import VectorRetriever
 from entity_indexer import EntityIndexer, Deduplicator
 from alias_resolver import AliasResolver, resolve_all
+from alias_manager import AliasManager, get_alias_manager
+from reasoning_logger import ReasoningLogger, get_reasoning_logger
+
+# Try to import synthesis modules from memory/ subdirectory
+try:
+    from memory.synthesis_generator import get_synthesis_generator, SynthesisGenerator
+    from memory.synthesis_retriever import get_synthesis_retriever, SynthesisRetriever
+    from memory.synthesis_validator import get_synthesis_validator, SynthesisValidator
+except ImportError:
+    # Fallback to root directory if memory/ not available
+    try:
+        from synthesis_generator import get_synthesis_generator, SynthesisGenerator
+        from synthesis_retriever import get_synthesis_retriever, SynthesisRetriever
+        from synthesis_validator import get_synthesis_validator, SynthesisValidator
+    except ImportError:
+        # Synthesis modules not available
+        SynthesisGenerator = None
+        SynthesisRetriever = None
+        SynthesisValidator = None
+        get_synthesis_generator = lambda: None
+        get_synthesis_retriever = lambda: None
+        get_synthesis_validator = lambda: None
 
 
 class MemoryManager:
@@ -53,6 +75,8 @@ class MemoryManager:
 
         # Alias resolution for actors/tools/campaigns
         self.resolver = AliasResolver()
+        self.alias_manager: AliasManager = get_alias_manager()
+        self.reasoning_logger: ReasoningLogger = get_reasoning_logger()
 
         self.cold_path = cold_path
 
@@ -119,6 +143,12 @@ class MemoryManager:
         resolved_entities = resolve_all(raw_entities, self.resolver)
         self.indexer.add_note_resolved(note.id, resolved_entities)
 
+        # Track alias observations for Phase 3.5 auto-update
+        self._track_alias_observations(note, resolved_entities)
+
+        # Check for supersession: same alias match means new note supersedes old (Phase 3)
+        superseded_note = self._check_supersession(note, resolved_entities)
+
         # Generate links
         candidates = [n for n in self.store.iterate_notes() if n.id != note.id]
         links = self.linker.generate_links(note, candidates)
@@ -127,11 +157,15 @@ class MemoryManager:
             note = self.linker.update_note_links(note, links, candidates)
             self.store._rewrite_note(note)
             self.stats['links_generated'] += len(links)
+            self._log_link_reasoning(note, links)
 
         # Run evolution cycle
         if auto_evolve:
             self.memory_evolver.run_evolution_cycle(note)
             self.stats['evolutions_run'] += 1
+
+        # Refresh in-memory snapshot for mid-session visibility (Phase 4)
+        self.get_snapshot()
 
         return note, "created"
 
@@ -174,18 +208,21 @@ class MemoryManager:
         Fast lookup by entity type and value.
         entity_type: 'cve', 'actor', 'tool', 'campaign', 'sector'
         exclude_superseded: Filter out notes that have been superseded by newer notes
+        Results sorted by created_at DESC (newest first) to prefer recent information.
         """
         self.stats['entity_index_hits'] += 1
         note_ids = self.indexer.get_note_ids(entity_type, entity_value.lower())
         notes = []
-        for nid in note_ids[:k]:
+        for nid in note_ids:
             note = self.store.get_note_by_id(nid)
             if note:
                 # Filter out superseded notes
                 if exclude_superseded and note.links.superseded_by:
                     continue
                 notes.append(note)
-        return notes
+        # Sort by created_at DESC — newest first
+        notes.sort(key=lambda n: n.created_at, reverse=True)
+        return notes[:k]
 
     def recall_cve(self, cve_id: str, k: int = 5, exclude_superseded: bool = True) -> List[MemoryNote]:
         """Fast lookup by CVE-ID (case-insensitive)"""
@@ -213,14 +250,32 @@ class MemoryManager:
     def mark_note_superseded(self, note_id: str, superseded_by_id: str) -> bool:
         """
         Mark a note as superseded by a newer note.
-        Returns True if successful, False if note not found.
+        Updates BOTH notes:
+          - The old note gets superseded_by set
+          - The new note gets supersedes appended
+        Returns True if successful, False if either note not found.
         """
-        note = self.store.get_note_by_id(note_id)
-        if not note:
+        old_note = self.store.get_note_by_id(note_id)
+        new_note = self.store.get_note_by_id(superseded_by_id)
+        if not old_note:
+            return False
+        if not new_note:
             return False
 
-        note.links.superseded_by = superseded_by_id
-        self.store.update_note(note)
+        # Update the old note
+        old_note.links.superseded_by = superseded_by_id
+
+        # Update the new note: add old note to its supersedes list
+        if note_id not in old_note.links.supersedes:
+            # Prevent circular refs
+            if note_id != superseded_by_id:
+                old_note.links.supersedes.append(superseded_by_id)
+
+        if note_id not in new_note.links.supersedes:
+            new_note.links.supersedes.append(note_id)
+
+        self.store._rewrite_note(old_note)
+        self.store._rewrite_note(new_note)
         return True
 
     def get_superseded_notes(self) -> List[MemoryNote]:
@@ -343,6 +398,82 @@ class MemoryManager:
             token_budget=token_budget
         )
 
+    # === Synthesis Layer (Phase 7) ===
+
+    def synthesize(
+        self,
+        query: str,
+        format: str = "direct_answer",
+        k: int = 15,
+        include_graph: bool = True,
+        tier_filter: List[str] = None
+    ) -> Dict:
+        """
+        Synthesize an answer using RAG-as-answer approach.
+        Combines vector search, knowledge graph traversal, and LLM generation.
+
+        Args:
+            query: User query to answer
+            format: Response format (direct_answer, synthesized_brief, timeline_analysis, relationship_map)
+            k: Number of notes to retrieve
+            include_graph: Whether to include knowledge graph context
+            tier_filter: Tier filter for notes (A, B, C) - defaults to ["A", "B"]
+
+        Returns:
+            Synthesis result dictionary with answer, sources, metadata
+        """
+        gen = get_synthesis_generator()
+        return gen.synthesize(
+            query=query,
+            memory_manager=self,
+            format=format,
+            k=k,
+            include_graph=include_graph,
+            tier_filter=tier_filter or ["A", "B"]
+        )
+
+    def retrieve_synthesis_context(
+        self,
+        query: str,
+        k: int = 15,
+        tier_filter: List[str] = None,
+        expand_graph: bool = True
+    ) -> Dict:
+        """
+        Retrieve comprehensive context for synthesis (without LLM generation).
+        Useful for debugging or manual synthesis.
+
+        Args:
+            query: Query for context retrieval
+            k: Number of notes to retrieve
+            tier_filter: Tier filter (A, B, C)
+            expand_graph: Whether to expand via knowledge graph
+
+        Returns:
+            Context dictionary with notes, entities, relationships
+        """
+        retriever = get_synthesis_retriever()
+        return retriever.retrieve_context(
+            query=query,
+            memory_manager=self,
+            k=k,
+            tier_filter=tier_filter or ["A", "B"],
+            expand_graph=expand_graph
+        )
+
+    def validate_synthesis(self, response: Dict) -> Tuple[bool, List[str]]:
+        """
+        Validate a synthesis response.
+
+        Args:
+            response: Synthesis response dictionary
+
+        Returns:
+            (is_valid: bool, errors: List[str])
+        """
+        validator = get_synthesis_validator()
+        return validator.validate_response(response)
+
     def ingest_subagent_output(
         self,
         task_id: str,
@@ -445,6 +576,121 @@ Observations: {observations}"""
                     })
 
         return results
+
+    # -----------------------------------------------------------------------
+    # Phase 3.5: Alias observation tracking for auto-update
+    # -----------------------------------------------------------------------
+
+    def _track_alias_observations(
+        self,
+        note: MemoryNote,
+        resolved_entities: Dict[str, List[str]]
+    ) -> None:
+        """
+        Track alias observations for Phase 3.5 auto-linking.
+        For each (canonical, alias) pair found in the note, record an observation.
+        When a pair reaches 3 observations, the alias is auto-added to the alias map.
+        """
+        note_id = note.id
+        for entity_type in ['actors', 'tools', 'campaigns']:
+            entities = resolved_entities.get(entity_type, [])
+            et_key = entity_type.rstrip('s')
+            for entity in entities:
+                try:
+                    canonical = self.resolver.resolve(et_key, entity)
+                    if canonical != entity.lower():
+                        self.alias_manager.observe(et_key, canonical, entity, note_id)
+                except Exception:
+                    pass
+
+    # -----------------------------------------------------------------------
+    # Phase 3: Supersession detection and marking
+    # -----------------------------------------------------------------------
+
+    def _check_supersession(
+        self,
+        new_note: MemoryNote,
+        resolved_entities: Dict[str, List[str]]
+    ) -> Optional[MemoryNote]:
+        """
+        Detect if new_note supersedes an existing note.
+        Phase 3 rule: same canonical entity + newer timestamp = supersession.
+        Does NOT delete the old note — marks it superseded.
+        """
+        from datetime import datetime
+        candidates = [n for n in self.store.iterate_notes() if n.id != new_note.id]
+        if not candidates:
+            return None
+        new_entities: Dict[str, List[str]] = {
+            k: resolved_entities.get(k, []) for k in ['cves', 'actors', 'tools', 'campaigns']
+        }
+        best_match: Optional[MemoryNote] = None
+        best_score = 0.0
+        for candidate in candidates:
+            if candidate.links.superseded_by:
+                continue
+            cand_entities = self.indexer.extractor.extract_all(candidate.content.raw)
+            cand_resolved = resolve_all(cand_entities, self.resolver)
+            overlap = 0
+            for key in ['cves', 'actors', 'tools', 'campaigns']:
+                new_set = set(e.lower() for e in new_entities.get(key, []))
+                cand_set = set(e.lower() for e in cand_resolved.get(key, []))
+                overlap += len(new_set & cand_set)
+            if overlap == 0:
+                continue
+            score = float(overlap)
+            try:
+                new_ts = datetime.fromisoformat(new_note.created_at)
+                cand_ts = datetime.fromisoformat(candidate.created_at)
+                age_diff_hours = (new_ts - cand_ts).total_seconds() / 3600
+                if age_diff_hours > 0:
+                    score += min(age_diff_hours / 24, 1.0)
+            except Exception:
+                pass
+            if score > best_score:
+                best_score = score
+                best_match = candidate
+        if best_match and best_score >= 2.0:
+            self.mark_note_superseded(best_match.id, new_note.id)
+            try:
+                self.reasoning_logger.log_evolution(
+                    note_id=new_note.id, decision="SUPERSEDE",
+                    reason=f"Supersedes {best_match.id} ({best_score:.1f} shared entities)",
+                    tier=new_note.metadata.tier, superseded_note_id=best_match.id,
+                    extra={'supersedes_note_id': best_match.id, 'overlap_score': best_score}
+                )
+                self.reasoning_logger.log_link(
+                    from_note=new_note.id, to_note=best_match.id,
+                    relationship="SUPERSEDES",
+                    reason="Newer note on same entity supersedes older",
+                    tier=new_note.metadata.tier
+                )
+            except Exception:
+                pass
+            return best_match
+        return None
+
+    # -----------------------------------------------------------------------
+    # Phase 5.5: Link reasoning — log why links are created
+    # -----------------------------------------------------------------------
+
+    def _log_link_reasoning(
+        self,
+        new_note: MemoryNote,
+        links: List[Dict]
+    ) -> None:
+        """Log reasoning behind each link created (Phase 5.5)."""
+        try:
+            for link in links:
+                self.reasoning_logger.log_link(
+                    from_note=new_note.id,
+                    to_note=link['target_id'],
+                    relationship=link.get('relationship', 'RELATED'),
+                    reason=link.get('reason', 'Entity overlap + vector similarity'),
+                    tier=new_note.metadata.tier
+                )
+        except Exception:
+            pass
 
     def _log_dedup(
         self,
