@@ -6503,3 +6503,163 @@ Link:
 - Source Reliability: B
 - Calibrated Language: medium confidence
 - Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T23:00:05.959481
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+High alert: Critical npm supply chain compromise linked to North Korean threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T23:00:08.147531
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actor.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T23:00:23.573980
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms Qilin ransomware attack, potential data breach.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-03T23:00:28.456026
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift loses $280 million as North Korean hackers seize Security Council powers
+
+## Draft Post
+Drift Protocol hit by ransomware, potentially exposing $280 million.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T00:00:05.587157
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain compromise through Axios npm package highlights a high-risk RCE vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T00:00:07.658953
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T00:00:22.074961
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms Qilin ransomware attack, potential data breach imminent.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T00:00:26.669059
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift loses $280 million as North Korean hackers seize Security Council powers
+
+## Draft Post
+Drift Protocol hit by ransomware, potentially exposing $280 million.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b

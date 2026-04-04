@@ -7,14 +7,14 @@ from typing import Any
 from pydantic import BaseModel, Field
 
 
-class TLPC classification(str, Enum):
+class TLPC(str, Enum):
     """TLP classifications per GOV-021 DATA-CLASSIFICATION-POLICY."""
 
-    TLP_WHITE = "TLP_WHITE"
-    TLP_GREEN = "TLP_GREEN"
-    TLP_AMBER = "TLP_AMBER"
-    TLP_AMBER_RED = "TLP_AMBER_RED"
-    TLP_RED = "TLP_RED"
+    TLP_WHITE = "TLP:WHITE"
+    TLP_GREEN = "TLP:GREEN"
+    TLP_AMBER = "TLP:AMBER"
+    TLP_AMBER_RED = "TLP:AMBER+RED"
+    TLP_RED = "TLP:RED"
 
 
 class NoteMetadata(BaseModel):
