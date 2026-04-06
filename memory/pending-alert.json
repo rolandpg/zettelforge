@@ -1,8 +1,8 @@
 {
   "action": "send_triage_alert",
-  "alert_text": "Drift Protocol hit by ransomware, potentially exposing $280 million.",
-  "title": "Drift loses $280 million as North Korean hackers seize Security Council powers",
+  "alert_text": "Hackers are actively using CVE-2025-55182 to steal credentials from vulnerable Next.js applications.",
+  "title": "Hackers exploit React2Shell in automated credential theft campaign",
   "url": "",
   "source": "THN via CTI Triage Agent (Qwen3.5:9b)",
-  "timestamp": "2026-04-04T00:00:26.668876"
+  "timestamp": "2026-04-06T15:00:27.549090"
 }

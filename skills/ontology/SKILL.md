@@ -58,6 +58,7 @@ Credential: { service, secret_ref }  # Never store secrets directly
 # Meta
 Action: { type, target, timestamp, outcome? }
 Policy: { scope, rule, enforcement }
+GovernanceDocument: { doc_id, title, version, last_updated, owner, compliance_mapping[] }
 ```
 
 ## Storage

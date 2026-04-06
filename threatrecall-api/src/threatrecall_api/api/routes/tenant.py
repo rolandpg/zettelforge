@@ -8,10 +8,11 @@ import string
 import uuid
 from datetime import datetime, timezone
 
-from fastapi import APIRouter, Depends, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 
 from threatrecall_api.core.config import settings
 from threatrecall_api.core.secrets import SecretsProvider, get_secrets_provider
+from threatrecall_api.core.tenant_storage import tenant_exists
 from threatrecall_api.models.common import ResponseMeta
 from threatrecall_api.models.tenant import (
     TenantCreate,
@@ -42,6 +43,20 @@ async def create_tenant(
 ):
     """Provision a new tenant and generate an initial API key."""
     tenant_id = payload.tenant_id
+
+    # Check for duplicate tenant (GOV-019)
+    if tenant_exists(tenant_id):
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "error": {
+                    "code": "RESOURCE_CONFLICT",
+                    "message": f"Tenant {tenant_id} already exists",
+                    "request_id": request.headers.get("X-Request-ID", str(uuid.uuid4())),
+                }
+            },
+        )
+
     api_key = _generate_api_key()
     
     # Store key in Vault per GOV-014

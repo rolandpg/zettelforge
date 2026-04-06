@@ -1,0 +1,41 @@
+# THREATRECALL - THIRD PARTY NOTICES
+
+ThreatRecall is built on the A-MEM (Agentic Memory Architecture) foundation. In compliance with internal governance (GOV-009) and our IP clearance protocol, the following third-party components and their respective licenses are acknowledged:
+
+## 1. FIRST IEP 2.0 Policy Framework
+
+**Copyright:** © FIRST.Org, Inc.
+**License:** Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
+
+ThreatRecall implements the Information Exchange Policy (IEP) 2.0 framework for policy governance and multi-domain intelligence sharing. The formal ontology representation and graph policy nodes conform to the HASL JSON schema structure provided by FIRST.
+
+More information on the IEP framework is available at:
+https://www.first.org/iep/
+
+## 2. LanceDB
+
+**License:** Apache License 2.0
+**Repository:** https://github.com/lancedb/lancedb
+
+Used as the core vector storage backend for semantic retrieval.
+
+## 3. Ollama (Local Embeddings)
+
+**License:** MIT License
+**Repository:** https://github.com/jmorganca/ollama
+
+Used as the embedding generation engine (`nomic-embed-text` compatibility).
+
+## 4. FastAPI / Pydantic
+
+**License:** MIT License
+Used for the core API layer routing, type checking, and response serialization.
+
+## 5. PyArrow / Apache Arrow
+
+**License:** Apache License 2.0
+Used for the columnar storage format underpinning the LanceDB tables.
+
+## Notice
+
+This document is provided for compliance purposes. No third-party code in this project implies endorsement by the respective creators of ThreatRecall or Summit 7.

@@ -474,6 +474,23 @@
       "feed": "cfr_monitor"
     },
     {
+      "title": "Medicare Program; Contract Year 2027 and Certain Contract Year 2026 Policy and Technical Changes to the Medicare Advantage Program, Medicare Prescription Drug Benefit Program, and Medicare Cost Plan Program",
+      "document_number": "2026-06600",
+      "type": "Rule",
+      "publication_date": "2026-04-06",
+      "agencies": [
+        "Health and Human Services Department",
+        "Centers for Medicare & Medicaid Services"
+      ],
+      "excerpt": "",
+      "fr_url": "https://www.federalregister.gov/documents/2026/04/06/2026-06600/medicare-program-contract-year-2027-and-certain-contract-year-2026-policy-and-technical-changes-to",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-04-06/pdf/2026-06600.pdf",
+      "significance": "",
+      "cited_cfr": [],
+      "search_term": "cybersecurity contractor",
+      "feed": "cfr_monitor"
+    },
+    {
       "title": "Risk-Informed, Technology-Inclusive Regulatory Framework for Advanced Reactors",
       "document_number": "2026-06048",
       "type": "Rule",
@@ -973,37 +990,37 @@
       "feed": "cfr_monitor"
     },
     {
-      "title": "Risk Management and Financial Assurance for OCS Lease and Grant Obligations",
-      "document_number": "2026-04517",
+      "title": "Medicare Program; Inpatient Rehabilitation Facility Prospective Payment System for Federal Fiscal Year 2027 and Updates to the IRF Quality Reporting Program",
+      "document_number": "2026-06642",
       "type": "Proposed Rule",
-      "publication_date": "2026-03-09",
+      "publication_date": "2026-04-06",
       "agencies": [
-        "Interior Department",
-        "Ocean Energy Management Bureau"
+        "Health and Human Services Department",
+        "Centers for Medicare & Medicaid Services"
       ],
       "excerpt": "",
-      "fr_url": "https://www.federalregister.gov/documents/2026/03/09/2026-04517/risk-management-and-financial-assurance-for-ocs-lease-and-grant-obligations",
-      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-03-09/pdf/2026-04517.pdf",
+      "fr_url": "https://www.federalregister.gov/documents/2026/04/06/2026-06642/medicare-program-inpatient-rehabilitation-facility-prospective-payment-system-for-federal-fiscal",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-04-06/pdf/2026-06642.pdf",
       "significance": "",
       "cited_cfr": [],
-      "search_term": "supply chain security",
+      "search_term": "federal contractor security",
       "feed": "cfr_monitor"
     },
     {
-      "title": "Revising the National Drug Code Format and Drug Label Barcode Requirements",
-      "document_number": "2026-04368",
-      "type": "Rule",
-      "publication_date": "2026-03-05",
+      "title": "Medicare Program; FY 2027 Hospice Wage Index and Payment Rate Update and Hospice Quality Reporting Program Requirements",
+      "document_number": "2026-06604",
+      "type": "Proposed Rule",
+      "publication_date": "2026-04-06",
       "agencies": [
         "Health and Human Services Department",
-        "Food and Drug Administration"
+        "Centers for Medicare & Medicaid Services"
       ],
       "excerpt": "",
-      "fr_url": "https://www.federalregister.gov/documents/2026/03/05/2026-04368/revising-the-national-drug-code-format-and-drug-label-barcode-requirements",
-      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-03-05/pdf/2026-04368.pdf",
+      "fr_url": "https://www.federalregister.gov/documents/2026/04/06/2026-06604/medicare-program-fy-2027-hospice-wage-index-and-payment-rate-update-and-hospice-quality-reporting",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-04-06/pdf/2026-06604.pdf",
       "significance": "",
       "cited_cfr": [],
-      "search_term": "supply chain security",
+      "search_term": "federal contractor security",
       "feed": "cfr_monitor"
     },
     {
@@ -1057,120 +1074,29 @@
       "feed": "cfr_monitor"
     },
     {
-      "title": "Reforming Legacy Rules for an All-IP Future; Accelerating Network Modernization",
-      "document_number": "2026-05727",
-      "type": "Proposed Rule",
-      "publication_date": "2026-03-24",
-      "agencies": [
-        "Federal Communications Commission"
-      ],
-      "excerpt": "",
-      "fr_url": "https://www.federalregister.gov/documents/2026/03/24/2026-05727/reforming-legacy-rules-for-an-all-ip-future-accelerating-network-modernization",
-      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-03-24/pdf/2026-05727.pdf",
-      "significance": "",
-      "cited_cfr": [],
-      "search_term": "federal contractor security",
-      "feed": "cfr_monitor"
-    },
-    {
-      "title": "Endangered and Threatened Wildlife and Plants; Designation of Critical Habitat for 22 Species in the Commonwealth of the Northern Mariana Islands and the Territory of Guam",
-      "document_number": "2026-05678",
-      "type": "Proposed Rule",
-      "publication_date": "2026-03-24",
-      "agencies": [
-        "Interior Department",
-        "Fish and Wildlife Service"
-      ],
-      "excerpt": "",
-      "fr_url": "https://www.federalregister.gov/documents/2026/03/24/2026-05678/endangered-and-threatened-wildlife-and-plants-designation-of-critical-habitat-for-22-species-in-the",
-      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-03-24/pdf/2026-05678.pdf",
-      "significance": "",
-      "cited_cfr": [],
-      "search_term": "federal contractor security",
-      "feed": "cfr_monitor"
-    },
-    {
-      "title": "Rescission of Obsolete Regulations Addressing Drug Addiction and Alcoholism Under Titles II and XVI of the Social Security Act",
-      "document_number": "2026-06557",
-      "type": "Rule",
-      "publication_date": "2026-04-03",
-      "agencies": [
-        "Social Security Administration"
-      ],
-      "agency_matches": [
-        "Social Security Administration"
-      ],
-      "excerpt": "",
-      "fr_url": "https://www.federalregister.gov/documents/2026/04/03/2026-06557/rescission-of-obsolete-regulations-addressing-drug-addiction-and-alcoholism-under-titles-ii-and-xvi",
-      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-04-03/pdf/2026-06557.pdf",
-      "relevant": true,
-      "feed": "federal_register"
-    },
-    {
-      "title": "Takes of Marine Mammals Incidental to Specified Activities; Taking Marine Mammals Incidental to Texas Parks and Wildlife Department Fisheries Research; Correction",
-      "document_number": "2026-06515",
-      "type": "Proposed Rule",
-      "publication_date": "2026-04-03",
-      "agencies": [
-        "Commerce Department",
-        "National Oceanic and Atmospheric Administration"
-      ],
-      "agency_matches": [
-        "Commerce Department",
-        "National Oceanic and Atmospheric Administration"
-      ],
-      "excerpt": "",
-      "fr_url": "https://www.federalregister.gov/documents/2026/04/03/2026-06515/takes-of-marine-mammals-incidental-to-specified-activities-taking-marine-mammals-incidental-to-texas",
-      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-04-03/pdf/2026-06515.pdf",
-      "relevant": true,
-      "feed": "federal_register"
-    },
-    {
-      "title": "Takes of Marine Mammals Incidental to Specified Activities; Taking Marine Mammals Incidental to the Port of San Francisco Mission Bay Ferry Landing Project in San Francisco Bay, California",
-      "document_number": "2026-06484",
+      "title": "Certain Display Devices, Streaming Players, and Components Thereof; Notice of Institution of Investigation",
+      "document_number": "2026-06580",
       "type": "Notice",
-      "publication_date": "2026-04-03",
+      "publication_date": "2026-04-06",
       "agencies": [
-        "Commerce Department",
-        "National Oceanic and Atmospheric Administration"
+        "International Trade Commission"
       ],
       "agency_matches": [
-        "Commerce Department",
-        "National Oceanic and Atmospheric Administration"
+        "International Trade Commission"
       ],
       "excerpt": "",
-      "fr_url": "https://www.federalregister.gov/documents/2026/04/03/2026-06484/takes-of-marine-mammals-incidental-to-specified-activities-taking-marine-mammals-incidental-to-the",
-      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-04-03/pdf/2026-06484.pdf",
-      "relevant": true,
-      "feed": "federal_register"
-    },
-    {
-      "title": "Takes of Marine Mammals Incidental to Specified Activities; Taking Marine Mammals Incidental to Eareckson Air Station Fuel Pier Repair in Alcan Harbor on Shemya Island, Alaska",
-      "document_number": "2026-06457",
-      "type": "Notice",
-      "publication_date": "2026-04-03",
-      "agencies": [
-        "Commerce Department",
-        "National Oceanic and Atmospheric Administration"
-      ],
-      "agency_matches": [
-        "Commerce Department",
-        "National Oceanic and Atmospheric Administration"
-      ],
-      "excerpt": "",
-      "fr_url": "https://www.federalregister.gov/documents/2026/04/03/2026-06457/takes-of-marine-mammals-incidental-to-specified-activities-taking-marine-mammals-incidental-to",
-      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-04-03/pdf/2026-06457.pdf",
+      "fr_url": "https://www.federalregister.gov/documents/2026/04/06/2026-06580/certain-display-devices-streaming-players-and-components-thereof-notice-of-institution-of",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-04-06/pdf/2026-06580.pdf",
       "relevant": true,
       "feed": "federal_register"
     }
   ],
-  "total": 69,
-  "last_updated": "2026-04-03T12:02:35.605369+00:00",
+  "total": 65,
+  "last_updated": "2026-04-06T12:02:16.070232+00:00",
   "dates_checked": [
+    "2026-04-03",
     "2026-04-02",
-    "2026-04-01",
-    "2026-03-31",
-    "2026-03-30"
+    "2026-04-01"
   ],
   "note": "Federal Register DIB-relevant documents from last 5 business days (merged with CFR rules)"
 }

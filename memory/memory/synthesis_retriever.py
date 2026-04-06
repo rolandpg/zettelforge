@@ -23,8 +23,8 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Any
 import json
 
-from vector_retriever import VectorRetriever
-from knowledge_graph import get_knowledge_graph
+from .vector_retriever import VectorRetriever
+from .knowledge_graph import get_knowledge_graph
 
 
 class SynthesisRetriever:

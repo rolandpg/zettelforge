@@ -18,8 +18,8 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Any
 import re
 
-from knowledge_graph import KnowledgeGraph, get_knowledge_graph
-from ontology_validator import OntologyValidator
+from .knowledge_graph import KnowledgeGraph, get_knowledge_graph
+from .ontology_validator import OntologyValidator
 
 
 class GraphRetriever:

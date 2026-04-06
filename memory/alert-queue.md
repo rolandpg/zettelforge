@@ -6663,3 +6663,6603 @@ Link:
 - Source Reliability: B
 - Calibrated Language: medium confidence
 - Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T01:00:06.554730
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+High alert: Axios maintainer compromised due to targeted social engineering by North Korean threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T01:00:09.044659
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T01:00:25.313043
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms Qilin ransomware attack, potential data breach.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T01:00:30.615817
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift loses $280 million as North Korean hackers seize Security Council powers
+
+## Draft Post
+Critical Ransomware Campaign Seizes Drift Protocol Assets, Causing Millions in Losses.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T02:00:06.147063
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain compromise through Axios npm package highlights the risk of critical vulnerabilities being exploited by North Korean threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T02:00:08.361897
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T02:00:21.236801
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms data stolen in Qilin ransomware attack, causing IT system outage.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T02:00:26.380949
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift loses $280 million as North Korean hackers seize Security Council powers
+
+## Draft Post
+Drift Protocol hit by ransomware, potentially exposing $280 million.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T03:00:06.084131
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+Axios maintainer compromised, leading to potential RCE in npm ecosystem.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T03:00:08.155049
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T03:00:20.578433
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms Qilin ransomware attack, potential data breach.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T03:00:25.492771
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift loses $280 million as North Korean hackers seize Security Council powers
+
+## Draft Post
+Critical Ransomware Campaign Seizes Drift Protocol Assets, Causing Millions in Losses.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T04:00:06.135857
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain compromise through Axios npm package highlights a high-risk RCE vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T04:00:08.392882
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T04:00:25.160485
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms Qilin ransomware attack, potential data breach.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T04:00:30.314621
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift loses $280 million as North Korean hackers seize Security Council powers
+
+## Draft Post
+Drift Protocol hit by ransomware, potentially exposing $280 million.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T05:00:05.802141
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+High alert: Critical npm supply chain compromise via social engineering linked to North Korean threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T05:00:07.998839
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actor.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T05:00:26.644790
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms Qilin ransomware attack, potential data breach.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T05:00:31.669797
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift loses $280 million as North Korean hackers seize Security Council powers
+
+## Draft Post
+Drift Protocol hit by ransomware, potentially exposing $280 million.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T06:00:06.041080
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain compromise of the Axios npm package indicates a high-severity threat actor campaign targeting critical infrastructure.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T06:00:08.280551
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T06:00:26.054132
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms data stolen in Qilin ransomware attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T06:00:31.071613
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift loses $280 million as North Korean hackers seize Security Council powers
+
+## Draft Post
+Drift Protocol hit by ransomware, potentially exposing $280 million.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T07:00:06.295054
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain compromise through Axios npm package highlights a high-risk RCE vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T07:00:08.525061
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T07:00:23.190614
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms Qilin ransomware attack, potential data breach imminent.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T07:00:28.043062
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift loses $280 million as North Korean hackers seize Security Council powers
+
+## Draft Post
+A critical ransomware attack on the Drift Protocol has resulted in significant financial loss.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T08:00:06.138774
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain compromise through Axios npm package highlights a high-risk RCE vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T08:00:08.370229
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T08:00:19.964893
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms Qilin ransomware attack, potential data breach.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T08:00:24.993342
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift loses $280 million as North Korean hackers seize Security Council powers
+
+## Draft Post
+Drift Protocol breach highlights critical vulnerabilities in governance protocols.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T09:00:06.112074
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A notable breach involving a high-profile npm package, likely leading to ransomware deployment.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T09:00:08.341273
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T09:00:22.959669
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms data stolen in Qilin ransomware attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T09:00:28.100388
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift loses $280 million as North Korean hackers seize Security Council powers
+
+## Draft Post
+Drift Protocol hit by ransomware, losing $280 million.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T10:00:06.960803
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain compromise through Axios npm package highlights a high-risk RCE vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T10:00:09.196085
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T10:00:26.182868
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms data stolen in Qilin ransomware attack, leading to system outages and potential data leaks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T11:00:06.749665
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+Axios maintainer compromised, suggesting active and targeted supply chain attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T11:00:08.967681
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T11:00:25.065647
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms data stolen in Qilin ransomware attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T12:00:06.741978
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+High alert: Axios maintainer compromised due to targeted social engineering by North Korean threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T12:00:09.027758
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T12:00:27.662421
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms Qilin ransomware attack, potential data breach.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T13:00:05.953359
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain compromise through Axios npm package highlights a high-risk RCE vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T13:00:08.167987
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T13:00:21.091579
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms Qilin ransomware attack, potential data breach imminent.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T14:00:05.790054
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+High alert: Critical npm supply chain compromise via social engineering linked to North Korean threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T14:00:07.992728
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T14:00:21.081894
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms Qilin ransomware attack, potential data breach imminent.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T15:00:05.887153
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+High alert: Critical npm supply chain compromise via social engineering linked to North Korean threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T15:00:08.190129
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T15:00:21.929860
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms Qilin ransomware attack, potential data breach.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T16:00:06.518164
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain compromise through Axios npm package highlights a high-risk RCE vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T16:00:08.841488
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T16:00:26.318353
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke German political party faces potential data breach due to Qilin ransomware attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T17:00:06.606637
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+Axios maintainer compromised, suggesting active and targeted supply chain attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T17:00:08.839812
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T17:00:25.228506
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms data stolen in Qilin ransomware attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T18:00:06.172089
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+High alert: Critical npm supply chain compromise via social engineering linked to North Korean threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T18:00:08.548268
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T18:00:24.094482
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke German political party faces potential data breach due to Qilin ransomware attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T19:00:06.438717
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+High alert: Axios npm package compromised through targeted social engineering by North Korean threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T19:00:08.886367
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T19:00:24.824332
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms data stolen in Qilin ransomware attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T20:00:06.107966
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+Axios npm maintainer confirms supply chain compromise due to targeted social engineering by North Korean threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T20:00:08.395421
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T20:00:25.714851
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke German political party under threat from Qilin ransomware group, facing potential data breach.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T21:00:42.060390
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain compromise through Axios npm package highlights a high-risk RCE vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T21:00:49.338529
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T21:01:07.757643
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms Qilin ransomware attack, potential data breach threat.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T22:00:06.053973
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain compromise through Axios npm package highlights a high-risk RCE vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T22:00:08.510409
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T22:00:25.450606
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke German political party faces potential data breach due to Qilin ransomware attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T23:00:06.075679
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain compromise through Axios npm package highlights a high-risk RCE vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T23:00:08.305837
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-04T23:00:23.370188
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms Qilin ransomware attack, potential data breach.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T00:00:06.179897
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+High alert: Critical npm supply chain compromise linked to North Korean threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T00:00:08.495388
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T00:00:25.875420
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms Qilin ransomware attack, potential data breach.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T01:00:04.117543
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical Ransomware Campaign Exploits Redis, PostgreSQL for Persistent Implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T01:00:07.555244
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain compromise through Axios npm package highlights a high-risk RCE vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T01:00:09.825585
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T01:00:24.926372
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms data stolen in Qilin ransomware attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T02:00:04.388212
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical Ransomware Campaign Exploits npm Packages for Persistent Implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T02:00:08.145632
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain attack via social engineering has compromised the Axios npm package, potentially exposing critical vulnerabilities.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T02:00:10.603644
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T02:00:26.836841
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke German political party faces potential data breach due to Qilin ransomware attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T03:00:04.193136
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical Ransomware Campaign Exploits npm Packages for Persistent Implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T03:00:07.657135
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A notable breach involving a high-value npm package due to a sophisticated social engineering attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T03:00:09.962018
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T03:00:23.148956
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Critical breach involving Die Linke German political party by Qilin ransomware group.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T04:00:04.348059
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical Ransomware Campaign Detected: 36 Malicious npm Packages Exploiting Redis, PostgreSQL.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T04:00:07.757116
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain compromise through Axios npm package highlights a high-risk RCE vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T04:00:10.098734
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T04:00:24.143272
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke German political party faces potential data breach due to Qilin ransomware attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T05:00:03.859656
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical Ransomware Campaign Exploits Redis, PostgreSQL for Persistent Implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T05:00:07.450970
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain compromise through Axios npm package suggests a high-risk RCE vulnerability that could impact numerous applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T05:00:09.699380
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T05:00:27.505740
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms data stolen in Qilin ransomware attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T06:00:04.498528
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical Ransomware Campaign Exploits npm Packages for Persistent Implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T06:00:08.118376
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain compromise through Axios npm package highlights the risk of RCE vulnerabilities in widely-used software.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T06:00:10.480978
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T06:00:23.358390
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms Qilin ransomware attack, potential data breach.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T07:00:04.587732
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical Ransomware Campaign Detected: 36 Malicious npm Packages Exploiting Redis, PostgreSQL.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T07:00:07.684091
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+Axios maintainer compromised, suggesting a high-stakes supply chain attack targeting the npm ecosystem.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T07:00:09.859432
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T07:00:25.927382
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms data stolen in Qilin ransomware attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T08:00:03.795623
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical Ransomware Campaign Detected via npm Registry, Exploiting Redis and PostgreSQL.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T08:00:07.237256
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A notable breach involving a high-value npm package due to a sophisticated social engineering attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T08:00:09.424716
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T08:00:24.341528
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms data stolen in Qilin ransomware attack, causing system outages and potential data leaks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T09:00:05.036434
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical Ransomware Campaign Exploits npm Packages for Persistent Implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T09:00:08.573148
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain compromise through Axios npm package highlights a high-risk RCE vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T09:00:10.620307
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T09:00:24.755059
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms data stolen in Qilin ransomware attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T10:00:04.621625
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical Ransomware Campaign Exploits npm Packages for Persistent Implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T10:00:08.238821
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain compromise through Axios npm package highlights the risk of critical vulnerabilities being exploited by North Korean threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T10:00:10.429676
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T10:00:11.937245
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit React2Shell in automated credential theft campaign
+
+## Draft Post
+Hackers are using a critical RCE vulnerability to launch an automated credential theft campaign targeting Next.js applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T10:00:27.361522
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms data stolen in Qilin ransomware attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T11:00:04.826621
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical Ransomware Campaign Exploits Redis, PostgreSQL for Persistent Implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T11:00:08.450854
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain compromise through Axios npm package suggests a high-risk RCE vulnerability that could impact multiple applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T11:00:10.756074
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T11:00:22.047130
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit React2Shell in automated credential theft campaign
+
+## Draft Post
+Hackers are using a critical RCE vulnerability to steal credentials from Next.js applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T11:00:26.102693
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke German political party facing potential data breach due to Qilin ransomware attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T12:00:04.617486
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+High alert: 36 malicious npm packages exploiting Redis and PostgreSQL for persistent implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T12:00:07.820387
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain compromise through Axios npm package suggests a high-risk RCE vulnerability that could impact multiple applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T12:00:10.090116
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T12:00:11.571489
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit React2Shell in automated credential theft campaign
+
+## Draft Post
+Hackers are using a critical RCE vulnerability in React2Shell to steal credentials from vulnerable Next.js applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T12:00:24.629564
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms data stolen in Qilin ransomware attack, causing system outages and potential data leaks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T13:00:03.909682
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+High alert: 36 malicious npm packages exploiting Redis and PostgreSQL for persistent implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T13:00:07.121603
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A high-profile npm package maintainer was socially engineered into compromising Axios, likely part of a nation-state supply chain attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T13:00:09.233078
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T13:00:10.534264
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit React2Shell in automated credential theft campaign
+
+## Draft Post
+Hackers are using a critical RCE vulnerability to steal credentials from Next.js applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T13:00:23.054507
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke German political party facing potential data breach due to Qilin ransomware attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T14:00:03.935537
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical Ransomware Campaign Exploits npm Packages for Persistent Implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T14:00:07.366273
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+Axios maintainer compromised, suggesting a high-stakes supply chain attack targeting the npm ecosystem.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T14:00:09.690230
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T14:00:11.192934
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New FortiClient EMS flaw exploited in attacks, emergency patch released
+
+## Draft Post
+Fortinet's emergency patch addresses a newly discovered and actively exploited FortiClient EMS flaw, critical Remote Code Execution vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T14:00:19.522564
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit React2Shell in automated credential theft campaign
+
+## Draft Post
+Hackers are using a critical RCE vulnerability to steal credentials from Next.js applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T14:00:23.587250
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke German political party facing potential data breach due to Qilin ransomware attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T15:00:04.798172
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: $285 Million Drift Hack Traced to Six-Month DPRK Social Engineering Operation
+
+## Draft Post
+Drift hack exposed months-long DPRK operation resulting in $285 million theft.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T15:00:05.483933
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical Ransomware Campaign Detected: 36 Malicious npm Packages Exploiting Redis, PostgreSQL.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T15:00:08.488670
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A notable breach involving Axios npm package highlights the risk of supply chain attacks from nation-state adversaries.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T15:00:10.610205
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actor.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T15:00:15.079791
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New FortiClient EMS flaw exploited in attacks, emergency patch released
+
+## Draft Post
+Emergency patch released for critical FortiClient EMS vulnerability exploited in attacks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T15:00:25.791251
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit React2Shell in automated credential theft campaign
+
+## Draft Post
+Hackers are using a critical RCE vulnerability to steal credentials from Next.js applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T15:00:29.721105
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke German political party faces potential data breach due to Qilin ransomware attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T16:00:04.776711
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: $285 Million Drift Hack Traced to Six-Month DPRK Social Engineering Operation
+
+## Draft Post
+Drift hack exposed months-long DPRK operation resulting in $285 million theft.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T16:00:05.380008
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+High alert: 36 malicious npm packages exploiting Redis and PostgreSQL for persistent implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T16:00:06.835616
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: China-Linked TA416 Targets European Governments with PlugX and OAuth-Based Phishing
+
+## Draft Post
+A China-aligned threat actor has initiated a ransomware campaign against European governments using PlugX and OAuth-based phishing.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T16:00:08.349295
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A high-profile npm package supply chain attack linked to North Korean threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T16:00:10.637021
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors on April 1, 2026.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T16:00:19.692164
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New FortiClient EMS flaw exploited in attacks, emergency patch released
+
+## Draft Post
+Emergency patch released for critical FortiClient EMS vulnerability exploited in attacks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T16:00:21.641607
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit React2Shell in automated credential theft campaign
+
+## Draft Post
+Hackers are leveraging a critical RCE vulnerability in React2Shell to conduct large-scale automated credential theft campaigns targeting vulnerable Next.js applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T16:00:25.538826
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms data stolen in Qilin ransomware attack, causing system outages and potential data leaks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T17:00:05.091979
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: $285 Million Drift Hack Traced to Six-Month DPRK Social Engineering Operation
+
+## Draft Post
+Drift hack exposed DPRK's six-month social engineering operation resulting in $285 million theft.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T17:00:05.634985
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical RCE through npm packages could lead to persistent implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T17:00:07.175883
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: China-Linked TA416 Targets European Governments with PlugX and OAuth-Based Phishing
+
+## Draft Post
+A China-aligned threat actor has initiated a new wave of attacks on European government and diplomatic organizations using PlugX malware and OAuth-based phishing.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T17:00:08.643715
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain compromise through Axios npm package highlights a high-risk RCE vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T17:00:10.808090
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T17:00:16.153688
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New FortiClient EMS flaw exploited in attacks, emergency patch released
+
+## Draft Post
+Emergency patch released for critical FortiClient EMS vulnerability exploited in attacks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T17:00:22.008544
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit React2Shell in automated credential theft campaign
+
+## Draft Post
+Hackers are targeting critical vulnerabilities in Next.js apps to steal credentials through React2Shell (CVE-2025-55182).
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T17:00:25.874314
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke German political party facing potential data breach due to Qilin ransomware attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T18:00:04.013961
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: $285 Million Drift Hack Traced to Six-Month DPRK Social Engineering Operation
+
+## Draft Post
+Drift hack exposed months-long DPRK operation resulting in $285 million theft.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T18:00:04.574818
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical RCE vulnerabilities exploited through npm packages could lead to persistent implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T18:00:07.582030
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A notable breach involving a critical RCE vulnerability has been exploited through a targeted social engineering attack, compromising the Axios npm package.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T18:00:09.723339
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T18:00:11.096654
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New FortiClient EMS flaw exploited in attacks, emergency patch released
+
+## Draft Post
+Emergency patch released for critical FortiClient EMS vulnerability exploited in attacks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T18:00:20.535616
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit React2Shell in automated credential theft campaign
+
+## Draft Post
+Hackers are using a critical RCE vulnerability to steal credentials from Next.js applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T18:00:24.605459
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke German political party faces potential data breach due to Qilin ransomware attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T19:00:04.938481
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: $285 Million Drift Hack Traced to Six-Month DPRK Social Engineering Operation
+
+## Draft Post
+Drift hack exposed months-long DPRK ransomware operation resulting in $285 million theft.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T19:00:05.482632
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical RCE through npm packages could lead to persistent implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T19:00:08.629055
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A high-profile npm package supply chain attack linked to North Korean threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T19:00:10.948910
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actor.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T19:00:21.558921
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New FortiClient EMS flaw exploited in attacks, emergency patch released
+
+## Draft Post
+Emergency patch released for critical FortiClient EMS vulnerability exploited in attacks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T19:00:22.269923
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit React2Shell in automated credential theft campaign
+
+## Draft Post
+Hackers are using a critical RCE vulnerability to steal credentials from Next.js applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T19:00:26.419927
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms Qilin ransomware attack, potential data breach.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T20:00:04.606977
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: $285 Million Drift Hack Traced to Six-Month DPRK Social Engineering Operation
+
+## Draft Post
+Drift hack exposed DPRK's six-month social engineering operation leading to $285 million theft.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T20:00:05.175775
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical RCE through npm packages could lead to persistent implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T20:00:08.382175
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A high-profile npm package compromise suggests a sophisticated supply chain attack with potential for widespread impact.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T20:00:10.579605
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T20:00:23.505289
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New FortiClient EMS flaw exploited in attacks, emergency patch released
+
+## Draft Post
+Emergency patch released for critical FortiClient EMS vulnerability exploited in attacks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T20:00:24.180785
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit React2Shell in automated credential theft campaign
+
+## Draft Post
+Hackers are using a critical RCE vulnerability to steal credentials from Next.js applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T20:00:28.277511
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms Qilin ransomware attack, potential data breach.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T21:00:26.243784
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New FortiClient EMS flaw exploited in attacks, emergency patch released
+
+## Draft Post
+Fortinet's emergency patch addresses a newly discovered and actively exploited critical RCE vulnerability in FortiClient EMS.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T21:00:27.226031
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit React2Shell in automated credential theft campaign
+
+## Draft Post
+Hackers are actively using CVE-2025-55182 to steal credentials from vulnerable Next.js applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T21:00:30.824827
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms Qilin ransomware attack, potential data breach threat.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T22:00:04.138669
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: $285 Million Drift Hack Traced to Six-Month DPRK Social Engineering Operation
+
+## Draft Post
+Drift hack exposed months-long DPRK operation resulting in $285 million theft.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T22:00:04.727054
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+High alert: 36 malicious npm packages exploiting Redis and PostgreSQL for persistent implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T22:00:08.196133
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A high-profile npm package supply chain attack linked to North Korean threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T22:00:10.400839
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actor.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T22:00:22.668983
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New FortiClient EMS flaw exploited in attacks, emergency patch released
+
+## Draft Post
+Emergency patch released for critical FortiClient EMS vulnerability exploited in attacks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T22:00:23.465836
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit React2Shell in automated credential theft campaign
+
+## Draft Post
+Hackers are leveraging CVE-2025-55182 to steal credentials from vulnerable Next.js applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T22:00:27.411110
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms Qilin ransomware attack, potential data breach.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T23:00:04.939912
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: $285 Million Drift Hack Traced to Six-Month DPRK Social Engineering Operation
+
+## Draft Post
+Drift hack exposed months-long DPRK operation resulting in $285 million theft.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T23:00:05.565526
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical RCE vulnerabilities exploited through npm packages could lead to persistent implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T23:00:08.833682
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A notable breach involving npm's supply chain compromise due to social engineering by North Korean threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T23:00:11.076990
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T23:00:12.504763
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New FortiClient EMS flaw exploited in attacks, emergency patch released
+
+## Draft Post
+Emergency patch released for critical FortiClient EMS vulnerability exploited in attacks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T23:00:23.912792
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit React2Shell in automated credential theft campaign
+
+## Draft Post
+Hackers are using a critical RCE vulnerability to steal credentials from Next.js applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-05T23:00:28.210836
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms data stolen in Qilin ransomware attack, leading to system outages and potential data leaks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T00:00:04.688499
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: $285 Million Drift Hack Traced to Six-Month DPRK Social Engineering Operation
+
+## Draft Post
+Drift hack exposed months-long DPRK operation resulting in $285 million theft.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T00:00:05.240334
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical RCE through npm packages could lead to persistent implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T00:00:06.755421
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: China-Linked TA416 Targets European Governments with PlugX and OAuth-Based Phishing
+
+## Draft Post
+A China-aligned threat actor has initiated a targeted attack campaign using PlugX and OAuth-based phishing targeting European government and diplomatic organizations.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T00:00:08.097834
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A notable breach involving a supply chain attack on the Axios npm package.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T00:00:10.330931
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T00:00:11.914936
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New FortiClient EMS flaw exploited in attacks, emergency patch released
+
+## Draft Post
+Emergency patch released for critical FortiClient EMS vulnerability exploited in attacks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T00:00:12.648472
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit React2Shell in automated credential theft campaign
+
+## Draft Post
+Hackers are actively using CVE-2025-55182 to steal credentials from Next.js applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T00:00:25.062220
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms data stolen in Qilin ransomware attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T01:00:04.503162
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: $285 Million Drift Hack Traced to Six-Month DPRK Social Engineering Operation
+
+## Draft Post
+Drift hack exposed months-long DPRK operation resulting in $285 million theft.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T01:00:05.083683
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical RCE vulnerabilities exploited through npm packages could lead to persistent implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T01:00:06.901150
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: China-Linked TA416 Targets European Governments with PlugX and OAuth-Based Phishing
+
+## Draft Post
+A China-aligned threat actor has initiated a ransomware campaign against European government and diplomatic organizations.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T01:00:08.425946
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain compromise through Axios npm package highlights a high-risk RCE vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T01:00:10.587372
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T01:00:11.952139
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New FortiClient EMS flaw exploited in attacks, emergency patch released
+
+## Draft Post
+Emergency patch released for critical FortiClient EMS vulnerability exploited in attacks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T01:00:23.268296
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit React2Shell in automated credential theft campaign
+
+## Draft Post
+Hackers are leveraging a critical RCE vulnerability in React2Shell to steal credentials from vulnerable Next.js applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T01:00:27.055483
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms data stolen in Qilin ransomware attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T02:00:04.304936
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: $285 Million Drift Hack Traced to Six-Month DPRK Social Engineering Operation
+
+## Draft Post
+Drift hack exposed months-long DPRK operation resulting in $285 million theft.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T02:00:05.025285
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical Ransomware Campaign Detected: 36 Malicious npm Packages Exploiting Redis, PostgreSQL.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T02:00:08.203948
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A notable breach involving a supply chain attack on the Axios npm package.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T02:00:10.400499
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T02:00:11.784951
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New FortiClient EMS flaw exploited in attacks, emergency patch released
+
+## Draft Post
+Emergency patch released for critical FortiClient EMS vulnerability exploited in attacks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T02:00:22.408829
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit React2Shell in automated credential theft campaign
+
+## Draft Post
+Hackers are actively using CVE-2025-55182 to steal credentials from Next.js applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T02:00:26.338751
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke German political party faces potential sensitive data breach due to Qilin ransomware attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T03:00:05.549746
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: $285 Million Drift Hack Traced to Six-Month DPRK Social Engineering Operation
+
+## Draft Post
+Drift Hack reveals a six-month DPRK ransomware operation resulting in $285 million theft.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T03:00:06.168956
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+High alert: 36 malicious npm packages exploiting Redis and PostgreSQL for persistent implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T03:00:08.246529
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: China-Linked TA416 Targets European Governments with PlugX and OAuth-Based Phishing
+
+## Draft Post
+A China-aligned threat actor has initiated a targeted campaign against European government and diplomatic organizations using the PlugX malware and OAuth-based phishing techniques.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T03:00:09.711183
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A critical RCE vulnerability in Axios npm package highlights the ongoing threat of nation-state DIB targeting.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T03:00:11.986914
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T03:00:27.920501
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New FortiClient EMS flaw exploited in attacks, emergency patch released
+
+## Draft Post
+A critical RCE vulnerability in FortiClient EMS has been exploited; an emergency patch has been released.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T03:00:28.739642
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit React2Shell in automated credential theft campaign
+
+## Draft Post
+Hackers are leveraging a critical RCE vulnerability in React2Shell to conduct large-scale automated credential theft campaigns targeting vulnerable Next.js applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T03:00:32.626791
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms data stolen in Qilin ransomware attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T04:00:05.806944
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: $285 Million Drift Hack Traced to Six-Month DPRK Social Engineering Operation
+
+## Draft Post
+Drift Hack reveals a six-month DPRK ransomware operation resulting in $285 million theft.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T04:00:06.377852
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical RCE through npm packages could lead to persistent implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T04:00:09.490808
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A high-profile npm package supply chain attack linked to North Korean threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T04:00:11.722834
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T04:00:22.903592
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New FortiClient EMS flaw exploited in attacks, emergency patch released
+
+## Draft Post
+Emergency patch released for critical FortiClient EMS vulnerability exploited in attacks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T04:00:23.650363
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit React2Shell in automated credential theft campaign
+
+## Draft Post
+Hackers are using a critical RCE vulnerability to steal credentials from Next.js applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T04:00:27.509799
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms Qilin ransomware attack, potential data breach.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T05:00:05.429556
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: $285 Million Drift Hack Traced to Six-Month DPRK Social Engineering Operation
+
+## Draft Post
+Drift Hack reveals a six-month DPRK ransomware operation resulting in $285 million theft.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T05:00:06.142103
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+High severity alert - 36 malicious npm packages exploiting Redis and PostgreSQL for persistent implants. Immediate review and patching required.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T05:00:08.142693
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: China-Linked TA416 Targets European Governments with PlugX and OAuth-Based Phishing
+
+## Draft Post
+A China-aligned threat actor has initiated a new wave of attacks on European government and diplomatic organizations using the PlugX malware and OAuth-based phishing techniques.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T05:00:09.592993
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain compromise through Axios npm package highlights a high-risk RCE vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T05:00:11.830865
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Drift Loses $285 Million in Durable Nonce Social Engineering Attack Linked to DPRK
+
+## Draft Post
+Solana-based decentralized exchange Drift confirms $285 million ransomware attack by DPRK-linked threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T05:00:25.112994
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New FortiClient EMS flaw exploited in attacks, emergency patch released
+
+## Draft Post
+A critical RCE vulnerability in FortiClient EMS has been exploited; an emergency patch has been released.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T05:00:25.927147
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit React2Shell in automated credential theft campaign
+
+## Draft Post
+Hackers are leveraging a critical RCE vulnerability in React2Shell to conduct large-scale automated credential theft campaigns targeting vulnerable Next.js applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T05:00:29.791869
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke German political party faces potential data breach due to Qilin ransomware attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T06:00:05.044171
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Qilin and Warlock Ransomware Use Vulnerable Drivers to Disable 300+ EDR Tools
+
+## Draft Post
+Qilin and Warlock ransomware use BYOVD to disable 300+ EDR tools, indicating a critical Remote Code Execution vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T06:00:06.405674
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: $285 Million Drift Hack Traced to Six-Month DPRK Social Engineering Operation
+
+## Draft Post
+Drift Hack reveals ransomware attack that resulted in $285 million theft.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T06:00:07.108757
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical Ransomware Campaign Detected: 36 Malicious npm Packages Exploiting Redis, PostgreSQL.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T06:00:09.002416
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: China-Linked TA416 Targets European Governments with PlugX and OAuth-Based Phishing
+
+## Draft Post
+A China-aligned threat actor has initiated a new targeted attack campaign against European government and diplomatic organizations.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T06:00:10.426953
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A high-profile npm package supply chain attack linked to North Korean threat actors.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T06:00:23.455850
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New FortiClient EMS flaw exploited in attacks, emergency patch released
+
+## Draft Post
+Emergency patch released for critical FortiClient EMS vulnerability exploited in attacks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T06:00:24.256386
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit React2Shell in automated credential theft campaign
+
+## Draft Post
+Hackers are actively using CVE-2025-55182 to steal credentials from Next.js applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T06:00:28.206967
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms Qilin ransomware attack, potential data breach.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T07:00:04.880889
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Qilin and Warlock Ransomware Use Vulnerable Drivers to Disable 300+ EDR Tools
+
+## Draft Post
+Qilin and Warlock ransomware are disabling EDR tools using a critical Remote Code Execution vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T07:00:06.257250
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: $285 Million Drift Hack Traced to Six-Month DPRK Social Engineering Operation
+
+## Draft Post
+Drift hack exposed months-long DPRK ransomware operation resulting in $285 million theft.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T07:00:06.839430
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical RCE vulnerabilities exploited through npm packages could lead to persistent implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T07:00:10.199217
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A notable breach involving Axios npm package highlights the risk of supply chain attacks from nation-state adversaries.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T07:00:21.771424
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New FortiClient EMS flaw exploited in attacks, emergency patch released
+
+## Draft Post
+Emergency patch released for critical FortiClient EMS vulnerability exploited in attacks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T07:00:22.560787
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit React2Shell in automated credential theft campaign
+
+## Draft Post
+Hackers are leveraging CVE-2025-55182 to steal credentials from vulnerable Next.js applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T07:00:26.515615
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms Qilin ransomware attack, potential data breach.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T08:00:05.088429
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: How LiteLLM Turned Developer Machines Into Credential Vaults for Attackers
+
+## Draft Post
+A critical Remote Code Execution vulnerability has been identified in the company's developer workstations, potentially allowing attackers to steal credentials and execute malicious code.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T08:00:05.835523
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Qilin and Warlock Ransomware Use Vulnerable Drivers to Disable 300+ EDR Tools
+
+## Draft Post
+Qilin and Warlock ransomware use BYOVD technique to disable 300+ EDR tools.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T08:00:07.281660
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: $285 Million Drift Hack Traced to Six-Month DPRK Social Engineering Operation
+
+## Draft Post
+Drift hack exposed DPRK's six-month social engineering operation resulting in $285 million theft.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T08:00:07.923740
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical Ransomware Campaign Exploits Popular Frameworks, Including Redis and PostgreSQL.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T08:00:11.089706
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain compromise through Axios npm package highlights a high-risk RCE vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T08:00:24.774148
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New FortiClient EMS flaw exploited in attacks, emergency patch released
+
+## Draft Post
+Emergency patch released for critical FortiClient EMS vulnerability exploited in attacks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T08:00:25.502816
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit React2Shell in automated credential theft campaign
+
+## Draft Post
+Hackers are using a critical RCE vulnerability to steal credentials from Next.js applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T08:00:29.683496
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms data stolen in Qilin ransomware attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T09:00:04.755830
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: How LiteLLM Turned Developer Machines Into Credential Vaults for Attackers
+
+## Draft Post
+A critical Remote Code Execution vulnerability has been identified in the company's developer workstations.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T09:00:05.580228
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Qilin and Warlock Ransomware Use Vulnerable Drivers to Disable 300+ EDR Tools
+
+## Draft Post
+Qilin and Warlock ransomware use BYOVD technique to disable 300+ EDR tools, indicating critical remote code execution vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T09:00:07.104337
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: $285 Million Drift Hack Traced to Six-Month DPRK Social Engineering Operation
+
+## Draft Post
+Drift has traced a ransomware attack resulting in $285 million theft to a DPRK-operated social engineering operation spanning six months.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T09:00:07.727507
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical Ransomware Campaign Exploits Redis, PostgreSQL for Persistent Implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T09:00:11.327614
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: UNC1069 Social Engineering of Axios Maintainer Led to npm Supply Chain Attack
+
+## Draft Post
+A supply chain compromise of the Axios npm package suggests a sophisticated social engineering campaign by North Korean threat actors targeting a high-value asset.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T09:00:24.825724
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New FortiClient EMS flaw exploited in attacks, emergency patch released
+
+## Draft Post
+A critical RCE vulnerability in FortiClient EMS has been exploited; an emergency patch has been released.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T09:00:25.626391
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit React2Shell in automated credential theft campaign
+
+## Draft Post
+Hackers are actively using CVE-2025-55182 to steal credentials from vulnerable Next.js applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T09:00:29.505995
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms data stolen in Qilin ransomware attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T10:00:06.126151
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: How LiteLLM Turned Developer Machines Into Credential Vaults for Attackers
+
+## Draft Post
+A critical RCE vulnerability in developer workstations could allow attackers to execute arbitrary code.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T10:00:06.819289
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Qilin and Warlock Ransomware Use Vulnerable Drivers to Disable 300+ EDR Tools
+
+## Draft Post
+Qilin and Warlock ransomware use BYOVD technique to disable EDRs, indicating critical RCE.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T10:00:08.229359
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: $285 Million Drift Hack Traced to Six-Month DPRK Social Engineering Operation
+
+## Draft Post
+Drift hack exposed DPRK's six-month social engineering operation resulting in $285 million theft.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T10:00:08.804647
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical Ransomware Campaign Exploits npm Packages for Persistent Implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T10:00:12.224397
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Why Simple Breach Monitoring is No Longer Enough
+
+## Draft Post
+Infostealers are compromising credentials, highlighting the inadequacy of traditional breach monitoring solutions.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T10:00:24.777059
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New FortiClient EMS flaw exploited in attacks, emergency patch released
+
+## Draft Post
+Emergency patch released for critical FortiClient EMS vulnerability exploited in attacks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T10:00:25.628487
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit React2Shell in automated credential theft campaign
+
+## Draft Post
+Hackers are leveraging a critical RCE vulnerability in React2Shell to conduct large-scale automated credential theft campaigns targeting vulnerable Next.js applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T10:00:29.482430
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms data stolen in Qilin ransomware attack, leading to system outages and potential data leaks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T11:00:05.755395
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: How LiteLLM Turned Developer Machines Into Credential Vaults for Attackers
+
+## Draft Post
+A critical RCE vulnerability in developer workstations could allow attackers to steal credentials and compromise enterprise infrastructure.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T11:00:06.610518
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Qilin and Warlock Ransomware Use Vulnerable Drivers to Disable 300+ EDR Tools
+
+## Draft Post
+Qilin and Warlock ransomware use BYOVD to disable 300+ EDR tools, indicating critical remote code execution vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T11:00:07.972000
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: $285 Million Drift Hack Traced to Six-Month DPRK Social Engineering Operation
+
+## Draft Post
+Drift hack exposed DPRK's sophisticated social engineering operation leading to $285 million theft.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T11:00:08.544407
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical Ransomware Campaign Exploits npm Packages for Persistent Implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T11:00:11.941334
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Why Simple Breach Monitoring is No Longer Enough
+
+## Draft Post
+Infostealers are compromising credentials, highlighting the inadequacy of traditional breach monitoring solutions.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T11:00:24.537734
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New FortiClient EMS flaw exploited in attacks, emergency patch released
+
+## Draft Post
+Fortinet's emergency patch addresses a newly discovered and actively exploited RCE flaw in FortiClient EMS.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T11:00:25.339494
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit React2Shell in automated credential theft campaign
+
+## Draft Post
+Hackers are leveraging a critical RCE vulnerability in React2Shell to conduct large-scale automated credential theft campaigns targeting vulnerable Next.js applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T11:00:29.322665
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Die Linke German political party confirms data stolen by Qilin ransomware
+
+## Draft Post
+Die Linke confirms data stolen in Qilin ransomware attack, causing system outages and potential data leaks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T12:00:06.388628
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: How LiteLLM Turned Developer Machines Into Credential Vaults for Attackers
+
+## Draft Post
+A critical RCE vulnerability in developer workstations could allow attackers to execute arbitrary code, compromising sensitive data.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T12:00:07.211150
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Qilin and Warlock Ransomware Use Vulnerable Drivers to Disable 300+ EDR Tools
+
+## Draft Post
+Qilin and Warlock ransomware use BYOVD to disable 300+ EDRs, posing a critical risk.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T12:00:08.626555
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: $285 Million Drift Hack Traced to Six-Month DPRK Social Engineering Operation
+
+## Draft Post
+Drift hack exposed DPRK's six-month social engineering operation resulting in $285 million theft.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T12:00:09.245956
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical Ransomware Campaign Exploits npm Packages for Persistent Implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T12:00:22.324647
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Microsoft links Medusa ransomware affiliate to zero-day attacks
+
+## Draft Post
+Microsoft warns of Medusa ransomware affiliate using never-before-seen vulnerabilities.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T12:00:24.679754
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Why Simple Breach Monitoring is No Longer Enough
+
+## Draft Post
+Infostealers are compromising credentials and sessions, highlighting the inadequacy of traditional breach monitoring.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T12:00:26.359126
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New FortiClient EMS flaw exploited in attacks, emergency patch released
+
+## Draft Post
+Emergency patch released for critical FortiClient EMS vulnerability exploited in attacks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T12:00:26.999986
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit React2Shell in automated credential theft campaign
+
+## Draft Post
+Hackers are using a critical RCE vulnerability to steal credentials from Next.js applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T13:00:04.131053
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: DPRK-Linked Hackers Use GitHub as C2 in Multi-Stage Attacks Targeting South Korea
+
+## Draft Post
+Critical Ransomware Campaign Observed Targeting South Korea Using GitHub for Command and Control.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T13:00:07.147822
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Qilin and Warlock Ransomware Use Vulnerable Drivers to Disable 300+ EDR Tools
+
+## Draft Post
+Qilin and Warlock ransomware use BYOVD to disable 300+ EDR tools, indicating critical remote code execution vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T13:00:08.549487
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: $285 Million Drift Hack Traced to Six-Month DPRK Social Engineering Operation
+
+## Draft Post
+Drift hack exposed DPRK's six-month social engineering operation resulting in $285 million theft.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T13:00:09.163459
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical Ransomware Campaign Exploits Redis, PostgreSQL for Persistent Implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T13:00:21.875227
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Microsoft links Medusa ransomware affiliate to zero-day attacks
+
+## Draft Post
+Microsoft warns of Medusa ransomware affiliate leveraging critical vulnerabilities for high-velocity attacks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T13:00:24.170838
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Why Simple Breach Monitoring is No Longer Enough
+
+## Draft Post
+Infostealers are compromising credentials and sessions, highlighting the need for advanced detection beyond traditional breach monitoring.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T13:00:25.814648
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New FortiClient EMS flaw exploited in attacks, emergency patch released
+
+## Draft Post
+Emergency patch released for critical FortiClient EMS vulnerability exploited in attacks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T13:00:26.480250
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit React2Shell in automated credential theft campaign
+
+## Draft Post
+Hackers are using a critical RCE vulnerability to steal credentials from Next.js applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T14:00:04.834251
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: DPRK-Linked Hackers Use GitHub as C2 in Multi-Stage Attacks Targeting South Korea
+
+## Draft Post
+Critical Ransomware Campaign Observed Targeting South Korea via GitHub C2.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T14:00:07.298587
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: How LiteLLM Turned Developer Machines Into Credential Vaults for Attackers
+
+## Draft Post
+A critical Remote Code Execution vulnerability has been identified in the company's developer workstations, potentially allowing attackers to steal credentials and compromise systems.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T14:00:08.139274
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Qilin and Warlock Ransomware Use Vulnerable Drivers to Disable 300+ EDR Tools
+
+## Draft Post
+Qilin and Warlock ransomware use BYOVD to disable 300+ EDR tools, indicating critical Remote Code Execution vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T14:00:09.522054
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: $285 Million Drift Hack Traced to Six-Month DPRK Social Engineering Operation
+
+## Draft Post
+Drift hack exposed DPRK's six-month social engineering operation leading to $285 million theft.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T14:00:10.145849
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical Ransomware Campaign Exploits Redis, PostgreSQL for Persistent Implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T14:00:25.941090
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Microsoft links Medusa ransomware affiliate to zero-day attacks
+
+## Draft Post
+Microsoft warns of Medusa ransomware affiliate using zero-day and n-day exploits.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T14:00:28.290009
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Why Simple Breach Monitoring is No Longer Enough
+
+## Draft Post
+Infostealers are compromising credentials and sessions, highlighting the inadequacy of traditional breach monitoring.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T14:00:29.687514
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New FortiClient EMS flaw exploited in attacks, emergency patch released
+
+## Draft Post
+A critical RCE vulnerability in FortiClient EMS has been exploited; an emergency patch has been released.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T14:00:30.468167
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit React2Shell in automated credential theft campaign
+
+## Draft Post
+Hackers are leveraging a critical RCE vulnerability in React2Shell to conduct large-scale automated credential theft campaigns targeting vulnerable Next.js applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T15:00:05.423890
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: DPRK-Linked Hackers Use GitHub as C2 in Multi-Stage Attacks Targeting South Korea
+
+## Draft Post
+Threat actors linked to DPRK are utilizing GitHub for C2 in multi-stage cyberattacks against South Korea.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T15:00:08.363475
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Qilin and Warlock Ransomware Use Vulnerable Drivers to Disable 300+ EDR Tools
+
+## Draft Post
+Qilin and Warlock ransomware are disabling EDR tools using a critical Remote Code Execution vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T15:00:09.738570
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: $285 Million Drift Hack Traced to Six-Month DPRK Social Engineering Operation
+
+## Draft Post
+Drift Hack reveals a six-month DPRK ransomware operation resulting in $285 million theft.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T15:00:10.372291
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+High alert: 36 malicious npm packages exploiting Redis and PostgreSQL for persistent implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T15:00:11.781545
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Disgruntled researcher leaks “BlueHammer” Windows zero-day exploit
+
+## Draft Post
+A critical Remote Code Execution (RCE) vulnerability has been exploited via a leaked zero-day Windows privilege escalation flaw.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T15:00:23.098507
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Microsoft links Medusa ransomware affiliate to zero-day attacks
+
+## Draft Post
+Microsoft warns of Medusa ransomware affiliate using zero-day and n-day exploits.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T15:00:26.819266
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New FortiClient EMS flaw exploited in attacks, emergency patch released
+
+## Draft Post
+Emergency patch released for critical FortiClient EMS vulnerability exploited in attacks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T15:00:27.549469
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit React2Shell in automated credential theft campaign
+
+## Draft Post
+Hackers are actively using CVE-2025-55182 to steal credentials from vulnerable Next.js applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b

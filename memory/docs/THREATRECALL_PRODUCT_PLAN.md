@@ -358,24 +358,24 @@ Single codebase supports all environments via AZURE_CLOUD environment variable p
 
 ## 11. Release Plan
 
-### v0.1.0 — Internal Proof (Target: May 2026)
-Fix Patton bug findings. Rerun all 59 tests. Start 30-day burn-in with real threat intel feeds.
+### v0.1.0 — Internal Proof (Target: Achieved April 2026)
+Fix Patton bug findings. Rerun all 143 tests. Start 30-day burn-in with real threat intel feeds.
 Success: Burn-in report with hard operational metrics.
 
-### v0.2.0 — Phase 6 Complete (Target: July 2026)
-Implement ontology, knowledge graph, IEP policy layer. All 13 Phase 6 tests passing. Total: 72/72 tests.
-Write technical whitepaper with burn-in metrics and Phase 6 capabilities.
+### v0.2.0 — Phase 6 & 7 Complete (Target: Achieved April 2026)
+Implement ontology, knowledge graph, IEP policy layer, and synthesis layer. All Phase 6 and 7 tests passing. Total: 143/143 tests.
+Write technical whitepaper with burn-in metrics and Phase 6/7 capabilities.
 Success: Whitepaper with hard numbers.
 
-### v0.3.0 — API Layer (Target: October 2026)
+### v0.3.0 — API Layer (Target: May 2026)
 OpenAPI 3.1 spec (contract-first). FastAPI with GOV-005 response envelopes, error format, pagination. Auth via SecretsProvider. Tenant isolation. OCSF audit logging. Docker container.
 Success: All endpoints return GOV-005 compliant responses. Container runs.
 
-### v0.4.0 — Pilot-Ready (Target: December 2026)
-Deploy to Azure or Cloudflare Tunnel. HTTPS with TLS 1.2+. Customer docs and Python SDK.
+### v0.4.0 — Pilot-Ready (Target: Q4 2026)
+Deploy to Azure or Cloudflare Tunnel. HTTPS with TLS 1.2+. Customer docs and Python SDK. THIRD_PARTY_NOTICES compliance.
 Success: Customer engineer stores first memory within 30 minutes of reading docs.
 
-### v0.5.0 — Production (Target: March 2027)
+### v0.5.0 — Production (Target: Q1 2027)
 Usage metering. Rate limiting enforcement. Admin dashboard. Secrets migration to Vault.
 Success: Customers paying, uptime tracked.
 

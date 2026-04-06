@@ -44,6 +44,15 @@
 - **Onboarding:** `fleet/vault_agent_onboarding.md`
 - **Next:** MCP server (hashicorp/vault-mcp-server) for direct tool integration
 
+## FleetSpeak (SignalDeck)
+- **Location:** `/home/rolandpg/FleetSpeak/`
+- **Purpose:** Self-hosted agent communication hub for OpenClaw fleet
+- **Stack:** FastAPI + SQLite, React/TS/Vite, Rust (PyO3/Tantivy), Docker
+- **Features:** Real-time WebSocket messaging, full-text search, SVG avatars, audit logging, file dedup
+- **SDK:** Python client for agent integration (`sdk/src/signaldeck/`)
+- **Run:** `docker compose up --build` → http://localhost:8000
+- **Docs:** `SignalDeck-PRD-v1.0.md`, `docs/ARCHITECTURE.md`
+
 ## Knowledge Base
 - **Location:** '`~/workspace/governance-documentation-package/governance/`
 - **Purpose:** unified sofware engineering policy

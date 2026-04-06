@@ -28,7 +28,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Any
 import uuid
 
-from knowledge_graph import get_knowledge_graph, KnowledgeGraph
+from .knowledge_graph import get_knowledge_graph, KnowledgeGraph
 from ontology_validator import OntologyValidator
 
 

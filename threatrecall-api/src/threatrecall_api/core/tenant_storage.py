@@ -35,13 +35,13 @@ def get_memory_manager(tenant_id: str) -> object:
     tenant_path = get_tenant_storage_path(tenant_id)
     tenant_path.mkdir(parents=True, exist_ok=True)
 
-    # Import here to keep the module import-order clean
+    # Import from bundled amem module
     import sys
     from pathlib import Path as P
 
-    _mem_dir = P("/home/rolandpg/.openclaw/workspace/memory")
-    if str(_mem_dir) not in sys.path:
-        sys.path.insert(0, str(_mem_dir))
+    _amem_dir = P("/app/amem")
+    if str(_amem_dir) not in sys.path:
+        sys.path.insert(0, str(_amem_dir))
 
     from memory_manager import MemoryManager
 

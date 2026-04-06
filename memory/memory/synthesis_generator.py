@@ -25,8 +25,8 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Any
 import hashlib
 
-from vector_retriever import VectorRetriever
-from knowledge_graph import get_knowledge_graph
+from .vector_retriever import VectorRetriever
+from .knowledge_graph import get_knowledge_graph
 
 
 MEMORY_DIR = Path("/home/rolandpg/.openclaw/workspace/memory")

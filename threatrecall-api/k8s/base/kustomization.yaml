@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - deployment.yaml
+  - service.yaml
+  - pvc.yaml
+  - ingress.yaml
+  - configmap.yaml
+
+commonLabels:
+  app: threatrecall-api
+  version: v1.0.0
+
+namePrefix: threatrecall-
+
+images:
+  - name: ghcr.io/rolandpg/threatrecall-api
+    newTag: main

@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "updatedAt": "2026-04-06T18:11:10.211Z",
+  "entries": {
+    "memory:memory/2026-03-20.md:26:57": {
+      "key": "memory:memory/2026-03-20.md:26:57",
+      "path": "memory/2026-03-20.md",
+      "startLine": 26,
+      "endLine": 57,
+      "source": "memory",
+      "snippet": "- Embedding: nomic-embed-text via Ollama (768-dim, 8192 token context) - LLM Memory Ops: Fast MoE model (Qwen3-30B-A3B or similar) - LLM Agent Tasks: Qwen3-235B-A22B or DeepSeek-R1 - Note Storage: JSONL files + LanceDB dual-write - Scheduling: systemd timers ### Storage Setup TODO (PENDING) - Create /mnt/cold/ directory for cold tier - Set up cold tier directory structure on 8TB drive - oc-cron/ already exists at /media/rolandpg/USB-HDD/oc-cron/ with jobs.json - Need to create: archive/, notes/, snapshots/, raw_logs/, ingest/, documents/, queue/, backups/, daily/, weekly/ ### OpenClaw Fleet Architecture Refined - Single primary agent (Patton) with ephemeral subagents model - Primary agent",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "totalScore": 0.35358903408050535,
+      "maxScore": 0.35358903408050535,
+      "firstRecalledAt": "2026-04-06T18:11:10.211Z",
+      "lastRecalledAt": "2026-04-06T18:11:10.211Z",
+      "queryHashes": [
+        "9318aa7db232"
+      ],
+      "recallDays": [
+        "2026-04-06"
+      ],
+      "conceptTags": [
+        "backup",
+        "backups",
+        "embedding",
+        "nomic-embed-text",
+        "768-dim",
+        "qwen3-30b-a3b",
+        "qwen3-235b-a22b",
+        "deepseek-r1"
+      ]
+    }
+  }
+}

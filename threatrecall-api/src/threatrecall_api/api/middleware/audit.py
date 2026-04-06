@@ -1,112 +1,93 @@
-"""OCSF audit logging for API activity per GOV-012.
+"""OCSF audit logging middleware for ThreatRecall API.
 
-OCSF class 6002: API Activity
-OCSF class 3001: Authentication
-OCSF class 3003: Authorization
+Implements OCSF class 6002 (API Activity), 3001 (Authentication), and 3003 (Authorization)
+events per GOV-012. This is the centralized audit logging layer.
+
+All API requests are logged as structured OCSF events for SIEM ingestion.
 """
 
+import time
 import uuid
-from datetime import datetime, timezone
-from typing import Any
+from typing import Callable
 
-import structlog
+from fastapi import Request, Response
+from starlette.middleware.base import BaseHTTPMiddleware
 
-from threatrecall_api.core.logging import get_logger
+from threatrecall_api.core.ocsf_logger import log_api_activity, log_auth_attempt
+from threatrecall_api.core.tenant_storage import tenant_exists
 
-logger = get_logger("threatrecall_api.audit")
+
+class OCSFAuditMiddleware(BaseHTTPMiddleware):
+    """Middleware that logs all API activity as OCSF events."""
+
+    async def dispatch(self, request: Request, call_next: Callable) -> Response:
+        request_id = request.headers.get("X-Request-ID", str(uuid.uuid4()))
+        start_time = time.perf_counter()
+
+        # Extract tenant_id from path for audit context
+        path = str(request.url.path)
+        tenant_id = "unknown"
+
+        if path.startswith("/api/v1/"):
+            parts = path.split("/")
+            if len(parts) >= 4:
+                tenant_id = parts[3]
+        elif path.startswith("/admin/tenants/"):
+            parts = path.split("/")
+            if len(parts) >= 4:
+                tenant_id = parts[3]
+
+        user_agent = request.headers.get("user-agent")
+        src_ip = request.client.host if request.client else None
+
+        try:
+            response = await call_next(request)
+            process_time = time.perf_counter() - start_time
+            latency_ms = process_time * 1000
+
+            # Log as OCSF class 6002 API Activity
+            log_api_activity(
+                request_id=request_id,
+                tenant_id=tenant_id,
+                method=request.method,
+                path=path,
+                status_code=response.status_code,
+                latency_ms=latency_ms,
+                user_agent=user_agent,
+                src_ip=src_ip,
+            )
+
+            # Add request ID to response headers
+            response.headers["X-Request-ID"] = request_id
+            response.headers["X-Process-Time"] = str(round(latency_ms, 2))
+
+            return response
+
+        except Exception as e:
+            process_time = time.perf_counter() - start_time
+            latency_ms = process_time * 1000
+
+            # Log error as OCSF event
+            log_api_activity(
+                request_id=request_id,
+                tenant_id=tenant_id,
+                method=request.method,
+                path=path,
+                status_code=500,
+                latency_ms=latency_ms,
+                user_agent=user_agent,
+                src_ip=src_ip,
+            )
+
+            raise
 
 
-def log_api_activity(
-    request_id: str,
-    tenant_id: str,
-    method: str,
-    path: str,
-    status_code: int,
-    latency_ms: float,
-    user_agent: str | None = None,
-    src_ip: str | None = None,
-) -> None:
-    """Log an API request as OCSF class 6002 API Activity."""
-    # Determine severity and status_id from HTTP status code
-    if status_code < 400:
-        severity_id = 1
-        status_id = 1  # Success
-    elif status_code == 401 or status_code == 403:
-        severity_id = 4
-        status_id = 2  # Failure
-    elif status_code == 429:
-        severity_id = 3
-        status_id = 2  # Failure
-    elif status_code >= 500:
-        severity_id = 5
-        status_id = 2
-    else:
-        severity_id = 3
-        status_id = 2
-
-    logger.info(
-        "api_activity",
-        class_uid=6002,
-        class_name="API Activity",
-        category_uid=3,
-        category_name="Identity & Access Management",
-        severity_id=severity_id,
-        activity_id=1,
-        activity_name="Activity",
-        status_id=status_id,
-        status="Success" if status_id == 1 else "Failure",
-        time=datetime.now(timezone.utc).isoformat(),
-        request_id=request_id,
+# Convenience functions for other parts of the application
+def log_auth_event(success: bool, tenant_id: str = "unknown", reason: str = None):
+    """Log authentication events as OCSF class 3001."""
+    log_auth_attempt(
+        request_id=str(uuid.uuid4()),
         tenant_id=tenant_id,
-        api={
-            "operation": {"method": method, "path": path, "version": "v1"},
-        },
-        http_request={
-            "method": method,
-            "url": path,
-            "user_agent": user_agent,
-            "src_endpoint": {"ip": src_ip} if src_ip else None,
-        },
-        http_response={"code": status_code, "latency_ms": latency_ms},
-        metadata={
-            "version": "1.3.0",
-            "product": {"name": "threatrecall-api", "vendor_name": "Roland Fleet", "version": "1.0.0"},
-            "log_name": "api",
-            "log_provider": "structlog",
-        },
-    )
-
-
-def log_auth_attempt(
-    request_id: str,
-    tenant_id: str,
-    success: bool,
-    reason: str | None = None,
-    src_ip: str | None = None,
-) -> None:
-    """Log an authentication event as OCSF class 3001 Authentication."""
-    logger.info(
-        "authentication_attempt",
-        class_uid=3001,
-        class_name="Authentication",
-        category_uid=3,
-        category_name="Identity & Access Management",
-        severity_id=4 if not success else 1,
-        activity_id=1,
-        activity_name="Logon",
-        status_id=1 if success else 2,
-        status="Success" if success else "Failure",
-        time=datetime.now(timezone.utc).isoformat(),
-        request_id=request_id,
-        tenant_id=tenant_id,
-        actor={"user": {"name": tenant_id, "uid": tenant_id}},
-        src_endpoint={"ip": src_ip} if src_ip else None,
-        auth_protocol="bearer",
-        reason=reason,
-        metadata={
-            "version": "1.3.0",
-            "product": {"name": "threatrecall-api", "vendor_name": "Roland Fleet", "version": "1.0.0"},
-            "log_name": "auth",
-            "log_provider": "structlog",
-        },
+        success=success,
+        reason=reason
     )

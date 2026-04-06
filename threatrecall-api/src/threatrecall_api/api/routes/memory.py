@@ -23,9 +23,11 @@ from threatrecall_api.models.note import (
     RememberRequest,
     RememberResponse,
     NoteDetail,
+    HealthResponse,
+)
+from threatrecall_api.models.common import (
     HealthComponents,
     HealthMetrics,
-    HealthResponse,
 )
 
 router = APIRouter(prefix="/api/v1", tags=["Memory"])
@@ -37,7 +39,13 @@ async def tenant_health(request: Request, tenant_id: str):
     if not tenant_exists(tenant_id):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail={"code": "RESOURCE_NOT_FOUND", "message": f"Tenant {tenant_id} not found"},
+            detail={
+                "error": {
+                    "code": "RESOURCE_NOT_FOUND",
+                    "message": f"Tenant {tenant_id} not found",
+                    "request_id": str(uuid.uuid4()),
+                }
+            },
         )
 
     try:
@@ -200,6 +208,130 @@ async def recall(
             "pagination": PaginationMeta(
                 has_more=len(results) == limit,
                 page_size=limit,
+            ).model_dump(),
+        }
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={
+                "code": "INTERNAL_ERROR",
+                "message": str(e),
+            },
+        ) from e
+
+
+@router.get("/{tenant_id}/notes/{note_id}", status_code=status.HTTP_200_OK)
+async def get_note(
+    request: Request,
+    tenant_id: TenantContext,
+    note_id: str,
+) -> dict:
+    """Retrieve a specific note by ID."""
+    mm = get_memory_manager(tenant_id)
+
+    try:
+        # Search through notes to find by ID
+        # Note: This is a simple implementation; for production, use indexed lookup
+        all_notes = mm.recall(query="*", k=10000)  # Get all notes
+        note = None
+        for n in all_notes:
+            if n.id == note_id:
+                note = n
+                break
+
+        if note is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail={
+                    "error": {
+                        "code": "RESOURCE_NOT_FOUND",
+                        "message": f"Note {note_id} not found",
+                        "request_id": request.headers.get("X-Request-ID", str(uuid.uuid4())),
+                    }
+                },
+            )
+
+        response = NoteDetail(
+            note_id=note.id,
+            content=note.content.raw,
+            created_at=datetime.fromisoformat(note.created_at),
+            updated_at=datetime.fromisoformat(note.created_at),  # Notes are immutable
+            metadata=None,  # Could populate from note.metadata if available
+            entities=[
+                {"type": "entity", "name": e, "confidence": 0.9}
+                for e in (note.semantic.entities or [])
+            ],
+            links=[{"target_id": link} for link in (note.links.related if note.links else [])],
+        )
+
+        return {
+            "data": response.model_dump(),
+            "meta": ResponseMeta(
+                request_id=request.headers.get("X-Request-ID", str(uuid.uuid4())),
+                timestamp=datetime.now(timezone.utc),
+            ).model_dump(),
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={
+                "code": "INTERNAL_ERROR",
+                "message": str(e),
+            },
+        ) from e
+
+
+@router.get("/{tenant_id}/notes", status_code=status.HTTP_200_OK)
+async def list_notes(
+    request: Request,
+    tenant_id: TenantContext,
+    limit: int = 25,
+    cursor: str | None = None,
+) -> dict:
+    """List notes with cursor pagination."""
+    mm = get_memory_manager(tenant_id)
+
+    try:
+        # Get all notes and apply pagination
+        # For MVP, simple in-memory pagination
+        all_notes = mm.recall(query="*", k=10000)
+        
+        # Simple offset-based pagination using cursor
+        offset = 0
+        if cursor:
+            try:
+                offset = int(cursor)
+            except ValueError:
+                pass
+        
+        total = len(all_notes)
+        paginated = all_notes[offset:offset + limit]
+        
+        results = []
+        for note in paginated:
+            results.append({
+                "note_id": note.id,
+                "content": note.content.raw[:200] + "..." if len(note.content.raw) > 200 else note.content.raw,
+                "created_at": note.created_at,
+                "entity_count": len(note.semantic.entities) if note.semantic.entities else 0,
+            })
+        
+        next_cursor = str(offset + limit) if offset + limit < total else None
+
+        return {
+            "data": results,
+            "meta": ResponseMeta(
+                request_id=request.headers.get("X-Request-ID", str(uuid.uuid4())),
+                timestamp=datetime.now(timezone.utc),
+            ).model_dump(),
+            "pagination": PaginationMeta(
+                cursor=next_cursor,
+                has_more=next_cursor is not None,
+                page_size=len(results),
             ).model_dump(),
         }
 

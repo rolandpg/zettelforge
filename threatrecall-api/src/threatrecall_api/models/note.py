@@ -22,7 +22,7 @@ class NoteMetadata(BaseModel):
 
     source: str | None = None
     confidence: str | None = None
-    tlp: TLPC classification | None = None
+    tlp: TLPC | None = None
 
 
 class EntityInfo(BaseModel):

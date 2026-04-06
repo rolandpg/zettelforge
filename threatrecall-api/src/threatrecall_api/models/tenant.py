@@ -18,7 +18,7 @@ class TenantCreate(BaseModel):
         description="Lowercase alphanumeric with hyphens, max 64 chars",
     )
     tenant_name: str = Field(..., min_length=1, max_length=255)
-    contact_email: EmailStr
+    contact_email: EmailStr | None = None
 
 
 class TenantCreateResponse(BaseModel):

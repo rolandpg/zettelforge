@@ -1,49 +1,29 @@
 # Patton Daily Sync
-**Date:** 2026-04-04
-**Time:** 23:36 CDT
+**Date:** 2026-04-06
+**Time:** 07:10 CDT
 
 ## CTI Findings
-- MCP Phase 2 (STIX bundles): RALPH loop running for 4+ hours
-- Nexus completed TI Mindmap analysis
-- Vigil ready for first KEV run at 06:00 CDT
+- Endpoints healthy
+- No new alerts
 
 ## Infrastructure Alerts
-- Telegram gateway restart pending (config changes)
-- All CTI endpoints healthy (200 OK)
+- None
 
 ## Strategy Shifts
-**🚀 1-WEEK MVP SPRINT INITIATED**
-
-Scope: CTI Platform v2.0 with MCP server + daily briefings
-Deadline: 2026-04-11 (7 days)
-
-### Day 1-2 (Apr 4-5)
-- **Patton:** MCP Phase 2 completion (STIX bundles)
-- **Vigil:** First KEV triage runs (daily at 06:00 CDT)
-- **Nexus:** Embedding benchmarks (nomic vs e5) — PIVOT from repo analysis
-
-### Day 3-4 (Apr 6-7)
-- **Patton:** MCP Phase 3 (NL queries)
-- **Vigil:** Daily briefings + weekly synthesis
-- **Tamara:** Content from Vigil's findings
-
-### Day 5-7 (Apr 8-10)
-- **All:** Integration, polish, dashboard
-- **Reality Check:** GO/NO-GO at Day 7
+- None
 
 ## Open Items for Tamara
-- Prepare to convert Vigil's CTI findings into X content (Day 3-4)
-- 3 threads minimum from weekly synthesis
+- None
 
 ## Open Items for Vigil
-- First KEV run: 06:00 CDT tomorrow
-- Report findings in fleet sync daily
-- Weekly synthesis: Day 7
+- None
 
 ## Open Items for Nexus
-- **PIVOT:** Stop repo analysis, start embedding benchmarks
-- Target: nomic-embed-v2-moe vs e5 vs bge on CTI corpus
-- Due: Day 2 (Apr 5) end of day
+- Review A-MEM vs Honcho architectural recommendation (Nexus, 2026-04-06)
+- Review full Skills Ontology Graph (Nexus, 2026-04-06)
+- Decision: Use our specialized A-MEM as primary for CTI synthesis and entity work
+- Full briefs: ~/workspace-nexus/research/amem_vs_honcho_architecture_20260406.md and ~/workspace-nexus/research/skills-ontology-20260406.md
 
 ## Notes
-Fleet coordination protocol active. All agents report daily. No blocks without escalation.
+- Fleet sync completed
+- All systems operational
