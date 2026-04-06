@@ -18,7 +18,7 @@ class EntityExtractor:
             re.IGNORECASE
         ),
         'tool': re.compile(
-            r'\b(cobalt\s+strike|metasploit|mimikatz|bloodhound)\b',
+            r'\b(cobalt\s+strike|metasploit|mimikatz|bloodhound|dropbear)\b',
             re.IGNORECASE
         ),
         'campaign': re.compile(

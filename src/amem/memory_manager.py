@@ -18,6 +18,7 @@ from amem.vector_retriever import VectorRetriever
 from amem.alias_resolver import AliasResolver
 from amem.synthesis_generator import SynthesisGenerator, get_synthesis_generator
 from amem.synthesis_validator import SynthesisValidator, get_synthesis_validator
+from amem.knowledge_graph import get_knowledge_graph
 
 
 class MemoryManager:
@@ -77,6 +78,9 @@ class MemoryManager:
         
         # Phase 3: Check supersession
         self._check_supersession(note, resolved_entities)
+        
+        # Phase 6: Knowledge Graph Update
+        self._update_knowledge_graph(note, resolved_entities)
 
         return note, "created"
 
@@ -157,6 +161,46 @@ class MemoryManager:
 
 
 
+
+    def _update_knowledge_graph(self, note: MemoryNote, resolved_entities: Dict[str, List[str]]):
+        kg = get_knowledge_graph()
+        
+        # 1. Add Note node
+        note_id = kg.add_node("note", note.id, {"content": note.content.raw[:200], "domain": note.metadata.domain})
+        
+        # 2. Add Entity Nodes and MENTIONED_IN edges
+        all_entities = []
+        for etype, elist in resolved_entities.items():
+            for evalue in elist:
+                all_entities.append((etype, evalue))
+                kg.add_edge(etype, evalue, "note", note.id, "MENTIONED_IN")
+
+        # 3. Infer Entity-to-Entity Relationships (Heuristic)
+        # e.g., Actor uses Tool, Actor exploits CVE, Tool targets Asset
+        actors = resolved_entities.get("actor", [])
+        tools = resolved_entities.get("tool", [])
+        cves = resolved_entities.get("cve", [])
+        assets = resolved_entities.get("asset", [])
+        campaigns = resolved_entities.get("campaign", [])
+
+        # Actor -> Tool
+        for a in actors:
+            for t in tools:
+                kg.add_edge("actor", a, "tool", t, "USES_TOOL")
+            for c in cves:
+                kg.add_edge("actor", a, "cve", c, "EXPLOITS_CVE")
+            for asset in assets:
+                kg.add_edge("actor", a, "asset", asset, "TARGETS_ASSET")
+            for camp in campaigns:
+                kg.add_edge("actor", a, "campaign", camp, "CONDUCTS_CAMPAIGN")
+
+        # Tool -> Asset
+        for t in tools:
+            for asset in assets:
+                kg.add_edge("tool", t, "asset", asset, "TARGETS_ASSET")
+            for c in cves:
+                kg.add_edge("tool", t, "cve", c, "EXPLOITS_CVE")
+
     def mark_note_superseded(self, note_id: str, superseded_by_id: str) -> bool:
         old_note = self.store.get_note_by_id(note_id)
         new_note = self.store.get_note_by_id(superseded_by_id)
@@ -231,6 +275,27 @@ class MemoryManager:
         self.store.export_snapshot(str(snapshot_dir))
 
         return str(snapshot_dir / f"notes_{timestamp}.jsonl")
+
+
+    # === Phase 6: Knowledge Graph Retrieval ===
+
+    def get_entity_relationships(self, entity_type: str, entity_value: str) -> List[Dict]:
+        """Get direct relationships for an entity from the knowledge graph."""
+        kg = get_knowledge_graph()
+        
+        # Resolve alias if necessary
+        self.resolver = getattr(self, "resolver", AliasResolver())
+        canonical = self.resolver.resolve(entity_type, entity_value)
+        
+        return kg.get_neighbors(entity_type, canonical)
+
+    def traverse_graph(self, start_type: str, start_value: str, max_depth: int = 2) -> List[Dict]:
+        """Traverse relationships from a starting entity."""
+        kg = get_knowledge_graph()
+        self.resolver = getattr(self, "resolver", AliasResolver())
+        canonical = self.resolver.resolve(start_type, start_value)
+        
+        return kg.traverse(start_type, canonical, max_depth)
 
     # === Phase 7: Synthesis Layer ===
 

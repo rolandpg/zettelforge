@@ -21,7 +21,9 @@ from amem.vector_retriever import VectorRetriever
 from amem.synthesis_generator import SynthesisGenerator, get_synthesis_generator
 from amem.synthesis_validator import SynthesisValidator, get_synthesis_validator
 
-__version__ = "1.0.0-alpha.2"
+from amem.knowledge_graph import KnowledgeGraph, get_knowledge_graph
+
+__version__ = "1.0.0-alpha.3"
 __all__ = [
     "MemoryManager",
     "get_memory_manager",
@@ -31,4 +33,6 @@ __all__ = [
     "get_synthesis_generator",
     "SynthesisValidator",
     "get_synthesis_validator",
+    "KnowledgeGraph",
+    "get_knowledge_graph"
 ]
