@@ -1,0 +1,6 @@
+include README.md
+include LICENSE
+include pyproject.toml
+recursive-include src/amem *.py
+recursive-include tests *.py
+recursive-include docs *.md
