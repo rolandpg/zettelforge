@@ -15,6 +15,8 @@ from amem.memory_store import MemoryStore, get_default_data_dir
 from amem.note_constructor import NoteConstructor
 from amem.entity_indexer import EntityIndexer
 from amem.vector_retriever import VectorRetriever
+from amem.synthesis_generator import SynthesisGenerator, get_synthesis_generator
+from amem.synthesis_validator import SynthesisValidator, get_synthesis_validator
 
 
 class MemoryManager:
@@ -153,6 +155,60 @@ class MemoryManager:
         self.store.export_snapshot(str(snapshot_dir))
 
         return str(snapshot_dir / f"notes_{timestamp}.jsonl")
+
+    # === Phase 7: Synthesis Layer ===
+
+    def synthesize(
+        self,
+        query: str,
+        format: str = "direct_answer",
+        k: int = 10,
+        tier_filter: List[str] = None
+    ) -> Dict[str, Any]:
+        """
+        Synthesize an answer from retrieved memories (Phase 7 RAG-as-Answer).
+
+        Args:
+            query: The question to answer
+            format: Output format - "direct_answer", "synthesized_brief",
+                    "timeline_analysis", or "relationship_map"
+            k: Number of notes to retrieve for context
+            tier_filter: Filter by tier ["A", "B"] or ["A", "B", "C"]
+
+        Returns:
+            Dictionary with synthesis result, metadata, and sources
+
+        Example:
+            result = mm.synthesize("What do we know about APT28?", format="synthesized_brief")
+            print(result["synthesis"]["summary"])
+        """
+        gen = get_synthesis_generator()
+        return gen.synthesize(
+            query=query,
+            memory_manager=self,
+            format=format,
+            k=k,
+            tier_filter=tier_filter
+        )
+
+    def validate_synthesis(self, response: Dict) -> Tuple[bool, List[str]]:
+        """
+        Validate a synthesis response for quality.
+
+        Returns:
+            (is_valid, list_of_errors)
+        """
+        validator = get_synthesis_validator()
+        return validator.validate_response(response)
+
+    def check_synthesis_quality(self, response: Dict) -> Dict:
+        """
+        Compute quality score for a synthesis response.
+
+        Returns quality metrics including score (0-1) and grade.
+        """
+        validator = get_synthesis_validator()
+        return validator.check_quality_score(response)
 
 
 # Global memory manager instance

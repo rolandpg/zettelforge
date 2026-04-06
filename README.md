@@ -12,6 +12,7 @@ A production-grade memory system for AI agents with vector search, knowledge gra
 - **Entity Extraction**: Automatic indexing of CVEs, threat actors, tools, campaigns
 - **Fast Entity Lookup**: O(1) retrieval by entity type and value
 - **Link Expansion**: Follow related notes for comprehensive context
+- **RAG-as-Answer (Phase 7)**: Synthesize answers from memories with multiple output formats
 - **Epistemic Tiers**: A/B/C quality classification
 - **Local-First**: No external APIs required, runs entirely on your hardware
 - **Cross-Session**: Persistent memory across agent restarts
@@ -45,6 +46,13 @@ cve_notes = mm.recall_cve("CVE-2024-3094")
 
 # Get formatted context for prompts
 context = mm.get_context("threat actor activity", k=10)
+
+# Synthesize answers from memories (Phase 7)
+result = mm.synthesize(
+    "What do we know about XZ backdoor?",
+    format="synthesized_brief"  # or "direct_answer", "timeline_analysis", "relationship_map"
+)
+print(result["synthesis"]["summary"])
 ```
 
 ## Architecture
