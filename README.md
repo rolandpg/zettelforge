@@ -70,6 +70,10 @@ results = mm.recall("What malware does APT28 use?", k=10)
 answer = mm.synthesize("Summarize APT28 activity in 2026", format="synthesized_brief")
 ```
 
+## Contributing
+
+See `CONTRIBUTING.md`. External contributions are not accepted.
+
 ## License
 
 See `LICENSE` file.
