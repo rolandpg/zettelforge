@@ -35,15 +35,15 @@ def get_memory_manager(tenant_id: str) -> object:
     tenant_path = get_tenant_storage_path(tenant_id)
     tenant_path.mkdir(parents=True, exist_ok=True)
 
-    # Import from bundled amem module
+    # Import from ZettelForge (our proprietary memory system)
     import sys
     from pathlib import Path as P
 
-    _amem_dir = P("/app/amem")
-    if str(_amem_dir) not in sys.path:
-        sys.path.insert(0, str(_amem_dir))
+    _zf_dir = P("/app/zettelforge")
+    if str(_zf_dir) not in sys.path:
+        sys.path.insert(0, str(_zf_dir))
 
-    from memory_manager import MemoryManager
+    from zettelforge.memory_manager import MemoryManager
 
     manager = MemoryManager(
         jsonl_path=str(tenant_path / "notes.jsonl"),

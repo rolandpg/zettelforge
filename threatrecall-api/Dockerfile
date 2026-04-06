@@ -29,11 +29,11 @@ ENV PATH=/home/threatrecall/.local/bin:$PATH
 
 # Copy application code
 COPY src/ ./src/
-COPY amem/ ./amem/
+COPY ../skills/zettelforge ./zettelforge/
 COPY run_dev.py .
 
 # Set environment variables
-ENV PYTHONPATH=/app/src:/app/amem
+ENV PYTHONPATH=/app/src:/app/zettelforge/src
 ENV TR_DATA_DIR=/data/threatrecall
 ENV TR_SECRETS_BACKEND=env
 ENV TR_LOG_LEVEL=INFO
