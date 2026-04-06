@@ -4,12 +4,14 @@ A-MEM Agentic Memory Architecture V1.0
 
 Retrieves relevant notes based on embedding similarity with domain filtering.
 """
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Dict
 import numpy as np
 
 from amem.note_schema import MemoryNote
 from amem.memory_store import MemoryStore
 from amem.vector_memory import get_embedding
+from amem.entity_indexer import EntityExtractor
+from amem.alias_resolver import AliasResolver
 
 
 def cosine_similarity(a: List[float], b: List[float]) -> float:
@@ -29,11 +31,17 @@ class VectorRetriever:
 
     def __init__(
         self,
-        similarity_threshold: float = 0.30,
+        similarity_threshold: float = 0.25,
+        entity_boost: float = 2.5,
+        exact_match_boost: float = 1.0,
         memory_store: Optional[MemoryStore] = None
     ):
         self.similarity_threshold = similarity_threshold
+        self.entity_boost = entity_boost
+        self.exact_match_boost = exact_match_boost
         self.store = memory_store or MemoryStore()
+        self.extractor = EntityExtractor()
+        self.resolver = AliasResolver()
 
     def _get_candidates(self, domain: Optional[str] = None) -> List[MemoryNote]:
         """Get candidate notes, optionally filtered by domain."""
@@ -57,11 +65,31 @@ class VectorRetriever:
 
         if not candidates:
             return []
+            
+        # Extract query entities
+        raw_query_entities = self.extractor.extract_all(query)
+        query_entities = set()
+        for etype, elist in raw_query_entities.items():
+            for e in elist:
+                query_entities.add(self.resolver.resolve(etype, e))
 
         scored = []
         for note in candidates:
             if note.embedding.vector:
                 sim = cosine_similarity(query_vector, note.embedding.vector)
+                
+                # Apply Entity Boost
+                note_entities = set(note.semantic.entities)
+                if query_entities:
+                    overlap = len(query_entities & note_entities)
+                    sim *= (self.entity_boost ** overlap)
+                    
+                # Apply Exact Match Boost (e.g. for CVE IDs)
+                if query_entities:
+                    for qe in query_entities:
+                        if qe.lower() in note.content.raw.lower():
+                            sim *= self.exact_match_boost
+                
                 if sim >= self.similarity_threshold:
                     scored.append((note, sim))
 
