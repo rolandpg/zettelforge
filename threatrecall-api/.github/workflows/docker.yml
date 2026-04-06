@@ -24,8 +24,14 @@ jobs:
       security-events: write
 
     steps:
-      - name: Checkout
+      - name: Checkout ThreatRecall API
         uses: actions/checkout@v4
+
+      - name: Checkout ZettelForge
+        uses: actions/checkout@v4
+        with:
+          repository: rolandpg/zettelforge
+          path: zettelforge
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3

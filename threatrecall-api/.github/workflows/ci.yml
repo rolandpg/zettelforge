@@ -52,6 +52,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Checkout ZettelForge
+        uses: actions/checkout@v4
+        with:
+          repository: rolandpg/zettelforge
+          path: zettelforge
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -64,7 +70,7 @@ jobs:
 
       - name: Run unit tests
         run: |
-          export PYTHONPATH=src
+          export PYTHONPATH=zettelforge/src:src
           pytest tests/unit/ -v --cov=src/threatrecall_api --cov-report=xml --cov-report=term
 
       - name: Upload coverage
@@ -85,6 +91,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Checkout ZettelForge
+        uses: actions/checkout@v4
+        with:
+          repository: rolandpg/zettelforge
+          path: zettelforge
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -101,7 +113,7 @@ jobs:
 
       - name: Run integration tests
         run: |
-          export PYTHONPATH=/home/runner/work/threatrecall-api/threatrecall-api/memory:src
+          export PYTHONPATH=zettelforge/src:src
           export TR_DATA_DIR=/tmp/threatrecall-test
           pytest tests/integration/ -v --tb=short
         continue-on-error: true  # MVP limitations expected
