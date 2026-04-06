@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "amem"
-version = "1.0.0-alpha.2"
+version = "1.0.0-alpha.3"
 description = "A-MEM: Agentic Memory System with vector search, knowledge graph, and synthesis"
 readme = "README.md"
 license = {text = "MIT"}

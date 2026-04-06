@@ -53,6 +53,12 @@ result = mm.synthesize(
     format="synthesized_brief"  # or "direct_answer", "timeline_analysis", "relationship_map"
 )
 print(result["synthesis"]["summary"])
+
+# Query the Knowledge Graph (Phase 6)
+paths = mm.traverse_graph("actor", "APT28", max_depth=2)
+for path in paths:
+    # E.g. APT28 -[USES_TOOL]-> DROPBEAR
+    print(path)
 ```
 
 ## Architecture
@@ -233,8 +239,8 @@ pytest tests/test_phase_7.py -v  # Synthesis layer
 - [x] Phase 1: Core storage and retrieval
 - [x] Phase 2: Entity extraction and indexing
 - [x] Phase 3: Note linking and relationships
-- [ ] Phase 4: Knowledge graph integration
-- [ ] Phase 5: Synthesis layer (RAG-as-answer)
+- [x] Phase 4: Knowledge graph integration
+- [x] Phase 5: Synthesis layer (RAG-as-answer)
 - [ ] Phase 6: Multi-agent memory sharing
 - [ ] Phase 7: Distributed memory sync
 
