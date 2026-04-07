@@ -6,11 +6,18 @@ Implements a Neo4j-inspired knowledge graph for A-MEM with:
 - Entity nodes (CVE, Actor, Tool, Campaign, Asset, Note)
 - Relationship edges with semantic types
 - JSONL persistence with atomic writes
+- Temporal indexing for time-based queries (Task 2)
+
+Temporal Graph Extension (2026-04-06):
+- Added temporal edge types: TEMPORAL_BEFORE, TEMPORAL_AFTER, SUPERSEDES
+- Added temporal index for time-range queries
+- Supports "what changed since X" queries
 """
 
 import json
 import uuid
 import threading
+import re
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Any
@@ -18,7 +25,7 @@ from typing import Dict, List, Optional, Any
 
 class KnowledgeGraph:
     """
-    Knowledge graph storage.
+    Knowledge graph storage with temporal indexing.
     Uses JSONL for append-only persistence.
     """
 
@@ -36,6 +43,11 @@ class KnowledgeGraph:
         self._edges_from: Dict[str, List[Dict]] = {}  # node_id -> outgoing edges
         self._edges_to: Dict[str, List[Dict]] = {}  # node_id -> incoming edges
 
+        # ===== Temporal Index (Task 2) =====
+        # Temporal edges indexed by timestamp
+        self._temporal_index: Dict[str, List[Dict]] = {}  # timestamp -> temporal edges
+        self._entity_timeline: Dict[str, List[Dict]] = {}  # entity_value -> timeline of states
+        
         self._lock = threading.RLock()
         self._load_all()
 
@@ -58,6 +70,9 @@ class KnowledgeGraph:
                         try:
                             edge = json.loads(line)
                             self._cache_edge(edge)
+                            # Index temporal edges
+                            if edge.get('relationship', '').startswith('TEMPORAL_') or edge.get('relationship') == 'SUPERSEDES':
+                                self._index_temporal_edge(edge)
                         except json.JSONDecodeError:
                             continue
 
@@ -77,7 +92,6 @@ class KnowledgeGraph:
         
         if from_id not in self._edges_from:
             self._edges_from[from_id] = []
-        # Update existing edge or append
         existing = next((e for e in self._edges_from[from_id] if e["edge_id"] == edge["edge_id"]), None)
         if existing:
             existing.update(edge)
@@ -92,6 +106,106 @@ class KnowledgeGraph:
         else:
             self._edges_to[to_id].append(edge)
 
+    # ===== Temporal Indexing (Task 2) =====
+    
+    def _parse_timestamp(self, ts_string: str) -> Optional[datetime]:
+        """Parse various timestamp formats."""
+        if not ts_string:
+            return None
+        
+        # ISO format
+        try:
+            return datetime.fromisoformat(ts_string.replace('Z', '+00:00'))
+        except:
+            pass
+        
+        # Common formats
+        formats = ['%Y-%m-%d', '%Y-%m-%d %H:%M:%S', '%d %b %Y', '%B %d, %Y']
+        for fmt in formats:
+            try:
+                return datetime.strptime(ts_string, fmt)
+            except:
+                continue
+        return None
+
+    def _index_temporal_edge(self, edge: Dict):
+        """Index a temporal edge in the temporal index."""
+        ts = edge.get('properties', {}).get('timestamp') or edge.get('created_at', '')
+        if ts:
+            if ts not in self._temporal_index:
+                self._temporal_index[ts] = []
+            self._temporal_index[ts].append(edge)
+        
+        # Also index in entity timeline
+        from_node = self._nodes.get(edge.get('from_node_id'), {})
+        to_node = self._nodes.get(edge.get('to_node_id'), {})
+        
+        entity_key = f"{from_node.get('entity_type')}:{from_node.get('entity_value')}"
+        if entity_key not in self._entity_timeline:
+            self._entity_timeline[entity_key] = []
+        
+        self._entity_timeline[entity_key].append({
+            'edge': edge,
+            'timestamp': ts,
+            'to_entity': f"{to_node.get('entity_type')}:{to_node.get('entity_value')}"
+        })
+
+    def add_temporal_edge(
+        self,
+        from_type: str, from_value: str,
+        to_type: str, to_value: str,
+        relationship: str,  # TEMPORAL_BEFORE, TEMPORAL_AFTER, SUPERSEDES
+        timestamp: str,
+        properties: Optional[Dict] = None
+    ) -> str:
+        """Add a temporal edge with timestamp."""
+        props = properties or {}
+        props['timestamp'] = timestamp
+        
+        edge_id = self.add_edge(
+            from_type, from_value,
+            to_type, to_value,
+            relationship,
+            props
+        )
+        
+        # Index in temporal structures
+        edge = self._edges.get(edge_id)
+        if edge:
+            self._index_temporal_edge(edge)
+        
+        return edge_id
+
+    def get_entity_timeline(self, entity_type: str, entity_value: str) -> List[Dict]:
+        """Get timeline of states for an entity."""
+        entity_key = f"{entity_type}:{entity_value}"
+        timeline = self._entity_timeline.get(entity_key, [])
+        
+        # Sort by timestamp
+        timeline.sort(key=lambda x: x['timestamp'] or '')
+        return timeline
+
+    def get_changes_since(self, timestamp: str) -> List[Dict]:
+        """Get all entity changes since a given timestamp."""
+        changes = []
+        
+        for ts, edges in self._temporal_index.items():
+            if ts >= timestamp:
+                for edge in edges:
+                    from_node = self._nodes.get(edge.get('from_node_id'), {})
+                    to_node = self._nodes.get(edge.get('to_node_id'), {})
+                    changes.append({
+                        'timestamp': ts,
+                        'from': f"{from_node.get('entity_type')}:{from_node.get('entity_value')}",
+                        'relationship': edge.get('relationship'),
+                        'to': f"{to_node.get('entity_type')}:{to_node.get('entity_value')}"
+                    })
+        
+        changes.sort(key=lambda x: x['timestamp'])
+        return changes
+
+    # ===== Core Graph Operations =====
+    
     def add_node(self, entity_type: str, entity_value: str, properties: Optional[Dict] = None) -> str:
         """Add or update a node. Returns node_id."""
         with self._lock:
@@ -158,6 +272,11 @@ class KnowledgeGraph:
             }
             self._cache_edge(edge)
             self._append_jsonl(self.edges_file, edge)
+            
+            # Index temporal edges
+            if relationship.startswith('TEMPORAL_') or relationship == 'SUPERSEDES':
+                self._index_temporal_edge(edge)
+            
             return edge_id
 
     def _append_jsonl(self, path: Path, data: Dict):
@@ -226,9 +345,18 @@ class KnowledgeGraph:
         _dfs(start_node_id, 1, [])
         return results
 
+    def get_latest_state(self, entity_type: str, entity_value: str) -> Optional[Dict]:
+        """Get the latest known state of an entity."""
+        timeline = self.get_entity_timeline(entity_type, entity_value)
+        if timeline:
+            return timeline[-1]
+        return None
+
+
 # Global singleton
 _kg_instance: Optional[KnowledgeGraph] = None
 _kg_lock = threading.Lock()
+
 
 def get_knowledge_graph() -> KnowledgeGraph:
     """Get global knowledge graph instance."""
