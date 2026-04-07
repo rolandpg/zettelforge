@@ -162,6 +162,27 @@ enhanced_prompt = injector.inject_into_prompt(task, base_prompt)
 
 **Task Classification:** cve_analysis, threat_actor_research, incident_response, malware_analysis, planning
 
+## Sigma Rule Generation (v1.3.0)
+
+Generate detection rules from CTI IOCs:
+```python
+from zettelforge import get_cti_connector, get_sigma_generator
+
+cti = get_cti_connector()
+sigma = get_sigma_generator(cti)
+
+# Generate rules for a threat actor
+rules = sigma.generate_from_actor("microsoft", min_confidence="LOW")
+
+# Export to Sigma YAML
+yaml_out = sigma.export_yaml(rules)
+
+# Export to Sentinel KQL
+kql = sigma.export_sentinel(rules)
+```
+
+**Output Formats:** Sigma YAML, Microsoft Sentinel KQL
+
 ## API Reference
 
 See `docs/API.md` for complete API documentation.
