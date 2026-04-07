@@ -11,6 +11,7 @@ A production-grade memory system for AI agents with:
 - Temporal graph indexing
 - Intent-based query routing
 - CTI platform integration
+- Proactive context injection
 
 Example:
     >>> from zettelforge import MemoryManager
@@ -43,8 +44,14 @@ from zettelforge.cti_integration import (
     import_cti_to_memory,
     unified_recall
 )
+from zettelforge.context_injection import (
+    ContextInjector,
+    get_context_injector,
+    inject_for_task,
+    ProactiveAgentMixin
+)
 
-__version__ = "1.1.0"
+__version__ = "1.2.0"
 __all__ = [
     # Core
     "MemoryManager",
@@ -75,5 +82,10 @@ __all__ = [
     "CTIPlatformConnector",
     "get_cti_connector",
     "import_cti_to_memory",
-    "unified_recall"
+    "unified_recall",
+    # Context Injection
+    "ContextInjector",
+    "get_context_injector",
+    "inject_for_task",
+    "ProactiveAgentMixin"
 ]
