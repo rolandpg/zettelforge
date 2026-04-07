@@ -12,6 +12,7 @@ A production-grade memory system for AI agents with:
 - Intent-based query routing
 - CTI platform integration
 - Proactive context injection
+- Sigma rule generation
 
 Example:
     >>> from zettelforge import MemoryManager
@@ -50,8 +51,14 @@ from zettelforge.context_injection import (
     inject_for_task,
     ProactiveAgentMixin
 )
+from zettelforge.sigma_generator import (
+    SigmaGenerator,
+    get_sigma_generator,
+    generate_actor_rules,
+    generate_sentinel_rules
+)
 
-__version__ = "1.2.0"
+__version__ = "1.3.0"
 __all__ = [
     # Core
     "MemoryManager",
@@ -87,5 +94,10 @@ __all__ = [
     "ContextInjector",
     "get_context_injector",
     "inject_for_task",
-    "ProactiveAgentMixin"
+    "ProactiveAgentMixin",
+    # Sigma Generation
+    "SigmaGenerator",
+    "get_sigma_generator",
+    "generate_actor_rules",
+    "generate_sentinel_rules"
 ]
