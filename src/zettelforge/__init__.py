@@ -5,7 +5,12 @@ A production-grade memory system for AI agents with:
 - Vector semantic search
 - Knowledge graph relationships
 - Entity extraction and indexing
-- RAG-as-answer synthesis (Phase 7)
+- RAG-as-answer synthesis
+- Typed ontology with constraints
+- Causal triple extraction
+- Temporal graph indexing
+- Intent-based query routing
+- CTI platform integration
 
 Example:
     >>> from zettelforge import MemoryManager
@@ -22,9 +27,26 @@ from zettelforge.synthesis_generator import SynthesisGenerator, get_synthesis_ge
 from zettelforge.synthesis_validator import SynthesisValidator, get_synthesis_validator
 
 from zettelforge.knowledge_graph import KnowledgeGraph, get_knowledge_graph
+from zettelforge.ontology import (
+    TypedEntityStore,
+    OntologyValidator,
+    get_ontology_store,
+    get_ontology_validator,
+    ENTITY_TYPES,
+    RELATION_TYPES
+)
+from zettelforge.intent_classifier import IntentClassifier, get_intent_classifier, QueryIntent
+from zettelforge.note_constructor import NoteConstructor
+from zettelforge.cti_integration import (
+    CTIPlatformConnector,
+    get_cti_connector,
+    import_cti_to_memory,
+    unified_recall
+)
 
-__version__ = "1.0.0-alpha.3"
+__version__ = "1.1.0"
 __all__ = [
+    # Core
     "MemoryManager",
     "get_memory_manager",
     "MemoryNote",
@@ -33,6 +55,25 @@ __all__ = [
     "get_synthesis_generator",
     "SynthesisValidator",
     "get_synthesis_validator",
+    # Knowledge Graph
     "KnowledgeGraph",
-    "get_knowledge_graph"
+    "get_knowledge_graph",
+    # Ontology
+    "TypedEntityStore",
+    "OntologyValidator",
+    "get_ontology_store",
+    "get_ontology_validator",
+    "ENTITY_TYPES",
+    "RELATION_TYPES",
+    # Intent Classification
+    "IntentClassifier",
+    "get_intent_classifier",
+    "QueryIntent",
+    # Note Constructor
+    "NoteConstructor",
+    # CTI Integration
+    "CTIPlatformConnector",
+    "get_cti_connector",
+    "import_cti_to_memory",
+    "unified_recall"
 ]
