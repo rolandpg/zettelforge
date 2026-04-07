@@ -144,6 +144,24 @@ results = unified_recall(mm, "APT28")
 
 **CTI Stats:** 30 actors, 1559 CVEs, 90K+ IOCs accessible
 
+## Proactive Context Injection (v1.2.0)
+
+Auto-preload relevant context before agent tasks:
+```python
+from zettelforge import ContextInjector, get_cti_connector, get_memory_manager
+
+# Setup
+injector = ContextInjector(memory_manager=mm, cti_connector=cti)
+
+# Before task - returns relevant memory + CTI
+context = injector.inject_context("Analyze CVE-2024-1111")
+
+# Inject into LLM prompt
+enhanced_prompt = injector.inject_into_prompt(task, base_prompt)
+```
+
+**Task Classification:** cve_analysis, threat_actor_research, incident_response, malware_analysis, planning
+
 ## API Reference
 
 See `docs/API.md` for complete API documentation.
