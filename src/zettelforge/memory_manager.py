@@ -99,8 +99,64 @@ class MemoryManager:
     ) -> List[MemoryNote]:
         """
         Retrieve memories relevant to query.
+        Uses intent classifier for adaptive retrieval strategy (Task 3).
         """
         self.stats['retrievals'] += 1
+        
+        # Classify query intent
+        from zettelforge.intent_classifier import get_intent_classifier
+        classifier = get_intent_classifier()
+        intent, intent_meta = classifier.classify(query)
+        policy = classifier.get_traversal_policy(intent)
+        
+        # Log for observability
+        print(f"[Intent] {intent.value} (conf={intent_meta.get('confidence', 0):.2f}) for: {query[:50]}...")
+        print(f"[Policy] vector={policy['vector']}, graph={policy['graph']}, temporal={policy['temporal']}")
+        
+        # Adjust k based on policy
+        k = max(k, policy['top_k'])
+        
+        # Route based on intent
+        if intent.value in ['factual', 'entity_lookup']:
+            # Use entity index
+            entities = self.indexer.extractor.extract_all(query)
+            results = []
+            for etype, elist in entities.items():
+                for evalue in elist:
+                    notes = self.recall_entity(etype, evalue, k=3)
+                    results.extend(notes)
+            return results[:k]
+        
+        elif intent.value == 'temporal':
+            # Use temporal graph
+            from zettelforge.knowledge_graph import get_knowledge_graph
+            kg = get_knowledge_graph()
+            # Extract timestamp from query
+            changes = kg.get_changes_since("2020-01-01")  # TODO: parse from query
+            # Get notes from changes
+            note_ids = [c['to'].split(':')[-1] for c in changes if c['to'].startswith('note:')]
+            results = [self.store.get_note_by_id(nid) for nid in note_ids if self.store.get_note_by_id(nid)]
+            return results[:k]
+        
+        elif intent.value in ['relational', 'causal']:
+            # Use graph traversal
+            from zettelforge.knowledge_graph import get_knowledge_graph
+            kg = get_knowledge_graph()
+            entities = self.indexer.extractor.extract_all(query)
+            results = []
+            for etype, elist in entities.items():
+                for evalue in elist:
+                    paths = kg.traverse(etype, evalue, max_depth=2)
+                    # Collect related notes
+                    for path in paths:
+                        for step in path:
+                            if step['to_type'] == 'note':
+                                note = self.store.get_note_by_id(step['to_value'])
+                                if note:
+                                    results.append(note)
+            return results[:k]
+        
+        # Default: vector retrieval
         return self.retriever.retrieve(
             query=query,
             domain=domain,

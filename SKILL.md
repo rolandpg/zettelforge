@@ -80,6 +80,47 @@ AMEM_OLLAMA_URL=http://localhost:11434
 AMEM_EMBEDDING_MODEL=nomic-embed-text
 ```
 
+## MAGMA Extensions (2026-04)
+
+Four improvements from MAGMA/Kumiho research:
+
+### 1. Causal Triple Extraction
+LLM-based extraction of causal relationships from notes:
+```python
+from zettelforge.note_constructor import NoteConstructor
+constructor = NoteConstructor()
+triples = constructor.extract_causal_triples(text, note_id)
+edges = constructor.store_causal_edges(triples, note_id)
+```
+Relations: `causes`, `enables`, `targets`, `uses`, `exploits`, `attributed_to`, `related_to`
+
+### 2. Temporal Graph
+Time-based indexing and queries:
+```python
+from zettelforge.knowledge_graph import get_knowledge_graph
+kg = get_knowledge_graph()
+timeline = kg.get_entity_timeline("actor", "apt28")
+changes = kg.get_changes_since("2024-01-01")
+```
+Temporal edge types: `SUPERSEDES`, `TEMPORAL_BEFORE`, `TEMPORAL_AFTER`
+
+### 3. Intent Classifier
+Adaptive query routing at recall time:
+```python
+from zettelforge.intent_classifier import get_intent_classifier
+classifier = get_intent_classifier()
+intent, meta = classifier.classify("What changed since May 2024?")
+policy = classifier.get_traversal_policy(intent)
+```
+Intent types: `factual`, `temporal`, `relational`, `causal`, `exploratory`
+
+### 4. Adaptive Recall
+`mm.recall()` now routes based on intent:
+- Factual → entity index
+- Temporal → temporal graph
+- Relational/Causal → graph traversal
+- Exploratory → vector search
+
 ## API Reference
 
 See `docs/API.md` for complete API documentation.
