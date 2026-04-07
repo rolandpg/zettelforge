@@ -10,15 +10,16 @@ from datetime import datetime
 from pathlib import Path
 from typing import List, Optional, Dict, Any, Tuple
 
-from amem.note_schema import MemoryNote
-from amem.memory_store import MemoryStore, get_default_data_dir
-from amem.note_constructor import NoteConstructor
-from amem.entity_indexer import EntityIndexer
-from amem.vector_retriever import VectorRetriever
-from amem.alias_resolver import AliasResolver
-from amem.synthesis_generator import SynthesisGenerator, get_synthesis_generator
-from amem.synthesis_validator import SynthesisValidator, get_synthesis_validator
-from amem.knowledge_graph import get_knowledge_graph
+from zettelforge.note_schema import MemoryNote
+from zettelforge.memory_store import MemoryStore, get_default_data_dir
+from zettelforge.note_constructor import NoteConstructor
+from zettelforge.entity_indexer import EntityIndexer
+from zettelforge.vector_retriever import VectorRetriever
+from zettelforge.alias_resolver import AliasResolver
+from zettelforge.synthesis_generator import SynthesisGenerator, get_synthesis_generator
+from zettelforge.synthesis_validator import SynthesisValidator, get_synthesis_validator
+from zettelforge.knowledge_graph import get_knowledge_graph
+from zettelforge.governance_validator import GovernanceValidator, GovernanceViolationError
 
 
 class MemoryManager:
@@ -35,6 +36,7 @@ class MemoryManager:
         self.constructor = NoteConstructor()
         self.indexer = EntityIndexer()
         self.retriever = VectorRetriever(memory_store=self.store)
+        self.governance = GovernanceValidator()
 
         self.stats = {
             'notes_created': 0,
@@ -54,6 +56,9 @@ class MemoryManager:
         
         Returns: (note, status)
         """
+        # Governance validation
+        self.governance.enforce("remember", content)
+
         # Construct note
         note = self.constructor.construct(
             raw_content=content,
@@ -175,7 +180,7 @@ class MemoryManager:
                 all_entities.append((etype, evalue))
                 kg.add_edge(etype, evalue, "note", note.id, "MENTIONED_IN")
 
-        # 3. Infer Entity-to-Entity Relationships (Heuristic)
+        # 3. Inferred Entity-to-Entity Relationships (Heuristic)
         # e.g., Actor uses Tool, Actor exploits CVE, Tool targets Asset
         actors = resolved_entities.get("actor", [])
         tools = resolved_entities.get("tool", [])
@@ -200,6 +205,17 @@ class MemoryManager:
                 kg.add_edge("tool", t, "asset", asset, "TARGETS_ASSET")
             for c in cves:
                 kg.add_edge("tool", t, "cve", c, "EXPLOITS_CVE")
+
+        # 4. LLM-based Causal Triple Extraction (MAGMA-style)
+        # This is the slow path - only run for important CTI notes
+        if note.metadata.domain in ["cti", "incident", "threat_intel"] or len(note.content.raw) > 200:
+            try:
+                triples = self.constructor.extract_causal_triples(note.content.raw, note.id)
+                if triples:
+                    edges = self.constructor.store_causal_edges(triples, note.id)
+                    print(f"[Causal] Extracted {len(triples)} triples, stored {edges} edges for note {note.id}")
+            except Exception as e:
+                print(f"[Causal] Extraction failed: {e}")
 
     def mark_note_superseded(self, note_id: str, superseded_by_id: str) -> bool:
         old_note = self.store.get_note_by_id(note_id)

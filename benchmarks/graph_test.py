@@ -4,8 +4,8 @@ from pathlib import Path
 import tempfile
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-from amem import MemoryManager
-from amem.knowledge_graph import get_knowledge_graph
+from zettelforge import MemoryManager
+from zettelforge.knowledge_graph import get_knowledge_graph
 
 def run_graph_test():
     print("=== Phase 6: Knowledge Graph Benchmark ===")

@@ -1,6 +1,6 @@
-# Contributing to A-MEM
+# Contributing to ZettelForge
 
-Thank you for your interest in contributing to A-MEM! This document provides guidelines for contributing to the project.
+Thank you for your interest in contributing to ZettelForge! This document provides guidelines for contributing to the project.
 
 ## Development Setup
 

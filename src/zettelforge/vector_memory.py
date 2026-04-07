@@ -6,7 +6,7 @@ Stores memory entries as vectors for semantic search across ALL sessions.
 No external API calls. Everything local.
 
 Usage:
-    from amem.vector_memory import VectorMemory
+    from zettelforge.vector_memory import VectorMemory
     vm = VectorMemory()
     vm.init()                                    # Init DB
     vm.add('something worth remembering', tags=['decision'])
@@ -87,7 +87,7 @@ class VectorMemory:
     """
 
     def __init__(self, db_path: Optional[str] = None):
-        from amem.memory_store import get_default_data_dir
+        from zettelforge.memory_store import get_default_data_dir
         
         if db_path is None:
             db_path = get_default_data_dir() / 'vector_memory.lance'

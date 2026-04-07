@@ -1,4 +1,4 @@
-# A-MEM: Agentic Memory System
+# ZettelForge: Agentic Memory System
 
 [![PyPI version](https://badge.fury.io/py/amem.svg)](https://badge.fury.io/py/amem)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
@@ -97,7 +97,7 @@ pip install -e ".[dev]"
 
 ### Ollama Setup
 
-A-MEM uses Ollama for generating embeddings locally:
+ZettelForge uses Ollama for generating embeddings locally:
 
 ```bash
 # Install Ollama (macOS/Linux)
