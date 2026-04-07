@@ -121,6 +121,29 @@ Intent types: `factual`, `temporal`, `relational`, `causal`, `exploratory`
 - Relational/Causal → graph traversal
 - Exploratory → vector search
 
+## CTI Platform Integration (v1.2.0)
+
+Bi-directional sync with Django CTI database:
+```python
+from zettelforge import get_cti_connector, import_cti_to_memory, unified_recall
+
+# Connect to CTI platform
+connector = get_cti_connector()
+
+# Search CTI platform
+actors = connector.search_cti("APT28", entity_type="actor")
+cves = connector.search_cti("CVE-2024", entity_type="cve")
+
+# Import CTI to memory
+import_cti_to_memory(mm, query="APT28", entity_type="actor")
+
+# Unified recall
+results = unified_recall(mm, "APT28")
+# results = {"memory": [...], "cti": [...]}
+```
+
+**CTI Stats:** 30 actors, 1559 CVEs, 90K+ IOCs accessible
+
 ## API Reference
 
 See `docs/API.md` for complete API documentation.
