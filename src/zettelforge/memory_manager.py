@@ -229,6 +229,17 @@ class MemoryManager:
 
         self.store._rewrite_note(old_note)
         self.store._rewrite_note(new_note)
+        
+        # Add temporal edge to knowledge graph (Task 2)
+        kg = get_knowledge_graph()
+        kg.add_temporal_edge(
+            from_type="note", from_value=superseded_by_id,
+            to_type="note", to_value=note_id,
+            relationship="SUPERSEDES",
+            timestamp=datetime.now().isoformat(),
+            properties={"supersedes": note_id}
+        )
+        
         return True
 
     def _check_supersession(self, new_note: MemoryNote, resolved_entities: Dict[str, List[str]]) -> Optional[MemoryNote]:
