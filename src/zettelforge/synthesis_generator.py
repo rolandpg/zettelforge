@@ -14,8 +14,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Any
 
-from amem.vector_retriever import VectorRetriever
-from amem.memory_store import MemoryStore
+from zettelforge.vector_retriever import VectorRetriever
+from zettelforge.memory_store import MemoryStore
 
 
 class SynthesisGenerator:

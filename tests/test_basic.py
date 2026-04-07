@@ -5,12 +5,12 @@ import pytest
 import tempfile
 from pathlib import Path
 
-from amem import MemoryManager, MemoryNote
-from amem.note_schema import Content, Semantic, Embedding, Metadata
-from amem.memory_store import MemoryStore
-from amem.note_constructor import NoteConstructor
-from amem.entity_indexer import EntityIndexer, EntityExtractor
-from amem.vector_retriever import VectorRetriever
+from zettelforge import MemoryManager, MemoryNote
+from zettelforge.note_schema import Content, Semantic, Embedding, Metadata
+from zettelforge.memory_store import MemoryStore
+from zettelforge.note_constructor import NoteConstructor
+from zettelforge.entity_indexer import EntityIndexer, EntityExtractor
+from zettelforge.vector_retriever import VectorRetriever
 
 
 class TestNoteSchema:

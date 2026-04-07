@@ -40,7 +40,7 @@ class EntityIndexer:
     """Index notes by entities for fast lookup"""
 
     def __init__(self, index_path: Optional[str] = None):
-        from amem.memory_store import get_default_data_dir
+        from zettelforge.memory_store import get_default_data_dir
         
         if index_path is None:
             index_path = get_default_data_dir() / "entity_index.json"
@@ -112,7 +112,7 @@ class EntityIndexer:
 
     def build(self) -> Dict:
         """Rebuild index from all notes."""
-        from amem.memory_store import MemoryStore
+        from zettelforge.memory_store import MemoryStore
         
         store = MemoryStore()
         self.index = {

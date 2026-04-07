@@ -5,7 +5,7 @@ from typing import Dict, Optional
 class AliasResolver:
     """Resolves entity aliases to their canonical names."""
     def __init__(self, alias_file: Optional[str] = None):
-        from amem.memory_store import get_default_data_dir
+        from zettelforge.memory_store import get_default_data_dir
         if alias_file is None:
             alias_file = get_default_data_dir() / "entity_aliases.json"
         self.alias_file = Path(alias_file)

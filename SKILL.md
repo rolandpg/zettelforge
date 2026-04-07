@@ -1,16 +1,16 @@
 ---
-name: amem
-description: A-MEM (Agentic Memory) - A production-grade agent memory system with vector search, knowledge graph, entity indexing, and synthesis layer. Use this skill when the user wants to store, retrieve, or synthesize information across sessions, build persistent agent memory, or implement RAG-as-answer capabilities. Automatically triggers on memory-related requests, persistence needs, cross-session recall, or knowledge management tasks.
+name: zettelforge
+description: ZettelForge (Agentic Memory System) - A production-grade agent memory system with vector search, knowledge graph, entity indexing, and synthesis layer. Use this skill when the user wants to store, retrieve, or synthesize information across sessions, build persistent agent memory, or implement RAG-as-answer capabilities. Automatically triggers on memory-related requests, persistence needs, cross-session recall, or knowledge management tasks.
 ---
 
-# A-MEM: Agentic Memory System
+# ZettelForge: Agentic Memory System
 
 A production-grade memory system for AI agents. Store, retrieve, and synthesize information with vector search, knowledge graphs, and entity-aware linking.
 
 ## Quick Start
 
 ```python
-from amem import MemoryManager
+from zettelforge import MemoryManager
 
 # Initialize
 mm = MemoryManager()

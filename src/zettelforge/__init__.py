@@ -1,5 +1,5 @@
 """
-A-MEM: Agentic Memory System
+ZettelForge: Agentic Memory System
 
 A production-grade memory system for AI agents with:
 - Vector semantic search
@@ -8,20 +8,20 @@ A production-grade memory system for AI agents with:
 - RAG-as-answer synthesis (Phase 7)
 
 Example:
-    >>> from amem import MemoryManager
+    >>> from zettelforge import MemoryManager
     >>> mm = MemoryManager()
     >>> mm.remember("Important information")
     >>> results = mm.recall("query")
     >>> synthesis = mm.synthesize("What do we know?")
 """
 
-from amem.memory_manager import MemoryManager, get_memory_manager
-from amem.note_schema import MemoryNote
-from amem.vector_retriever import VectorRetriever
-from amem.synthesis_generator import SynthesisGenerator, get_synthesis_generator
-from amem.synthesis_validator import SynthesisValidator, get_synthesis_validator
+from zettelforge.memory_manager import MemoryManager, get_memory_manager
+from zettelforge.note_schema import MemoryNote
+from zettelforge.vector_retriever import VectorRetriever
+from zettelforge.synthesis_generator import SynthesisGenerator, get_synthesis_generator
+from zettelforge.synthesis_validator import SynthesisValidator, get_synthesis_validator
 
-from amem.knowledge_graph import KnowledgeGraph, get_knowledge_graph
+from zettelforge.knowledge_graph import KnowledgeGraph, get_knowledge_graph
 
 __version__ = "1.0.0-alpha.3"
 __all__ = [

@@ -23,7 +23,7 @@ class KnowledgeGraph:
     """
 
     def __init__(self, data_dir: Optional[str] = None):
-        from amem.memory_store import get_default_data_dir
+        from zettelforge.memory_store import get_default_data_dir
         
         base_dir = Path(data_dir) if data_dir else get_default_data_dir()
         self.nodes_file = base_dir / "kg_nodes.jsonl"

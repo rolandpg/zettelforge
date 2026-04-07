@@ -7,11 +7,11 @@ Retrieves relevant notes based on embedding similarity with domain filtering.
 from typing import List, Optional, Tuple, Dict
 import numpy as np
 
-from amem.note_schema import MemoryNote
-from amem.memory_store import MemoryStore
-from amem.vector_memory import get_embedding
-from amem.entity_indexer import EntityExtractor
-from amem.alias_resolver import AliasResolver
+from zettelforge.note_schema import MemoryNote
+from zettelforge.memory_store import MemoryStore
+from zettelforge.vector_memory import get_embedding
+from zettelforge.entity_indexer import EntityExtractor
+from zettelforge.alias_resolver import AliasResolver
 
 
 def cosine_similarity(a: List[float], b: List[float]) -> float:

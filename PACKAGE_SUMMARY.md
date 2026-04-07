@@ -1,8 +1,8 @@
-# A-MEM Skill Package - Summary
+# ZettelForge Skill Package - Summary
 
 ## What Was Created
 
-A standalone, production-ready Python package for A-MEM (Agentic Memory) that can be:
+A standalone, production-ready Python package for ZettelForge (Agentic Memory) that can be:
 1. Installed as a Python package via pip
 2. Used as an OpenClaw skill
 3. Published to GitHub as an open-source project
@@ -107,7 +107,7 @@ cve_notes = mm.recall_cve("CVE-2024-3094")
    python -m twine upload dist/*
    ```
 
-## Differences from Original A-MEM
+## Differences from Original ZettelForge
 
 | Aspect | Original | Packaged |
 |--------|----------|----------|
@@ -121,7 +121,7 @@ cve_notes = mm.recall_cve("CVE-2024-3094")
 
 ## What's NOT Included (Yet)
 
-These advanced features from the original A-MEM can be added in future versions:
+These advanced features from the original ZettelForge can be added in future versions:
 
 1. **Synthesis Layer (Phase 7)** - RAG-as-answer with LLM generation
 2. **Knowledge Graph (Phase 6)** - Full graph with IEP 2.0
@@ -155,7 +155,7 @@ Following semantic versioning:
 Initial commit hash: `9da469e`
 
 ```
-Initial commit: A-MEM Agentic Memory System v1.0.0-alpha.1
+Initial commit: ZettelForge Agentic Memory System v1.0.0-alpha.1
 17 files changed, 2001 insertions(+)
 ```
 

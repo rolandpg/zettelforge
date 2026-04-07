@@ -10,7 +10,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import List, Optional, Iterator
 
-from amem.note_schema import MemoryNote
+from zettelforge.note_schema import MemoryNote
 
 
 def get_default_data_dir() -> Path:
@@ -102,7 +102,14 @@ class MemoryStore:
                     ("tags", pa.string()),
                     ("created_at", pa.string()),
                 ])
-                self.lancedb.create_table(table_name, schema=schema)
+                tbl = self.lancedb.create_table(table_name, schema=schema)
+            # Create optimized vector index per governance and performance requirements
+            tbl.create_index(
+                metric="cosine",
+                index_type="IVF_PQ",  # Balanced performance/accuracy
+                num_partitions=256,
+                num_sub_vectors=16
+            )
 
             table = self.lancedb.open_table(table_name)
             table.add([{
