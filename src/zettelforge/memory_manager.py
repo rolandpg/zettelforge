@@ -118,13 +118,23 @@ class MemoryManager:
         
         # Route based on intent
         if intent.value in ['factual', 'entity_lookup']:
-            # Use entity index
+            # Use entity index first
             entities = self.indexer.extractor.extract_all(query)
             results = []
             for etype, elist in entities.items():
                 for evalue in elist:
                     notes = self.recall_entity(etype, evalue, k=3)
                     results.extend(notes)
+            
+            # Fall back to vector retrieval if no entities found
+            if not results:
+                results = self.retriever.retrieve(
+                    query=query,
+                    domain=domain,
+                    k=k,
+                    include_links=include_links
+                )
+            
             return results[:k]
         
         elif intent.value == 'temporal':

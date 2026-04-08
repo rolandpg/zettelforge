@@ -7,6 +7,24 @@ description: ZettelForge (Agentic Memory System) - A production-grade agent memo
 
 A production-grade memory system for AI agents. Store, retrieve, and synthesize information with vector search, knowledge graphs, and entity-aware linking.
 
+## ⚠️ Known Issues (2026-04-08)
+
+**Critical**: Vector retrieval via LanceDB is non-functional. The following features are **currently broken**:
+- ❌ Synthesis layer (`mm.synthesize()`) - returns "No answer" due to empty context retrieval
+- ❌ Semantic similarity search (vector retrieval returns empty)
+- ❌ Temporal reasoning in synthesis
+- ❌ Multi-hop graph traversal in synthesis
+
+**Working features**:
+- ✅ JSONL note storage
+- ✅ Entity extraction and indexing
+- ✅ Entity-based recall (`recall_actor`, `recall_cve`)
+- ✅ Intent classification (routes correctly)
+
+**Fix in progress**: See `research/zettelforge_synthesis_fix_plan.md`
+
+---
+
 ## Quick Start
 
 ```python
@@ -66,10 +84,14 @@ User Query → MemoryManager
 
 ## Response Formats
 
-- `direct_answer`: Concise answer with sources
-- `synthesized_brief`: Thematic analysis
-- `timeline_analysis`: Chronological events
-- `relationship_map`: Entity connections
+**⚠️ WARNING**: Synthesis layer is currently non-functional due to broken vector retrieval. The following formats are documented but do not work:
+
+- `direct_answer`: Concise answer with sources **[BROKEN - returns "No answer"]**
+- `synthesized_brief`: Thematic analysis **[BROKEN]**
+- `timeline_analysis`: Chronological events **[BROKEN]**
+- `relationship_map`: Entity connections **[BROKEN]**
+
+**Use `mm.recall()` or `mm.recall_actor()` instead for working retrieval.**
 
 ## Configuration
 
