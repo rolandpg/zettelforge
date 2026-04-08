@@ -1,37 +1,269 @@
-# ThreatRecall API License
+# ThreatRecall API — Proprietary Software License
 
-**Proprietary Software License - All Rights Reserved**
+**Version 1.0 — Effective April 6, 2026**
 
-Copyright (c) 2026 Patrick Roland
-
-## License Grant
-
-This software is proprietary and confidential. 
-
-**No license is granted** to copy, modify, distribute, sublicense, or use this software except as explicitly authorized in writing by Patrick Roland.
-
-## Restrictions
-
-You may not:
-- Use this software for any commercial purpose without a commercial license
-- Modify, adapt, or create derivative works
-- Reverse engineer, decompile, or disassemble the software
-- Remove or alter any copyright, trademark, or proprietary notices
-- Distribute, sublicense, or transfer the software to any third party
-
-## Ownership
-
-All intellectual property rights in ThreatRecall, including the API, memory integration with ZettelForge, tenant isolation system, and governance enforcement, are owned exclusively by Patrick Roland.
-
-## Warranty
-
-This software is provided "AS IS" without any warranties, express or implied.
-
-## Termination
-
-Any unauthorized use will result in immediate termination of all rights granted and may result in legal action.
+Copyright © 2026 Patrick George Roland II. All rights reserved.
 
 ---
 
-**For licensing inquiries, contact Patrick Roland directly.**
-**© 2026 Patrick Roland. All Rights Reserved.**
+## 1. Definitions
+
+**"Software"** means the ThreatRecall API source code, object code, API
+specifications (including OpenAPI schemas), documentation, configuration
+files, Docker images, deployment scripts, SDK libraries, governance
+templates, test suites, and any other materials distributed in the repository
+located at https://github.com/rolandpg/threatrecall-api, including all
+updates, modifications, and derivative works authored by the Licensor.
+
+**"Service"** means any hosted instance of the Software operated by the
+Licensor or an authorized party that provides ThreatRecall functionality over
+a network via HTTP API endpoints.
+
+**"Licensor"** means Patrick George Roland II.
+
+**"You"** means the individual or legal entity exercising permissions granted
+by a separate Commercial Agreement with the Licensor. In the absence of such
+an agreement, no permissions are granted beyond those in Section 3.
+
+**"Commercial Agreement"** means a written and executed contract between You
+and the Licensor that expressly grants rights to access the Service or use,
+deploy, or distribute the Software, including but not limited to SaaS
+subscription agreements, pilot agreements, evaluation agreements, enterprise
+license agreements, or API access agreements.
+
+**"API Key"** means a unique authentication credential issued by the Licensor
+to You under a Commercial Agreement, granting access to the Service within
+the scope and limits defined by that agreement.
+
+---
+
+## 2. Ownership
+
+The Software is the sole and exclusive property of the Licensor. The Software
+is not open source. No title to or ownership of the Software or any
+intellectual property rights therein is transferred to You. The Licensor
+reserves all rights not expressly granted under a Commercial Agreement.
+
+The Software incorporates ZettelForge, a proprietary agentic memory engine
+also owned by the Licensor (https://github.com/rolandpg/zettelforge). Rights
+to ZettelForge are governed by its own license and are not granted through
+this License or any ThreatRecall API Commercial Agreement unless expressly
+stated.
+
+---
+
+## 3. Restrictions
+
+Unless You have entered into a Commercial Agreement with the Licensor, You
+may **not**, in whole or in part:
+
+a. Use, copy, modify, merge, or distribute the Software or any portion
+   thereof;
+
+b. Create derivative works based on the Software;
+
+c. Sublicense, sell, resell, lease, rent, loan, or otherwise transfer the
+   Software or any rights therein to any third party;
+
+d. Reverse engineer, decompile, disassemble, or otherwise attempt to derive
+   the source code of the Software, except to the extent that such activity
+   is expressly permitted by applicable law notwithstanding this restriction;
+
+e. Remove, alter, or obscure any copyright, trademark, or other proprietary
+   notices contained in the Software;
+
+f. Use the Software to build, train, fine-tune, or improve any competing
+   product or service, including but not limited to agentic memory systems,
+   threat intelligence platforms, LLM memory frameworks, or cybersecurity
+   knowledge management systems;
+
+g. Publish benchmarks, performance comparisons, or evaluations of the
+   Software or Service without the prior written consent of the Licensor;
+
+h. Host, offer, or operate the Software as a service (SaaS, PaaS, or
+   otherwise) for the benefit of third parties without a Commercial
+   Agreement;
+
+i. Share, transfer, publish, or expose any API Key issued to You, or permit
+   any unauthorized party to access the Service using Your API Key;
+
+j. Exceed the operational limits (requests per month, tenants, or other
+   metered quantities) defined in Your Commercial Agreement;
+
+k. Use the Service or Software to store, process, or transmit data in
+   violation of applicable law, including but not limited to export control
+   regulations, ITAR, and data protection requirements applicable to
+   Controlled Unclassified Information (CUI).
+
+---
+
+## 4. Service Access Terms
+
+Access to the ThreatRecall API Service is provided exclusively under a
+Commercial Agreement. Each Commercial Agreement specifies:
+
+a. **Tier of service** (Starter, Professional, or Enterprise) and the
+   features included at that tier;
+
+b. **Operational limits** including monthly API operations, number of
+   tenants, and data retention periods;
+
+c. **Service Level Objectives** (SLOs) applicable to the tier, if any;
+
+d. **Data isolation guarantees** — each tenant's data is logically isolated
+   and inaccessible to other tenants;
+
+e. **Compliance scope** — whether the deployment supports FedRAMP Moderate,
+   CMMC Level 2, NIST 800-171, or Azure GCC-High/DoD requirements.
+
+The Licensor reserves the right to suspend or terminate Service access for
+any API Key that is used in violation of this License or the applicable
+Commercial Agreement, with written notice to You.
+
+---
+
+## 5. Viewing and Evaluation
+
+The source code is visible in a public repository for transparency and
+evaluation purposes only. Visibility does not constitute a grant of license.
+You may read the source code to evaluate whether the Software meets your
+requirements. Any use beyond reading — including cloning, forking, compiling,
+executing, deploying, or sending requests to a self-hosted instance — requires
+a Commercial Agreement.
+
+---
+
+## 6. Contributions
+
+The Licensor does not accept unsolicited contributions (pull requests,
+patches, or code submissions) to this repository. Any code submitted to this
+repository without a signed Contributor License Agreement ("CLA") will not be
+reviewed or merged. If the Licensor chooses to accept contributions in the
+future, a CLA will be published and contributors must execute it before any
+contribution is considered.
+
+---
+
+## 7. Third-Party Components and Attributions
+
+The Software incorporates or depends on third-party components distributed
+under their own licenses. These components remain governed by their respective
+licenses. Nothing in this License restricts rights granted to You by those
+third-party licenses with respect to those components alone.
+
+See THIRD_PARTY_NOTICES for complete license texts, copyright notices, and
+attribution requirements for all third-party components, including:
+
+- ZettelForge memory engine dependencies (MIT, Apache 2.0, BSD)
+- FastAPI framework (BSD 3-Clause)
+- Uvicorn ASGI server (BSD 3-Clause)
+- FIRST IEP 2.0 Framework (CC-BY-SA — share-alike limited to IEP schema
+  definitions only)
+- MITRE ATT&CK® (CC-BY 4.0)
+- OCSF Schema (Apache 2.0)
+
+The Creative Commons share-alike obligation on FIRST IEP 2.0 applies
+exclusively to the IEP policy schema definitions distributed within this
+Software. It does not extend to the API layer, authentication system, tenant
+isolation logic, routing, middleware, SDK, or any other proprietary component.
+
+---
+
+## 8. Data Ownership
+
+You retain all rights, title, and interest in and to the data You store in
+the Service through Your API Key ("Your Data"). The Licensor does not claim
+ownership of Your Data. The Licensor will not access, use, or disclose Your
+Data except as necessary to operate the Service, comply with applicable law,
+or respond to a valid legal process.
+
+Upon termination of Your Commercial Agreement, You may request an export of
+Your Data in a machine-readable format within thirty (30) days of
+termination. After the export period, the Licensor will delete Your Data in
+accordance with the data retention terms of Your Commercial Agreement.
+
+---
+
+## 9. Disclaimer of Warranties
+
+THE SOFTWARE AND SERVICE ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND
+NON-INFRINGEMENT. THE LICENSOR DOES NOT WARRANT THAT THE SOFTWARE OR SERVICE
+WILL BE UNINTERRUPTED, ERROR-FREE, FREE OF VULNERABILITIES, OR THAT IT WILL
+DETECT ALL THREATS, VULNERABILITIES, OR SECURITY INCIDENTS.
+
+THE SERVICE IS A MEMORY AND RETRIEVAL SYSTEM FOR THREAT INTELLIGENCE DATA. IT
+DOES NOT REPLACE PROFESSIONAL SECURITY ANALYSIS, INCIDENT RESPONSE SERVICES,
+OR HUMAN JUDGMENT IN SECURITY OPERATIONS DECISIONS.
+
+---
+
+## 10. Limitation of Liability
+
+IN NO EVENT SHALL THE LICENSOR BE LIABLE FOR ANY INDIRECT, INCIDENTAL,
+SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR ANY LOSS OF PROFITS,
+REVENUE, DATA, OR DATA USE, ARISING OUT OF OR RELATED TO THIS LICENSE, THE
+SOFTWARE, OR THE SERVICE, WHETHER IN AN ACTION OF CONTRACT, TORT, OR
+OTHERWISE, EVEN IF THE LICENSOR HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH
+DAMAGES.
+
+THE LICENSOR'S TOTAL AGGREGATE LIABILITY ARISING OUT OF OR RELATED TO THIS
+LICENSE SHALL NOT EXCEED THE AMOUNTS PAID BY YOU TO THE LICENSOR UNDER A
+COMMERCIAL AGREEMENT IN THE TWELVE (12) MONTHS PRECEDING THE CLAIM, OR ONE
+HUNDRED DOLLARS (USD $100), WHICHEVER IS GREATER.
+
+---
+
+## 11. Termination
+
+Any rights granted under a Commercial Agreement terminate automatically if
+You breach any term of that agreement or this License. Upon termination:
+
+a. You must immediately cease all use of the Software;
+
+b. All API Keys issued to You are revoked;
+
+c. You may request a data export per Section 8;
+
+d. You must destroy all copies of the Software in your possession or control.
+
+Sections 2, 7, 8, 9, 10, and 12 survive termination.
+
+---
+
+## 12. Governing Law and Dispute Resolution
+
+This License is governed by and construed in accordance with the laws of the
+State of Kansas, United States, without regard to its conflict of laws
+provisions. Any dispute arising under this License shall be resolved
+exclusively in the state or federal courts located in Sedgwick County,
+Kansas, and You consent to the personal jurisdiction of such courts.
+
+---
+
+## 13. Severability
+
+If any provision of this License is held to be invalid or unenforceable, the
+remaining provisions shall continue in full force and effect. The invalid or
+unenforceable provision shall be modified to the minimum extent necessary to
+make it valid and enforceable.
+
+---
+
+## 14. Entire Agreement
+
+This License constitutes the entire agreement between You and the Licensor
+with respect to the Software, superseding all prior or contemporaneous
+understandings regarding the subject matter hereof, except where a Commercial
+Agreement expressly supplements or modifies specific terms of this License.
+
+---
+
+## 15. Contact
+
+For licensing inquiries, Commercial Agreements, pilot requests, or questions:
+
+Patrick George Roland II
+Email: rolandpg@live.com
+LinkedIn: linkedin.com/in/patrickgroland

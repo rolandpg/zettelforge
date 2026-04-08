@@ -1,0 +1,7 @@
+{
+  "vault_addr": "http://127.0.0.1:8200",
+  "role_id": "fe6713ce-5700-8047-f788-b637c8b265d8",
+  "secret_id": "169f4ac6-ed8f-eca5-31e3-1f012ef13b9f",
+  "role_name": "vigil",
+  "policy": "vigil"
+}

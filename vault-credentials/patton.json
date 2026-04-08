@@ -1,0 +1,7 @@
+{
+  "vault_addr": "http://127.0.0.1:8200",
+  "role_id": "3c60d53e-490b-3686-ec3b-93a04f9f5df6",
+  "secret_id": "34bc6a01-44bd-eeab-d810-1b00603b14a4",
+  "role_name": "patton",
+  "policy": "patton"
+}

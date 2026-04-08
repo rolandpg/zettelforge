@@ -57,6 +57,7 @@ jobs:
         with:
           repository: rolandpg/zettelforge
           path: zettelforge
+          token: ${{ secrets.ZETTELFORGE_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -66,6 +67,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
+          pip install -e zettelforge/  # Install ZettelForge with dependencies
           pip install pytest pytest-cov
 
       - name: Run unit tests
@@ -96,6 +98,7 @@ jobs:
         with:
           repository: rolandpg/zettelforge
           path: zettelforge
+          token: ${{ secrets.ZETTELFORGE_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -110,6 +113,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
+          pip install -e zettelforge/  # Install ZettelForge
 
       - name: Run integration tests
         run: |

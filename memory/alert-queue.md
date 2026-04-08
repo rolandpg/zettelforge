@@ -13263,3 +13263,1388 @@ Link:
 - Source Reliability: B
 - Calibrated Language: medium confidence
 - Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T15:58:59.408680
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: DPRK-Linked Hackers Use GitHub as C2 in Multi-Stage Attacks Targeting South Korea
+
+## Draft Post
+Threat actors linked to DPRK are utilizing GitHub for C2 in multi-stage cyberattacks against South Korea.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T15:59:02.600766
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Qilin and Warlock Ransomware Use Vulnerable Drivers to Disable 300+ EDR Tools
+
+## Draft Post
+Qilin and Warlock ransomware use BYOVD to disable over 300 EDR solutions.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T15:59:03.952040
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: $285 Million Drift Hack Traced to Six-Month DPRK Social Engineering Operation
+
+## Draft Post
+Drift Hack reveals a six-month DPRK ransomware operation resulting in $285 million theft.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T15:59:04.523475
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical Ransomware Campaign Exploits Redis, PostgreSQL for Persistent Implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T15:59:05.891110
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Disgruntled researcher leaks “BlueHammer” Windows zero-day exploit
+
+## Draft Post
+A critical Remote Code Execution (RCE) vulnerability has been exploited via a leaked zero-day Windows privilege escalation flaw.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T15:59:08.130121
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Microsoft links Medusa ransomware affiliate to zero-day attacks
+
+## Draft Post
+Microsoft warns of Medusa ransomware's use of critical, undisclosed vulnerabilities.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T15:59:10.525848
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Why Simple Breach Monitoring is No Longer Enough
+
+## Draft Post
+Infostealers are compromising credentials and sessions, highlighting the inadequacy of traditional breach monitoring. Lunar warns of a growing ransomware threat.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T15:59:12.001109
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New FortiClient EMS flaw exploited in attacks, emergency patch released
+
+## Draft Post
+Fortinet's emergency patch addresses a newly discovered and actively exploited critical RCE vulnerability in FortiClient EMS.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T21:00:01.401144
+Type: HIGH_CVE
+Severity: HIGH
+Confidence: HIGH
+Source Reliability: A
+Title: CVE-2026-35616 (CVSS 9.0)
+
+## Draft Post
+CVE-2026-35616 (CVSS 9.0) [KEV]
+
+Fortinet FortiClient EMS contains an improper access control vulnerability that may allow an unauthenticated attacker to execute unauthorized code or commands via crafted requests.
+
+high confidence | Source: CISA KEV | Reliability: A
+
+Source: CISA KEV
+Link: https://nvd.nist.gov/vuln/detail/CVE-2026-35616
+
+#CVE #infosec #cybersecurity #threatintel
+
+## CTI Metadata
+- Confidence Level: HIGH
+- Source Reliability: A
+- Calibrated Language: high confidence
+
+---
+Timestamp: 2026-04-06T16:00:04.225727
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: DPRK-Linked Hackers Use GitHub as C2 in Multi-Stage Attacks Targeting South Korea
+
+## Draft Post
+DPRK-linked hackers use GitHub for C2 in multi-stage attacks against South Korea.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T16:00:07.922070
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: How LiteLLM Turned Developer Machines Into Credential Vaults for Attackers
+
+## Draft Post
+A critical Remote Code Execution vulnerability has been identified in the company's developer workstations, potentially allowing attackers to steal credentials and compromise systems.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T16:00:09.961840
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Qilin and Warlock Ransomware Use Vulnerable Drivers to Disable 300+ EDR Tools
+
+## Draft Post
+Qilin and Warlock ransomware use BYOVD to disable 300+ EDR tools, indicating a critical Remote Code Execution vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T16:00:11.539777
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: $285 Million Drift Hack Traced to Six-Month DPRK Social Engineering Operation
+
+## Draft Post
+Drift hack exposed months-long DPRK operation resulting in $285 million theft.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T16:00:12.180986
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+High alert: 36 malicious npm packages exploiting Redis and PostgreSQL for persistent implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T16:00:25.747884
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Disgruntled researcher leaks “BlueHammer” Windows zero-day exploit
+
+## Draft Post
+A critical Remote Code Execution (RCE) exploit has been leaked for an unpatched Windows privilege escalation flaw, allowing attackers to gain SYSTEM or elevated administrator permissions.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T16:00:27.577526
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Microsoft links Medusa ransomware affiliate to zero-day attacks
+
+## Draft Post
+Microsoft warns of Medusa ransomware's use of critical zero-day attacks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T16:00:31.018954
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New FortiClient EMS flaw exploited in attacks, emergency patch released
+
+## Draft Post
+Emergency patch released for critical FortiClient EMS vulnerability exploited in attacks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T16:00:31.631528
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Hackers exploit React2Shell in automated credential theft campaign
+
+## Draft Post
+Hackers are using a critical RCE vulnerability to steal credentials from Next.js applications.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T17:00:06.100398
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: DPRK-Linked Hackers Use GitHub as C2 in Multi-Stage Attacks Targeting South Korea
+
+## Draft Post
+Threat actors linked to DPRK are utilizing GitHub for C2 in multi-stage cyberattacks against South Korea.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T17:00:09.178593
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Qilin and Warlock Ransomware Use Vulnerable Drivers to Disable 300+ EDR Tools
+
+## Draft Post
+Qilin and Warlock ransomware use BYOVD to disable over 300 EDR solutions.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T17:00:10.528798
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: $285 Million Drift Hack Traced to Six-Month DPRK Social Engineering Operation
+
+## Draft Post
+Drift hack exposed months-long DPRK operation resulting in $285 million theft.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T17:00:11.178020
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+High severity alert - 36 malicious npm packages exploiting Redis and PostgreSQL for persistent implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T17:00:12.686543
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New GPUBreach attack enables system takeover via GPU rowhammer
+
+## Draft Post
+A critical Remote Code Execution (RCE) vulnerability has been discovered in GPUs, enabling attackers to take full control of systems via Rowhammer attack.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T17:00:20.010091
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Disgruntled researcher leaks “BlueHammer” Windows zero-day exploit
+
+## Draft Post
+A critical Remote Code Execution vulnerability has been exploited via a leaked Windows zero-day by an unpatched privilege escalation flaw.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T17:00:22.502446
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Microsoft links Medusa ransomware affiliate to zero-day attacks
+
+## Draft Post
+Microsoft warns of Medusa ransomware affiliate using zero-day and n-day exploits.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T17:00:24.752909
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Why Simple Breach Monitoring is No Longer Enough
+
+## Draft Post
+Infostealers are compromising credentials and sessions, highlighting the inadequacy of traditional breach monitoring. Lunar warns of a growing ransomware threat.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T17:00:26.446831
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New FortiClient EMS flaw exploited in attacks, emergency patch released
+
+## Draft Post
+Emergency patch released for critical FortiClient EMS vulnerability exploited in attacks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T18:00:05.277975
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: DPRK-Linked Hackers Use GitHub as C2 in Multi-Stage Attacks Targeting South Korea
+
+## Draft Post
+Threat actors linked to DPRK are exploiting GitHub for C2 in multi-stage cyberattacks against South Korea.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T18:00:08.240365
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Qilin and Warlock Ransomware Use Vulnerable Drivers to Disable 300+ EDR Tools
+
+## Draft Post
+Qilin and Warlock ransomware use BYOVD to disable 300+ EDR tools, indicating a critical Remote Code Execution vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T18:00:09.645862
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: $285 Million Drift Hack Traced to Six-Month DPRK Social Engineering Operation
+
+## Draft Post
+Drift hack exposed months-long DPRK ransomware operation resulting in $285 million theft.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T18:00:10.368148
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+High severity alert - 36 malicious npm packages exploiting Redis and PostgreSQL for persistent implants. Immediate review and patching required.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T18:00:11.614747
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New GPUBreach attack enables system takeover via GPU rowhammer
+
+## Draft Post
+A new ransomware variant exploits GPU vulnerabilities for privilege escalation and system takeover.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T18:00:23.412432
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Disgruntled researcher leaks “BlueHammer” Windows zero-day exploit
+
+## Draft Post
+A critical Remote Code Execution vulnerability has been exploited via a leaked Windows zero-day by an unpatched privilege escalation flaw.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T18:00:26.331759
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Microsoft links Medusa ransomware affiliate to zero-day attacks
+
+## Draft Post
+Microsoft warns of Medusa ransomware affiliate using critical vulnerabilities for attacks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T18:00:28.542989
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Why Simple Breach Monitoring is No Longer Enough
+
+## Draft Post
+Infostealers are compromising credentials and sessions, highlighting the inadequacy of traditional breach monitoring.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T18:00:30.240219
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New FortiClient EMS flaw exploited in attacks, emergency patch released
+
+## Draft Post
+Fortinet's emergency patch addresses a newly discovered and actively exploited RCE vulnerability in FortiClient EMS.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T19:00:05.552416
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: DPRK-Linked Hackers Use GitHub as C2 in Multi-Stage Attacks Targeting South Korea
+
+## Draft Post
+Threat actors linked to DPRK are utilizing GitHub for C2 in multi-stage cyberattacks against South Korea.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T19:00:08.590523
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Qilin and Warlock Ransomware Use Vulnerable Drivers to Disable 300+ EDR Tools
+
+## Draft Post
+Qilin and Warlock ransomware are disabling EDR tools using a critical Remote Code Execution vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T19:00:09.963220
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: $285 Million Drift Hack Traced to Six-Month DPRK Social Engineering Operation
+
+## Draft Post
+Drift hack exposed months-long DPRK ransomware operation resulting in $285 million theft.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T19:00:10.530364
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical RCE through npm packages could lead to persistent implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T19:00:23.023833
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New GPUBreach attack enables system takeover via GPU rowhammer
+
+## Draft Post
+A new ransomware attack leverages GPU vulnerabilities for privilege escalation and system takeover.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T19:00:23.865050
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Disgruntled researcher leaks “BlueHammer” Windows zero-day exploit
+
+## Draft Post
+A critical Remote Code Execution vulnerability has been exploited via a leaked Windows zero-day by an unpatched privilege escalation flaw.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T19:00:26.424982
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Microsoft links Medusa ransomware affiliate to zero-day attacks
+
+## Draft Post
+Microsoft warns of Medusa ransomware affiliate using zero-day and n-day exploits.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T19:00:28.534290
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Why Simple Breach Monitoring is No Longer Enough
+
+## Draft Post
+Infostealers are compromising credentials and sessions, highlighting the inadequacy of traditional breach monitoring.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T20:00:05.308321
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: DPRK-Linked Hackers Use GitHub as C2 in Multi-Stage Attacks Targeting South Korea
+
+## Draft Post
+Threat actors linked to DPRK are utilizing GitHub for C2 in multi-stage cyberattacks against South Korea.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T20:00:08.273416
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Qilin and Warlock Ransomware Use Vulnerable Drivers to Disable 300+ EDR Tools
+
+## Draft Post
+Qilin and Warlock ransomware are disabling EDR tools using a critical Remote Code Execution vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T20:00:09.655538
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: $285 Million Drift Hack Traced to Six-Month DPRK Social Engineering Operation
+
+## Draft Post
+Drift hack exposed months-long DPRK ransomware operation resulting in $285 million theft.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T20:00:10.248400
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical RCE via npm packages could lead to persistent implants on vulnerable systems.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T20:00:22.311184
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New GPUBreach attack enables system takeover via GPU rowhammer
+
+## Draft Post
+A new ransomware attack leverages GPU vulnerabilities for privilege escalation and system takeover.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T20:00:23.172504
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Disgruntled researcher leaks “BlueHammer” Windows zero-day exploit
+
+## Draft Post
+A critical Remote Code Execution vulnerability has been exploited via a leaked Windows zero-day by an unpatched privilege escalation flaw.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T20:00:25.660563
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Microsoft links Medusa ransomware affiliate to zero-day attacks
+
+## Draft Post
+Microsoft warns of Medusa ransomware affiliate using zero-day and n-day exploits.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T20:00:27.751826
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Why Simple Breach Monitoring is No Longer Enough
+
+## Draft Post
+Infostealers are compromising credentials and sessions, highlighting the inadequacy of traditional breach monitoring.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T21:00:05.253872
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: DPRK-Linked Hackers Use GitHub as C2 in Multi-Stage Attacks Targeting South Korea
+
+## Draft Post
+DPRK-linked hackers use GitHub for C2 in sophisticated multi-stage attacks against South Korea.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T21:00:08.378429
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Qilin and Warlock Ransomware Use Vulnerable Drivers to Disable 300+ EDR Tools
+
+## Draft Post
+Qilin and Warlock ransomware use BYOVD to disable 300+ EDR tools, indicating a critical Remote Code Execution vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T21:00:09.796072
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: $285 Million Drift Hack Traced to Six-Month DPRK Social Engineering Operation
+
+## Draft Post
+Drift Hack reveals a six-month DPRK ransomware operation resulting in $285 million theft.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T21:00:10.378548
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+Critical RCE vulnerabilities exploited through npm packages could lead to persistent implants.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T21:00:20.950895
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New GPUBreach attack enables system takeover via GPU rowhammer
+
+## Draft Post
+A new ransomware attack leverages GPU vulnerabilities for privilege escalation and system takeover.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T21:00:21.798623
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Disgruntled researcher leaks “BlueHammer” Windows zero-day exploit
+
+## Draft Post
+A critical Remote Code Execution vulnerability has been exploited via a leaked Windows zero-day by an unpatched privilege escalation flaw.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T21:00:24.712051
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Microsoft links Medusa ransomware affiliate to zero-day attacks
+
+## Draft Post
+Microsoft warns of Medusa ransomware's use of zero-day attacks.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T21:00:27.094125
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Why Simple Breach Monitoring is No Longer Enough
+
+## Draft Post
+Infostealers are compromising credentials and sessions, highlighting the inadequacy of traditional breach monitoring. Lunar explains why advanced ransomware campaigns require more robust defenses.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T22:00:05.941763
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: DPRK-Linked Hackers Use GitHub as C2 in Multi-Stage Attacks Targeting South Korea
+
+## Draft Post
+Threat actors linked to DPRK are utilizing GitHub for C2 in multi-stage cyberattacks against South Korea.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T22:00:08.964714
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Qilin and Warlock Ransomware Use Vulnerable Drivers to Disable 300+ EDR Tools
+
+## Draft Post
+Qilin and Warlock ransomware use BYOVD to disable 300+ EDR tools, indicating a critical Remote Code Execution vulnerability.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T22:00:10.405066
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: $285 Million Drift Hack Traced to Six-Month DPRK Social Engineering Operation
+
+## Draft Post
+Drift Hack reveals a six-month DPRK ransomware operation resulting in $285 million theft.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T22:00:11.103181
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: 36 Malicious npm Packages Exploited Redis, PostgreSQL to Deploy Persistent Implants
+
+## Draft Post
+High severity alert - 36 malicious npm packages exploiting Redis and PostgreSQL for persistent implants. Immediate review and patching required.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T22:00:20.764795
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: German authorities identify REvil and GangCrab ransomware bosses
+
+## Draft Post
+German authorities have identified key figures behind the GandCrab and REvil ransomware campaigns, highlighting ongoing threat activity.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T22:00:21.473084
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: New GPUBreach attack enables system takeover via GPU rowhammer
+
+## Draft Post
+A new ransomware attack leverages GPU vulnerabilities for privilege escalation and system takeover.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T22:00:22.653378
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Disgruntled researcher leaks “BlueHammer” Windows zero-day exploit
+
+## Draft Post
+A critical Remote Code Execution vulnerability has been exploited via a leaked Windows zero-day by an unpatched privilege escalation flaw.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T22:00:24.707442
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Microsoft links Medusa ransomware affiliate to zero-day attacks
+
+## Draft Post
+Microsoft warns of Medusa ransomware affiliate using zero-day and n-day exploits.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b
+
+---
+Timestamp: 2026-04-06T22:00:26.781309
+Type: TRIAGE_BREAKING
+Severity: HIGH
+Confidence: MEDIUM
+Source Reliability: B
+Title: Why Simple Breach Monitoring is No Longer Enough
+
+## Draft Post
+Infostealers are compromising credentials, highlighting the need for advanced detection beyond basic breach monitoring.
+
+Source: THN CTI Triage Agent (Qwen3.5:9b)
+Link: 
+
+## CTI Metadata
+- Confidence Level: MEDIUM
+- Source Reliability: B
+- Calibrated Language: medium confidence
+- Triage Model: qwen2.5:3b

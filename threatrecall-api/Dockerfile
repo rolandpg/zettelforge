@@ -29,7 +29,7 @@ ENV PATH=/home/threatrecall/.local/bin:$PATH
 
 # Copy application code
 COPY src/ ./src/
-COPY zettelforge/ ./zettelforge/
+COPY zettelforge/src/ ./zettelforge/src/
 COPY run_dev.py .
 
 # Set environment variables

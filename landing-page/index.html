@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Threat Engram | Security-Centric Agentic Memory</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .hero-bg { background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); }
+    </style>
+</head>
+<body class="bg-zinc-950 text-zinc-200">
+    <nav class="border-b border-zinc-800 bg-zinc-950">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+            <div class="flex items-center gap-x-3">
+                <div class="w-8 h-8 bg-emerald-500 rounded flex items-center justify-center text-black font-bold text-xl">TE</div>
+                <span class="font-semibold tracking-tight text-2xl">Threat Engram</span>
+            </div>
+            <div class="flex items-center gap-x-8 text-sm">
+                <a href="#features" class="hover:text-white transition">Features</a>
+                <a href="#for-soc" class="hover:text-white transition">For SOCs & MSSPs</a>
+                <a href="#pilots" class="hover:text-white transition">Pilots</a>
+                <a href="https://threatrecall.ai" target="_blank" class="text-emerald-400 hover:text-emerald-300">Dashboard →</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-bg py-24">
+        <div class="max-w-5xl mx-auto px-6 text-center">
+            <div class="inline-flex items-center gap-x-2 bg-zinc-900 border border-zinc-700 rounded-full px-4 py-1.5 text-xs tracking-widest mb-6">
+                SECURITY-FIRST AGENTIC MEMORY
+            </div>
+            <h1 class="text-6xl font-semibold tracking-tighter leading-none mb-6">
+                Persistent memory for<br>your SOC's AI stack
+            </h1>
+            <p class="max-w-2xl mx-auto text-xl text-zinc-400">
+                MSSPs and large SOCs use ThreatRecall to add causal reasoning, temporal awareness, and entity persistence to their AI solutions. Built for defense, audit, and high-stakes operations.
+            </p>
+            <div class="flex gap-x-4 justify-center mt-10">
+                <a href="#pilots" class="bg-white text-black px-8 py-4 rounded-xl font-semibold hover:bg-zinc-100 transition">Request Pilot Access</a>
+                <a href="https://threatrecall.ai" target="_blank" class="border border-zinc-700 px-8 py-4 rounded-xl font-semibold hover:bg-zinc-900 transition">View Live Dashboard</a>
+            </div>
+            <div class="mt-16 text-xs text-zinc-500 flex items-center justify-center gap-x-8">
+                <div>90,993 IOCs tracked</div>
+                <div>31 Threat Actors</div>
+                <div>1,558 CVEs mapped</div>
+            </div>
+        </div>
+    </header>
+
+    <section id="for-soc" class="py-20 border-b border-zinc-800">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h2 class="text-4xl font-semibold tracking-tight mb-6">Built for SOCs and MSSPs that take AI seriously</h2>
+                    <div class="space-y-8 text-zinc-400">
+                        <div class="flex gap-4">
+                            <div class="w-6 h-6 rounded bg-emerald-900 flex-none flex items-center justify-center text-emerald-400 text-xs">1</div>
+                            <div>
+                                <div class="font-semibold text-white">Your AI already detects. We give it memory.</div>
+                                <div class="mt-2">Temporal graphs for attack timelines. Causal graphs for "why" this matters. Entity resolution across thousands of IOCs.</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="w-6 h-6 rounded bg-emerald-900 flex-none flex items-center justify-center text-emerald-400 text-xs">2</div>
+                            <div>
+                                <div class="font-semibold text-white">Security-first by design</div>
+                                <div class="mt-2">On-prem/air-gapped deployment. Vault integration. No data leaves your SOC. Auditable memory trails for CMMC and compliance.</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="w-6 h-6 rounded bg-emerald-900 flex-none flex items-center justify-center text-emerald-400 text-xs">3</div>
+                            <div>
+                                <div class="font-semibold text-white">Integrates with what you have</div>
+                                <div class="mt-2">Sentinel, Splunk, Elastic, custom AI agents. Our memory layer plugs in via API or direct graph export.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 font-mono text-sm leading-relaxed text-emerald-300">
+                    <div class="text-zinc-500 mb-4">// Example causal recall</div>
+                    <div class="text-amber-300">WHY did the ransomware campaign succeed?</div>
+                    <div class="mt-6 text-zinc-400">→ Unpatched KEV (CVE-2025-XXXX) exploited via RDP<br>
+                    → Causal link: Missing EDR policy on 14 endpoints<br>
+                    → Entity: MuddyWater (MOIS-linked) TTP match<br>
+                    → Temporal: 11 days from initial access to exfil</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="py-20 bg-zinc-900">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-12">
+                <div class="text-emerald-400 text-sm tracking-widest">MULTI-GRAPH MEMORY</div>
+                <h2 class="text-4xl font-semibold tracking-tight mt-3">What your current AI is missing</h2>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-8">
+                    <div class="text-emerald-400 mb-4">Semantic</div>
+                    <div class="font-semibold">Vector + embedding search across all intelligence</div>
+                </div>
+                <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-8">
+                    <div class="text-emerald-400 mb-4">Temporal</div>
+                    <div class="font-semibold">Immutable timeline backbone. Never lose sequence.</div>
+                </div>
+                <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-8">
+                    <div class="text-emerald-400 mb-4">Causal</div>
+                    <div class="font-semibold">LLM-inferred "why" and "how" edges for root cause.</div>
+                </div>
+                <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-8">
+                    <div class="text-emerald-400 mb-4">Entity</div>
+                    <div class="font-semibold">Deterministic actor/IOC/CVE linking with deduplication.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="pilots" class="py-24">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <h2 class="text-5xl font-semibold tracking-tighter mb-6">Ready for your SOC?</h2>
+            <p class="text-xl text-zinc-400 max-w-md mx-auto">
+                We are offering technical pilots to MSSPs and large SOCs. 4-week engagement. Full integration support. Zero upfront cost for qualified teams.
+            </p>
+            <a href="mailto:patrick@threatengram.ai" class="mt-10 inline-block bg-emerald-500 hover:bg-emerald-600 transition text-black font-semibold px-10 py-5 rounded-2xl text-lg">
+                Apply for Pilot Access
+            </a>
+            <div class="mt-12 text-xs text-zinc-500">
+                Current waitlist: 7 SOCs • Next cohort starts 15 May 2026
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-black border-t border-zinc-900 py-12">
+        <div class="max-w-7xl mx-auto px-6 text-xs text-zinc-500 flex flex-col md:flex-row justify-between items-center gap-y-4">
+            <div>© 2026 Threat Engram • Built by the Roland Fleet</div>
+            <div class="flex gap-x-6">
+                <a href="https://threatrecall.ai" class="hover:text-zinc-300">Dashboard</a>
+                <a href="https://x.com/Deuslogica" class="hover:text-zinc-300">@Deuslogica</a>
+                <a href="#" class="hover:text-zinc-300">Documentation</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        tailwind.config = {
+            content: [],
+            theme: {
+                extend: {}
+            }
+        }
+    </script>
+</body>
+</html>

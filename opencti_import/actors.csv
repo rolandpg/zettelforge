@@ -1,0 +1,44 @@
+id,name,slug,actor_type,country,aka,description,risk_level,is_active,first_seen,last_activity,created_at,updated_at,iep_access_level,iep_attribution_required,iep_policy_authority,iep_policy_id,iep_re_dissemination,iep_use_restrictions
+1,APT28 (Fancy Bear),apt28,APT,Russia,"Fancy Bear, Sednit, Strontium","Russian state-sponsored actor linked to GRU. Targets governments, defense, energy, and media. Known for election interference.",HIGH,1,,,2026-03-20 01:08:29.844640,2026-03-20 01:44:49.376475,,0,,,,
+2,APT29 (Cozy Bear),apt29,APT,Russia,"Cozy Bear, The Dukes","Russian state-sponsored actor linked to SVR. Targets government, healthcare, and think tanks. Sophisticated supply chain attacks.",HIGH,1,,,2026-03-20 01:08:29.850891,2026-03-20 01:44:49.378300,,0,,,,
+3,APT40 (Barium),apt40,APT,China,"Barium, Deep Panda","Chinese state-sponsored actor targeting maritime, naval, and defense industries. Focus on intellectual property theft.",HIGH,1,,,2026-03-20 01:08:29.855856,2026-03-20 01:44:49.382185,,0,,,,
+4,APT10 (MenuPass),apt10,APT,China,"MenuPass, Stone Panda","Chinese state-sponsored threat actor targeting aerospace, defense, and MSPs in Japan and West. Focus on intellectual property theft.",HIGH,1,,,2026-03-20 01:08:29.861053,2026-03-20 01:44:49.350682,,0,,,,
+5,UNC,unc,APT,Unknown,,UNC threat actor tracked in CTI graph,HIGH,1,,,2026-03-20 01:08:29.865756,2026-03-20 01:08:29.865763,,0,,,,
+6,Volt Typhoon,volt_typhoon,APT,China,Bronze Starlight,Chinese state-sponsored threat actor targeting critical infrastructure in Pacific region. Focus on pre-positioning for potential disruption.,HIGH,1,,,2026-03-20 01:08:29.870930,2026-03-20 01:45:05.939840,,0,,,,
+7,Lazarus Group,lazarus,APT,North Korea,"Hidden Cobra, Zinc","North Korean actor targeting financial institutions, crypto exchanges, and defense. Known for destructive attacks.",HIGH,1,,,2026-03-20 01:08:29.877183,2026-03-20 01:44:49.387660,,0,,,,
+8,RANSOMWARE,ransomware,APT,Unknown,,RANSOMWARE threat actor tracked in CTI graph,HIGH,1,,,2026-03-20 01:08:29.881234,2026-03-20 01:08:29.881240,,0,,,,
+22,APT42 (Phosphorus),apt42,APT,Iran,"Phosphorus, APT35","Iranian state-sponsored actor targeting dissidents, journalists, and government officials in Middle East and West.",HIGH,1,,,2026-03-20 01:08:29.957247,2026-03-20 01:44:49.383537,,0,,,,
+23,OilRig,oilrig,APT,Iran,"MuddyWater, Crambus",Iranian threat actor targeting government and critical infrastructure in Middle East.,HIGH,1,,,2026-03-20 01:08:29.961859,2026-03-20 01:44:58.547546,,0,,,,
+24,MuddyWater,muddywater,APT,Iran,"MuddyWater, Static Kitten",Iranian threat actor targeting government and military in Middle East.,HIGH,1,,,2026-03-20 01:08:29.965466,2026-03-20 01:44:58.520513,,0,,,,
+25,APT35 (Newscaster),apt35,APT,Iran,"Newscaster, Parastoo","Iranian state-sponsored threat actor targeting defense, government, and media. Known for espionage and credential harvesting.",HIGH,1,,,2026-03-20 01:08:29.971469,2026-03-20 01:44:49.380439,,0,,,,
+26,Handala Hack (Void Manticore / Red Sandstorm / Banished Kitten),handala,APT,IRAN,"Void Manticore, Red Sandstorm, Banished Kitten, Karma, Homeland Justice","MOIS-affiliated APT operating multiple personas: Handala Hack, Karma, Homeland Justice.
+
+Key insight: MOIS actors actively leveraging cyber crime ecosystem — not just imitating it.
+- Void Manticore uses Rhadamanthys infostealer (commercial malware)
+- Qilin ransomware used in Israeli hospital attack (Shamir Medical Center) as cover for MOIS operation
+- MuddyWater overlaps with Tsundere/DinDoor botnet and CastleLoader via shared code-signing certs
+
+MOIS/crime nexus: Criminal tools provide operational capability + deniability + obfuscation.
+",CRITICAL,1,,2026-03-29,2026-03-20 01:08:29.977284,2026-03-21 23:05:27.322768,,0,,,,
+27,Fatimion,fatimion,HACKTIVIST,Unknown,Fatimion,Ransomware group targeting healthcare and finance.,CRITICAL,1,,,2026-03-20 01:08:29.982644,2026-03-20 01:45:05.949383,,0,,,,
+28,Cyber Joker,cyber_joker,HACKTIVIST,Unknown,Cyber Joker,Ransomware group targeting enterprises and healthcare.,CRITICAL,1,,,2026-03-20 01:08:29.987947,2026-03-20 01:45:05.946636,,0,,,,
+29,Attila,attila,HACKTIVIST,Unknown,Attila,Ransomware group targeting healthcare and education sectors.,CRITICAL,1,,,2026-03-20 01:08:29.993409,2026-03-20 01:45:05.942428,,0,,,,
+30,Kimsuky,kimsuky,APT,North Korea,"Thallium, Velvet Chollima","North Korean actor targeting South Korean government, think tanks, and media for geopolitical intelligence.",HIGH,1,,,2026-03-20 01:08:29.999237,2026-03-20 01:44:49.386721,,0,,,,
+31,Andariel,andariel,APT,North Korea,Silent Chollima,"North Korean actor targeting South Korean government, defense, and financial sectors. Espionage and financial gain.",HIGH,1,,,2026-03-20 01:08:30.005881,2026-03-20 01:44:49.384818,,0,,,,
+32,Salt Typhoon,salt_typhoon,APT,China,Ghost Emperor,Chinese state-sponsored threat actor targeting telecommunications and internet service providers for espionage.,HIGH,1,,,2026-03-20 01:08:30.011378,2026-03-20 01:45:05.913105,,0,,,,
+33,Sandworm,sandworm,APT,Russia,"Electrum, Quedagh","Russian state-sponsored threat actor (Vulkan, Quedagh) linked to GRU. Known for destructive attacks on critical infrastructure.",HIGH,1,,,2026-03-20 01:08:30.017586,2026-03-20 01:45:05.938021,,0,,,,
+34,Turla,turla,APT,Russia,"Snake, Uroboros",Russian state-sponsored threat actor (also known as Waterbug) targeting government and diplomatic entities.,HIGH,1,,,2026-03-20 01:08:30.028831,2026-03-20 01:44:58.550502,,0,,,,
+35,GAMAREDON,gamaredon,APT,Unknown,,Russian threat actor targeting Ukrainian government and military with custom malware and phishing.,HIGH,1,,,2026-03-20 01:08:30.033355,2026-03-20 01:44:49.385841,,0,,,,
+43,[AVOS],avos,RANSOMWARE,,,Status: ONLINE. Channel: . Auth: . RSS: YES,MEDIUM,1,,,2026-03-20 02:37:21.938150,2026-03-20 02:37:21.938162,,0,,,,
+44,[KAZU],kazu,RANSOMWARE,,,Status: ONLINE. Channel: Session: 054acad09eb2c78674f3371bc9fd24218bacff3326c3d259819bf6e78de3ac0e6a - @kazu_21. Auth: . RSS: @kazu_breach (Channel) - Signal: Signal : @kazu.517 - Exploit: forum.exploit.in/profile/203546-kazu/ - DF: darkforums.st/User-Kazu,MEDIUM,1,,,2026-03-20 02:37:21.942667,2026-03-20 02:37:21.942674,,0,,,,
+45,[SPOOK DATA],spook-data,RANSOMWARE,,,Status: OFFLINE. Channel: . Auth: . RSS: YES,MEDIUM,0,,,2026-03-20 02:37:21.944978,2026-03-20 02:37:21.944984,,0,,,,
+46,Iran MOIS,iran-mois,apt,IR,,"Iran Ministry of Intelligence and Security. 
+Linked to Handala Hack and Homeland Justice groups. Uses Telegram as C2 for malware campaigns.
+DOJ confirmed (March 2026): Handala behind Stryker attack - weaponized Microsoft Intune MDM to wipe 1000s of devices.
+Attack disrupted manufacturing, ordering, shipping operations.
+Hospitals in Maryland disconnected systems preventatively.
+Domains seized by DOJ court order.",HIGH,1,,,2026-03-21 01:23:17.236332,2026-03-21 02:15:40.294856,,0,,,,
+47,Checkpoint Research,checkpoint-research,RESEARCH,,,Check Point Software Technologies threat intelligence and research division,MEDIUM,1,,,2026-03-21 22:58:48.994168,2026-03-21 22:58:48.994184,,0,,,,
+48,Qilin Ransomware (RaaS),qilin,RANSOMWARE,UNKNOWN,,Ransomware-as-a-Service operation. Used by Iranian actors (possibly MOIS) for strategic operations disguised as criminal ransomware.,HIGH,1,,,2026-03-21 23:05:27.348433,2026-03-21 23:05:27.348445,,0,,,,
+50,UNC1069,unc1069,Nation-State,KP,,North Korean state-sponsored hacking group. Attributed by Google TI to axios supply chain attack (Mar 2026). Historically targets cryptocurrency.,MEDIUM,1,,,2026-03-31 21:29:46.126641,2026-03-31 21:29:46.126654,,0,,,,
+51,UAC-0255,uac-0255,cybercrime,UA,AGEWHEEZE,Ukraine-nexus threat actor. Impersonated CERT-UA in March 2026 phishing campaign (1M emails) distributing AGEWHEEZE RAT.,HIGH,1,2026-03-26,2026-03-27,2026-04-01 20:28:07.788289,2026-04-01 20:28:07.788302,,0,,,,

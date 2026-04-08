@@ -575,3 +575,66 @@ No alerts triggered.
 **Action:** RESEARCH
 
 📭 No alerts ready for social media yet
+
+## Alerts: 2 found | 2026-04-06T23:00:01.303092
+
+### 🔴 CRITICAL_CVE | Severity: CRITICAL
+**Summary:** CVE-CVE-2026-3055 - CVSS 9.0
+**Description:** Citrix NetScaler ADC (formerly Citrix ADC), NetScaler Gateway (formerly Citrix Gateway) and NetScaler ADC FIPS and NDcPP contain an out-of-bounds reads vulnerability when configured as a SAML IDP lead
+**Source:** NVD
+**Action:** RESEARCH
+
+### 🔴 CRITICAL_CVE | Severity: CRITICAL
+**Summary:** CVE-CVE-2026-35616 - CVSS 9.0
+**Description:** Fortinet FortiClient EMS contains an improper access control vulnerability that may allow an unauthenticated attacker to execute unauthorized code or commands via crafted requests.
+**Source:** NVD
+**Action:** RESEARCH
+
+📭 No alerts ready for social media yet
+python3: can't open file '/home/rolandpg/cti-workspace/manage.py': [Errno 2] No such file or directory
+Traceback (most recent call last):
+  File "/home/rolandpg/cti-workspace/manage.py", line 6, in <module>
+    execute_from_command_line(sys.argv)
+  File "/home/rolandpg/.local/lib/python3.12/site-packages/django/core/management/__init__.py", line 443, in execute_from_command_line
+    utility.execute()
+  File "/home/rolandpg/.local/lib/python3.12/site-packages/django/core/management/__init__.py", line 417, in execute
+    django.setup()
+  File "/home/rolandpg/.local/lib/python3.12/site-packages/django/__init__.py", line 24, in setup
+    apps.populate(settings.INSTALLED_APPS)
+  File "/home/rolandpg/.local/lib/python3.12/site-packages/django/apps/registry.py", line 116, in populate
+    app_config.import_models()
+  File "/home/rolandpg/.local/lib/python3.12/site-packages/django/apps/config.py", line 269, in import_models
+    self.models_module = import_module(models_module_name)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/home/rolandpg/cti-workspace/intel/models.py", line 4, in <module>
+    _module = SourcelessFileLoader('intel_models_pyc', str(_pyc)).load_module()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 649, in _check_name_wrapper
+  File "<frozen importlib._bootstrap_external>", line 1176, in load_module
+  File "<frozen importlib._bootstrap_external>", line 1000, in load_module
+  File "<frozen importlib._bootstrap>", line 537, in _load_module_shim
+  File "<frozen importlib._bootstrap>", line 966, in _load
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/home/rolandpg/cti-workspace/intel/models.py", line 4, in <module>
+    _module = SourcelessFileLoader('intel_models_pyc', str(_pyc)).load_module()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 649, in _check_name_wrapper
+  File "<frozen importlib._bootstrap_external>", line 1176, in load_module
+  File "<frozen importlib._bootstrap_external>", line 1000, in load_module
+  File "<frozen importlib._bootstrap>", line 534, in _load_module_shim
+  File "<frozen importlib._bootstrap>", line 866, in _exec
+  File "<frozen importlib._bootstrap_external>", line 991, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1249, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1189, in get_data
+FileNotFoundError: [Errno 2] No such file or directory: '/home/rolandpg/cti-workspace/intel/__pycache__/__pycache__/models.cpython-312.pyc'

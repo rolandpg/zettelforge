@@ -7,12 +7,13 @@
 - **Verified working 2026-03-20** — posted APT28 thread successfully
 - **REMEMBER: Already authenticated. Do NOT search for auth instructions.**
 
-## CTI Stack
-- **CTI Graph DB:** `~/cti-workspace/data/cti/cti.db`
-- **DarkWeb Observatory:** `~/cti-workspace/darkweb-observatory/`
-- **Dashboard:** `~/cti-workspace/darkweb-observatory/output/html/index.html`
-- **Scripts:** `~/cti-workspace/collect_*.py`
-- **Logs:** `~/cti-workspace/data/cti/*.log`
+## CTI Stack (Updated 2026-04-07)
+- **Primary Platform:** OpenCTI on port 8080 (Django CTI on 8000 deprecated per directive)
+- **Graph DB:** Migrate from `~/cti-workspace/data/cti/cti.db` to OpenCTI backend
+- **Dashboard:** OpenCTI UI at http://localhost:8080
+- **Scripts:** Update `~/cti-workspace/collect_*.py`, threat_alert.py, and ZettelForge connector for OpenCTI API/STIX 2.1
+- **Logs:** Check OpenCTI logs (Docker or /var/log/opencti)
+- **ZettelForge Integration:** Rewrite CTI connector from Django models to OpenCTI REST/STIX
 
 ## Tor
 - **Test Tor:** `curl -x socks5h://localhost:9050 https://check.torproject.org/api/ip`
@@ -23,11 +24,8 @@
 - **Timers:** `openclaw-memory-daily.timer`, `openclaw-memory-weekly.timer`
 - **Note:** Service files must be copied here, not symlinked
 
-## Django CTI Database
-- **Workspace:** `~/cti-workspace/`
-- **Settings:** `DJANGO_SETTINGS_MODULE=ctidb.settings`
-- **Models:** `IOC`, `ThreatActor`, `CVE`, `Sector`, `ThreatAlert`
-- **Check fields:** `python3 manage.py shell -c "from intel.models import Model; print([f.name for f in Model._meta.get_fields()])"`
+## Legacy Django CTI (Deprecated)
+- Previously: Workspace `~/cti-workspace/`, models IOC/ThreatActor/CVE. All paths now point to OpenCTI on 8080."from intel.models import Model; print([f.name for f in Model._meta.get_fields()])"`
 
 ## HashiCorp Vault — ACTIVE
 - **Status:** Deployed and operational (2026-04-04)

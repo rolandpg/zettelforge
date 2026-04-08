@@ -72,6 +72,10 @@
     "AnswerOverflow": {
       "version": "1.0.2",
       "installedAt": 1775181606920
+    },
+    "deep-research-pro": {
+      "version": "1.0.2",
+      "installedAt": 1775523149120
     }
   }
 }
