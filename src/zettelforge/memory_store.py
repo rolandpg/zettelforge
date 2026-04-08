@@ -87,32 +87,27 @@ class MemoryStore:
     def _index_in_lance(self, note: MemoryNote) -> None:
         """Index note in LanceDB vector store"""
         try:
-            import pyarrow as pa
-
             table_name = f"notes_{note.metadata.domain}"
-            tables = self.lancedb.list_tables()
-
-            if table_name not in tables:
-                schema = pa.schema([
-                    ("id", pa.string()),
-                    ("vector", pa.list_(pa.float32(), 768)),
-                    ("content", pa.string()),
-                    ("context", pa.string()),
-                    ("keywords", pa.string()),
-                    ("tags", pa.string()),
-                    ("created_at", pa.string()),
-                ])
-                tbl = self.lancedb.create_table(table_name, schema=schema)
-            # Create optimized vector index per governance and performance requirements
-            tbl.create_index(
-                metric="cosine",
-                index_type="IVF_PQ",  # Balanced performance/accuracy
-                num_partitions=256,
-                num_sub_vectors=16
-            )
-
-            table = self.lancedb.open_table(table_name)
-            table.add([{
+            
+            # Get existing tables (handle lancedb API variations)
+            result = self.lancedb.list_tables()
+            # LanceDB returns ListTablesResponse with .tables attribute
+            if hasattr(result, 'tables'):
+                existing_tables = result.tables
+            elif isinstance(result, dict):
+                existing_tables = result.get('tables', [])
+            elif hasattr(result, '__iter__'):
+                # Handle iteration case (returns tuples)
+                existing_tables = []
+                for item in result:
+                    if isinstance(item, tuple) and item[0] == 'tables':
+                        existing_tables = item[1]
+                        break
+            else:
+                existing_tables = []
+            
+            # Prepare note data
+            note_data = {
                 "id": note.id,
                 "vector": note.embedding.vector if note.embedding.vector else [0.0] * 768,
                 "content": note.content.raw[:500],
@@ -120,7 +115,16 @@ class MemoryStore:
                 "keywords": ",".join(note.semantic.keywords),
                 "tags": ",".join(note.semantic.tags),
                 "created_at": note.created_at
-            }])
+            }
+            
+            if table_name not in existing_tables:
+                # Create table with initial data (no index yet)
+                self.lancedb.create_table(table_name, data=[note_data])
+            else:
+                # Add to existing table
+                tbl = self.lancedb.open_table(table_name)
+                tbl.add([note_data])
+                
         except Exception as e:
             print(f"LanceDB indexing failed: {e}")
     
