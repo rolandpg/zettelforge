@@ -149,6 +149,71 @@ class MemoryManager:
 
         return results
 
+    def remember_report(
+        self,
+        content: str,
+        source_url: str = "",
+        published_date: str = "",
+        domain: str = "cti",
+        min_importance: int = 3,
+        max_facts: int = 10,
+        chunk_size: int = 3000,
+    ) -> List[Tuple[Optional[MemoryNote], str]]:
+        """
+        Ingest a news report or threat report.
+
+        Chunks long content, runs two-phase extraction on each chunk,
+        and stores published_date as temporal metadata.
+
+        Args:
+            content: Full report text (can be >4000 chars, will be chunked).
+            source_url: URL of the report source.
+            published_date: Publication date (ISO 8601).
+            domain: Memory domain (default "cti").
+            min_importance: Filter threshold for extracted facts.
+            max_facts: Max facts per chunk.
+            chunk_size: Max chars per chunk before splitting.
+
+        Returns:
+            List of (MemoryNote or None, status) tuples across all chunks.
+        """
+        source_ref = source_url or "report"
+
+        # Chunk long content on sentence boundaries
+        chunks = []
+        if len(content) <= chunk_size:
+            chunks = [content]
+        else:
+            sentences = content.replace('\n', ' ').split('. ')
+            current_chunk = ""
+            for sentence in sentences:
+                if len(current_chunk) + len(sentence) + 2 > chunk_size and current_chunk:
+                    chunks.append(current_chunk.strip())
+                    current_chunk = sentence + ". "
+                else:
+                    current_chunk += sentence + ". "
+            if current_chunk.strip():
+                chunks.append(current_chunk.strip())
+
+        all_results = []
+        for i, chunk in enumerate(chunks):
+            # Add published date context if available
+            context = f"Published: {published_date}" if published_date else ""
+            chunk_ref = f"{source_ref}:chunk:{i}"
+
+            results = self.remember_with_extraction(
+                content=chunk,
+                source_type="report",
+                source_ref=chunk_ref,
+                domain=domain,
+                context=context,
+                min_importance=min_importance,
+                max_facts=max_facts,
+            )
+            all_results.extend(results)
+
+        return all_results
+
     def recall(
         self,
         query: str,

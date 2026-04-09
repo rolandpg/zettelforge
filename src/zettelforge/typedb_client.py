@@ -16,8 +16,9 @@ import os
 import uuid
 import threading
 from datetime import datetime
+from functools import lru_cache
 from pathlib import Path
-from typing import Dict, List, Optional, Any, Set
+from typing import Dict, List, Optional, Any, Set, Tuple
 
 from typedb.driver import TypeDB, Credentials, DriverOptions, TransactionType
 
@@ -106,6 +107,10 @@ class TypeDBKnowledgeGraph:
         self._temporal_index: Dict[str, List[Dict]] = {}
         self._entity_timeline: Dict[str, List[Dict]] = {}
 
+        # Query cache: (entity_type, entity_value) -> (result, timestamp)
+        self._cache: Dict[Tuple[str, str], Tuple[Any, float]] = {}
+        self._cache_ttl: float = 300.0  # 5 minutes
+
         self._connect()
 
     def _connect(self):
@@ -121,6 +126,30 @@ class TypeDBKnowledgeGraph:
             self._rebuild_indexes()
         except Exception as e:
             raise ConnectionError(f"TypeDB connection failed: {e}") from e
+
+    def _cache_get(self, key: Tuple[str, str]) -> Optional[Any]:
+        """Get from cache if not expired."""
+        import time
+        entry = self._cache.get(key)
+        if entry and (time.time() - entry[1]) < self._cache_ttl:
+            return entry[0]
+        return None
+
+    def _cache_set(self, key: Tuple[str, str], value: Any):
+        """Set cache entry with current timestamp."""
+        import time
+        self._cache[key] = (value, time.time())
+
+    def _cache_invalidate(self, entity_type: str = None, entity_value: str = None):
+        """Invalidate cache entries. If no args, clear all."""
+        if entity_type is None:
+            self._cache.clear()
+        else:
+            keys_to_remove = [k for k in self._cache if k[0] == entity_type]
+            if entity_value:
+                keys_to_remove = [k for k in keys_to_remove if k[1] == entity_value]
+            for k in keys_to_remove:
+                self._cache.pop(k, None)
 
     def _ensure_database(self):
         """Create database if it doesn't exist."""
@@ -292,6 +321,7 @@ class TypeDBKnowledgeGraph:
             if entity_type not in self._node_index:
                 self._node_index[entity_type] = {}
             self._node_index[entity_type][value_lower] = node_id
+            self._cache_invalidate(entity_type, value_lower)
 
             return node_id
 
@@ -371,6 +401,8 @@ class TypeDBKnowledgeGraph:
             if to_id not in self._edges_to:
                 self._edges_to[to_id] = []
             self._edges_to[to_id].append(edge)
+            self._cache_invalidate(from_type, from_value.lower())
+            self._cache_invalidate(to_type, to_value.lower())
 
             return edge_id
 
