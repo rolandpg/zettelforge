@@ -31,6 +31,7 @@ dependencies = [
     "requests>=2.31.0",
     "tantivy>=0.11.0",
     "typedb-driver>=3.8.0",
+    "fastembed>=0.8.0",
 ]
 
 [project.optional-dependencies]

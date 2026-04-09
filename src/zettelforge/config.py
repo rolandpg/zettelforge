@@ -37,8 +37,9 @@ class TypeDBConfig:
 
 @dataclass
 class EmbeddingConfig:
-    url: str = "http://127.0.0.1:11434"
-    model: str = "nomic-embed-text-v2-moe:latest"
+    provider: str = "fastembed"  # "fastembed" (in-process ONNX) or "ollama" (HTTP server)
+    url: str = "http://127.0.0.1:11434"  # only used when provider=ollama
+    model: str = "nomic-ai/nomic-embed-text-v1.5-Q"
     dimensions: int = 768
 
 
@@ -249,6 +250,8 @@ def _apply_env(cfg: ZettelForgeConfig):
         cfg.backend = v
 
     # Embedding
+    if v := os.environ.get("ZETTELFORGE_EMBEDDING_PROVIDER"):
+        cfg.embedding.provider = v
     if v := os.environ.get("AMEM_EMBEDDING_URL"):
         cfg.embedding.url = v
     if v := os.environ.get("AMEM_EMBEDDING_MODEL"):
