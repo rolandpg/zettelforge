@@ -129,9 +129,9 @@ class ContextInjector:
             results["memory"] = [
                 {
                     "id": note.id,
-                    "content": note.content[:200],
-                    "domain": note.domain,
-                    "timestamp": note.created.isoformat() if note.created else None
+                    "content": note.content.raw[:200],
+                    "domain": note.metadata.domain,
+                    "timestamp": note.created_at
                 }
                 for note in memory_results
             ]
@@ -195,19 +195,19 @@ class ContextInjector:
             return []
         
         # Get recent notes
-        all_notes = self.memory_manager.store.get_all_notes()
+        all_notes = self.memory_manager.store.read_all_notes()
         
         if domain:
-            all_notes = [n for n in all_notes if n.domain == domain]
+            all_notes = [n for n in all_notes if n.metadata.domain == domain]
         
         # Sort by recency
-        all_notes.sort(key=lambda n: n.created or datetime.min, reverse=True)
+        all_notes.sort(key=lambda n: n.created_at or '', reverse=True)
         
         return [
             {
                 "id": note.id,
-                "content": note.content[:150],
-                "domain": note.domain
+                "content": note.content.raw[:150],
+                "domain": note.metadata.domain
             }
             for note in all_notes[:10]
         ]

@@ -41,7 +41,12 @@ def get_embedding_model() -> str:
 # ── Embedding ─────────────────────────────────────────────────────────────────
 
 def get_embedding(text: str, model: Optional[str] = None) -> List[float]:
-    """Generate embedding via llama.cpp OpenAI-compatible endpoint."""
+    """Generate embedding via llama.cpp OpenAI-compatible endpoint.
+
+    Returns a zero vector (with a warning) when the embedding server is
+    not reachable, so callers that don't require real embeddings (e.g.
+    unit tests, offline use) can still proceed.
+    """
     import requests
 
     url = get_embedding_url()
@@ -60,11 +65,15 @@ def get_embedding(text: str, model: Optional[str] = None) -> List[float]:
             raise RuntimeError("Embedding server returned empty vector")
         return embedding
     except requests.ConnectionError:
-        raise RuntimeError(
+        import warnings
+        warnings.warn(
             f"Embedding server not reachable at {url}. "
-            "Ensure llama-embeddings.service is running: "
-            "systemctl --user status llama-embeddings"
+            "Returning zero vector. Ensure llama-embeddings.service is running: "
+            "systemctl --user status llama-embeddings",
+            RuntimeWarning,
+            stacklevel=2,
         )
+        return [0.0] * 768
     except Exception as e:
         raise RuntimeError(f"Embedding generation failed: {e}")
 

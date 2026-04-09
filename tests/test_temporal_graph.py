@@ -3,79 +3,69 @@
 Test temporal graph functionality in ZettelForge.
 Validates Task 2: Temporal graph indexing and queries.
 """
-import sys
+import os
 import tempfile
-import time
-# Package installed via pip - no sys.path manipulation needed
+import pytest
 
 from zettelforge import MemoryManager
-from zettelforge.knowledge_graph import KnowledgeGraph, get_knowledge_graph
+from zettelforge.knowledge_graph import KnowledgeGraph
 
 
-def test_temporal_graph():
-    print("=== Temporal Graph Test ===\n")
-    
-    # Create temp memory manager with fresh KG
-    tmpdir = tempfile.mkdtemp()
-    mm = MemoryManager(
-        jsonl_path=f'{tmpdir}/notes.jsonl',
-        lance_path=f'{tmpdir}/vectordb'
+@pytest.fixture(autouse=True)
+def isolated_data_dir(tmp_path, monkeypatch):
+    """Ensure all tests use an isolated data directory to avoid polluting ~/.amem."""
+    monkeypatch.setenv("AMEM_DATA_DIR", str(tmp_path))
+    # Reset the global KG singleton so each test gets its own instance
+    import zettelforge.knowledge_graph as kg_module
+    original = kg_module._kg_instance
+    kg_module._kg_instance = None
+    yield tmp_path
+    kg_module._kg_instance = original
+
+
+@pytest.fixture
+def mm(tmp_path):
+    return MemoryManager(
+        jsonl_path=str(tmp_path / "notes.jsonl"),
+        lance_path=str(tmp_path / "vectordb"),
     )
-    
-    # Create test notes with different timestamps (simulated via different remember calls)
-    print("[1] Creating test notes...")
-    
+
+
+def test_temporal_graph(mm, tmp_path):
     note1_content = "Server ALPHA is COMPROMISED - attacker gained root access via CVE-2024-1111"
     note1, _ = mm.remember(note1_content, domain="incident")
-    print(f"  Note 1: {note1.id}")
-    
-    time.sleep(0.1)
-    
+
     note2_content = "Server ALPHA has been PATCHED - CVE-2024-1111 remediated, system secured"
     note2, _ = mm.remember(note2_content, domain="incident")
-    print(f"  Note 2: {note2.id}")
-    
+
     # Trigger supersession (note2 supersedes note1)
-    print("\n[2] Triggering supersession...")
     mm._check_supersession(note2, mm.indexer.extractor.extract_all(note2.content.raw))
-    
-    # Get knowledge graph
+
+    from zettelforge.knowledge_graph import get_knowledge_graph
     kg = get_knowledge_graph()
-    
-    print("\n[3] Checking temporal edges...")
-    print(f"  Total edges in KG: {len(kg._edges)}")
-    
-    # Look for SUPERSEDES edges
+
     supersedes_edges = [e for e in kg._edges.values() if e.get('relationship') == 'SUPERSEDES']
-    print(f"  SUPERSEDES edges: {len(supersedes_edges)}")
-    
-    for edge in supersedes_edges:
-        from_node = kg._nodes.get(edge.get('from_node_id'), {})
-        to_node = kg._nodes.get(edge.get('to_node_id'), {})
-        print(f"    {from_node.get('entity_value')} SUPERSEDES {to_node.get('entity_value')}")
-        print(f"    Timestamp: {edge.get('properties', {}).get('timestamp')}")
-    
-    print("\n[4] Testing timeline queries...")
-    
-    # Get timeline for Server ALPHA
+    assert len(supersedes_edges) > 0, "Expected at least one SUPERSEDES edge after supersession check"
+
+
+def test_entity_timeline(mm, tmp_path):
+    note1, _ = mm.remember("Server BETA compromised", domain="incident")
+    note2, _ = mm.remember("Server BETA patched", domain="incident")
+    mm._check_supersession(note2, mm.indexer.extractor.extract_all(note2.content.raw))
+
+    from zettelforge.knowledge_graph import get_knowledge_graph
+    kg = get_knowledge_graph()
+
     timeline = kg.get_entity_timeline("note", note1.id)
-    print(f"  Timeline for note1: {len(timeline)} events")
-    for event in timeline:
-        print(f"    {event['timestamp']}: {event['to_entity']}")
-    
-    # Get changes since old timestamp
+    # Timeline may be empty if no temporal edges were added for this entity; just assert no crash
+    assert isinstance(timeline, list)
+
+
+def test_get_changes_since(mm, tmp_path):
+    mm.remember("Infrastructure update alpha", domain="incident")
+
+    from zettelforge.knowledge_graph import get_knowledge_graph
+    kg = get_knowledge_graph()
+
     changes = kg.get_changes_since("2020-01-01")
-    print(f"  Changes since 2020-01-01: {len(changes)}")
-    
-    print("\n[5] Testing get_latest_state...")
-    latest = kg.get_latest_state("note", note2.id)
-    if latest:
-        print(f"  Latest state of note2: {latest.get('to_entity')}")
-    
-    print("\n=== Test Complete ===")
-    return len(supersedes_edges) > 0
-
-
-if __name__ == '__main__':
-    success = test_temporal_graph()
-    sys.exit(0 if success else 1)
+    assert isinstance(changes, list)

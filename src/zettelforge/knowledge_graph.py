@@ -181,27 +181,46 @@ class KnowledgeGraph:
         entity_key = f"{entity_type}:{entity_value}"
         timeline = self._entity_timeline.get(entity_key, [])
         
-        # Sort by timestamp
-        timeline.sort(key=lambda x: x['timestamp'] or '')
+        # Sort by parsed datetime, falling back to string comparison
+        def _sort_key(x):
+            parsed = self._parse_timestamp(x['timestamp'] or '')
+            return parsed if parsed is not None else datetime.min
+        
+        timeline.sort(key=_sort_key)
         return timeline
 
     def get_changes_since(self, timestamp: str) -> List[Dict]:
         """Get all entity changes since a given timestamp."""
+        cutoff = self._parse_timestamp(timestamp)
         changes = []
         
         for ts, edges in self._temporal_index.items():
-            if ts >= timestamp:
+            ts_dt = self._parse_timestamp(ts)
+            # Compare as datetime objects when possible, fall back to string
+            if cutoff is not None and ts_dt is not None:
+                after_cutoff = ts_dt >= cutoff
+            else:
+                after_cutoff = ts >= timestamp
+            
+            if after_cutoff:
                 for edge in edges:
                     from_node = self._nodes.get(edge.get('from_node_id'), {})
                     to_node = self._nodes.get(edge.get('to_node_id'), {})
                     changes.append({
                         'timestamp': ts,
+                        '_ts_dt': ts_dt,
                         'from': f"{from_node.get('entity_type')}:{from_node.get('entity_value')}",
                         'relationship': edge.get('relationship'),
                         'to': f"{to_node.get('entity_type')}:{to_node.get('entity_value')}"
                     })
         
-        changes.sort(key=lambda x: x['timestamp'])
+        def _change_sort_key(x):
+            return x['_ts_dt'] if x['_ts_dt'] is not None else datetime.min
+        
+        changes.sort(key=_change_sort_key)
+        # Remove internal sort key before returning
+        for c in changes:
+            c.pop('_ts_dt', None)
         return changes
 
     # ===== Core Graph Operations =====

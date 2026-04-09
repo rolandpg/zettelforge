@@ -331,7 +331,7 @@ def import_cti_to_memory(memory_manager, query: str = None, entity_type: str = N
         results = connector.search_cti(query, entity_type)
         imported = []
         for r in results:
-            if r['type'] == 'actor':
+            if r['type'] == 'threat_actor':
                 note_data = connector.import_threat_actor(actor_id=r['id'])
             elif r['type'] == 'cve':
                 note_data = connector.import_cve(r['cve_id'])

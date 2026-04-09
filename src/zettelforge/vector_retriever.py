@@ -176,9 +176,6 @@ class VectorRetriever:
         if include_links and results:
             results = self._expand_via_links(results, k * 2)
         
-        for note in results:
-            note.increment_access()
-        
         return results
     
     def _apply_entity_boost(self, results: List[MemoryNote], query: str) -> List[MemoryNote]:
@@ -266,9 +263,6 @@ class VectorRetriever:
 
         if include_links and results:
             results = self._expand_via_links(results, k * 2)
-
-        for note in results:
-            note.increment_access()
 
         return results
 

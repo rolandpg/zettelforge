@@ -4,6 +4,7 @@ Compliant with GOV-007 (Testing Standards)
 Tests performance, scalability, and correctness at various scales.
 """
 import time
+import tempfile
 import pytest
 from typing import List
 import statistics
@@ -16,10 +17,14 @@ class TestPerformance:
     """Performance and scalability tests for ZettelForge."""
     
     @pytest.fixture
-    def mm(self):
-        """Fresh MemoryManager for each test."""
-        return MemoryManager()
+    def mm(self, tmp_path):
+        """Fresh, isolated MemoryManager for each test."""
+        return MemoryManager(
+            jsonl_path=str(tmp_path / "notes.jsonl"),
+            lance_path=str(tmp_path / "vectordb"),
+        )
     
+    @pytest.mark.slow
     def test_insertion_performance(self, mm):
         """Test insertion performance at scale."""
         start = time.perf_counter()
@@ -29,8 +34,8 @@ class TestPerformance:
         duration = time.perf_counter() - start
         
         assert duration < 30.0, f"Insertion too slow: {duration:.2f}s"
-        print(f"✅ Insertion performance: {duration:.2f}s for 1000 records")
     
+    @pytest.mark.slow
     def test_retrieval_performance(self, mm):
         """Test retrieval performance and quality."""
         # Seed some data
@@ -43,8 +48,8 @@ class TestPerformance:
         
         assert len(results) > 0
         assert duration < 5.0, f"Retrieval too slow: {duration:.2f}s"
-        print(f"✅ Retrieval performance: {duration:.2f}s, returned {len(results)} results")
     
+    @pytest.mark.slow
     def test_cache_performance(self, mm):
         """Test cache hit rate."""
         # Warm cache
@@ -58,7 +63,6 @@ class TestPerformance:
         duration = time.perf_counter() - start
         
         assert duration < 2.0, "Cache not providing expected performance benefit"
-        print(f"✅ Cache performance test passed in {duration:.2f}s")
     
     def test_governance_compliance(self, mm):
         """Ensure governance validation is active."""
@@ -68,24 +72,3 @@ class TestPerformance:
         # Test that validation is working
         is_valid, violations = validator.validate_operation("remember", "Valid content")
         assert is_valid
-        print("✅ Governance validation is active and working")
-
-
-def run_full_performance_suite():
-    """Run the full performance test suite."""
-    print("🚀 Starting ZettelForge Performance Test Suite...")
-    print("="*60)
-    
-    test = TestPerformance()
-    test.test_insertion_performance(None)
-    test.test_retrieval_performance(None)
-    test.test_cache_performance(None)
-    test.test_governance_compliance(None)
-    
-    print("="*60)
-    print("✅ All performance tests passed.")
-    print("ZettelForge is ready for production use.")
-
-
-if __name__ == "__main__":
-    run_full_performance_suite()

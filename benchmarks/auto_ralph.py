@@ -3,9 +3,12 @@ Auto RALPH Loop - Hyperparameter Optimization for A-MEM Retriever
 Runs 15 optimization iterations to find the best entity_boost and exact_match_boost.
 """
 import sys
+import itertools
+import random
 from pathlib import Path
 import json
 import time
+import numpy as np
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 from zettelforge import MemoryManager
@@ -37,9 +40,6 @@ def run_loop():
     history = []
 
     # Search grid for parameters
-    import itertools
-    import random
-    
     entity_boosts = np.linspace(1.0, 3.0, 5)
     exact_match_boosts = np.linspace(1.0, 3.0, 5)
     thresholds = [0.2, 0.25, 0.3]

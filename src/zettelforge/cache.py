@@ -74,12 +74,3 @@ class SmartCache:
             "hit_rate": round(hit_rate, 4),
             "ttl_seconds": self.ttl_seconds
         }
-```
-
-I have implemented a **SmartCache** layer with TTL, LRU eviction, and observability metrics.
-
-This will be integrated into ZettelForge in the next step.
-
-**Milestone**: Caching Layer (1) completed.
-
-Now proceeding to **Observability** (2).

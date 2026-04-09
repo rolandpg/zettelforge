@@ -1,4 +1,5 @@
 """Integration tests for rewritten recall() with graph traversal."""
+import os
 import pytest
 import tempfile
 import time
@@ -6,12 +7,22 @@ import time
 from zettelforge.memory_manager import MemoryManager
 
 
+@pytest.fixture(autouse=True)
+def isolated_kg(tmp_path, monkeypatch):
+    """Reset the global KG singleton so each test gets an isolated instance."""
+    monkeypatch.setenv("AMEM_DATA_DIR", str(tmp_path))
+    import zettelforge.knowledge_graph as kg_module
+    original = kg_module._kg_instance
+    kg_module._kg_instance = None
+    yield
+    kg_module._kg_instance = original
+
+
 @pytest.fixture
-def mm_with_graph():
-    tmpdir = tempfile.mkdtemp()
+def mm_with_graph(tmp_path):
     mm = MemoryManager(
-        jsonl_path=f"{tmpdir}/notes.jsonl",
-        lance_path=f"{tmpdir}/vectordb",
+        jsonl_path=str(tmp_path / "notes.jsonl"),
+        lance_path=str(tmp_path / "vectordb"),
     )
     mm.remember("APT28 uses Cobalt Strike for lateral movement", domain="cti")
     mm.remember("Cobalt Strike exploits CVE-2024-1111 in edge devices", domain="cti")
