@@ -100,15 +100,17 @@ class TypeDBConfig:
 ```python
 @dataclass
 class EmbeddingConfig:
+    provider: str = "fastembed"
     url: str = "http://127.0.0.1:11434"
-    model: str = "nomic-embed-text-v2-moe:latest"
+    model: str = "nomic-embed-text-v1.5-Q"
     dimensions: int = 768
 ```
 
 | Key | Type | Default | Env Override | Description |
 |:----|:-----|:--------|:-------------|:------------|
-| `embedding.url` | `str` | `http://127.0.0.1:11434` | `AMEM_EMBEDDING_URL` | Embedding server URL. Supports Ollama and llama.cpp endpoints. |
-| `embedding.model` | `str` | `nomic-embed-text-v2-moe:latest` | `AMEM_EMBEDDING_MODEL` | Embedding model name. |
+| `embedding.provider` | `str` | `fastembed` | `ZETTELFORGE_EMBEDDING_PROVIDER` | Embedding provider. Values: `fastembed` (in-process ONNX, default), `ollama` (requires Ollama running at `embedding.url`). |
+| `embedding.url` | `str` | `http://127.0.0.1:11434` | `AMEM_EMBEDDING_URL` | Embedding server URL. Only used when `embedding.provider` is `ollama`. |
+| `embedding.model` | `str` | `nomic-embed-text-v1.5-Q` | `AMEM_EMBEDDING_MODEL` | Embedding model name. Default for fastembed: `nomic-embed-text-v1.5-Q` (768-dim, ~130 MB, ~7ms/embed). |
 | `embedding.dimensions` | `int` | `768` | -- | Vector dimensionality. Must match the model output. |
 
 ---
@@ -118,15 +120,17 @@ class EmbeddingConfig:
 ```python
 @dataclass
 class LLMConfig:
-    model: str = "qwen2.5:3b"
+    provider: str = "local"
+    model: str = "Qwen2.5-3B-Instruct-Q4_K_M.gguf"
     url: str = "http://localhost:11434"
     temperature: float = 0.1
 ```
 
 | Key | Type | Default | Env Override | Description |
 |:----|:-----|:--------|:-------------|:------------|
-| `llm.model` | `str` | `qwen2.5:3b` | `ZETTELFORGE_LLM_MODEL` | LLM for fact extraction, intent classification, causal triple extraction, and synthesis. Must support Ollama-compatible API. |
-| `llm.url` | `str` | `http://localhost:11434` | `ZETTELFORGE_LLM_URL` | LLM server URL. |
+| `llm.provider` | `str` | `local` | `ZETTELFORGE_LLM_PROVIDER` | LLM provider. Values: `local` (in-process llama-cpp-python, default), `ollama` (requires Ollama running at `llm.url`). |
+| `llm.model` | `str` | `Qwen2.5-3B-Instruct-Q4_K_M.gguf` | `ZETTELFORGE_LLM_MODEL` | LLM for fact extraction, intent classification, causal triple extraction, and synthesis. Default for local: Qwen2.5-3B-Instruct Q4_K_M GGUF (~2.0 GB, ~15.6 tok/s). For Ollama provider, use Ollama model tags (e.g., `qwen2.5:3b`). |
+| `llm.url` | `str` | `http://localhost:11434` | `ZETTELFORGE_LLM_URL` | LLM server URL. Only used when `llm.provider` is `ollama`. |
 | `llm.temperature` | `float` | `0.1` | -- | Sampling temperature. `0.0` = deterministic, `0.1` = near-deterministic (default), `0.7` = creative. |
 
 ---
@@ -246,8 +250,10 @@ class LoggingConfig:
 | `TYPEDB_USERNAME` | `typedb.username` | `admin` |
 | `TYPEDB_PASSWORD` | `typedb.password` | `s3cret` |
 | `ZETTELFORGE_BACKEND` | `backend` | `jsonl` |
+| `ZETTELFORGE_EMBEDDING_PROVIDER` | `embedding.provider` | `ollama` |
 | `AMEM_EMBEDDING_URL` | `embedding.url` | `http://gpu-box:11434` |
-| `AMEM_EMBEDDING_MODEL` | `embedding.model` | `nomic-embed-text` |
+| `AMEM_EMBEDDING_MODEL` | `embedding.model` | `nomic-embed-text-v1.5-Q` |
+| `ZETTELFORGE_LLM_PROVIDER` | `llm.provider` | `ollama` |
 | `ZETTELFORGE_LLM_MODEL` | `llm.model` | `qwen2.5:7b` |
 | `ZETTELFORGE_LLM_URL` | `llm.url` | `http://gpu-box:11434` |
 
@@ -262,12 +268,12 @@ storage:
 backend: jsonl
 
 embedding:
-  url: http://127.0.0.1:11434
-  model: nomic-embed-text-v2-moe:latest
+  provider: fastembed
+  model: nomic-embed-text-v1.5-Q
 
 llm:
-  model: qwen2.5:3b
-  url: http://localhost:11434
+  provider: local
+  model: Qwen2.5-3B-Instruct-Q4_K_M.gguf
 ```
 
 ---
@@ -276,10 +282,10 @@ llm:
 
 ZettelForge configuration uses a layered resolution system: environment variables override config.yaml, which overrides config.default.yaml, which overrides hardcoded dataclass defaults. Access configuration via `get_config()` which returns a cached `ZettelForgeConfig` singleton. Call `reload_config()` to force a re-read.
 
-**11 environment variables** are supported, covering storage (`AMEM_DATA_DIR`), TypeDB connection (`TYPEDB_HOST`, `TYPEDB_PORT`, `TYPEDB_DATABASE`, `TYPEDB_USERNAME`, `TYPEDB_PASSWORD`), backend selection (`ZETTELFORGE_BACKEND`), embedding server (`AMEM_EMBEDDING_URL`, `AMEM_EMBEDDING_MODEL`), and LLM server (`ZETTELFORGE_LLM_MODEL`, `ZETTELFORGE_LLM_URL`).
+**13 environment variables** are supported, covering storage (`AMEM_DATA_DIR`), TypeDB connection (`TYPEDB_HOST`, `TYPEDB_PORT`, `TYPEDB_DATABASE`, `TYPEDB_USERNAME`, `TYPEDB_PASSWORD`), backend selection (`ZETTELFORGE_BACKEND`), embedding provider (`ZETTELFORGE_EMBEDDING_PROVIDER`, `AMEM_EMBEDDING_URL`, `AMEM_EMBEDDING_MODEL`), and LLM provider (`ZETTELFORGE_LLM_PROVIDER`, `ZETTELFORGE_LLM_MODEL`, `ZETTELFORGE_LLM_URL`).
 
 **10 config sections** exist: `storage` (data directory), `typedb` (connection parameters), `backend` (typedb or jsonl), `embedding` (vector model and server), `llm` (language model for extraction/synthesis), `extraction` (two-phase pipeline settings), `retrieval` (vector search tuning), `synthesis` (RAG output control), `governance` (validation toggle), `cache` (TypeDB query cache), and `logging` (verbosity control).
 
-**Key defaults:** Data stored in `~/.amem`. TypeDB on `localhost:1729`. Embedding via Ollama at `127.0.0.1:11434` with `nomic-embed-text-v2-moe` (768 dims). LLM is `qwen2.5:3b` at temperature 0.1. Extraction produces up to 5 facts with importance >= 3. Retrieval returns 10 results with 0.25 similarity threshold and 2.5x entity boost. Synthesis uses `direct_answer` format with A+B tier notes and 3000 token context. Cache TTL is 300 seconds with 1024 max entries. Logging at INFO level.
+**Key defaults:** Data stored in `~/.amem`. TypeDB on `localhost:1729`. Embedding via fastembed in-process with `nomic-embed-text-v1.5-Q` (768 dims, ONNX). LLM via llama-cpp-python in-process with `Qwen2.5-3B-Instruct-Q4_K_M.gguf` at temperature 0.1. Models download automatically on first use. Extraction produces up to 5 facts with importance >= 3. Retrieval returns 10 results with 0.25 similarity threshold and 2.5x entity boost. Synthesis uses `direct_answer` format with A+B tier notes and 3000 token context. Cache TTL is 300 seconds with 1024 max entries. Logging at INFO level.
 
-**For air-gapped deployments:** Set `backend: jsonl` to avoid the TypeDB dependency entirely. The JSONL backend stores the knowledge graph as local files with no external services required beyond Ollama for embeddings and LLM.
+**For air-gapped deployments:** Set `backend: jsonl` to avoid the TypeDB dependency entirely. With the default `fastembed` and `local` providers, the JSONL backend stores the knowledge graph as local files with no external services required at all. Pre-download models before going offline.

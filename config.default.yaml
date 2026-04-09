@@ -86,32 +86,37 @@ backend: typedb
 
 
 # ── Embeddings ──────────────────────────────────────────────────────────────
-# Vector embedding server for semantic search. Supports Ollama and llama.cpp.
+# Vector embeddings for semantic search.
+#
+# Provider options:
+#   fastembed  — In-process ONNX (default). No server needed. 130MB model.
+#                7ms per embed. Model auto-downloads on first use.
+#   ollama     — HTTP server. Requires `ollama serve` running.
+#                ~30ms per embed (HTTP round-trip).
 #
 # Examples:
-#   # Ollama (default, recommended)
+#   # fastembed (default — zero server dependencies)
+#   provider: fastembed
+#   model: nomic-ai/nomic-embed-text-v1.5-Q     # 768-dim, quantized, 130MB
+#
+#   # fastembed full-precision (better quality, 520MB)
+#   provider: fastembed
+#   model: nomic-ai/nomic-embed-text-v1.5        # 768-dim, full, 520MB
+#
+#   # Ollama (legacy — requires running server)
+#   provider: ollama
 #   url: http://127.0.0.1:11434
-#   model: nomic-embed-text-v2-moe:latest
-#
-#   # llama.cpp server (legacy)
-#   url: http://127.0.0.1:8081
-#   model: nomic-embed-text-v2-moe.gguf
-#
-#   # Remote GPU server
-#   url: http://gpu-box.internal:11434
 #   model: nomic-embed-text
 #
-#   # Azure OpenAI (requires custom embedding adapter)
-#   url: https://your-instance.openai.azure.com
-#   model: text-embedding-3-small
-#
 # Env overrides:
+#   ZETTELFORGE_EMBEDDING_PROVIDER=ollama
 #   AMEM_EMBEDDING_URL=http://gpu-box:11434
 #   AMEM_EMBEDDING_MODEL=nomic-embed-text
 #
 embedding:
+  provider: fastembed
   url: http://127.0.0.1:11434
-  model: nomic-embed-text-v2-moe:latest
+  model: nomic-ai/nomic-embed-text-v1.5-Q
   dimensions: 768
 
 

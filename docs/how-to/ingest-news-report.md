@@ -15,7 +15,7 @@ Ingest threat reports of any length using `remember_report()`. ZettelForge chunk
 ## Prerequisites
 
 - ZettelForge installed (`pip install zettelforge`)
-- Ollama running with `qwen2.5:3b` (extraction) and `nomic-embed-text-v2-moe:latest` (embeddings)
+- Embedding and LLM models available (download automatically on first use)
 
 ## Steps
 
@@ -141,7 +141,7 @@ results = mm.remember_report(
 > For short reports (<3000 chars), `remember_report()` skips chunking and processes the content as a single block.
 
 > [!WARNING]
-> Each chunk makes LLM calls for extraction and update decisions. A 15,000-character report with `chunk_size=3000` produces 5 chunks, each with up to `max_facts` LLM calls. Budget ~2 seconds per fact on local Ollama with `qwen2.5:3b`.
+> Each chunk makes LLM calls for extraction and update decisions. A 15,000-character report with `chunk_size=3000` produces 5 chunks, each with up to `max_facts` LLM calls. Budget ~2 seconds per fact with the default in-process LLM.
 
 ## LLM Quick Reference
 

@@ -9,8 +9,6 @@ import re
 from enum import Enum
 from typing import List, Optional, Tuple
 
-import ollama
-
 from zettelforge.note_schema import MemoryNote
 
 
@@ -39,12 +37,8 @@ class MemoryUpdater:
         prompt = self._build_decision_prompt(fact_text, similar_notes)
 
         try:
-            response = ollama.generate(
-                model=self.model,
-                prompt=prompt,
-                options={"temperature": 0.1, "num_predict": 150},
-            )
-            raw = response.get("response", "").strip()
+            from zettelforge.llm_client import generate
+            raw = generate(prompt, max_tokens=150, temperature=0.1)
             return self._parse_operation_response(raw)
         except Exception:
             return UpdateOperation.ADD

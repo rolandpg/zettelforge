@@ -126,8 +126,6 @@ class NoteConstructor:
         
         Example: "APT28 uses DROPBEAR malware" → {subject: "APT28", relation: "uses", object: "DROPBEAR"}
         """
-        import ollama
-        
         prompt = f"""Extract causal relationships from the following text as JSON.
 Return a JSON array of triples with fields: subject, relation, object.
 Relations must be one of: {', '.join(self.CAUSAL_RELATIONS)}
@@ -138,14 +136,8 @@ Text:
 JSON:"""
 
         try:
-            response = ollama.generate(
-                model="qwen2.5:3b",
-                prompt=prompt,
-                options={"temperature": 0.1, "num_predict": 300}
-            )
-            
-            # Parse JSON from response
-            output = response.get('response', '').strip()
+            from zettelforge.llm_client import generate
+            output = generate(prompt, max_tokens=300, temperature=0.1)
             
             # Handle various response formats
             # 1. Markdown code blocks
