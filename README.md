@@ -6,7 +6,7 @@ A production-grade, governed memory system designed specifically for CTI analysi
 
 ## Purpose
 
-ZettelForge is the primary memory architecture for the Roland Fleet. It provides:
+ZettelForge is the primary memory architecture for the CTI and SIEM Agents. It provides:
 
 - **Entity-aware memory** with automatic extraction of threat actors, CVEs, campaigns, and tools
 - **Knowledge graph** with temporal reasoning and relationship mapping
