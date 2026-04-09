@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: threatrecall-config
-data:
-  TR_LOG_LEVEL: "INFO"
-  TR_API_WORKERS: "4"
-  TR_RATE_LIMIT_REQUESTS_PER_MINUTE: "100"
-  TR_RATE_LIMIT_REQUESTS_PER_HOUR: "1000"
