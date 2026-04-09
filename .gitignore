@@ -39,15 +39,18 @@ env/
 htmlcov/
 .tox/
 
-# A-MEM data
-*.jsonl
-*.lance
-.vector_memory.lance/
+# Runtime data (not source code)
+/notes.jsonl
+/kg_nodes.jsonl
+/kg_edges.jsonl
+/entity_index.json
+*.lance/
 vectordb/
+.vector_memory.lance/
 .snapshots/
 archive/
 
-# Data files (keep structure, ignore content)
+# Data directories (runtime, not source)
 /data/
 /.amem/
 

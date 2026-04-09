@@ -4,7 +4,7 @@ Test CTI Platform Integration with ZettelForge.
 Validates bi-directional sync between memory and CTI DB.
 """
 import sys
-sys.path.insert(0, '/home/rolandpg/.openclaw/workspace/skills/zettelforge/src')
+# Package installed via pip - no sys.path manipulation needed
 
 from zettelforge.cti_integration import get_cti_connector, CTIPlatformConnector
 
