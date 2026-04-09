@@ -58,34 +58,31 @@ class TestFactExtractorParsing:
 
 
 class TestFactExtractorWithMockedLLM:
-    @patch("zettelforge.fact_extractor.ollama")
-    def test_extract_calls_ollama(self, mock_ollama):
-        mock_ollama.generate.return_value = {
-            "response": '[{"fact": "APT28 shifted tactics", "importance": 8}]'
-        }
+    @patch("zettelforge.llm_client.generate")
+    def test_extract_calls_llm(self, mock_generate):
+        mock_generate.return_value = '[{"fact": "APT28 shifted tactics", "importance": 8}]'
         extractor = FactExtractor()
         facts = extractor.extract("APT28 has shifted tactics to edge devices")
         assert len(facts) == 1
         assert facts[0].text == "APT28 shifted tactics"
-        mock_ollama.generate.assert_called_once()
+        mock_generate.assert_called_once()
 
-    @patch("zettelforge.fact_extractor.ollama")
-    def test_extract_with_context(self, mock_ollama):
-        mock_ollama.generate.return_value = {
-            "response": '[{"fact": "new tactic", "importance": 7}]'
-        }
+    @patch("zettelforge.llm_client.generate")
+    def test_extract_with_context(self, mock_generate):
+        mock_generate.return_value = '[{"fact": "new tactic", "importance": 7}]'
         extractor = FactExtractor()
         facts = extractor.extract(
             "They now use compromised credentials",
             context="Previous: APT28 used DROPBEAR malware"
         )
         assert len(facts) == 1
-        call_args = mock_ollama.generate.call_args
-        assert "Previous:" in call_args.kwargs.get("prompt", call_args[1].get("prompt", ""))
+        # Verify context was in the prompt
+        call_args = mock_generate.call_args
+        assert "Previous:" in call_args[0][0]  # first positional arg is the prompt
 
-    @patch("zettelforge.fact_extractor.ollama")
-    def test_extract_handles_ollama_error(self, mock_ollama):
-        mock_ollama.generate.side_effect = Exception("ollama down")
+    @patch("zettelforge.llm_client.generate")
+    def test_extract_handles_llm_error(self, mock_generate):
+        mock_generate.side_effect = Exception("LLM down")
         extractor = FactExtractor()
         facts = extractor.extract("some content")
         assert len(facts) == 1
