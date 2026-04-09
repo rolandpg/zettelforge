@@ -252,8 +252,8 @@ Expected output:
   CVE-2024-1111 --[MENTIONED_IN]--> note:note_20260409_143203_d1e4
 ```
 
-> [!IMPORTANT]
-> The knowledge graph automatically infers relationships. Because APT28 and Cobalt Strike appear in the same report, ZettelForge creates a `USES_TOOL` edge. Because APT28 and CVE-2024-1111 co-occur, it creates an `EXPLOITS_CVE` edge.
+> [!NOTE]
+> Notice that ZettelForge created USES_TOOL and EXPLOITS_CVE edges from entity co-occurrence in the report text.
 
 ---
 
@@ -324,7 +324,7 @@ Graph traversal found 6 paths:
   Path 6: actor:apt28 --[MENTIONED_IN]--> note:note_20260409_143202_b3c7
 ```
 
-Path 2 is the full attack chain: APT28 uses Cobalt Strike, which exploits CVE-2024-1111. The depth-first traversal walks outward from APT28 through every connected entity up to 2 hops.
+Path 2 shows the complete attack chain from APT28 through Cobalt Strike to CVE-2024-1111.
 
 ```mermaid
 graph TD
@@ -410,10 +410,10 @@ You ingested a raw threat intelligence report and turned it into structured, que
 
 ### Next Steps
 
-- [How to ingest STIX 2.1 bundles from TAXII feeds](../how-to/ingest-taxii-feed.md)
-- [How to generate Sigma detection rules from ingested intel](../how-to/generate-sigma-rules.md)
-- [How to set up proactive context injection for your SOC agent](../how-to/context-injection.md)
-- [API Reference: MemoryManager](../reference/api-memory-manager.md)
+- [How to ingest STIX 2.1 bundles from TAXII feeds](../how-to/ingest-news-report.md)
+- [How to generate Sigma detection rules from ingested intel](../how-to/store-threat-actor.md)
+- [How to set up proactive context injection for your SOC agent](../how-to/integrate-nexus-agent.md)
+- [API Reference: MemoryManager](../reference/memory-manager-api.md)
 
 ---
 

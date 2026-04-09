@@ -67,6 +67,7 @@ Step-by-step guides that walk you through a working example from start to finish
 | Tutorial | Time | Description |
 |----------|------|-------------|
 | [Quickstart: Your First Memory](tutorials/01-quickstart.md) | 5 min | Store, recall, and synthesize your first threat intelligence. |
+| [Ingest Your First CTI Report](tutorials/02-first-cti-report.md) | 10 min | Ingest a threat report end-to-end with two-phase extraction. |
 
 ### How-To Guides (Task-Oriented)
 
@@ -74,10 +75,14 @@ Practical recipes for specific tasks you need to accomplish.
 
 | Guide | Description |
 |-------|-------------|
-| Ingest a Threat Report | Chunk and store a long-form CTI report with `remember_report()`. |
-| Connect to a CTI Platform | Import indicators from MISP, OpenCTI, or TAXII feeds. |
-| Generate Sigma Rules | Produce detection rules from actor TTPs stored in memory. |
-| Deploy with Docker Compose | Run ThreatRecall with TypeDB on a single host. |
+| [Store a Threat Actor](how-to/store-threat-actor.md) | Use `remember()` with automatic entity extraction and knowledge graph population. |
+| [Query APT Tools](how-to/query-apt-tools.md) | Use `recall()` + `synthesize()` to analyze APT tooling. |
+| [Ingest a News Report](how-to/ingest-news-report.md) | Chunk and store a long-form CTI report with `remember_report()`. |
+| [Resolve Aliases](how-to/resolve-aliases.md) | Map Fancy Bear to APT28 via TypeDB `alias-of` relations. |
+| [Run Temporal Queries](how-to/run-temporal-query.md) | Query `valid-from`/`valid-until` edges and entity timelines. |
+| [Configure TypeDB](how-to/configure-typedb.md) | Docker setup, schema deployment, and troubleshooting. |
+| [Configure LanceDB](how-to/configure-lancedb.md) | Tune IVF_PQ index, similarity threshold, and entity boost. |
+| [Integrate with Nexus Agent](how-to/integrate-nexus-agent.md) | Use `get_context()` and `ProactiveAgentMixin` in agent loops. |
 
 ### Reference (Information-Oriented)
 
@@ -85,10 +90,11 @@ Exact specifications for every public class, method, and configuration option.
 
 | Reference | Description |
 |-----------|-------------|
-| Python API | `MemoryManager`, `BlendedRetriever`, `SynthesisGenerator`, and all public exports. |
-| STIX Ontology | 9 entity types, 8 relation types, inference functions, and seed aliases. |
-| Configuration | `config.yaml` options for storage, TypeDB, embedding, LLM, retrieval, and governance. |
-| Governance Policies | GOV-003, GOV-007, GOV-011, GOV-012 enforcement rules. |
+| [Memory Manager API](reference/memory-manager-api.md) | `MemoryManager` — all 19 public methods with full type signatures. |
+| [STIX 2.1 Schema](reference/stix-schema.md) | 9 entity types, 8 relation types, TypeDB functions, and type mappings. |
+| [Configuration](reference/configuration.md) | All `config.yaml` keys, types, defaults, and environment variable overrides. |
+| [Retrieval Policies](reference/retrieval-policies.md) | Intent-to-policy weight mapping, scoring formulas, merge algorithm. |
+| [Governance Controls](reference/governance-controls.md) | GOV-003/007/011/012 enforcement matrix. |
 
 ### Explanation (Understanding-Oriented)
 
@@ -96,10 +102,11 @@ Background context and design rationale for the system's architecture.
 
 | Topic | Description |
 |-------|-------------|
-| Two-Phase Extraction Pipeline | Why FactExtractor + MemoryUpdater prevents duplicate and stale notes. |
-| Intent-Based Retrieval | How the IntentClassifier routes queries to the right mix of vector and graph search. |
-| STIX 2.1 Ontology Design | Why ThreatRecall maps CTI entities to STIX types in TypeDB. |
-| Supersession and Note Lifecycle | How notes are versioned, superseded, and eventually retired. |
+| [Why TypeDB + LanceDB](explanation/architecture.md) | Architectural rationale for the hybrid two-database design. |
+| [Zettelkasten Philosophy](explanation/zettelkasten-philosophy.md) | How Luhmann's note-taking method shapes ThreatRecall's memory. |
+| [Two-Phase Pipeline](explanation/two-phase-pipeline.md) | FactExtractor + MemoryUpdater design and deduplication logic. |
+| [STIX in ZettelForge](explanation/stix-in-zettelforge.md) | How STIX 2.1 maps to TypeDB entities and relations. |
+| [Epistemic Tiers](explanation/epistemic-tiers.md) | Confidence model, tier classification, and decay mechanics. |
 
 ## Key Capabilities
 
