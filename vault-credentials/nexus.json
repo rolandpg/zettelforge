@@ -1,7 +1,0 @@
-{
-  "vault_addr": "http://127.0.0.1:8200",
-  "role_id": "05fab4b1-27c2-ec27-6f23-08bdf805a11a",
-  "secret_id": "c606fbe5-0b2c-5fa5-d0f4-0fdfbd3b628c",
-  "role_name": "nexus",
-  "policy": "nexus"
-}

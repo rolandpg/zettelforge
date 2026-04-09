@@ -1,7 +1,0 @@
-{
-  "vault_addr": "http://127.0.0.1:8200",
-  "role_id": "54923f2f-078a-c9c7-0e6f-5755c8e8c993",
-  "secret_id": "2f2e76cb-ae0f-9a11-3bff-5ca4d1957e81",
-  "role_name": "tamara",
-  "policy": "tamara"
-}
