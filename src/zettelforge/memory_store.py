@@ -119,17 +119,8 @@ class MemoryStore:
                 "context": note.semantic.context,
                 "keywords": ",".join(note.semantic.keywords),
                 "tags": ",".join(note.semantic.tags),
-                "created_at": note.created_at
-            }
-            
-            if table_name not in existing_tables:
-                # Create table with initial data (no index yet)
-                self.lancedb.create_table(table_name, data=[note_data])
-            else:
-                # Add to existing table
-                tbl = self.lancedb.open_table(table_name)
-                tbl.add([note_data])
-                
+                "created_at": note.created_at,
+            }])
         except Exception as e:
             print(f"LanceDB indexing failed: {e}")
     
