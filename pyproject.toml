@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "zettelforge"
-version = "1.0.0-alpha.3"
+version = "1.4.0"
 description = "ZettelForge: Agentic Memory System with vector search, knowledge graph, and synthesis"
 readme = "README.md"
 license = {text = "MIT"}
@@ -42,13 +42,13 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/rolandpg/amem"
-Documentation = "https://github.com/rolandpg/amem/blob/main/docs/"
-Repository = "https://github.com/rolandpg/amem"
-Issues = "https://github.com/rolandpg/amem/issues"
+Homepage = "https://github.com/rolandpg/zettelforge"
+Documentation = "https://github.com/rolandpg/zettelforge/blob/main/docs/"
+Repository = "https://github.com/rolandpg/zettelforge"
+Issues = "https://github.com/rolandpg/zettelforge/issues"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/amem"]
+packages = ["src/zettelforge"]
 
 [tool.black]
 line-length = 100

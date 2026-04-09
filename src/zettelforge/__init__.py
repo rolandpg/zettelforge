@@ -39,6 +39,8 @@ from zettelforge.ontology import (
 )
 from zettelforge.intent_classifier import IntentClassifier, get_intent_classifier, QueryIntent
 from zettelforge.note_constructor import NoteConstructor
+from zettelforge.fact_extractor import FactExtractor, ExtractedFact
+from zettelforge.memory_updater import MemoryUpdater, UpdateOperation
 from zettelforge.cti_integration import (
     CTIPlatformConnector,
     get_cti_connector,
@@ -58,7 +60,7 @@ from zettelforge.sigma_generator import (
     generate_sentinel_rules
 )
 
-__version__ = "1.3.0"
+__version__ = "1.4.0"
 __all__ = [
     # Core
     "MemoryManager",
@@ -85,6 +87,11 @@ __all__ = [
     "QueryIntent",
     # Note Constructor
     "NoteConstructor",
+    # Two-Phase Pipeline
+    "FactExtractor",
+    "ExtractedFact",
+    "MemoryUpdater",
+    "UpdateOperation",
     # CTI Integration
     "CTIPlatformConnector",
     "get_cti_connector",
