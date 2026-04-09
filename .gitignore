@@ -1,3 +1,8 @@
+# ZettelForge config (may contain credentials)
+config.yaml
+config.yml
+.env
+
 # Python
 __pycache__/
 *.py[cod]
