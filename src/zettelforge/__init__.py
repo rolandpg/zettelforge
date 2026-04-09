@@ -43,6 +43,7 @@ from zettelforge.fact_extractor import FactExtractor, ExtractedFact
 from zettelforge.memory_updater import MemoryUpdater, UpdateOperation
 from zettelforge.graph_retriever import GraphRetriever, ScoredResult
 from zettelforge.blended_retriever import BlendedRetriever
+from zettelforge.typedb_client import TypeDBKnowledgeGraph, get_typedb_knowledge_graph
 from zettelforge.cti_integration import (
     CTIPlatformConnector,
     get_cti_connector,
@@ -62,7 +63,7 @@ from zettelforge.sigma_generator import (
     generate_sentinel_rules
 )
 
-__version__ = "1.5.0"
+__version__ = "2.0.0"
 __all__ = [
     # Core
     "MemoryManager",
@@ -76,6 +77,9 @@ __all__ = [
     # Knowledge Graph
     "KnowledgeGraph",
     "get_knowledge_graph",
+    # TypeDB (STIX 2.1 Ontology)
+    "TypeDBKnowledgeGraph",
+    "get_typedb_knowledge_graph",
     # Ontology
     "TypedEntityStore",
     "OntologyValidator",
