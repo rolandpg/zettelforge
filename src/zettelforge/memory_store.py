@@ -104,12 +104,14 @@ class MemoryStore:
                 ])
                 tbl = self.lancedb.create_table(table_name, schema=schema)
             # Create optimized vector index per governance and performance requirements
-            tbl.create_index(
-                metric="cosine",
-                index_type="IVF_PQ",  # Balanced performance/accuracy
-                num_partitions=256,
-                num_sub_vectors=16
-            )
+            # Only create index if table is new (not on every insert)
+            if table_name not in tables:
+                tbl.create_index(
+                    metric="cosine",
+                    index_type="IVF_PQ",  # Balanced performance/accuracy
+                    num_partitions=256,
+                    num_sub_vectors=16
+                )
 
             table = self.lancedb.open_table(table_name)
             table.add([{

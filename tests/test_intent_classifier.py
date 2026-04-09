@@ -4,7 +4,7 @@ Test intent classifier in ZettelForge.
 Validates Task 3: Lightweight intent classifier for adaptive query routing.
 """
 import sys
-sys.path.insert(0, '/home/rolandpg/.openclaw/workspace/skills/zettelforge/src')
+# Package installed via pip - no sys.path manipulation needed
 
 from zettelforge.intent_classifier import IntentClassifier, get_intent_classifier, QueryIntent
 

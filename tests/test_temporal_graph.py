@@ -6,7 +6,7 @@ Validates Task 2: Temporal graph indexing and queries.
 import sys
 import tempfile
 import time
-sys.path.insert(0, '/home/rolandpg/.openclaw/workspace/skills/zettelforge/src')
+# Package installed via pip - no sys.path manipulation needed
 
 from zettelforge import MemoryManager
 from zettelforge.knowledge_graph import KnowledgeGraph, get_knowledge_graph
