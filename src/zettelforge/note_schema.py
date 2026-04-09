@@ -47,6 +47,7 @@ class Metadata(BaseModel):
     ttl: Optional[int] = None  # Time-to-live in days
     domain: str = "general"  # security_ops | project | personal | research
     tier: str = "B"  # Epistemic tier: A (authoritative) | B (operational) | C (support)
+    importance: int = 5  # 1-10 scale, used by extraction phase for prioritization
 
 
 class MemoryNote(BaseModel):
