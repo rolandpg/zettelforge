@@ -1,124 +1,176 @@
 # ZettelForge: Agentic Memory System
 
-[![PyPI version](https://badge.fury.io/py/amem.svg)](https://badge.fury.io/py/amem)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/badge/version-1.5.0-green.svg)](https://github.com/rolandpg/zettelforge)
 
-A production-grade memory system for AI agents with vector search, knowledge graph relationships, entity extraction, and RAG-as-answer synthesis.
+A production-grade memory system for AI agents, purpose-built for cyber threat intelligence (CTI). Combines vector semantic search, knowledge graph traversal, and intent-based query routing to give agents persistent, structured memory across sessions.
 
 ## Features
 
-- **Vector Semantic Search**: LanceDB-backed storage with Ollama embeddings
-- **Entity Extraction**: Automatic indexing of CVEs, threat actors, tools, campaigns
-- **Fast Entity Lookup**: O(1) retrieval by entity type and value
-- **Link Expansion**: Follow related notes for comprehensive context
-- **RAG-as-Answer (Phase 7)**: Synthesize answers from memories with multiple output formats
-- **Epistemic Tiers**: A/B/C quality classification
-- **Local-First**: No external APIs required, runs entirely on your hardware
-- **Cross-Session**: Persistent memory across agent restarts
+- **Blended Retrieval**: Combines vector similarity + knowledge graph traversal, weighted by query intent
+- **Knowledge Graph**: Entity nodes, relationship edges, temporal indexing, multi-hop traversal (BFS, max-depth configurable)
+- **Two-Phase Extraction Pipeline**: Mem0-style selective ingestion — LLM extracts salient facts with importance scores, then decides ADD/UPDATE/DELETE/NOOP per fact to keep memory coherent
+- **Entity Extraction**: Automatic indexing of CVEs, threat actors, tools, campaigns with alias resolution
+- **Intent-Based Routing**: Classifies queries as factual/temporal/relational/causal/exploratory and adjusts retrieval weights accordingly
+- **RAG Synthesis**: Answer generation from retrieved memories in multiple formats (direct answer, brief, timeline, relationship map)
+- **Causal Triple Extraction**: LLM-based subject-relation-object extraction stored as graph edges
+- **CTI Integration**: Connectors for OpenCTI platform, Sigma rule generation from IOCs
+- **Local-First**: Runs entirely on local hardware — Ollama for LLM, LanceDB for vectors, JSONL for persistence
 
 ## Quick Start
 
 ```bash
-# Install
-pip install amem
+# Install from source
+git clone https://github.com/rolandpg/zettelforge.git
+cd zettelforge
+pip install -e ".[dev]"
 
-# Set up Ollama (required for embeddings)
+# Ollama setup (required for embeddings and LLM)
 ollama pull nomic-embed-text
+ollama pull qwen2.5:3b
+```
 
-# Use in your agent
-from amem import MemoryManager
+```python
+from zettelforge import MemoryManager
 
 mm = MemoryManager()
 
-# Store a memory
+# Store a memory (append-only, fast)
 note, status = mm.remember(
-    "CVE-2024-3094 is a backdoor in XZ Utils discovered in March 2024",
-    domain="security_ops"
+    "APT28 uses Cobalt Strike for lateral movement via CVE-2024-1111",
+    domain="cti"
 )
 
-# Retrieve by semantic similarity
-results = mm.recall("XZ backdoor vulnerability", k=5)
+# Store with two-phase extraction (selective, deduplicating)
+results = mm.remember_with_extraction(
+    "APT28 has shifted tactics. They dropped DROPBEAR and now exploit edge devices.",
+    domain="cti"
+)
+# results: [(<MemoryNote>, "added"), (<MemoryNote>, "updated"), ...]
+
+# Retrieve — blends vector similarity + graph traversal
+results = mm.recall("What tools does APT28 use?", k=10)
 
 # Fast entity lookup
-apt28_notes = mm.recall_actor("APT28", k=10)
-cve_notes = mm.recall_cve("CVE-2024-3094")
+apt28_notes = mm.recall_actor("APT28")
+cve_notes = mm.recall_cve("CVE-2024-1111")
 
-# Get formatted context for prompts
-context = mm.get_context("threat actor activity", k=10)
-
-# Synthesize answers from memories (Phase 7)
+# Synthesize answers from memories
 result = mm.synthesize(
-    "What do we know about XZ backdoor?",
-    format="synthesized_brief"  # or "direct_answer", "timeline_analysis", "relationship_map"
+    "What do we know about APT28?",
+    format="synthesized_brief"
 )
-print(result["synthesis"]["summary"])
 
-# Query the Knowledge Graph (Phase 6)
-paths = mm.traverse_graph("actor", "APT28", max_depth=2)
-for path in paths:
-    # E.g. APT28 -[USES_TOOL]-> DROPBEAR
-    print(path)
+# Traverse the knowledge graph
+paths = mm.traverse_graph("actor", "apt28", max_depth=2)
+# APT28 -[USES_TOOL]-> cobalt-strike -[EXPLOITS_CVE]-> CVE-2024-1111
 ```
 
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                         MemoryManager                        │
-├──────────────┬──────────────┬──────────────┬────────────────┤
-│ MemoryStore  │NoteConstructor│EntityIndexer │VectorRetriever │
-│  (JSONL)     │  (Enrichment) │  (Index)     │  (Search)      │
-├──────────────┴──────────────┴──────────────┴────────────────┤
-│                    LanceDB Vector Store                      │
-└─────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────┐
+│                          MemoryManager                           │
+│  remember()  remember_with_extraction()  recall()  synthesize()  │
+├──────────┬───────────┬──────────────┬───────────┬────────────────┤
+│  Note    │  Fact     │   Memory     │  Blended  │   Synthesis    │
+│Constructor│ Extractor │  Updater     │ Retriever │   Generator    │
+│(enrich)  │(Phase 1)  │(Phase 2)     │(vec+graph)│   (RAG)        │
+├──────────┴───────────┴──────────────┼───────────┴────────────────┤
+│       Entity Indexer + Alias        │  Intent Classifier         │
+│       Resolver + Governance         │  (factual/temporal/causal) │
+├─────────────────────────────────────┼────────────────────────────┤
+│          MemoryStore (JSONL)        │   Knowledge Graph (JSONL)  │
+│          LanceDB (vectors)          │   Temporal Index           │
+└─────────────────────────────────────┴────────────────────────────┘
 ```
+
+### Retrieval Pipeline
+
+```
+Query → Intent Classifier → Traversal Policy (weights)
+                                    │
+                    ┌───────────────┼───────────────┐
+                    ▼               ▼               ▼
+              VectorRetriever  GraphRetriever  EntityIndex
+              (cosine sim +    (BFS from query  (O(1) lookup)
+               entity boost)   entities, hop
+                               distance scoring)
+                    │               │               │
+                    └───────┬───────┘               │
+                            ▼                       │
+                     BlendedRetriever ◄─────────────┘
+                     (policy-weighted merge,
+                      dedup, rank)
+                            │
+                            ▼
+                      List[MemoryNote]
+```
+
+## Benchmarks
+
+Evaluated across three benchmark suites (2026-04-09):
+
+| Benchmark | What it measures | Key result |
+|-----------|-----------------|------------|
+| [LOCOMO](https://snap-research.github.io/locomo/) (ACL 2024) | Conversational memory recall | 15.0% accuracy, 0.33 avg score |
+| [CTIBench](https://huggingface.co/datasets/AI4Sec/cti-bench) (NeurIPS 2024) | CTI entity extraction & attribution | Baseline established |
+| RAGAS | Retrieval quality | 75.9% keyword presence |
+
+### LOCOMO Results (v1.3.0 → v1.5.0)
+
+| Category | v1.3.0 | v1.5.0 | Change |
+|----------|--------|--------|--------|
+| single-hop | 5.0% | 10.0% | +5.0 |
+| multi-hop | 0.0% | 0.0% | avg_score 0.0 → 0.15 |
+| temporal | 0.0% | 0.0% | — |
+| open-domain | 30.0% | 30.0% | avg_score +0.025 |
+| adversarial | 35.0% | 35.0% | — |
+| **Overall** | **14.0%** | **15.0%** | **+1pp, p95 latency 190s → 1.3s** |
+
+LOCOMO tests conversational memory (people, hobbies) — ZettelForge's entity extractor targets CTI entities, so graph traversal doesn't fire on conversational queries. See the [full benchmark report](benchmarks/BENCHMARK_REPORT.md) for analysis and roadmap.
+
+### Comparison to SOTA
+
+| System | LOCOMO Accuracy | p95 Latency |
+|--------|----------------|-------------|
+| Mem0g | 68.5% | 2.6s |
+| Mem0 | 66.9% | 1.4s |
+| OpenAI Memory | 52.9% | 0.9s |
+| **ZettelForge 1.5.0** | **15.0%** | **1.3s** |
 
 ## Installation
 
 ### Requirements
 
 - Python 3.10+
-- Ollama (for local embeddings)
-
-### From PyPI
-
-```bash
-pip install amem
-```
+- [Ollama](https://ollama.com) (local LLM + embeddings)
 
 ### From Source
 
 ```bash
-git clone https://github.com/rolandpg/amem.git
-cd amem
+git clone https://github.com/rolandpg/zettelforge.git
+cd zettelforge
 pip install -e ".[dev]"
 ```
 
 ### Ollama Setup
 
-ZettelForge uses Ollama for generating embeddings locally:
-
 ```bash
-# Install Ollama (macOS/Linux)
 curl -fsSL https://ollama.com/install.sh | sh
-
-# Pull the embedding model
-ollama pull nomic-embed-text
-
-# Start Ollama server
+ollama pull nomic-embed-text    # embeddings (768-dim)
+ollama pull qwen2.5:3b          # LLM for extraction, classification, synthesis
 ollama serve
 ```
 
 ## Configuration
 
-Environment variables:
-
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `AMEM_DATA_DIR` | `~/.amem` | Data storage location |
-| `AMEM_OLLAMA_URL` | `http://localhost:11434` | Ollama server URL |
-| `AMEM_EMBEDDING_MODEL` | `nomic-embed-text` | Embedding model name |
+| `AMEM_DATA_DIR` | `~/.amem` | Data storage directory |
+| `AMEM_EMBEDDING_URL` | `http://127.0.0.1:8081` | Embedding server endpoint |
+| `AMEM_EMBEDDING_MODEL` | `nomic-embed-text-v2-moe.gguf` | Embedding model |
 
 ## API Reference
 
@@ -126,131 +178,133 @@ Environment variables:
 
 Primary interface for all memory operations.
 
-#### `remember(content, source_type="conversation", source_ref="", domain="general")`
+#### `remember(content, source_type, source_ref, domain)`
 
-Store a new memory note.
-
-**Parameters:**
-- `content` (str): The text content to remember
-- `source_type` (str): Type of source (conversation, task_output, observation)
-- `source_ref` (str): Reference to source (session_id, task_id)
-- `domain` (str): Domain classification (security_ops, project, personal, research)
-
-**Returns:** `(MemoryNote, str)` - The created note and status
-
-#### `recall(query, domain=None, k=10, include_links=True)`
-
-Retrieve memories by semantic similarity.
-
-**Parameters:**
-- `query` (str): Natural language query
-- `domain` (str, optional): Filter by domain
-- `k` (int): Number of results
-- `include_links` (bool): Include linked notes
-
-**Returns:** `List[MemoryNote]`
-
-#### `recall_cve(cve_id, k=5)` / `recall_actor(name, k=5)` / `recall_tool(name, k=5)`
-
-Fast entity-based retrieval.
-
-#### `get_context(query, domain=None, k=10, token_budget=4000)`
-
-Get formatted context string for prompt injection.
-
-### MemoryNote Schema
+Append-only storage. Constructs enriched note, extracts entities, updates knowledge graph.
 
 ```python
-{
-    "id": "note_20240405_185046_1234",
-    "content": {
-        "raw": "Full text content",
-        "source_type": "conversation",
-        "source_ref": "session_abc123"
-    },
-    "semantic": {
-        "context": "One-sentence summary",
-        "keywords": ["keyword1", "keyword2"],
-        "tags": ["security", "cve"],
-        "entities": ["cve-2024-3094", "apt28"]
-    },
-    "embedding": {
-        "vector": [0.1, 0.2, ...],  # 768 dimensions
-        "model": "nomic-embed-text"
-    },
-    "links": {
-        "related": ["note_123", "note_456"],
-        "superseded_by": None,
-        "supersedes": []
-    },
-    "metadata": {
-        "access_count": 0,
-        "confidence": 1.0,
-        "domain": "security_ops",
-        "tier": "A"  # A=authoritative, B=operational, C=support
-    }
-}
+note, status = mm.remember("APT28 targets NATO", domain="cti")
+# status: "created"
+```
+
+#### `remember_with_extraction(content, domain, context, min_importance, max_facts)`
+
+Two-phase Mem0-style pipeline. Phase 1: LLM extracts salient facts with importance scores. Phase 2: Each fact compared to existing notes — ADD/UPDATE/DELETE/NOOP.
+
+```python
+results = mm.remember_with_extraction(
+    "APT28 dropped DROPBEAR, now uses edge device exploitation",
+    domain="cti", min_importance=3
+)
+# returns: [(MemoryNote, "added"), (MemoryNote, "updated"), ...]
+```
+
+#### `recall(query, domain, k, include_links, exclude_superseded)`
+
+Blended retrieval combining vector similarity and knowledge graph traversal, weighted by query intent.
+
+```python
+results = mm.recall("What tools does APT28 use?", k=10)
+```
+
+#### `synthesize(query, format, k, tier_filter)`
+
+RAG synthesis over retrieved memories.
+
+```python
+result = mm.synthesize("Summarize APT28 activity", format="synthesized_brief")
+# formats: "direct_answer", "synthesized_brief", "timeline_analysis", "relationship_map"
+```
+
+#### Entity Lookups
+
+```python
+mm.recall_cve("CVE-2024-3094")     # Fast CVE lookup
+mm.recall_actor("APT28")           # Threat actor lookup
+mm.recall_tool("cobalt-strike")    # Tool/malware lookup
+```
+
+#### Knowledge Graph
+
+```python
+mm.traverse_graph("actor", "apt28", max_depth=2)
+mm.get_entity_relationships("actor", "apt28")
+```
+
+## Project Structure
+
+```
+src/zettelforge/
+    memory_manager.py       # Primary agent interface
+    note_schema.py          # Pydantic MemoryNote model
+    note_constructor.py     # Content enrichment, entity extraction
+    memory_store.py         # JSONL + LanceDB persistence
+    fact_extractor.py       # Phase 1: LLM salient fact extraction
+    memory_updater.py       # Phase 2: ADD/UPDATE/DELETE/NOOP decisions
+    knowledge_graph.py      # Graph storage with temporal indexing
+    graph_retriever.py      # BFS traversal, hop-distance scoring
+    blended_retriever.py    # Merge vector + graph with policy weights
+    vector_retriever.py     # Cosine similarity + entity boost
+    intent_classifier.py    # Query intent routing
+    entity_indexer.py       # Entity extraction and O(1) index
+    alias_resolver.py       # Entity alias canonicalization
+    synthesis_generator.py  # RAG answer generation
+    cti_integration.py      # OpenCTI platform connector
+    sigma_generator.py      # Sigma rule generation from IOCs
+    context_injection.py    # Proactive agent context loading
+
+benchmarks/
+    BENCHMARK_REPORT.md     # Unified results and analysis
+    locomo_benchmark.py     # LOCOMO evaluation script
+    ctibench_benchmark.py   # CTIBench adapter (NeurIPS 2024)
+    ragas_benchmark.py      # RAGAS retrieval quality wrapper
+
+tests/
+    test_basic.py           # Unit tests
+    test_e2e.py             # End-to-end integration
+    test_fact_extractor.py  # Two-phase extraction tests
+    test_memory_updater.py  # UPDATE/DELETE operation tests
+    test_graph_retriever.py # Graph traversal tests
+    test_blended_retriever.py # Blended scoring tests
+    test_recall_integration.py # Full recall pipeline tests
+    test_two_phase_e2e.py   # Extraction pipeline e2e
 ```
 
 ## Development
 
 ```bash
-# Clone repository
-git clone https://github.com/rolandpg/amem.git
-cd amem
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # or venv\Scripts\activate on Windows
-
-# Install in development mode
+git clone https://github.com/rolandpg/zettelforge.git
+cd zettelforge
 pip install -e ".[dev]"
 
 # Run tests
 pytest tests/ -v
 
-# Run specific test
-pytest tests/test_memory_manager.py -v
+# Run benchmarks
+python benchmarks/locomo_benchmark.py --samples 20
+python benchmarks/ctibench_benchmark.py --task ate --samples 50
+python benchmarks/ragas_benchmark.py --samples 20
 
-# Format code
-black src/amem/
-ruff check src/amem/
-
-# Type checking
-mypy src/amem/
-```
-
-## Testing
-
-```bash
-# Run all tests
-pytest tests/ -v
-
-# Run with coverage
-pytest tests/ --cov=amem --cov-report=html
-
-# Run specific phase tests
-pytest tests/test_phase_1.py -v  # Entity indexing
-pytest tests/test_phase_7.py -v  # Synthesis layer
+# Format and lint
+black src/zettelforge/
+ruff check src/zettelforge/
 ```
 
 ## Roadmap
 
-- [x] Phase 1: Core storage and retrieval
-- [x] Phase 2: Entity extraction and indexing
-- [x] Phase 3: Note linking and relationships
-- [x] Phase 4: Knowledge graph integration
-- [x] Phase 5: Synthesis layer (RAG-as-answer)
-- [ ] Phase 6: Multi-agent memory sharing
-- [ ] Phase 7: Distributed memory sync
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+- [x] Core storage and retrieval (JSONL + LanceDB)
+- [x] Entity extraction and indexing (CVEs, actors, tools, campaigns)
+- [x] Knowledge graph with temporal indexing
+- [x] Intent-based query routing
+- [x] RAG synthesis layer
+- [x] Causal triple extraction
+- [x] CTI platform integration + Sigma generation
+- [x] Mem0-style two-phase extraction pipeline (v1.4.0)
+- [x] Graph traversal retrieval with blended scoring (v1.5.0)
+- [x] Benchmark suite: LOCOMO + CTIBench + RAGAS
+- [ ] Conversational entity extractor (improve LOCOMO from 15% to ~30%)
+- [ ] CTIBench adapter fixes (ATT&CK DB cross-reference, per-report queries)
+- [ ] LLM-judge scoring for benchmarks
 
 ## License
 
@@ -258,13 +312,13 @@ MIT License - see [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
-- Built for the OpenClaw agent ecosystem
-- Inspired by Zettelkasten note-taking methodology
-- Embeddings powered by [Ollama](https://ollama.com)
-- Vector storage by [LanceDB](https://lancedb.com)
+- Inspired by [Zettelkasten](https://en.wikipedia.org/wiki/Zettelkasten) and [A-Mem](https://arxiv.org/abs/2602.10715) (NeurIPS 2025)
+- Two-phase pipeline inspired by [Mem0](https://mem0.ai/research) architecture
+- Benchmarked against [LOCOMO](https://snap-research.github.io/locomo/) (ACL 2024) and [CTIBench](https://arxiv.org/abs/2406.07599) (NeurIPS 2024)
+- Embeddings: [Ollama](https://ollama.com) | Vectors: [LanceDB](https://lancedb.com) | Schema: [Pydantic](https://pydantic.dev)
 
-## Support
+## Links
 
-- Documentation: https://github.com/rolandpg/amem/tree/main/docs
-- Issues: https://github.com/rolandpg/amem/issues
-- Discussions: https://github.com/rolandpg/amem/discussions
+- Repository: https://github.com/rolandpg/zettelforge
+- Issues: https://github.com/rolandpg/zettelforge/issues
+- Benchmark Report: [benchmarks/BENCHMARK_REPORT.md](benchmarks/BENCHMARK_REPORT.md)
