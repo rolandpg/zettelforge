@@ -24,8 +24,8 @@ from typing import List, Dict, Optional
 
 # ── Configuration ─────────────────────────────────────────────────────────────
 
-DEFAULT_EMBEDDING_URL = "http://127.0.0.1:8081"
-DEFAULT_EMBEDDING_MODEL = "nomic-embed-text-v2-moe.gguf"
+DEFAULT_EMBEDDING_URL = "http://127.0.0.1:11434"
+DEFAULT_EMBEDDING_MODEL = "nomic-embed-text-v2-moe:latest"
 
 
 def get_embedding_url() -> str:
