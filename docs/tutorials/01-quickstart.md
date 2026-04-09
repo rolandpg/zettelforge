@@ -166,7 +166,7 @@ Expected output:
 [note_a1b2c3d4] APT28 (Fancy Bear) deployed a modified X-Agent implant against Ukrainian government networks in March 2026...
 ```
 
-The IntentClassifier detected a **relational** intent ("What tools does X use?") and weighted graph traversal higher, surfacing the Cobalt Strike note first because it has a direct `USES_TOOL` edge to APT28 in the knowledge graph.
+The Cobalt Strike note appears first because graph retrieval prioritizes directly related entities.
 
 ## Step 7: Recall by Actor Name
 
@@ -183,7 +183,7 @@ Expected output:
 [note_e5f6g7h8] Lazarus Group conducted Operation DreamJob targeting defense contractors in South Korea and Japan during Q1...
 ```
 
-`recall_actor()` uses the entity index for a direct lookup, skipping vector search entirely. The alias resolver maps "Lazarus Group" to its canonical form "lazarus" so that notes stored under any known alias (Hidden Cobra, ZINC, Diamond Sleet) also match.
+Alias resolution means "Lazarus Group" and "Hidden Cobra" return the same results.
 
 ## Step 8: Synthesize an Answer
 

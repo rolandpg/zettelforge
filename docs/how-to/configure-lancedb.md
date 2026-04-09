@@ -121,12 +121,7 @@ print(f"High-recall results: {len(notes)}")
 
 ### 6. Understand IVF_PQ index settings
 
-LanceDB uses IVF_PQ (Inverted File with Product Quantization) for approximate nearest neighbor search. ZettelForge's LanceDB tables are created with these defaults:
-
-- **256 partitions** (IVF): The vector space is partitioned into 256 Voronoi cells. At query time, only the nearest partitions are searched.
-- **16 sub-vectors** (PQ): Each 768-dimension vector is split into 16 sub-vectors of 48 dimensions each, compressed via product quantization.
-
-These settings are optimal for collections up to ~1M notes. For smaller collections (<10,000 notes), LanceDB uses brute-force search automatically and IVF_PQ has no effect.
+These defaults are optimal for collections up to ~1M notes. No manual tuning is needed below 10,000 notes.
 
 > [!NOTE]
 > IVF_PQ index creation happens automatically when the LanceDB table exceeds a size threshold. You do not need to trigger index builds manually.

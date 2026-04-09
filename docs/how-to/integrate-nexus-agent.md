@@ -223,14 +223,12 @@ def enrich_with_entities(task: str) -> dict:
 
 **Task**: Integrate ZettelForge persistent memory into an AI agent loop.
 
-**Prompt injection**: `mm.get_context(query, domain="cti", k=10, token_budget=4000)` returns a formatted string of relevant notes within the token budget. Inject into system or user prompt.
+**Prompt injection**: `mm.get_context(query, domain="cti", k=10, token_budget=4000)` returns formatted relevant notes. Inject into system or user prompt.
 
-**Agent storage**: `mm.remember_with_extraction(content, domain="cti", context="...", min_importance=3, max_facts=5)` extracts facts from agent output and stores with deduplication. Returns `List[Tuple[Optional[MemoryNote], str]]`.
+**Agent storage**: `mm.remember_with_extraction(content, domain="cti", context="...", min_importance=3, max_facts=5)` extracts and deduplicates facts. Returns `List[Tuple[Optional[MemoryNote], str]]`.
 
-**ProactiveAgentMixin**: Inherit and call `init_context_injection(memory_manager=mm)`. Use `before_task(description)` for automatic context retrieval. Use `inject_into_prompt(task, base_prompt)` for prompt enrichment.
+**ProactiveAgentMixin**: Inherit and call `init_context_injection(memory_manager=mm)`. Use `before_task(description)` for context retrieval, `inject_into_prompt(task, base_prompt)` for enrichment.
 
-**Context classification**: `before_task()` classifies task into context types (cve_analysis, threat_actor_research, incident_response, malware_analysis, project_context, etc.) and retrieves domain-specific memory.
+**Entity retrieval**: `mm.recall_actor()`, `mm.recall_tool()`, `mm.recall_cve()` provide O(1) indexed lookups for targeted enrichment.
 
-**Entity-specific retrieval**: `mm.recall_actor()`, `mm.recall_tool()`, `mm.recall_cve()` provide O(1) indexed lookups. Use for targeted enrichment when entities are known.
-
-**Performance**: `remember()` is fast (no LLM). `remember_with_extraction()` is slow (LLM per fact). `get_context()` is fast (vector search + formatting). Tune `min_importance` and `max_facts` for throughput.
+**Performance**: `remember()` is fast (no LLM). `remember_with_extraction()` is slow (LLM per fact). `get_context()` is fast (vector search). Tune `min_importance` and `max_facts` for throughput.
