@@ -74,11 +74,9 @@ class TestMemoryUpdaterDecision:
             op = updater.decide("APT28 shifted to edge devices", similar_notes=[])
             assert op == UpdateOperation.ADD
 
-    @patch("zettelforge.memory_updater.ollama")
-    def test_update_when_similar_exists(self, mock_ollama):
-        mock_ollama.generate.return_value = {
-            "response": '{"operation": "UPDATE", "reason": "refines existing"}'
-        }
+    @patch("zettelforge.llm_client.generate")
+    def test_update_when_similar_exists(self, mock_generate):
+        mock_generate.return_value = '{"operation": "UPDATE", "reason": "refines existing"}'
         with tempfile.TemporaryDirectory() as tmpdir:
             mm = MemoryManager(
                 jsonl_path=f"{tmpdir}/notes.jsonl",
@@ -89,11 +87,9 @@ class TestMemoryUpdaterDecision:
             op = updater.decide("APT28 no longer uses DROPBEAR", similar_notes=[existing])
             assert op == UpdateOperation.UPDATE
 
-    @patch("zettelforge.memory_updater.ollama")
-    def test_delete_on_contradiction(self, mock_ollama):
-        mock_ollama.generate.return_value = {
-            "response": '{"operation": "DELETE", "reason": "contradicts existing"}'
-        }
+    @patch("zettelforge.llm_client.generate")
+    def test_delete_on_contradiction(self, mock_generate):
+        mock_generate.return_value = '{"operation": "DELETE", "reason": "contradicts existing"}'
         with tempfile.TemporaryDirectory() as tmpdir:
             mm = MemoryManager(
                 jsonl_path=f"{tmpdir}/notes.jsonl",

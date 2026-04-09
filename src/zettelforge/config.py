@@ -37,15 +37,17 @@ class TypeDBConfig:
 
 @dataclass
 class EmbeddingConfig:
-    url: str = "http://127.0.0.1:11434"
-    model: str = "nomic-embed-text-v2-moe:latest"
+    provider: str = "fastembed"  # "fastembed" (in-process ONNX) or "ollama" (HTTP server)
+    url: str = "http://127.0.0.1:11434"  # only used when provider=ollama
+    model: str = "nomic-ai/nomic-embed-text-v1.5-Q"
     dimensions: int = 768
 
 
 @dataclass
 class LLMConfig:
-    model: str = "qwen2.5:3b"
-    url: str = "http://localhost:11434"
+    provider: str = "local"  # "local" (llama-cpp-python, in-process) or "ollama" (HTTP server)
+    model: str = "Qwen/Qwen2.5-3B-Instruct-GGUF"  # HuggingFace repo for local, model name for ollama
+    url: str = "http://localhost:11434"  # only used when provider=ollama
     temperature: float = 0.1
 
 
@@ -249,12 +251,16 @@ def _apply_env(cfg: ZettelForgeConfig):
         cfg.backend = v
 
     # Embedding
+    if v := os.environ.get("ZETTELFORGE_EMBEDDING_PROVIDER"):
+        cfg.embedding.provider = v
     if v := os.environ.get("AMEM_EMBEDDING_URL"):
         cfg.embedding.url = v
     if v := os.environ.get("AMEM_EMBEDDING_MODEL"):
         cfg.embedding.model = v
 
     # LLM
+    if v := os.environ.get("ZETTELFORGE_LLM_PROVIDER"):
+        cfg.llm.provider = v
     if v := os.environ.get("ZETTELFORGE_LLM_MODEL"):
         cfg.llm.model = v
     if v := os.environ.get("ZETTELFORGE_LLM_URL"):

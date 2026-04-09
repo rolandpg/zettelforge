@@ -16,7 +16,6 @@ Configure TypeDB as the knowledge graph backend. TypeDB stores STIX 2.1 entities
 
 - Docker and Docker Compose installed
 - ZettelForge installed (`pip install zettelforge`)
-- Ollama running (for embedding and LLM operations)
 
 ## Steps
 

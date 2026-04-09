@@ -16,11 +16,9 @@ def fresh_mm():
 
 
 class TestRememberWithExtraction:
-    @patch("zettelforge.fact_extractor.ollama")
-    def test_extracts_and_stores_facts(self, mock_ollama, fresh_mm):
-        mock_ollama.generate.return_value = {
-            "response": '[{"fact": "APT28 shifted to edge devices", "importance": 8}, {"fact": "DROPBEAR no longer in use", "importance": 7}]'
-        }
+    @patch("zettelforge.llm_client.generate")
+    def test_extracts_and_stores_facts(self, mock_generate, fresh_mm):
+        mock_generate.return_value = '[{"fact": "APT28 shifted to edge devices", "importance": 8}, {"fact": "DROPBEAR no longer in use", "importance": 7}]'
         results = fresh_mm.remember_with_extraction(
             "APT28 has shifted tactics. They no longer use DROPBEAR and now exploit edge devices.",
             domain="cti",
@@ -31,11 +29,9 @@ class TestRememberWithExtraction:
             if status != "noop":
                 assert note is not None
 
-    @patch("zettelforge.fact_extractor.ollama")
-    def test_returns_empty_for_low_importance(self, mock_ollama, fresh_mm):
-        mock_ollama.generate.return_value = {
-            "response": '[{"fact": "greeting exchanged", "importance": 1}]'
-        }
+    @patch("zettelforge.llm_client.generate")
+    def test_returns_empty_for_low_importance(self, mock_generate, fresh_mm):
+        mock_generate.return_value = '[{"fact": "greeting exchanged", "importance": 1}]'
         results = fresh_mm.remember_with_extraction(
             "Hi, how are you?",
             domain="general",
@@ -43,17 +39,15 @@ class TestRememberWithExtraction:
         )
         assert len(results) == 0
 
-    @patch("zettelforge.memory_updater.ollama")
-    @patch("zettelforge.fact_extractor.ollama")
-    def test_update_supersedes_old_note(self, mock_fact_ollama, mock_updater_ollama, fresh_mm):
+    @patch("zettelforge.llm_client.generate")
+    def test_update_supersedes_old_note(self, mock_generate, fresh_mm):
         old_note, _ = fresh_mm.remember("APT28 uses DROPBEAR malware", domain="cti")
 
-        mock_fact_ollama.generate.return_value = {
-            "response": '[{"fact": "APT28 no longer uses DROPBEAR", "importance": 9}]'
-        }
-        mock_updater_ollama.generate.return_value = {
-            "response": '{"operation": "UPDATE", "reason": "refines old intel"}'
-        }
+        # First call = extraction, second call = update decision
+        mock_generate.side_effect = [
+            '[{"fact": "APT28 no longer uses DROPBEAR", "importance": 9}]',
+            '{"operation": "UPDATE", "reason": "refines old intel"}',
+        ]
         results = fresh_mm.remember_with_extraction(
             "APT28 has dropped DROPBEAR from their toolkit.",
             domain="cti",
@@ -64,18 +58,15 @@ class TestRememberWithExtraction:
         refreshed_old = fresh_mm.store.get_note_by_id(old_note.id)
         assert refreshed_old.links.superseded_by == new_note.id
 
-    @patch("zettelforge.memory_updater.ollama")
-    @patch("zettelforge.fact_extractor.ollama")
-    def test_noop_stores_nothing_new(self, mock_fact_ollama, mock_updater_ollama, fresh_mm):
+    @patch("zettelforge.llm_client.generate")
+    def test_noop_stores_nothing_new(self, mock_generate, fresh_mm):
         fresh_mm.remember("APT28 targets NATO", domain="cti")
         initial_count = fresh_mm.store.count_notes()
 
-        mock_fact_ollama.generate.return_value = {
-            "response": '[{"fact": "APT28 targets NATO", "importance": 6}]'
-        }
-        mock_updater_ollama.generate.return_value = {
-            "response": '{"operation": "NOOP", "reason": "already stored"}'
-        }
+        mock_generate.side_effect = [
+            '[{"fact": "APT28 targets NATO", "importance": 6}]',
+            '{"operation": "NOOP", "reason": "already stored"}',
+        ]
         results = fresh_mm.remember_with_extraction(
             "APT28 targets NATO allies.",
             domain="cti",

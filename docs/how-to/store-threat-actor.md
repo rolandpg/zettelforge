@@ -15,7 +15,7 @@ Store threat actor intelligence using `remember()`. ZettelForge automatically ex
 ## Prerequisites
 
 - ZettelForge installed (`pip install zettelforge`)
-- Ollama running with `nomic-embed-text-v2-moe:latest` and `qwen2.5:3b`
+- Embedding and LLM models available (download automatically on first use)
 - TypeDB running (optional; falls back to JSONL graph)
 
 ## Steps

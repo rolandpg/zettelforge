@@ -24,7 +24,7 @@ class Semantic(BaseModel):
 
 class Embedding(BaseModel):
     """Embedding vector and metadata"""
-    model: str = "nomic-embed-text-v2-moe"
+    model: str = "nomic-ai/nomic-embed-text-v1.5-Q"
     vector: List[float] = Field(default_factory=list)
     dimensions: int = 768
     input_hash: str = ""  # SHA256 of concatenated text fields

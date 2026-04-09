@@ -14,7 +14,7 @@ version: "2.0.0"
 
 **Time estimate**: 15 minutes
 
-**Prerequisites**: You have completed the [Quickstart (Tutorial 01)](01-quickstart.md). TypeDB is running on `localhost:1729`, Ollama is running with models pulled, and ZettelForge v2.0.0 is installed.
+**Prerequisites**: You have completed the [Quickstart (Tutorial 01)](01-quickstart.md). TypeDB is running on `localhost:1729` and ZettelForge v2.0.0 is installed. Embedding and LLM models download automatically on first use -- no separate setup is required.
 
 ```mermaid
 flowchart LR
@@ -431,4 +431,4 @@ This section is optimized for LLM agents that need to use ZettelForge's CTI inge
 
 **MemoryNote fields** -- Each note has: `id` (str), `content.raw` (str), `semantic.keywords` (list), `semantic.entities` (list), `metadata.domain` (str), `metadata.tier` (str, A/B/C), `metadata.importance` (int, 1-10), `metadata.confidence` (float), `links.superseded_by` (optional str), `links.supersedes` (list).
 
-**Configuration** -- Default LLM is `qwen2.5:3b` via Ollama at `localhost:11434`. Default embedding model is `nomic-embed-text-v2-moe`. TypeDB defaults to `localhost:1729` database `zettelforge`. Override with environment variables: `ZETTELFORGE_LLM_MODEL`, `TYPEDB_HOST`, `TYPEDB_PORT`, `TYPEDB_DATABASE`.
+**Configuration** -- Default LLM is Qwen2.5-3B-Instruct (Q4_K_M GGUF) via llama-cpp-python (in-process). Default embedding is nomic-embed-text-v1.5-Q via fastembed (in-process). Models download automatically on first use. TypeDB defaults to `localhost:1729` database `zettelforge`. Ollama is available as an optional fallback provider via `ZETTELFORGE_EMBEDDING_PROVIDER=ollama` and `ZETTELFORGE_LLM_PROVIDER=ollama`. Override with environment variables: `ZETTELFORGE_LLM_MODEL`, `TYPEDB_HOST`, `TYPEDB_PORT`, `TYPEDB_DATABASE`.

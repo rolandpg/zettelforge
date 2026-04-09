@@ -15,7 +15,7 @@ Query how entities change over time using ZettelForge's temporal graph index. Tr
 ## Prerequisites
 
 - ZettelForge with stored CTI data
-- Ollama running for `recall()` and `synthesize()` queries
+- Embedding and LLM models available (download automatically on first use)
 
 ## Steps
 

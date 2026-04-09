@@ -15,7 +15,6 @@ Add persistent CTI memory to an AI agent using `MemoryManager` for storage/retri
 ## Prerequisites
 
 - ZettelForge installed (`pip install zettelforge`)
-- Ollama running with embedding and LLM models
 - An agent framework (or a simple loop)
 
 ## Steps
@@ -175,13 +174,10 @@ Provide a detailed CTI analysis."""
 
 
 def call_llm(prompt: str) -> str:
-    """Replace with your LLM client (OpenAI, Anthropic, Ollama, etc.)."""
-    import requests
-    resp = requests.post(
-        "http://localhost:11434/api/generate",
-        json={"model": "qwen2.5:3b", "prompt": prompt, "stream": False}
-    )
-    return resp.json()["response"]
+    """Replace with your LLM client (OpenAI, Anthropic, local, etc.)."""
+    from zettelforge.llm import get_llm
+    llm = get_llm()
+    return llm.generate(prompt)
 
 
 agent = NexusAgent()

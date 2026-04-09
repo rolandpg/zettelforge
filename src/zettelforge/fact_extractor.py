@@ -9,8 +9,6 @@ import re
 from dataclasses import dataclass, field
 from typing import List, Optional
 
-import ollama
-
 
 @dataclass
 class ExtractedFact:
@@ -38,12 +36,8 @@ class FactExtractor:
         prompt = self._build_prompt(content, context)
 
         try:
-            response = ollama.generate(
-                model=self.model,
-                prompt=prompt,
-                options={"temperature": 0.1, "num_predict": 400},
-            )
-            raw_output = response.get("response", "").strip()
+            from zettelforge.llm_client import generate
+            raw_output = generate(prompt, max_tokens=400, temperature=0.1)
             return self._parse_extraction_response(raw_output)
         except Exception:
             return [ExtractedFact(text=content[:500], importance=5)]
