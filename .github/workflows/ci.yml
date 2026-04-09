@@ -28,19 +28,19 @@ jobs:
 
     - name: Lint with ruff
       run: |
-        ruff check src/zettleforge/
+        ruff check src/zettelforge/
 
     - name: Format check with black
       run: |
-        black --check src/zettleforge/
+        black --check src/zettelforge/
 
     - name: Type check with mypy
       run: |
-        mypy src/zettleforge/ --ignore-missing-imports
+        mypy src/zettelforge/ --ignore-missing-imports
 
     - name: Test with pytest
       run: |
-        pytest tests/ -v --cov=zettleforge --cov-report=xml
+        pytest tests/ -v --cov=zettelforge --cov-report=xml
 
     - name: Upload coverage
       uses: codecov/codecov-action@v3
