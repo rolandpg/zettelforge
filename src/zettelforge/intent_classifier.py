@@ -13,7 +13,6 @@ Task 3: Lightweight intent classifier to weight traversal policy
 """
 
 import re
-import ollama
 from enum import Enum
 from typing import Dict, List, Optional, Tuple
 
@@ -102,8 +101,6 @@ class IntentClassifier:
     
     def _classify_llm(self, query: str) -> Tuple[QueryIntent, Dict]:
         """Use LLM for ambiguous queries."""
-        import ollama
-        
         prompt = f"""Classify this query into one of these intents:
 - factual: Entity lookup (CVE, actor, tool, malware)
 - temporal: Time-based queries (when, since, history)
@@ -116,13 +113,8 @@ Query: {query}
 Respond with just the intent name (factual, temporal, relational, exploratory, or causal):"""
 
         try:
-            response = ollama.generate(
-                model="qwen2.5:3b",
-                prompt=prompt,
-                options={"temperature": 0.1, "num_predict": 20}
-            )
-            
-            intent_name = response.get('response', '').strip().lower()
+            from zettelforge.llm_client import generate
+            intent_name = generate(prompt, max_tokens=20, temperature=0.1).lower()
             
             for intent in QueryIntent:
                 if intent.value == intent_name:

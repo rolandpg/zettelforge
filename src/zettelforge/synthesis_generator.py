@@ -37,14 +37,8 @@ class SynthesisGenerator:
         self._lock = threading.RLock()
 
     def _get_llm_client(self):
-        """Get or create LLM client."""
-        if self._llm_client is None:
-            try:
-                import ollama
-                self._llm_client = ollama
-            except ImportError:
-                self._llm_client = None
-        return self._llm_client
+        """Get or create LLM client (kept for backward compat, not used for generation)."""
+        return None
 
     def synthesize(
         self,
@@ -143,22 +137,16 @@ class SynthesisGenerator:
 
     def _generate_synthesis(self, query: str, context: str, format: str) -> Dict:
         """Generate synthesis using LLM."""
-        prompt = self._build_prompt(query, context, format)
-        client = self._get_llm_client()
-        
-        if client:
-            try:
-                response = client.chat(
-                    model=self.llm_model,
-                    messages=[
-                        {"role": "system", "content": self._get_system_prompt(format)},
-                        {"role": "user", "content": prompt}
-                    ],
-                    format=self._get_json_format(format)
-                )
-                return json.loads(response.message.content)
-            except Exception as e:
-                return self._fallback_synthesis(query, format)
+        system_prompt = self._get_system_prompt(format)
+        user_prompt = self._build_prompt(query, context, format)
+        full_prompt = f"{system_prompt}\n\n{user_prompt}\n\nRespond with valid JSON only."
+
+        try:
+            from zettelforge.llm_client import generate
+            raw = generate(full_prompt, max_tokens=800, temperature=0.1, system=system_prompt)
+            return json.loads(raw)
+        except (json.JSONDecodeError, Exception):
+            return self._fallback_synthesis(query, format)
         
         return self._fallback_synthesis(query, format)
 
