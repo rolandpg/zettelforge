@@ -196,12 +196,63 @@ def answer_question(mm: MemoryManager, question: str, k: int = 10) -> Tuple[str,
 
     context = "\n".join(context_parts[:k])
 
-    # Simple extractive answer (no LLM generation — measure retrieval quality)
-    # For a fair benchmark, return the context as the "answer"
-    answer = context[:2000]
+    # Use LLM synthesis for focused answers (RFC-001 Step 4)
+    answer = _synthesize_answer(question, context)
     latency = time.perf_counter() - start
 
     return answer, evidence_ids, latency
+
+
+def _synthesize_answer(question: str, context: str) -> str:
+    """
+    Use the local LLM to synthesize a focused answer from retrieved context.
+    Falls back to raw context extraction if LLM is unavailable.
+    """
+    prompt = f"""Based on the following context, answer the question concisely.
+If the answer is not in the context, say "I don't have information about that."
+Do not add information not present in the context.
+
+Context:
+{context[:3000]}
+
+Question: {question}
+
+Answer:"""
+
+    try:
+        from zettelforge.llm_client import generate
+        answer = generate(prompt, max_tokens=200, temperature=0.1)
+        if answer and len(answer.strip()) > 5:
+            return answer.strip()
+    except Exception:
+        pass
+
+    # Fallback: extract most relevant sentences from context
+    return _extract_relevant_sentences(question, context)
+
+
+def _extract_relevant_sentences(question: str, context: str, max_sentences: int = 5) -> str:
+    """
+    Extract sentences from context that have highest token overlap with the question.
+    Fallback when LLM synthesis is unavailable.
+    """
+    q_tokens = set(question.lower().split())
+    sentences = [s.strip() for s in context.replace('\n', '. ').split('.') if len(s.strip()) > 10]
+
+    scored = []
+    for sent in sentences:
+        s_tokens = set(sent.lower().split())
+        overlap = len(q_tokens & s_tokens)
+        scored.append((overlap, sent))
+
+    scored.sort(key=lambda x: -x[0])
+    top = [s for _, s in scored[:max_sentences] if _ > 0]
+
+    if not top:
+        # Last resort: first few sentences of context
+        top = sentences[:3]
+
+    return ". ".join(top)
 
 
 # ── Scoring ──────────────────────────────────────────────────────────────────
