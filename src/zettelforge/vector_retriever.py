@@ -31,17 +31,53 @@ class VectorRetriever:
 
     def __init__(
         self,
-        similarity_threshold: float = 0.25,
+        similarity_threshold: float = 0.15,  # Lowered from 0.25 - was too strict
         entity_boost: float = 2.5,
         exact_match_boost: float = 1.0,
+        regenerate_invalid_embeddings: bool = True,  # NEW: Regenerate if missing/invalid
         memory_store: Optional[MemoryStore] = None
     ):
         self.similarity_threshold = similarity_threshold
         self.entity_boost = entity_boost
         self.exact_match_boost = exact_match_boost
+        self.regenerate_invalid_embeddings = regenerate_invalid_embeddings
         self.store = memory_store or MemoryStore()
         self.extractor = EntityExtractor()
         self.resolver = AliasResolver()
+
+    def _is_valid_embedding(self, vector: Optional[List[float]]) -> bool:
+        """Check if embedding vector is valid (non-None, correct dims, non-zero)."""
+        if vector is None:
+            return False
+        if len(vector) != 768:
+            return False
+        # Check if all zeros or all identical (deterministic mock)
+        if all(v == 0.0 for v in vector):
+            return False
+        # Check variance - real embeddings have variance
+        var = np.var(vector)
+        if var < 0.001:  # Suspiciously low variance
+            return False
+        return True
+
+    def _ensure_note_embedding(self, note: MemoryNote) -> Optional[List[float]]:
+        """Ensure note has valid embedding, regenerating if necessary."""
+        if self._is_valid_embedding(note.embedding.vector):
+            return note.embedding.vector
+        
+        if not self.regenerate_invalid_embeddings:
+            return note.embedding.vector  # Return as-is even if invalid
+        
+        # Regenerate embedding from content
+        try:
+            new_vector = get_embedding(note.content.raw[:1000])
+            if self._is_valid_embedding(new_vector):
+                note.embedding.vector = new_vector
+                return new_vector
+        except Exception as e:
+            print(f"[VectorRetriever] Failed to regenerate embedding for {note.id}: {e}")
+        
+        return note.embedding.vector
 
     def _get_candidates(self, domain: Optional[str] = None) -> List[MemoryNote]:
         """Get candidate notes, optionally filtered by domain."""
@@ -55,17 +91,138 @@ class VectorRetriever:
         query: str,
         domain: Optional[str] = None,
         k: int = 10,
-        include_links: bool = True
+        include_links: bool = True,
+        use_lancedb: bool = True  # NEW: Enable LanceDB vector search
     ) -> List[MemoryNote]:
         """
-        Retrieve notes relevant to query.
+        Retrieve notes relevant to query using LanceDB vector search.
+        Falls back to in-memory search if LanceDB unavailable.
         """
+        # Try LanceDB first if available
+        if use_lancedb and self.store.lancedb:
+            try:
+                return self._retrieve_via_lancedb(query, domain, k, include_links)
+            except Exception as e:
+                print(f"[VectorRetriever] LanceDB search failed: {e}, falling back to in-memory")
+        
+        # Fallback: In-memory cosine similarity
+        return self._retrieve_via_memory(query, domain, k, include_links)
+    
+    def _retrieve_via_lancedb(
+        self,
+        query: str,
+        domain: Optional[str],
+        k: int,
+        include_links: bool
+    ) -> List[MemoryNote]:
+        """Retrieve using LanceDB vector similarity search."""
+        import lancedb
+
+        query_vector = get_embedding(query)
+
+        # Get all domain tables to search
+        if domain:
+            table_names = [f"notes_{domain}"]
+        else:
+            # Search all domain tables - handle lancedb API variations
+            result = self.store.lancedb.list_tables()
+            if hasattr(result, 'tables'):
+                all_tables = result.tables
+            elif isinstance(result, dict):
+                all_tables = result.get('tables', [])
+            elif hasattr(result, '__iter__'):
+                all_tables = []
+                for item in result:
+                    if isinstance(item, tuple) and item[0] == 'tables':
+                        all_tables = item[1]
+                        break
+            else:
+                all_tables = []
+            table_names = [t for t in all_tables if t.startswith("notes_")]
+
+        all_results = []
+
+        for table_name in table_names:
+            try:
+                table = self.store.lancedb.open_table(table_name)
+
+                # Perform vector search using correct LanceDB API
+                search_results = table.search(query_vector) \
+                    .limit(k * 2) \
+                    .to_list()
+
+                # Convert to MemoryNote objects
+                for row in search_results:
+                    note_id = row.get('id')
+                    # Get full note from JSONL for complete data
+                    note = self.store.get_note_by_id(note_id)
+                    if note:
+                        score = row.get('_distance', 0)
+                        # Convert distance to similarity (LanceDB returns distance, lower is better)
+                        # For cosine: similarity = 1 - distance
+                        all_results.append((note, 1.0 - score))
+
+            except Exception as e:
+                print(f"[VectorRetriever] Error searching table {table_name}: {e}")
+                continue
+
+        # Sort by similarity score (higher is better)
+        all_results.sort(key=lambda x: x[1], reverse=True)
+        results = [note for note, score in all_results[:k]]
+        
+        # Apply entity boost post-retrieval
+        results = self._apply_entity_boost(results, query)
+        
+        if include_links and results:
+            results = self._expand_via_links(results, k * 2)
+        
+        for note in results:
+            note.increment_access()
+        
+        return results
+    
+    def _apply_entity_boost(self, results: List[MemoryNote], query: str) -> List[MemoryNote]:
+        """Apply entity boost to retrieved results."""
+        raw_query_entities = self.extractor.extract_all(query)
+        query_entities = set()
+        for etype, elist in raw_query_entities.items():
+            for e in elist:
+                query_entities.add(self.resolver.resolve(etype, e))
+        
+        if not query_entities:
+            return results
+        
+        # Re-sort with entity boost
+        boosted = []
+        for note in results:
+            note_entities = set(note.semantic.entities)
+            overlap = len(query_entities & note_entities)
+            boost = self.entity_boost ** overlap if overlap > 0 else 1.0
+            
+            # Exact match boost
+            for qe in query_entities:
+                if qe.lower() in note.content.raw.lower():
+                    boost *= self.exact_match_boost
+            
+            boosted.append((note, boost))
+        
+        boosted.sort(key=lambda x: x[1], reverse=True)
+        return [note for note, _ in boosted]
+    
+    def _retrieve_via_memory(
+        self,
+        query: str,
+        domain: Optional[str],
+        k: int,
+        include_links: bool
+    ) -> List[MemoryNote]:
+        """Fallback: In-memory cosine similarity (original implementation)."""
         query_vector = get_embedding(query)
         candidates = self._get_candidates(domain)
 
         if not candidates:
             return []
-            
+
         # Extract query entities
         raw_query_entities = self.extractor.extract_all(query)
         query_entities = set()
@@ -74,24 +231,35 @@ class VectorRetriever:
                 query_entities.add(self.resolver.resolve(etype, e))
 
         scored = []
+        invalid_embeddings = 0
         for note in candidates:
-            if note.embedding.vector:
-                sim = cosine_similarity(query_vector, note.embedding.vector)
-                
-                # Apply Entity Boost
-                note_entities = set(note.semantic.entities)
-                if query_entities:
-                    overlap = len(query_entities & note_entities)
+            # Ensure valid embedding before comparison
+            note_vector = self._ensure_note_embedding(note)
+
+            if not self._is_valid_embedding(note_vector):
+                invalid_embeddings += 1
+                continue
+
+            sim = cosine_similarity(query_vector, note_vector)
+
+            # Apply Entity Boost
+            note_entities = set(note.semantic.entities)
+            if query_entities:
+                overlap = len(query_entities & note_entities)
+                if overlap > 0:
                     sim *= (self.entity_boost ** overlap)
-                    
+
                 # Apply Exact Match Boost (e.g. for CVE IDs)
-                if query_entities:
-                    for qe in query_entities:
-                        if qe.lower() in note.content.raw.lower():
-                            sim *= self.exact_match_boost
-                
-                if sim >= self.similarity_threshold:
-                    scored.append((note, sim))
+                for qe in query_entities:
+                    if qe.lower() in note.content.raw.lower():
+                        sim *= self.exact_match_boost
+
+            if sim >= self.similarity_threshold:
+                scored.append((note, sim))
+
+        # Log debug info
+        if invalid_embeddings > 0:
+            print(f"[VectorRetriever] Skipped {invalid_embeddings} notes with invalid embeddings")
 
         scored.sort(key=lambda x: x[1], reverse=True)
         results = [note for note, sim in scored[:k]]

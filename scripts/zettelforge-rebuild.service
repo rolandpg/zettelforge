@@ -1,0 +1,13 @@
+[Unit]
+Description=Rebuild ZettelForge Entity Index
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /home/rolandpg/.openclaw/workspace-nexus/skills/zettelforge/scripts/rebuild_index.py
+WorkingDirectory=/home/rolandpg/.openclaw/workspace-nexus/skills/zettelforge
+Environment=AMEM_DATA_DIR=/home/rolandpg/.amem
+User=rolandpg
+
+[Install]
+WantedBy=multi-user.target

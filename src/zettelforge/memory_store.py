@@ -87,8 +87,6 @@ class MemoryStore:
     def _index_in_lance(self, note: MemoryNote) -> None:
         """Index note in LanceDB vector store"""
         try:
-            import pyarrow as pa
-
             table_name = f"notes_{note.metadata.domain}"
             tables = self.lancedb.list_tables()
 
@@ -122,7 +120,16 @@ class MemoryStore:
                 "keywords": ",".join(note.semantic.keywords),
                 "tags": ",".join(note.semantic.tags),
                 "created_at": note.created_at
-            }])
+            }
+            
+            if table_name not in existing_tables:
+                # Create table with initial data (no index yet)
+                self.lancedb.create_table(table_name, data=[note_data])
+            else:
+                # Add to existing table
+                tbl = self.lancedb.open_table(table_name)
+                tbl.add([note_data])
+                
         except Exception as e:
             print(f"LanceDB indexing failed: {e}")
     
