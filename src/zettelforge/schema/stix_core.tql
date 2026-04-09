@@ -1,0 +1,179 @@
+define
+
+# ── Shared Attributes ──────────────────────────────────────
+attribute stix-id, value string;
+attribute name, value string;
+attribute description, value string;
+attribute created-at, value datetime;
+attribute modified-at, value datetime;
+attribute confidence, value double;
+attribute revoked, value boolean;
+attribute tier, value string;
+attribute importance, value integer;
+attribute aliases, value string;
+
+# Temporal
+attribute valid-from, value datetime;
+attribute valid-until, value datetime;
+attribute first-observed, value datetime;
+attribute last-observed, value datetime;
+
+# CTI-specific
+attribute external-id, value string;
+attribute malware-types, value string;
+attribute tool-types, value string;
+attribute pattern, value string;
+attribute pattern-type, value string;
+attribute sophistication, value string;
+attribute resource-level, value string;
+attribute goals, value string;
+attribute objective, value string;
+attribute infrastructure-types, value string;
+
+# Zettelkasten bridge
+attribute note-id, value string;
+
+# ── STIX Domain Objects ────────────────────────────────────
+
+entity stix-domain-object @abstract,
+    owns stix-id @key,
+    owns name,
+    owns description,
+    owns created-at,
+    owns modified-at,
+    owns confidence,
+    owns revoked,
+    owns tier;
+
+entity threat-actor sub stix-domain-object,
+    owns aliases,
+    owns goals,
+    owns sophistication,
+    owns resource-level;
+
+entity malware sub stix-domain-object,
+    owns malware-types;
+
+entity tool sub stix-domain-object,
+    owns tool-types;
+
+entity attack-pattern sub stix-domain-object,
+    owns external-id;
+
+entity vulnerability sub stix-domain-object,
+    owns external-id;
+
+entity campaign sub stix-domain-object,
+    owns objective,
+    owns first-observed,
+    owns last-observed;
+
+entity indicator sub stix-domain-object,
+    owns pattern,
+    owns pattern-type,
+    owns valid-from,
+    owns valid-until;
+
+entity infrastructure sub stix-domain-object,
+    owns infrastructure-types;
+
+# ── Zettel Note (bridge to LanceDB) ───────────────────────
+
+entity zettel-note,
+    owns note-id @key,
+    owns created-at,
+    owns importance,
+    owns tier;
+
+# ── STIX Relationships ─────────────────────────────────────
+
+relation uses,
+    relates user,
+    relates used,
+    owns stix-id,
+    owns confidence,
+    owns created-at,
+    owns valid-from,
+    owns valid-until,
+    owns description;
+
+relation targets,
+    relates source,
+    relates target,
+    owns stix-id,
+    owns confidence,
+    owns created-at,
+    owns valid-from,
+    owns valid-until;
+
+relation attributed-to,
+    relates attributing,
+    relates attributed,
+    owns stix-id,
+    owns confidence,
+    owns created-at;
+
+relation indicates,
+    relates indicating,
+    relates indicated,
+    owns stix-id,
+    owns confidence,
+    owns created-at;
+
+relation mitigates,
+    relates mitigating,
+    relates mitigated,
+    owns stix-id,
+    owns confidence,
+    owns created-at;
+
+relation mentioned-in,
+    relates mentioned-entity,
+    relates note,
+    owns created-at;
+
+relation supersedes,
+    relates newer,
+    relates older,
+    owns created-at;
+
+relation alias-of,
+    relates canonical,
+    relates aliased,
+    owns confidence;
+
+# ── Role Assignments ───────────────────────────────────────
+
+threat-actor plays uses:user;
+threat-actor plays targets:source;
+threat-actor plays attributed-to:attributing;
+threat-actor plays alias-of:canonical;
+threat-actor plays alias-of:aliased;
+
+malware plays uses:used;
+malware plays indicates:indicated;
+malware plays mitigates:mitigated;
+
+tool plays uses:used;
+tool plays mitigates:mitigated;
+
+attack-pattern plays uses:used;
+attack-pattern plays mitigates:mitigated;
+attack-pattern plays indicates:indicated;
+
+vulnerability plays targets:target;
+vulnerability plays mitigates:mitigated;
+
+campaign plays attributed-to:attributed;
+campaign plays targets:source;
+campaign plays uses:user;
+
+indicator plays indicates:indicating;
+
+infrastructure plays targets:target;
+infrastructure plays uses:used;
+
+stix-domain-object plays mentioned-in:mentioned-entity;
+zettel-note plays mentioned-in:note;
+zettel-note plays supersedes:newer;
+zettel-note plays supersedes:older;

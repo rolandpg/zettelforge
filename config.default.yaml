@@ -1,0 +1,310 @@
+# ============================================================================
+# ZettelForge Configuration — Reference Defaults
+# ============================================================================
+#
+# Resolution order (highest priority wins):
+#   1. Environment variables   → TYPEDB_HOST=db.internal
+#   2. config.yaml             → copy this file, rename to config.yaml
+#   3. config.default.yaml     → this file (checked into git)
+#   4. Hardcoded defaults      → in src/zettelforge/config.py
+#
+# Usage:
+#   cp config.default.yaml config.yaml   # create your local config
+#   $EDITOR config.yaml                   # customize
+#   # config.yaml is in .gitignore — safe for credentials
+#
+# Python access:
+#   from zettelforge.config import get_config
+#   cfg = get_config()
+#   cfg.typedb.host       # "localhost"
+#   cfg.retrieval.default_k  # 10
+#
+# ============================================================================
+
+
+# ── Storage ─────────────────────────────────────────────────────────────────
+# Where LanceDB vectors, JSONL notes, and entity indexes are persisted.
+#
+# Examples:
+#   data_dir: ~/.amem                       # default — home directory
+#   data_dir: /var/lib/zettelforge/data     # Linux system path
+#   data_dir: /home/site/data               # Azure App Service mount
+#   data_dir: C:\Users\analyst\zettelforge  # Windows
+#
+# Env override: AMEM_DATA_DIR=/data/zettelforge
+#
+storage:
+  data_dir: ~/.amem
+
+
+# ── TypeDB (Ontology Layer) ─────────────────────────────────────────────────
+# STIX 2.1 knowledge graph server. Stores entities, relationships, aliases.
+# Requires a running TypeDB container (see docker/docker-compose.yml).
+#
+# Examples:
+#   # Local Docker (default)
+#   host: localhost
+#   port: 1729
+#
+#   # Remote server on your LAN
+#   host: 192.168.1.50
+#   port: 1729
+#
+#   # Azure Container Instance
+#   host: zettelforge-typedb.eastus2.azurecontainer.io
+#   port: 1729
+#
+# Env overrides:
+#   TYPEDB_HOST=db.internal
+#   TYPEDB_PORT=1729
+#   TYPEDB_DATABASE=zettelforge
+#   TYPEDB_USERNAME=admin
+#   TYPEDB_PASSWORD=s3cret
+#
+typedb:
+  host: localhost
+  port: 1729
+  database: zettelforge
+  username: admin
+  password: password
+
+
+# ── Knowledge Graph Backend ─────────────────────────────────────────────────
+# Which backend to use for the knowledge graph.
+#
+# Options:
+#   backend: typedb    # use TypeDB (requires running server, recommended)
+#   backend: jsonl     # use local JSONL files (no external dependencies)
+#
+# If set to "typedb" and TypeDB is unreachable, automatically falls back
+# to "jsonl" with a warning. Set to "jsonl" explicitly for air-gapped
+# environments without Docker.
+#
+# Env override: ZETTELFORGE_BACKEND=jsonl
+#
+backend: typedb
+
+
+# ── Embeddings ──────────────────────────────────────────────────────────────
+# Vector embedding server for semantic search. Supports Ollama and llama.cpp.
+#
+# Examples:
+#   # Ollama (default, recommended)
+#   url: http://127.0.0.1:11434
+#   model: nomic-embed-text-v2-moe:latest
+#
+#   # llama.cpp server (legacy)
+#   url: http://127.0.0.1:8081
+#   model: nomic-embed-text-v2-moe.gguf
+#
+#   # Remote GPU server
+#   url: http://gpu-box.internal:11434
+#   model: nomic-embed-text
+#
+#   # Azure OpenAI (requires custom embedding adapter)
+#   url: https://your-instance.openai.azure.com
+#   model: text-embedding-3-small
+#
+# Env overrides:
+#   AMEM_EMBEDDING_URL=http://gpu-box:11434
+#   AMEM_EMBEDDING_MODEL=nomic-embed-text
+#
+embedding:
+  url: http://127.0.0.1:11434
+  model: nomic-embed-text-v2-moe:latest
+  dimensions: 768
+
+
+# ── LLM ─────────────────────────────────────────────────────────────────────
+# Language model for fact extraction, intent classification, causal triple
+# extraction, and RAG synthesis. Must support Ollama-compatible API.
+#
+# Examples:
+#   # Small and fast (default, good for homelab)
+#   model: qwen2.5:3b
+#
+#   # Medium (better quality, needs ~8GB VRAM)
+#   model: qwen2.5:7b
+#
+#   # Large (best quality, needs ~24GB VRAM or cloud GPU)
+#   model: qwen2.5:32b
+#
+#   # Llama 3.1
+#   model: llama3.1:8b
+#
+#   # Cloud-hosted (via Ollama proxy or compatible endpoint)
+#   model: qwen3.5:cloud
+#   url: http://ollama-proxy.internal:11434
+#
+# Temperature:
+#   0.0 = deterministic (best for extraction and classification)
+#   0.1 = near-deterministic (default, slight variation)
+#   0.7 = creative (use for synthesis if you want varied phrasing)
+#
+# Env overrides:
+#   ZETTELFORGE_LLM_MODEL=qwen2.5:7b
+#   ZETTELFORGE_LLM_URL=http://gpu-box:11434
+#
+llm:
+  model: qwen2.5:3b
+  url: http://localhost:11434
+  temperature: 0.1
+
+
+# ── Two-Phase Extraction Pipeline ──────────────────────────────────────────
+# Controls the Mem0-style remember_with_extraction() pipeline.
+# Phase 1: LLM extracts salient facts with importance scores.
+# Phase 2: Each fact is compared to existing notes — ADD/UPDATE/DELETE/NOOP.
+#
+# Examples:
+#   # Default — balanced
+#   max_facts: 5
+#   min_importance: 3
+#
+#   # Aggressive filtering (only keep the most important facts)
+#   max_facts: 3
+#   min_importance: 7
+#
+#   # Permissive (keep everything the LLM extracts)
+#   max_facts: 10
+#   min_importance: 1
+#
+extraction:
+  max_facts: 5
+  min_importance: 3
+
+
+# ── Retrieval ───────────────────────────────────────────────────────────────
+# Controls how recall() finds and ranks relevant memories.
+# Blended retrieval merges vector similarity + graph traversal results.
+#
+# Examples:
+#   # Default — general purpose
+#   default_k: 10
+#   similarity_threshold: 0.25
+#   entity_boost: 2.5
+#   max_graph_depth: 2
+#
+#   # High precision (fewer, more relevant results)
+#   default_k: 5
+#   similarity_threshold: 0.50
+#   entity_boost: 3.0
+#   max_graph_depth: 1
+#
+#   # High recall (cast a wide net)
+#   default_k: 25
+#   similarity_threshold: 0.10
+#   entity_boost: 1.5
+#   max_graph_depth: 3
+#
+# similarity_threshold: minimum cosine similarity to include a result (0.0–1.0)
+# entity_boost: multiplicative boost per overlapping entity between query and note
+# max_graph_depth: how many hops to traverse in the knowledge graph
+#
+retrieval:
+  default_k: 10
+  similarity_threshold: 0.25
+  entity_boost: 2.5
+  max_graph_depth: 2
+
+
+# ── Synthesis ───────────────────────────────────────────────────────────────
+# Controls RAG answer generation from retrieved memories.
+#
+# Output formats:
+#   direct_answer       — short factual response
+#   synthesized_brief   — paragraph summary with sources
+#   timeline_analysis   — chronological reconstruction
+#   relationship_map    — entity relationship summary
+#
+# Tier filter controls which quality tiers of notes are included:
+#   A = authoritative (high confidence, verified sources)
+#   B = operational (working knowledge, moderate confidence)
+#   C = support (low confidence, inferred, speculative)
+#
+# Examples:
+#   # Default — include A and B tier notes
+#   tier_filter: [A, B]
+#
+#   # Strict — only authoritative sources
+#   tier_filter: [A]
+#
+#   # Permissive — include everything
+#   tier_filter: [A, B, C]
+#
+synthesis:
+  max_context_tokens: 3000
+  default_format: direct_answer
+  tier_filter:
+    - A
+    - B
+
+
+# ── Governance ──────────────────────────────────────────────────────────────
+# Validation rules applied before remember() and recall() operations.
+# Enforces data classification, retention, access control, and audit logging.
+#
+# Examples:
+#   # Production (default)
+#   enabled: true
+#   min_content_length: 1
+#
+#   # Testing / benchmarks (skip validation for speed)
+#   enabled: false
+#
+#   # Strict (reject very short inputs)
+#   enabled: true
+#   min_content_length: 20
+#
+governance:
+  enabled: true
+  min_content_length: 1
+
+
+# ── Cache ───────────────────────────────────────────────────────────────────
+# In-memory cache for TypeDB query results. Reduces round-trips for
+# frequently accessed entities and relationships.
+#
+# Examples:
+#   # Default — 5 minute TTL, 1024 entries
+#   ttl_seconds: 300
+#   max_entries: 1024
+#
+#   # Aggressive caching (high-throughput environments)
+#   ttl_seconds: 600
+#   max_entries: 4096
+#
+#   # Disable caching (always query TypeDB fresh)
+#   ttl_seconds: 0
+#   max_entries: 0
+#
+cache:
+  ttl_seconds: 300
+  max_entries: 1024
+
+
+# ── Logging ─────────────────────────────────────────────────────────────────
+# Controls what ZettelForge logs during operation.
+#
+# Levels: DEBUG, INFO, WARNING, ERROR
+#
+# Examples:
+#   # Production (default)
+#   level: INFO
+#   log_intents: true
+#   log_causal: true
+#
+#   # Quiet (errors only)
+#   level: ERROR
+#   log_intents: false
+#   log_causal: false
+#
+#   # Debug (verbose, for development)
+#   level: DEBUG
+#   log_intents: true
+#   log_causal: true
+#
+logging:
+  level: INFO
+  log_intents: true
+  log_causal: true
