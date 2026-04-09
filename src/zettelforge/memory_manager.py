@@ -20,6 +20,8 @@ from zettelforge.synthesis_generator import SynthesisGenerator, get_synthesis_ge
 from zettelforge.synthesis_validator import SynthesisValidator, get_synthesis_validator
 from zettelforge.knowledge_graph import get_knowledge_graph
 from zettelforge.governance_validator import GovernanceValidator, GovernanceViolationError
+from zettelforge.fact_extractor import FactExtractor, ExtractedFact
+from zettelforge.memory_updater import MemoryUpdater, UpdateOperation
 
 
 class MemoryManager:
@@ -88,6 +90,64 @@ class MemoryManager:
         self._update_knowledge_graph(note, resolved_entities)
 
         return note, "created"
+
+    def remember_with_extraction(
+        self,
+        content: str,
+        source_type: str = "conversation",
+        source_ref: str = "",
+        domain: str = "general",
+        context: str = "",
+        min_importance: int = 3,
+        max_facts: int = 5,
+    ) -> List[Tuple[Optional[MemoryNote], str]]:
+        """
+        Mem0-style two-phase pipeline: extract salient facts, then decide ADD/UPDATE/DELETE/NOOP.
+
+        Phase 1 (Extraction): LLM distills content into scored candidate facts.
+        Phase 2 (Update): Each fact is compared to existing notes; LLM decides operation.
+
+        Args:
+            content: Raw text to process.
+            source_type: Origin type (conversation, task_output, etc.).
+            source_ref: Source identifier.
+            domain: Memory domain.
+            context: Optional rolling summary for disambiguation.
+            min_importance: Facts below this threshold are skipped.
+            max_facts: Maximum facts to extract per call.
+
+        Returns:
+            List of (MemoryNote or None, status) tuples.
+            Status is one of: "added", "updated", "deleted", "noop".
+        """
+        # Phase 1: Extraction
+        extractor = FactExtractor(max_facts=max_facts, min_importance=min_importance)
+        facts = extractor.extract(content, context=context)
+
+        # Filter by importance
+        facts = [f for f in facts if f.importance >= min_importance]
+
+        if not facts:
+            return []
+
+        # Phase 2: Update
+        updater = MemoryUpdater(self)
+        results = []
+
+        for i, fact in enumerate(facts):
+            similar = updater.find_similar(fact.text, domain=domain)
+            operation = updater.decide(fact.text, similar)
+            note, status = updater.apply(
+                operation,
+                fact_text=fact.text,
+                importance=fact.importance,
+                source_ref=f"{source_ref}:extraction:{i}" if source_ref else f"extraction:{i}",
+                similar_notes=similar,
+                domain=domain,
+            )
+            results.append((note, status))
+
+        return results
 
     def recall(
         self,
