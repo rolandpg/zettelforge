@@ -87,8 +87,19 @@ class MemoryStore:
     def _index_in_lance(self, note: MemoryNote) -> None:
         """Index note in LanceDB vector store"""
         try:
+            import pyarrow as pa
             table_name = f"notes_{note.metadata.domain}"
             tables = self.lancedb.list_tables()
+
+            note_data = {
+                "id": note.id,
+                "vector": note.embedding.vector if note.embedding.vector else [0.0] * 768,
+                "content": note.content.raw[:500],
+                "context": note.semantic.context,
+                "keywords": ",".join(note.semantic.keywords),
+                "tags": ",".join(note.semantic.tags),
+                "created_at": note.created_at,
+            }
 
             if table_name not in tables:
                 schema = pa.schema([
@@ -100,36 +111,10 @@ class MemoryStore:
                     ("tags", pa.string()),
                     ("created_at", pa.string()),
                 ])
-                tbl = self.lancedb.create_table(table_name, schema=schema)
-            # Create optimized vector index per governance and performance requirements
-            # Only create index if table is new (not on every insert)
-            if table_name not in tables:
-                tbl.create_index(
-                    metric="cosine",
-                    index_type="IVF_PQ",  # Balanced performance/accuracy
-                    num_partitions=256,
-                    num_sub_vectors=16
-                )
-
-            table = self.lancedb.open_table(table_name)
-            table.add([{
-                "id": note.id,
-                "vector": note.embedding.vector if note.embedding.vector else [0.0] * 768,
-                "content": note.content.raw[:500],
-                "context": note.semantic.context,
-                "keywords": ",".join(note.semantic.keywords),
-                "tags": ",".join(note.semantic.tags),
-                "created_at": note.created_at
-            }
-            
-            if table_name not in existing_tables:
-                # Create table with initial data (no index yet)
-                self.lancedb.create_table(table_name, data=[note_data])
+                self.lancedb.create_table(table_name, data=[note_data], schema=schema)
             else:
-                # Add to existing table
                 tbl = self.lancedb.open_table(table_name)
                 tbl.add([note_data])
-                
         except Exception as e:
             print(f"LanceDB indexing failed: {e}")
     
