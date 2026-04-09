@@ -5,7 +5,7 @@ Validates Task 1: LLM-based causal edge extraction from consolidation pass.
 """
 import sys
 import tempfile
-sys.path.insert(0, '/home/rolandpg/.openclaw/workspace/skills/zettelforge/src')
+# Package installed via pip - no sys.path manipulation needed
 
 from zettelforge import MemoryManager
 from zettelforge.note_constructor import NoteConstructor

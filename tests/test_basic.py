@@ -1,8 +1,9 @@
 """
-Basic tests for A-MEM
+Basic tests for ZettelForge
 """
 import pytest
 import tempfile
+from datetime import datetime
 from pathlib import Path
 
 from zettelforge import MemoryManager, MemoryNote
@@ -12,6 +13,35 @@ from zettelforge.note_constructor import NoteConstructor
 from zettelforge.entity_indexer import EntityIndexer, EntityExtractor
 from zettelforge.vector_retriever import VectorRetriever
 
+NOW = datetime.now().isoformat()
+
+
+class TestNoteImportance:
+    """Test importance field on Metadata"""
+
+    def test_default_importance(self):
+        """Importance defaults to 5 (neutral)."""
+        meta = Metadata()
+        assert meta.importance == 5
+
+    def test_custom_importance(self):
+        """Importance can be set 1-10."""
+        meta = Metadata(importance=9)
+        assert meta.importance == 9
+
+    def test_importance_in_note(self):
+        """MemoryNote carries importance through Metadata."""
+        note = MemoryNote(
+            id="test_imp",
+            created_at=NOW,
+            updated_at=NOW,
+            content=Content(raw="Important fact", source_type="test", source_ref=""),
+            semantic=Semantic(context="Test", keywords=[], tags=[], entities=[]),
+            embedding=Embedding(vector=[]),
+            metadata=Metadata(importance=8)
+        )
+        assert note.metadata.importance == 8
+
 
 class TestNoteSchema:
     """Test note schema creation and validation"""
@@ -20,6 +50,8 @@ class TestNoteSchema:
         """Test creating a MemoryNote"""
         note = MemoryNote(
             id="test_001",
+            created_at=NOW,
+            updated_at=NOW,
             content=Content(
                 raw="Test content",
                 source_type="test",
@@ -48,6 +80,8 @@ class TestNoteSchema:
         """Test note access counting"""
         note = MemoryNote(
             id="test_002",
+            created_at=NOW,
+            updated_at=NOW,
             content=Content(raw="Test", source_type="test", source_ref=""),
             semantic=Semantic(context="Test", keywords=[], tags=[], entities=[]),
             embedding=Embedding(vector=[]),
@@ -82,6 +116,8 @@ class TestMemoryStore:
             
             note = MemoryNote(
                 id="test_003",
+                created_at=NOW,
+                updated_at=NOW,
                 content=Content(raw="Test content", source_type="test", source_ref=""),
                 semantic=Semantic(context="Test context", keywords=["test"], tags=[], entities=[]),
                 embedding=Embedding(vector=[0.0] * 768),

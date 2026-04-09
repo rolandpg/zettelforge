@@ -24,13 +24,13 @@ from typing import List, Dict, Optional
 
 # ── Configuration ─────────────────────────────────────────────────────────────
 
-DEFAULT_OLLAMA_URL = "http://localhost:11434"
-DEFAULT_EMBEDDING_MODEL = "nomic-embed-text"
+DEFAULT_EMBEDDING_URL = "http://127.0.0.1:11434"
+DEFAULT_EMBEDDING_MODEL = "nomic-embed-text-v2-moe:latest"
 
 
-def get_ollama_url() -> str:
-    """Get Ollama URL from environment or default"""
-    return os.environ.get("AMEM_OLLAMA_URL", DEFAULT_OLLAMA_URL)
+def get_embedding_url() -> str:
+    """Get embedding server URL from environment or default (llama.cpp on 8081)"""
+    return os.environ.get("AMEM_EMBEDDING_URL", DEFAULT_EMBEDDING_URL)
 
 
 def get_embedding_model() -> str:
@@ -41,24 +41,53 @@ def get_embedding_model() -> str:
 # ── Embedding ─────────────────────────────────────────────────────────────────
 
 def get_embedding(text: str, model: Optional[str] = None) -> List[float]:
-    """Generate embedding via Ollama."""
+    """Generate embedding via llama.cpp OpenAI-compatible endpoint."""
+    import requests
+
+    url = get_embedding_url()
+    model = model or get_embedding_model()
+
     try:
-        import ollama
-        model = model or get_embedding_model()
-        resp = ollama.embeddings(model=model, prompt=text)
-        return resp.get("embedding", [0.0] * 768)
+        resp = requests.post(
+            f"{url}/v1/embeddings",
+            json={"input": text, "model": model},
+            timeout=30,
+        )
+        resp.raise_for_status()
+        data = resp.json()
+        embedding = data["data"][0]["embedding"]
+        if not embedding or len(embedding) == 0:
+            raise RuntimeError("Embedding server returned empty vector")
+        return embedding
+    except requests.ConnectionError:
+        raise RuntimeError(
+            f"Embedding server not reachable at {url}. "
+            "Ensure llama-embeddings.service is running: "
+            "systemctl --user status llama-embeddings"
+        )
     except Exception as e:
-        import hashlib
-        # Deterministic mock embedding based on string hash if ollama fails
-        h = int(hashlib.md5(text.encode()).hexdigest(), 16)
-        import random
-        random.seed(h)
-        return [random.random() for _ in range(768)]  # Return zero vector on failure
+        raise RuntimeError(f"Embedding generation failed: {e}")
 
 
 def get_embedding_batch(texts: List[str], model: Optional[str] = None) -> List[List[float]]:
-    """Batch embed multiple texts via Ollama."""
-    return [get_embedding(text, model) for text in texts]
+    """Batch embed multiple texts via llama.cpp endpoint."""
+    import requests
+
+    url = get_embedding_url()
+    model = model or get_embedding_model()
+
+    try:
+        resp = requests.post(
+            f"{url}/v1/embeddings",
+            json={"input": texts, "model": model},
+            timeout=60,
+        )
+        resp.raise_for_status()
+        data = resp.json()
+        return [item["embedding"] for item in data["data"]]
+    except Exception:
+        # Fallback to sequential if batch fails
+        return [get_embedding(text, model) for text in texts]
 
 
 # ── LanceDB Schema ───────────────────────────────────────────────────────────
