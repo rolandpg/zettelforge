@@ -272,42 +272,41 @@ class MemoryManager:
 
     def _update_knowledge_graph(self, note: MemoryNote, resolved_entities: Dict[str, List[str]]):
         kg = get_knowledge_graph()
-        
+        now = datetime.now().isoformat()
+        edge_props = {"first_observed": now, "confidence": note.metadata.confidence}
+
         # 1. Add Note node
         note_id = kg.add_node("note", note.id, {"content": note.content.raw[:200], "domain": note.metadata.domain})
-        
+
         # 2. Add Entity Nodes and MENTIONED_IN edges
         all_entities = []
         for etype, elist in resolved_entities.items():
             for evalue in elist:
                 all_entities.append((etype, evalue))
-                kg.add_edge(etype, evalue, "note", note.id, "MENTIONED_IN")
+                kg.add_edge(etype, evalue, "note", note.id, "MENTIONED_IN", edge_props)
 
         # 3. Inferred Entity-to-Entity Relationships (Heuristic)
-        # e.g., Actor uses Tool, Actor exploits CVE, Tool targets Asset
         actors = resolved_entities.get("actor", [])
         tools = resolved_entities.get("tool", [])
         cves = resolved_entities.get("cve", [])
         assets = resolved_entities.get("asset", [])
         campaigns = resolved_entities.get("campaign", [])
 
-        # Actor -> Tool
         for a in actors:
             for t in tools:
-                kg.add_edge("actor", a, "tool", t, "USES_TOOL")
+                kg.add_edge("actor", a, "tool", t, "USES_TOOL", edge_props)
             for c in cves:
-                kg.add_edge("actor", a, "cve", c, "EXPLOITS_CVE")
+                kg.add_edge("actor", a, "cve", c, "EXPLOITS_CVE", edge_props)
             for asset in assets:
-                kg.add_edge("actor", a, "asset", asset, "TARGETS_ASSET")
+                kg.add_edge("actor", a, "asset", asset, "TARGETS_ASSET", edge_props)
             for camp in campaigns:
-                kg.add_edge("actor", a, "campaign", camp, "CONDUCTS_CAMPAIGN")
+                kg.add_edge("actor", a, "campaign", camp, "CONDUCTS_CAMPAIGN", edge_props)
 
-        # Tool -> Asset
         for t in tools:
             for asset in assets:
-                kg.add_edge("tool", t, "asset", asset, "TARGETS_ASSET")
+                kg.add_edge("tool", t, "asset", asset, "TARGETS_ASSET", edge_props)
             for c in cves:
-                kg.add_edge("tool", t, "cve", c, "EXPLOITS_CVE")
+                kg.add_edge("tool", t, "cve", c, "EXPLOITS_CVE", edge_props)
 
         # 4. LLM-based Causal Triple Extraction (MAGMA-style)
         # This is the slow path - only run for important CTI notes
