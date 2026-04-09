@@ -1,0 +1,271 @@
+{
+  "meta": {
+    "date": "2026-04-09T11:04:07.941811",
+    "version": "zettelforge-1.5.0",
+    "source": "AI4Sec/cti-bench (NeurIPS 2024)",
+    "k": 10,
+    "max_samples": 50
+  },
+  "tasks": {
+    "CTI-TAA": {
+      "task": "CTI-TAA",
+      "n": 48,
+      "p50_latency_ms": 147.4,
+      "ingest_duration_s": 677.8,
+      "note": "Ground truth scoring requires alias_dict.pickle from CTIBench GitHub repo",
+      "details": [
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.16242097300710157,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.17220328300027177,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.1702682549948804,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.13324695601477288,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.12514548099716194,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.12668849297915585,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.11872002700692974,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.11855845799436793,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.13723851699614897,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.16658210297464393,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.1413723659934476,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.1399309069965966,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.1076759220159147,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.14649949700105935,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.11334745399653912,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.14249723200919107,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.14039201199193485,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.12317594100022689,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.11349926301045343,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.1606280090054497,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.14764538800227456,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.17076734401052818,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.13996551500167698,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.16380057600326836,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.09657727301237173,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.1471979470225051,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.14391008301754482,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.1373707570019178,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.11844306599232368,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.09894764600903727,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.12446675999672152,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.1581829469942022,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.17744495900114998,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.13977282601990737,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.1492021599842701,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.17788745599682443,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.18129532001330517,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.1531126000045333,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.15417761000571772,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.15799285200773738,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.18177500102319755,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.1648911389929708,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.1757070829917211,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.16252785400138237,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.1698476779856719,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.18409521400462836,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.15756547398632392,
+          "retrieved_count": 4
+        },
+        {
+          "predicted": "Cozy Bear",
+          "latency_s": 0.16100724201533012,
+          "retrieved_count": 4
+        }
+      ]
+    },
+    "CTI-ATE": {
+      "task": "CTI-ATE",
+      "n": 50,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "p50_latency_ms": 111.0,
+      "ingest_duration_s": 466.0,
+      "note": "Zero F1 expected: descriptions do not contain technique IDs. Retrieval system correctly finds related descriptions but extraction of T-IDs from text without IDs yields empty sets. Future: ingest ATT&CK technique DB alongside descriptions to enable ID matching.",
+      "details": []
+    }
+  }
+}
