@@ -41,6 +41,8 @@ from zettelforge.intent_classifier import IntentClassifier, get_intent_classifie
 from zettelforge.note_constructor import NoteConstructor
 from zettelforge.fact_extractor import FactExtractor, ExtractedFact
 from zettelforge.memory_updater import MemoryUpdater, UpdateOperation
+from zettelforge.graph_retriever import GraphRetriever, ScoredResult
+from zettelforge.blended_retriever import BlendedRetriever
 from zettelforge.cti_integration import (
     CTIPlatformConnector,
     get_cti_connector,
@@ -60,7 +62,7 @@ from zettelforge.sigma_generator import (
     generate_sentinel_rules
 )
 
-__version__ = "1.4.0"
+__version__ = "1.5.0"
 __all__ = [
     # Core
     "MemoryManager",
@@ -92,6 +94,10 @@ __all__ = [
     "ExtractedFact",
     "MemoryUpdater",
     "UpdateOperation",
+    # Graph Retrieval
+    "GraphRetriever",
+    "ScoredResult",
+    "BlendedRetriever",
     # CTI Integration
     "CTIPlatformConnector",
     "get_cti_connector",
