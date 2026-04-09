@@ -89,7 +89,7 @@ class NoteConstructor:
             ),
             metadata=Metadata(
                 domain=domain,
-                tier="B"
+                tier="A"
             )
         )
 

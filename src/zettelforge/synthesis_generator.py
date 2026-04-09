@@ -68,7 +68,7 @@ class SynthesisGenerator:
             Synthesis result dictionary with answer, sources, metadata
         """
         start_time = time.time()
-        tier_filter = tier_filter or ["A", "B"]
+        tier_filter = tier_filter or ["A", "B", "C"]  # Include all tiers by default
 
         # Retrieve notes
         notes = self._retrieve_notes(query, memory_manager, k, tier_filter)
@@ -100,11 +100,36 @@ class SynthesisGenerator:
         }
 
     def _retrieve_notes(self, query: str, memory_manager, k: int, tier_filter: List[str]):
-        """Retrieve notes via vector search."""
+        """Retrieve notes via hybrid search (entity + vector)."""
         if memory_manager is None:
             return []
-        results = memory_manager.recall(query, k=k * 2)
-        return [n for n in results if n.metadata.tier in tier_filter][:k]
+        
+        notes = []
+        
+        # First: Try entity-based recall (this path WORKS)
+        from zettelforge.entity_indexer import EntityExtractor
+        extractor = EntityExtractor()
+        entities = extractor.extract_all(query)
+        
+        for etype, elist in entities.items():
+            for evalue in elist:
+                entity_notes = memory_manager.recall_entity(etype, evalue, k=5)
+                notes.extend(entity_notes)
+        
+        # Second: Fall back to vector recall for semantic similarity
+        if len(notes) < k:
+            vector_results = memory_manager.recall(query, k=k * 2)
+            notes.extend(vector_results)
+        
+        # Deduplicate and filter by tier
+        seen_ids = set()
+        unique_notes = []
+        for n in notes:
+            if n.id not in seen_ids and n.metadata.tier in tier_filter:
+                seen_ids.add(n.id)
+                unique_notes.append(n)
+        
+        return unique_notes[:k]
 
     def _build_context(self, notes: List) -> str:
         """Build context string for LLM."""
