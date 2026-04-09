@@ -83,5 +83,8 @@ See `LICENSE` file.
 **© 2026 Patrick Roland. All Rights Reserved.**
 **Proprietary - Internal Use Only**
 ```
+# ZettelForge Proprietary Software License
 
-Now, create a strong proprietary license.
+Version 1.0 — Effective April 6, 2026
+
+Copyright © 2026 Patrick George Roland II. All rights reserved.
