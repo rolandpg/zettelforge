@@ -1,38 +1,59 @@
 # Contributing to ZettelForge
 
-**This is a proprietary system.**
+Thank you for your interest in contributing to ZettelForge! This document provides guidelines for contributing to the project.
 
-## Contribution Policy
+## Development Setup
 
-ZettelForge is **internal proprietary software** developed for the Roland Fleet.
+1. Fork and clone the repository
+2. Create a virtual environment: `python -m venv venv`
+3. Activate it: `source venv/bin/activate` (or `venv\Scripts\activate` on Windows)
+4. Install in development mode: `pip install -e ".[dev]"`
+5. Install Ollama and pull the embedding model: `ollama pull nomic-embed-text`
 
-### Who Can Contribute
+## Development Workflow
 
-- Only authorized members of the Roland Fleet team
-- External contributions are **not accepted**
-- All contributions must comply with our governance documentation (GOV-001 through GOV-022)
+1. Create a feature branch: `git checkout -b feature/your-feature-name`
+2. Make your changes
+3. Run tests: `pytest tests/ -v`
+4. Run linting: `ruff check src/amem/`
+5. Run formatting: `black src/amem/`
+6. Commit with clear messages
+7. Push and create a pull request
 
-### Contribution Process
+## Code Style
 
-1. All changes must follow our governance standards:
-   - GOV-003 (Python Coding Standards)
-   - GOV-007 (Testing Standards)
-   - GOV-011 (Security Development Lifecycle)
-   - GOV-012 (Observability & Logging)
+- Follow PEP 8
+- Use type hints where possible
+- Document functions with docstrings
+- Keep functions focused and small
+- Write tests for new functionality
 
-2. All code must include:
-   - Type hints
-   - Comprehensive tests
-   - Governance validation where appropriate
-   - Proper documentation
+## Testing
 
-3. Changes must be reviewed and approved by the architecture owner (Nexus/Patrick)
+- Write tests for new features
+- Ensure all tests pass before submitting PR
+- Aim for high test coverage
+- Use meaningful test names that describe behavior
 
-### Questions
+## Commit Messages
 
-For questions about contributing or architecture decisions, contact Patrick Roland or the current architecture lead.
+Use clear, descriptive commit messages:
 
----
+- `feat: Add entity extraction for CVE patterns`
+- `fix: Correct vector similarity calculation`
+- `docs: Update API reference`
+- `test: Add tests for recall_cve method`
 
-**© 2026 Patrick Roland. All Rights Reserved.**
-**Proprietary - Internal Use Only**
+## Pull Request Process
+
+1. Update documentation if needed
+2. Add tests for new functionality
+3. Ensure CI passes
+4. Request review from maintainers
+5. Address review feedback
+
+## Questions?
+
+- Open an issue for bugs or feature requests
+- Start a discussion for questions or ideas
+- Check existing issues before creating new ones

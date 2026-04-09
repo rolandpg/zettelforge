@@ -1,0 +1,471 @@
+"""
+Ontology Integration - Typed Entity System with Constraints
+ZettelForge + Ontology融合 (2026-04-06)
+
+Adds typed entities with validation to ZettelForge knowledge graph.
+Supports Person, Project, Task, Event, Document, Credential, and more.
+"""
+
+import json
+import yaml
+import uuid
+from datetime import datetime
+from pathlib import Path
+from typing import Dict, List, Optional, Any, Callable
+
+
+# Core entity types from ontology skill
+ENTITY_TYPES = {
+    # Agents & People
+    "Person": {
+        "required": ["name"],
+        "optional": ["email", "phone", "notes", "organization"],
+        "properties": {}
+    },
+    "Organization": {
+        "required": ["name"],
+        "optional": ["type", "members", "url"],
+        "properties": {}
+    },
+    
+    # Work
+    "Project": {
+        "required": ["name", "status"],
+        "optional": ["goals", "owner", "start_date", "end_date"],
+        "properties": {}
+    },
+    "Task": {
+        "required": ["title", "status"],
+        "optional": ["due", "priority", "assignee", "blockers", "project"],
+        "properties": {}
+    },
+    "Goal": {
+        "required": ["description"],
+        "optional": ["target_date", "metrics", "owner"],
+        "properties": {}
+    },
+    
+    # Time & Place
+    "Event": {
+        "required": ["title", "start"],
+        "optional": ["end", "location", "attendees", "recurrence"],
+        "properties": {}
+    },
+    "Location": {
+        "required": ["name"],
+        "optional": ["address", "coordinates"],
+        "properties": {}
+    },
+    
+    # Information
+    "Document": {
+        "required": ["title"],
+        "optional": ["path", "url", "summary", "tags"],
+        "properties": {}
+    },
+    "Note": {  # Maps to MemoryNote
+        "required": ["content"],
+        "optional": ["tags", "refs", "author"],
+        "properties": {}
+    },
+    
+    # Resources
+    "Account": {
+        "required": ["service", "username"],
+        "optional": ["credential_ref"],
+        "properties": {}
+    },
+    "Device": {
+        "required": ["name"],
+        "optional": ["type", "identifiers", "status"],
+        "properties": {}
+    },
+    
+    # CTI types (extending for security domain)
+    "ThreatActor": {
+        "required": ["name"],
+        "optional": ["aliases", "country", "motivation", "ttps", "targets"],
+        "properties": {}
+    },
+    "Vulnerability": {
+        "required": ["cve_id"],
+        "optional": ["cvss", "description", "affected_products", "references"],
+        "properties": {}
+    },
+    "Malware": {
+        "required": ["name"],
+        "optional": ["family", "platforms", "capabilities", "references"],
+        "properties": {}
+    },
+    "Campaign": {
+        "required": ["name"],
+        "optional": ["actor", "start_date", "end_date", "targets", "ttps"],
+        "properties": {}
+    },
+    "Incident": {
+        "required": ["title", "status"],
+        "optional": ["severity", "timeline", "affected_assets", "root_cause"],
+        "properties": {}
+    },
+    
+    # Meta
+    "Action": {
+        "required": ["type", "timestamp"],
+        "optional": ["target", "outcome", "actor"],
+        "properties": {}
+    },
+    "Policy": {
+        "required": ["scope", "rule"],
+        "optional": ["enforcement", "version"],
+        "properties": {}
+    },
+}
+
+
+# Relation definitions with constraints
+RELATION_TYPES = {
+    "has_owner": {
+        "from_types": ["Project", "Task", "Event", "Document"],
+        "to_types": ["Person", "Organization"],
+        "cardinality": "many_to_one"
+    },
+    "has_assignee": {
+        "from_types": ["Task", "Incident"],
+        "to_types": ["Person"],
+        "cardinality": "many_to_one"
+    },
+    "has_task": {
+        "from_types": ["Project"],
+        "to_types": ["Task"],
+        "cardinality": "one_to_many"
+    },
+    "blocks": {
+        "from_types": ["Task"],
+        "to_types": ["Task"],
+        "cardinality": "many_to_many",
+        "acyclic": True  # No circular dependencies
+    },
+    "related_to": {
+        "from_types": list(ENTITY_TYPES.keys()),
+        "to_types": list(ENTITY_TYPES.keys()),
+        "cardinality": "many_to_many"
+    },
+    "part_of": {
+        "from_types": ["Task", "Document", "Event"],
+        "to_types": ["Project"],
+        "cardinality": "many_to_one"
+    },
+    "attributed_to": {
+        "from_types": ["Incident", "Campaign", "Malware"],
+        "to_types": ["ThreatActor"],
+        "cardinality": "many_to_one"
+    },
+    "uses_tool": {
+        "from_types": ["ThreatActor", "Campaign"],
+        "to_types": ["Malware", "Tool"],
+        "cardinality": "many_to_many"
+    },
+    "exploits": {
+        "from_types": ["ThreatActor", "Campaign", "Malware"],
+        "to_types": ["Vulnerability"],
+        "cardinality": "many_to_many"
+    },
+    "targets": {
+        "from_types": ["ThreatActor", "Campaign", "Malware"],
+        "to_types": ["Organization", "Location", "Device"],
+        "cardinality": "many_to_many"
+    },
+    "superseded_by": {
+        "from_types": ["Note", "Document", "Policy"],
+        "to_types": ["Note", "Document", "Policy"],
+        "cardinality": "many_to_one",
+        "acyclic": True
+    },
+}
+
+
+class OntologyValidator:
+    """
+    Validates entity and relation operations against type constraints.
+    """
+    
+    def __init__(self, schema_path: Optional[str] = None):
+        self.schema_path = schema_path
+        self.custom_types = {}
+        self.custom_relations = {}
+        
+        if schema_path and Path(schema_path).exists():
+            self._load_schema()
+    
+    def _load_schema(self):
+        """Load custom schema from YAML."""
+        with open(self.schema_path) as f:
+            schema = yaml.safe_load(f)
+            self.custom_types = schema.get("types", {})
+            self.custom_relations = schema.get("relations", {})
+    
+    def get_type_definition(self, type_name: str) -> Dict:
+        """Get type definition, falling back to defaults."""
+        return self.custom_types.get(type_name, ENTITY_TYPES.get(type_name, {}))
+    
+    def validate_entity(self, entity_type: str, properties: Dict) -> tuple[bool, List[str]]:
+        """
+        Validate entity against type constraints.
+        Returns (is_valid, error_messages)
+        """
+        errors = []
+        
+        type_def = self.get_type_definition(entity_type)
+        if not type_def:
+            return True, []  # Unknown types are allowed
+        
+        required = type_def.get("required", [])
+        for field in required:
+            if field not in properties or not properties[field]:
+                errors.append(f"Missing required field: {field}")
+        
+        # Check for forbidden properties
+        forbidden = type_def.get("forbidden_properties", [])
+        for field in forbidden:
+            if field in properties:
+                errors.append(f"Forbidden property: {field}")
+        
+        # Enum validation
+        for field, enum_values in type_def.get("enum_properties", {}).items():
+            if field in properties and properties[field] not in enum_values:
+                errors.append(f"Invalid value for {field}: must be one of {enum_values}")
+        
+        # Custom validation function
+        if "validate" in type_def:
+            try:
+                # Simple eval for common patterns
+                validate_expr = type_def["validate"]
+                if "end >= start" in validate_expr and "end" in properties and "start" in properties:
+                    if properties["end"] < properties["start"]:
+                        errors.append("End time must be >= start time")
+            except Exception as e:
+                errors.append(f"Validation error: {e}")
+        
+        return len(errors) == 0, errors
+    
+    def validate_relation(self, from_type: str, relation_type: str, to_type: str) -> tuple[bool, List[str]]:
+        """
+        Validate relation is allowed between types.
+        Returns (is_valid, error_messages)
+        """
+        errors = []
+        
+        rel_def = self.custom_relations.get(relation_type, RELATION_TYPES.get(relation_type, {}))
+        if not rel_def:
+            return True, []  # Unknown relations allowed
+        
+        from_types = rel_def.get("from_types", [])
+        to_types = rel_def.get("to_types", [])
+        
+        if from_types and from_type not in from_types:
+            errors.append(f"{from_type} cannot have relation {relation_type}")
+        
+        if to_types and to_type not in to_types:
+            errors.append(f"{relation_type} cannot point to {to_type}")
+        
+        return len(errors) == 0, errors
+
+
+class TypedEntityStore:
+    """
+    Typed entity storage with validation.
+    Integrates with ZettelForge KnowledgeGraph.
+    """
+    
+    def __init__(self, data_dir: str, validator: Optional[OntologyValidator] = None):
+        self.data_dir = Path(data_dir)
+        self.entities_file = self.data_dir / "ontology_entities.jsonl"
+        self.relations_file = self.data_dir / "ontology_relations.jsonl"
+        self.validator = validator or OntologyValidator()
+        
+        # In-memory cache
+        self._entities: Dict[str, Dict] = {}
+        self._relations: List[Dict] = []
+        
+        self._load()
+    
+    def _load(self):
+        """Load entities and relations from JSONL."""
+        if self.entities_file.exists():
+            with open(self.entities_file) as f:
+                for line in f:
+                    if line.strip():
+                        entity = json.loads(line)
+                        self._entities[entity["id"]] = entity
+        
+        if self.relations_file.exists():
+            with open(self.relations_file) as f:
+                for line in f:
+                    if line.strip():
+                        rel = json.loads(line)
+                        self._relations.append(rel)
+    
+    def _save_entity(self, entity: Dict):
+        """Append entity to JSONL."""
+        self.data_dir.mkdir(parents=True, exist_ok=True)
+        with open(self.entities_file, "a") as f:
+            f.write(json.dumps(entity) + "\n")
+    
+    def _save_relation(self, relation: Dict):
+        """Append relation to JSONL."""
+        self.data_dir.mkdir(parents=True, exist_ok=True)
+        with open(self.relations_file, "a") as f:
+            f.write(json.dumps(relation) + "\n")
+    
+    def create_entity(self, entity_type: str, properties: Dict, entity_id: Optional[str] = None) -> tuple[Optional[str], bool, List[str]]:
+        """
+        Create typed entity with validation.
+        Returns (entity_id, success, errors)
+        """
+        # Validate
+        is_valid, errors = self.validator.validate_entity(entity_type, properties)
+        if not is_valid:
+            return None, False, errors
+        
+        # Generate ID
+        if not entity_id:
+            prefix = entity_type.lower()[:4]
+            entity_id = f"{prefix}_{uuid.uuid4().hex[:8]}"
+        
+        entity = {
+            "id": entity_id,
+            "type": entity_type,
+            "properties": properties,
+            "created": datetime.now().isoformat(),
+            "updated": datetime.now().isoformat()
+        }
+        
+        self._entities[entity_id] = entity
+        self._save_entity(entity)
+        
+        return entity_id, True, []
+    
+    def create_relation(self, from_id: str, relation_type: str, to_id: str, properties: Optional[Dict] = None) -> tuple[bool, List[str]]:
+        """
+        Create relation with validation.
+        Returns (success, errors)
+        """
+        # Get entity types
+        from_entity = self._entities.get(from_id)
+        to_entity = self._entities.get(to_id)
+        
+        if not from_entity:
+            return False, [f"Source entity not found: {from_id}"]
+        if not to_entity:
+            return False, [f"Target entity not found: {to_id}"]
+        
+        # Validate relation
+        is_valid, errors = self.validator.validate_relation(
+            from_entity["type"], relation_type, to_entity["type"]
+        )
+        if not is_valid:
+            return False, errors
+        
+        # Check acyclic if required
+        rel_def = RELATION_TYPES.get(relation_type, {})
+        if rel_def.get("acyclic"):
+            if self._would_create_cycle(from_id, relation_type, to_id):
+                return False, [f"Relation {relation_type} would create cycle (acyclic constraint)"]
+        
+        relation = {
+            "from": from_id,
+            "rel": relation_type,
+            "to": to_id,
+            "properties": properties or {},
+            "created": datetime.now().isoformat()
+        }
+        
+        self._relations.append(relation)
+        self._save_relation(relation)
+        
+        return True, []
+    
+    def _would_create_cycle(self, from_id: str, relation_type: str, to_id: str) -> bool:
+        """Check if adding relation would create a cycle."""
+        # Simple DFS to detect cycle
+        visited = set()
+        stack = [to_id]
+        
+        while stack:
+            current = stack.pop()
+            if current == from_id:
+                return True
+            if current in visited:
+                continue
+            visited.add(current)
+            
+            # Find all relations from current
+            for rel in self._relations:
+                if rel["from"] == current and rel["rel"] == relation_type:
+                    stack.append(rel["to"])
+        
+        return False
+    
+    def get_entity(self, entity_id: str) -> Optional[Dict]:
+        """Get entity by ID."""
+        return self._entities.get(entity_id)
+    
+    def query_by_type(self, entity_type: str) -> List[Dict]:
+        """Query all entities of a type."""
+        return [e for e in self._entities.values() if e["type"] == entity_type]
+    
+    def query_by_property(self, entity_type: str, property_name: str, value: Any) -> List[Dict]:
+        """Query entities by property value."""
+        results = []
+        for entity in self._entities.values():
+            if entity["type"] == entity_type:
+                if entity["properties"].get(property_name) == value:
+                    results.append(entity)
+        return results
+    
+    def get_related(self, entity_id: str, relation_type: Optional[str] = None) -> List[Dict]:
+        """Get related entities."""
+        results = []
+        for rel in self._relations:
+            if rel["from"] == entity_id:
+                if relation_type is None or rel["rel"] == relation_type:
+                    target = self._entities.get(rel["to"])
+                    if target:
+                        results.append({
+                            "relation": rel["rel"],
+                            "entity": target,
+                            "properties": rel.get("properties", {})
+                        })
+        return results
+    
+    def list_types(self) -> List[str]:
+        """List all entity types in store."""
+        return list(set(e["type"] for e in self._entities.values()))
+
+
+# Global singleton
+_ontology_store: Optional[TypedEntityStore] = None
+_ontology_lock = None  # Will be imported
+
+
+def get_ontology_store(data_dir: Optional[str] = None) -> TypedEntityStore:
+    """Get global ontology store instance."""
+    import threading
+    global _ontology_store, _ontology_lock
+    
+    if _ontology_lock is None:
+        _ontology_lock = threading.Lock()
+    
+    if _ontology_store is None:
+        with _ontology_lock:
+            if _ontology_store is None:
+                from zettelforge.memory_store import get_default_data_dir
+                base_dir = Path(data_dir) if data_dir else get_default_data_dir()
+                _ontology_store = TypedEntityStore(str(base_dir / "ontology"))
+    
+    return _ontology_store
+
+
+def get_ontology_validator() -> OntologyValidator:
+    """Get ontology validator."""
+    return OntologyValidator()

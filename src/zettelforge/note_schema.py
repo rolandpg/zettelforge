@@ -20,7 +20,6 @@ class Semantic(BaseModel):
     keywords: List[str] = Field(default_factory=list, max_length=7)
     tags: List[str] = Field(default_factory=list, max_length=5)
     entities: List[str] = Field(default_factory=list)
-    prospective_index: List[str] = Field(default_factory=list)  # Kumiho-style future-scenario implications
 
 
 class Embedding(BaseModel):
@@ -48,6 +47,7 @@ class Metadata(BaseModel):
     ttl: Optional[int] = None  # Time-to-live in days
     domain: str = "general"  # security_ops | project | personal | research
     tier: str = "B"  # Epistemic tier: A (authoritative) | B (operational) | C (support)
+    importance: int = 5  # 1-10 scale, used by extraction phase for prioritization
 
 
 class MemoryNote(BaseModel):

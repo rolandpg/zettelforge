@@ -18,9 +18,10 @@ from zettelforge.vector_retriever import VectorRetriever
 from zettelforge.alias_resolver import AliasResolver
 from zettelforge.synthesis_generator import SynthesisGenerator, get_synthesis_generator
 from zettelforge.synthesis_validator import SynthesisValidator, get_synthesis_validator
-from zettelforge.prospective_indexer import generate_prospective_index, ProspectiveRetriever
-from zettelforge.governance_validator import GovernanceValidator
 from zettelforge.knowledge_graph import get_knowledge_graph
+from zettelforge.governance_validator import GovernanceValidator, GovernanceViolationError
+from zettelforge.fact_extractor import FactExtractor, ExtractedFact
+from zettelforge.memory_updater import MemoryUpdater, UpdateOperation
 
 
 class MemoryManager:
@@ -38,6 +39,7 @@ class MemoryManager:
         self.indexer = EntityIndexer()
         self.retriever = VectorRetriever(memory_store=self.store)
         self.governance = GovernanceValidator()
+        self.resolver = AliasResolver()
 
         self.stats = {
             'notes_created': 0,
@@ -73,7 +75,6 @@ class MemoryManager:
         self.stats['notes_created'] += 1
 
         # Alias resolution and indexing
-        self.resolver = getattr(self, "resolver", AliasResolver())
         raw_entities = self.indexer.extractor.extract_all(note.content.raw)
         
         resolved_entities = {}
@@ -90,6 +91,64 @@ class MemoryManager:
 
         return note, "created"
 
+    def remember_with_extraction(
+        self,
+        content: str,
+        source_type: str = "conversation",
+        source_ref: str = "",
+        domain: str = "general",
+        context: str = "",
+        min_importance: int = 3,
+        max_facts: int = 5,
+    ) -> List[Tuple[Optional[MemoryNote], str]]:
+        """
+        Mem0-style two-phase pipeline: extract salient facts, then decide ADD/UPDATE/DELETE/NOOP.
+
+        Phase 1 (Extraction): LLM distills content into scored candidate facts.
+        Phase 2 (Update): Each fact is compared to existing notes; LLM decides operation.
+
+        Args:
+            content: Raw text to process.
+            source_type: Origin type (conversation, task_output, etc.).
+            source_ref: Source identifier.
+            domain: Memory domain.
+            context: Optional rolling summary for disambiguation.
+            min_importance: Facts below this threshold are skipped.
+            max_facts: Maximum facts to extract per call.
+
+        Returns:
+            List of (MemoryNote or None, status) tuples.
+            Status is one of: "added", "updated", "corrected", "noop".
+        """
+        # Phase 1: Extraction
+        extractor = FactExtractor(max_facts=max_facts)
+        facts = extractor.extract(content, context=context)
+
+        # Filter by importance
+        facts = [f for f in facts if f.importance >= min_importance]
+
+        if not facts:
+            return []
+
+        # Phase 2: Update
+        updater = MemoryUpdater(self)
+        results = []
+
+        for i, fact in enumerate(facts):
+            similar = updater.find_similar(fact.text, domain=domain)
+            operation = updater.decide(fact.text, similar)
+            note, status = updater.apply(
+                operation,
+                fact_text=fact.text,
+                importance=fact.importance,
+                source_ref=f"{source_ref}:extraction:{i}" if source_ref else f"extraction:{i}",
+                similar_notes=similar,
+                domain=domain,
+            )
+            results.append((note, status))
+
+        return results
+
     def recall(
         self,
         query: str,
@@ -99,8 +158,10 @@ class MemoryManager:
         exclude_superseded: bool = True
     ) -> List[MemoryNote]:
         """
-        Retrieve memories relevant to query.
-        Uses intent classifier for adaptive retrieval strategy (Task 3).
+        Retrieve memories relevant to query using blended vector + graph retrieval.
+
+        Uses intent classifier to determine retrieval strategy weights,
+        then combines vector similarity and graph traversal results.
         """
         self.stats['retrievals'] += 1
 
@@ -110,80 +171,45 @@ class MemoryManager:
         intent, intent_meta = classifier.classify(query)
         policy = classifier.get_traversal_policy(intent)
 
-        # Log for observability
-        print(f"[Intent] {intent.value} (conf={intent_meta.get('confidence', 0):.2f}) for: {query[:50]}...")
-        print(f"[Policy] vector={policy['vector']}, graph={policy['graph']}, temporal={policy['temporal']}")
+        # Extract entities from query for graph traversal
+        query_entities = self.indexer.extractor.extract_all(query)
+        resolved = {}
+        for etype, elist in query_entities.items():
+            resolved[etype] = [self.resolver.resolve(etype, e) for e in elist]
 
-        # Adjust k based on policy
-        k = max(k, policy['top_k'])
-
-        # Route based on intent
-        if intent.value in ['factual', 'entity_lookup']:
-            # Use entity index
-            entities = self.indexer.extractor.extract_all(query)
-            results = []
-            for etype, elist in entities.items():
-                for evalue in elist:
-                    notes = self.recall_entity(etype, evalue, k=3)
-                    results.extend(notes)
-            # Fall back to vector retrieval if entity index returns nothing
-            if not results:
-                return self.retriever.retrieve(
-                    query=query,
-                    domain=domain,
-                    k=k,
-                    include_links=include_links
-                )
-            results = results[:k]
-        elif intent.value == 'temporal':
-            # Use temporal graph
-            from zettelforge.knowledge_graph import get_knowledge_graph
-            kg = get_knowledge_graph()
-            changes = kg.get_changes_since('2020-01-01')  # TODO: parse from query
-            note_ids = [c['to'].split(':')[-1] for c in changes if c['to'].startswith('note:')]
-            results = [self.store.get_note_by_id(nid) for nid in note_ids if self.store.get_note_by_id(nid)]
-            results = results[:k]
-        elif intent.value in ['relational', 'causal']:
-            # Use graph traversal
-            from zettelforge.knowledge_graph import get_knowledge_graph
-            kg = get_knowledge_graph()
-            entities = self.indexer.extractor.extract_all(query)
-            results = []
-            for etype, elist in entities.items():
-                for evalue in elist:
-                    paths = kg.traverse(etype, evalue, max_depth=2)
-                    for path in paths:
-                        for step in path:
-                            if step['to_type'] == 'note':
-                                note = self.store.get_note_by_id(step['to_value'])
-                                if note:
-                                    results.append(note)
-            results = results[:k]
-        else:
-            # Default: vector retrieval
-            results = self.retriever.retrieve(
-                query=query,
-                domain=domain,
-                k=k,
-                include_links=include_links
-            )
-
-        # Prospective matching (Kumiho-style) for all query types
-        if not hasattr(self, '_prospective_retriever'):
-            self._prospective_retriever = ProspectiveRetriever(self.store)
-        existing_ids = {n.id for n in results}
-        prospective_hits = self._prospective_retriever.retrieve(
-            query=query,
-            note_lookup=lambda nid: self.store.get_note_by_id(nid),
-            top_k=k,
+        # Vector retrieval
+        vector_results = self.retriever.retrieve(
+            query=query, domain=domain, k=k, include_links=include_links
         )
-        for note, _ in prospective_hits:
-            if note.id not in existing_ids:
-                results.append(note)
-                existing_ids.add(note.id)
+
+        # Graph retrieval
+        from zettelforge.graph_retriever import GraphRetriever
+        from zettelforge.blended_retriever import BlendedRetriever
+        kg = get_knowledge_graph()
+        graph_retriever = GraphRetriever(kg)
+        graph_results = graph_retriever.retrieve_note_ids(
+            query_entities=resolved, max_depth=2
+        )
+
+        # Blend results
+        blender = BlendedRetriever()
+        results = blender.blend(
+            vector_results=vector_results,
+            graph_results=graph_results,
+            policy=policy,
+            note_lookup=lambda nid: self.store.get_note_by_id(nid),
+            k=k,
+        )
+
+        # Filter superseded notes
+        if exclude_superseded:
+            results = [n for n in results if not n.links.superseded_by]
+
+        # Track access
+        for note in results:
+            note.increment_access()
 
         return results
-
 
     def recall_entity(
         self,
@@ -388,7 +414,6 @@ class MemoryManager:
         kg = get_knowledge_graph()
         
         # Resolve alias if necessary
-        self.resolver = getattr(self, "resolver", AliasResolver())
         canonical = self.resolver.resolve(entity_type, entity_value)
         
         return kg.get_neighbors(entity_type, canonical)
@@ -396,7 +421,6 @@ class MemoryManager:
     def traverse_graph(self, start_type: str, start_value: str, max_depth: int = 2) -> List[Dict]:
         """Traverse relationships from a starting entity."""
         kg = get_knowledge_graph()
-        self.resolver = getattr(self, "resolver", AliasResolver())
         canonical = self.resolver.resolve(start_type, start_value)
         
         return kg.traverse(start_type, canonical, max_depth)

@@ -1,3 +1,62 @@
-nousnet
-__pycache__
-*.pyc
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Runtime data (not source code)
+/notes.jsonl
+/kg_nodes.jsonl
+/kg_edges.jsonl
+/entity_index.json
+*.lance/
+vectordb/
+.vector_memory.lance/
+.snapshots/
+archive/
+
+# Data directories (runtime, not source)
+/data/
+/.amem/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

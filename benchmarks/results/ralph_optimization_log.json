@@ -1,0 +1,114 @@
+{
+  "best": {
+    "entity_boost": 2.5,
+    "exact_match_boost": 1.0,
+    "similarity_threshold": 0.25
+  },
+  "history": [
+    {
+      "loop": 1,
+      "eb": 2.5,
+      "emb": 1.0,
+      "thresh": 0.25,
+      "score": 7
+    },
+    {
+      "loop": 2,
+      "eb": 1.5,
+      "emb": 1.5,
+      "thresh": 0.2,
+      "score": 7
+    },
+    {
+      "loop": 3,
+      "eb": 2.0,
+      "emb": 2.0,
+      "thresh": 0.2,
+      "score": 7
+    },
+    {
+      "loop": 4,
+      "eb": 1.0,
+      "emb": 2.0,
+      "thresh": 0.3,
+      "score": 7
+    },
+    {
+      "loop": 5,
+      "eb": 1.0,
+      "emb": 2.0,
+      "thresh": 0.25,
+      "score": 7
+    },
+    {
+      "loop": 6,
+      "eb": 2.5,
+      "emb": 3.0,
+      "thresh": 0.3,
+      "score": 6
+    },
+    {
+      "loop": 7,
+      "eb": 3.0,
+      "emb": 2.5,
+      "thresh": 0.3,
+      "score": 7
+    },
+    {
+      "loop": 8,
+      "eb": 3.0,
+      "emb": 1.0,
+      "thresh": 0.2,
+      "score": 6
+    },
+    {
+      "loop": 9,
+      "eb": 2.0,
+      "emb": 3.0,
+      "thresh": 0.25,
+      "score": 6
+    },
+    {
+      "loop": 10,
+      "eb": 2.0,
+      "emb": 2.5,
+      "thresh": 0.2,
+      "score": 7
+    },
+    {
+      "loop": 11,
+      "eb": 1.5,
+      "emb": 1.0,
+      "thresh": 0.2,
+      "score": 6
+    },
+    {
+      "loop": 12,
+      "eb": 3.0,
+      "emb": 1.5,
+      "thresh": 0.3,
+      "score": 7
+    },
+    {
+      "loop": 13,
+      "eb": 2.5,
+      "emb": 3.0,
+      "thresh": 0.2,
+      "score": 7
+    },
+    {
+      "loop": 14,
+      "eb": 2.0,
+      "emb": 1.0,
+      "thresh": 0.2,
+      "score": 7
+    },
+    {
+      "loop": 15,
+      "eb": 2.5,
+      "emb": 2.5,
+      "thresh": 0.25,
+      "score": 7
+    }
+  ]
+}

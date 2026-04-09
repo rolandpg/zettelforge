@@ -15,7 +15,6 @@ from typing import Dict, List, Optional, Tuple
 from zettelforge.note_schema import MemoryNote, Content, Semantic, Embedding, Metadata
 from zettelforge.vector_memory import get_embedding
 from zettelforge.knowledge_graph import get_knowledge_graph
-from zettelforge.prospective_indexer import generate_prospective_index
 
 
 class NoteConstructor:
@@ -66,9 +65,6 @@ class NoteConstructor:
         keywords = self._extract_keywords(raw_content)
         tags = [domain] if domain else []
         
-        # Generate prospective index (Kumiho-style) for CTI domain
-        prospective = generate_prospective_index(raw_content, domain)
-        
         # Generate embedding
         embedding_vector = get_embedding(raw_content[:1000])
         
@@ -85,8 +81,7 @@ class NoteConstructor:
                 context=context,
                 keywords=keywords[:7],
                 tags=tags[:5],
-                entities=all_entities,
-                prospective_index=prospective,
+                entities=all_entities
             ),
             embedding=Embedding(
                 vector=embedding_vector,
@@ -94,7 +89,7 @@ class NoteConstructor:
             ),
             metadata=Metadata(
                 domain=domain,
-                tier="B"
+                tier="A"
             )
         )
 
