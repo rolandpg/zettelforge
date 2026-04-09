@@ -15,6 +15,7 @@ Temporal Graph Extension (2026-04-06):
 """
 
 import json
+import os
 import uuid
 import threading
 import re
@@ -359,10 +360,19 @@ _kg_lock = threading.Lock()
 
 
 def get_knowledge_graph() -> KnowledgeGraph:
-    """Get global knowledge graph instance."""
+    """Get global knowledge graph instance. Tries TypeDB first, falls back to JSONL."""
     global _kg_instance
     if _kg_instance is None:
         with _kg_lock:
             if _kg_instance is None:
-                _kg_instance = KnowledgeGraph()
+                backend = os.environ.get("ZETTELFORGE_BACKEND", "typedb")
+                if backend == "typedb":
+                    try:
+                        from zettelforge.typedb_client import TypeDBKnowledgeGraph
+                        _kg_instance = TypeDBKnowledgeGraph()
+                    except Exception as e:
+                        print(f"[KG] TypeDB unavailable ({e}), falling back to JSONL")
+                        _kg_instance = KnowledgeGraph()
+                else:
+                    _kg_instance = KnowledgeGraph()
     return _kg_instance

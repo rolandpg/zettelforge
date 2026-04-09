@@ -149,6 +149,71 @@ class MemoryManager:
 
         return results
 
+    def remember_report(
+        self,
+        content: str,
+        source_url: str = "",
+        published_date: str = "",
+        domain: str = "cti",
+        min_importance: int = 3,
+        max_facts: int = 10,
+        chunk_size: int = 3000,
+    ) -> List[Tuple[Optional[MemoryNote], str]]:
+        """
+        Ingest a news report or threat report.
+
+        Chunks long content, runs two-phase extraction on each chunk,
+        and stores published_date as temporal metadata.
+
+        Args:
+            content: Full report text (can be >4000 chars, will be chunked).
+            source_url: URL of the report source.
+            published_date: Publication date (ISO 8601).
+            domain: Memory domain (default "cti").
+            min_importance: Filter threshold for extracted facts.
+            max_facts: Max facts per chunk.
+            chunk_size: Max chars per chunk before splitting.
+
+        Returns:
+            List of (MemoryNote or None, status) tuples across all chunks.
+        """
+        source_ref = source_url or "report"
+
+        # Chunk long content on sentence boundaries
+        chunks = []
+        if len(content) <= chunk_size:
+            chunks = [content]
+        else:
+            sentences = content.replace('\n', ' ').split('. ')
+            current_chunk = ""
+            for sentence in sentences:
+                if len(current_chunk) + len(sentence) + 2 > chunk_size and current_chunk:
+                    chunks.append(current_chunk.strip())
+                    current_chunk = sentence + ". "
+                else:
+                    current_chunk += sentence + ". "
+            if current_chunk.strip():
+                chunks.append(current_chunk.strip())
+
+        all_results = []
+        for i, chunk in enumerate(chunks):
+            # Add published date context if available
+            context = f"Published: {published_date}" if published_date else ""
+            chunk_ref = f"{source_ref}:chunk:{i}"
+
+            results = self.remember_with_extraction(
+                content=chunk,
+                source_type="report",
+                source_ref=chunk_ref,
+                domain=domain,
+                context=context,
+                min_importance=min_importance,
+                max_facts=max_facts,
+            )
+            all_results.extend(results)
+
+        return all_results
+
     def recall(
         self,
         query: str,
@@ -272,42 +337,41 @@ class MemoryManager:
 
     def _update_knowledge_graph(self, note: MemoryNote, resolved_entities: Dict[str, List[str]]):
         kg = get_knowledge_graph()
-        
+        now = datetime.now().isoformat()
+        edge_props = {"first_observed": now, "confidence": note.metadata.confidence}
+
         # 1. Add Note node
         note_id = kg.add_node("note", note.id, {"content": note.content.raw[:200], "domain": note.metadata.domain})
-        
+
         # 2. Add Entity Nodes and MENTIONED_IN edges
         all_entities = []
         for etype, elist in resolved_entities.items():
             for evalue in elist:
                 all_entities.append((etype, evalue))
-                kg.add_edge(etype, evalue, "note", note.id, "MENTIONED_IN")
+                kg.add_edge(etype, evalue, "note", note.id, "MENTIONED_IN", edge_props)
 
         # 3. Inferred Entity-to-Entity Relationships (Heuristic)
-        # e.g., Actor uses Tool, Actor exploits CVE, Tool targets Asset
         actors = resolved_entities.get("actor", [])
         tools = resolved_entities.get("tool", [])
         cves = resolved_entities.get("cve", [])
         assets = resolved_entities.get("asset", [])
         campaigns = resolved_entities.get("campaign", [])
 
-        # Actor -> Tool
         for a in actors:
             for t in tools:
-                kg.add_edge("actor", a, "tool", t, "USES_TOOL")
+                kg.add_edge("actor", a, "tool", t, "USES_TOOL", edge_props)
             for c in cves:
-                kg.add_edge("actor", a, "cve", c, "EXPLOITS_CVE")
+                kg.add_edge("actor", a, "cve", c, "EXPLOITS_CVE", edge_props)
             for asset in assets:
-                kg.add_edge("actor", a, "asset", asset, "TARGETS_ASSET")
+                kg.add_edge("actor", a, "asset", asset, "TARGETS_ASSET", edge_props)
             for camp in campaigns:
-                kg.add_edge("actor", a, "campaign", camp, "CONDUCTS_CAMPAIGN")
+                kg.add_edge("actor", a, "campaign", camp, "CONDUCTS_CAMPAIGN", edge_props)
 
-        # Tool -> Asset
         for t in tools:
             for asset in assets:
-                kg.add_edge("tool", t, "asset", asset, "TARGETS_ASSET")
+                kg.add_edge("tool", t, "asset", asset, "TARGETS_ASSET", edge_props)
             for c in cves:
-                kg.add_edge("tool", t, "cve", c, "EXPLOITS_CVE")
+                kg.add_edge("tool", t, "cve", c, "EXPLOITS_CVE", edge_props)
 
         # 4. LLM-based Causal Triple Extraction (MAGMA-style)
         # This is the slow path - only run for important CTI notes

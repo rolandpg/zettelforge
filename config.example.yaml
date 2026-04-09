@@ -1,0 +1,143 @@
+# ============================================================================
+# ZettelForge Configuration — Example
+# ============================================================================
+#
+# Copy this file to config.yaml and uncomment the sections you need.
+# Only include settings you want to change — everything else uses defaults
+# from config.default.yaml.
+#
+# Quick start:
+#   cp config.example.yaml config.yaml
+#
+# ============================================================================
+
+
+# ── Scenario 1: Homelab (default, minimal changes needed) ──────────────────
+#
+# TypeDB running in Docker, Ollama on same machine.
+# This is what you get out of the box — uncomment only to change defaults.
+#
+# storage:
+#   data_dir: ~/.amem
+#
+# typedb:
+#   host: localhost
+#   port: 1729
+#
+# backend: typedb
+#
+# embedding:
+#   url: http://127.0.0.1:11434
+#   model: nomic-embed-text-v2-moe:latest
+#
+# llm:
+#   model: qwen2.5:3b
+
+
+# ── Scenario 2: Air-gapped / no Docker ─────────────────────────────────────
+#
+# No TypeDB available. Uses JSONL knowledge graph (file-based, no server).
+# Ollama runs locally with pre-downloaded models.
+#
+# backend: jsonl
+#
+# storage:
+#   data_dir: /opt/zettelforge/data
+#
+# embedding:
+#   url: http://127.0.0.1:11434
+#   model: nomic-embed-text
+
+
+# ── Scenario 3: Team server (TypeDB on separate host) ──────────────────────
+#
+# TypeDB on a dedicated server, Ollama on a GPU box, ZettelForge on analysts'
+# workstations. All machines on same network.
+#
+# typedb:
+#   host: typedb.internal.lan
+#   port: 1729
+#   database: team_cti
+#   username: analyst
+#   password: changeme
+#
+# embedding:
+#   url: http://gpu-box.internal.lan:11434
+#   model: nomic-embed-text-v2-moe:latest
+#
+# llm:
+#   model: qwen2.5:7b
+#   url: http://gpu-box.internal.lan:11434
+
+
+# ── Scenario 4: Azure deployment ───────────────────────────────────────────
+#
+# TypeDB as Azure Container Instance, ZettelForge as App Service.
+# Secrets managed via Azure Key Vault (loaded as env vars).
+#
+# typedb:
+#   host: zettelforge-typedb.eastus2.azurecontainer.io
+#   port: 1729
+#   database: zettelforge
+#   # username/password from Key Vault → App Service env vars
+#
+# storage:
+#   data_dir: /home/site/data    # Azure Files mount
+#
+# embedding:
+#   url: http://localhost:11434   # Ollama sidecar container
+#   model: nomic-embed-text
+#
+# llm:
+#   model: qwen2.5:3b
+#   url: http://localhost:11434
+
+
+# ── Scenario 5: High-throughput ingestion ──────────────────────────────────
+#
+# Processing large volumes of threat reports. Permissive extraction,
+# aggressive caching, relaxed governance.
+#
+# extraction:
+#   max_facts: 10
+#   min_importance: 1
+#
+# retrieval:
+#   default_k: 25
+#   similarity_threshold: 0.10
+#   max_graph_depth: 3
+#
+# cache:
+#   ttl_seconds: 600
+#   max_entries: 4096
+#
+# governance:
+#   min_content_length: 1
+#
+# logging:
+#   level: WARNING
+#   log_causal: false
+
+
+# ── Scenario 6: Strict analysis mode ──────────────────────────────────────
+#
+# High-confidence answers only. Tight filtering, authoritative sources only.
+#
+# extraction:
+#   max_facts: 3
+#   min_importance: 7
+#
+# retrieval:
+#   default_k: 5
+#   similarity_threshold: 0.50
+#   entity_boost: 3.0
+#   max_graph_depth: 1
+#
+# synthesis:
+#   default_format: synthesized_brief
+#   tier_filter:
+#     - A
+#
+# logging:
+#   level: DEBUG
+#   log_intents: true

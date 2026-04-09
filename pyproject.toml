@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "zettelforge"
-version = "1.5.0"
+version = "2.0.0"
 description = "ZettelForge: Agentic Memory System with vector search, knowledge graph, and synthesis"
 readme = "README.md"
 license = {text = "MIT"}
@@ -30,6 +30,7 @@ dependencies = [
     "numpy>=1.24.0",
     "requests>=2.31.0",
     "tantivy>=0.11.0",
+    "typedb-driver>=3.8.0",
 ]
 
 [project.optional-dependencies]

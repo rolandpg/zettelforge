@@ -1,0 +1,17 @@
+services:
+  typedb:
+    image: typedb/typedb:latest
+    ports:
+      - "1729:1729"
+      - "8100:8000"
+    volumes:
+      - typedb-data:/opt/typedb/server/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  typedb-data:
