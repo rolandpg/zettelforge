@@ -118,10 +118,10 @@ class MemoryManager:
 
         Returns:
             List of (MemoryNote or None, status) tuples.
-            Status is one of: "added", "updated", "deleted", "noop".
+            Status is one of: "added", "updated", "corrected", "noop".
         """
         # Phase 1: Extraction
-        extractor = FactExtractor(max_facts=max_facts, min_importance=min_importance)
+        extractor = FactExtractor(max_facts=max_facts)
         facts = extractor.extract(content, context=context)
 
         # Filter by importance

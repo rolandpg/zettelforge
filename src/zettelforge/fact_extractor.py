@@ -26,11 +26,9 @@ class FactExtractor:
         self,
         model: str = "qwen2.5:3b",
         max_facts: int = 5,
-        min_importance: int = 3,
     ):
         self.model = model
         self.max_facts = max_facts
-        self.min_importance = min_importance
 
     def extract(
         self,
@@ -90,7 +88,10 @@ class FactExtractor:
         for item in parsed:
             if isinstance(item, dict):
                 text = item.get("fact", "").strip()
-                importance = int(item.get("importance", 5))
+                try:
+                    importance = int(item.get("importance", 5))
+                except (ValueError, TypeError):
+                    importance = 5
                 importance = max(1, min(10, importance))
                 if text:
                     facts.append(ExtractedFact(text=text, importance=importance))
