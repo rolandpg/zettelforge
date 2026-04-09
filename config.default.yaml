@@ -1,0 +1,87 @@
+# ZettelForge Configuration
+# ========================
+# Copy this file to config.yaml and customize.
+# Environment variables override config.yaml values.
+# config.yaml overrides these defaults.
+
+# ── Storage ────────────────────────────────────────────────
+storage:
+  # Directory for LanceDB vectors, JSONL notes, entity index
+  data_dir: ~/.amem
+
+# ── TypeDB (Ontology Layer) ────────────────────────────────
+typedb:
+  host: localhost
+  port: 1729
+  database: zettelforge
+  username: admin
+  password: password
+
+# ── Knowledge Graph Backend ────────────────────────────────
+# "typedb" = use TypeDB (requires running server)
+# "jsonl"  = use JSONL files (no external dependencies)
+backend: typedb
+
+# ── Embeddings ─────────────────────────────────────────────
+embedding:
+  # Ollama or llama.cpp endpoint
+  url: http://127.0.0.1:11434
+  model: nomic-embed-text-v2-moe:latest
+  dimensions: 768
+
+# ── LLM (for extraction, classification, synthesis) ────────
+llm:
+  model: qwen2.5:3b
+  # Ollama endpoint (usually same as embedding url)
+  url: http://localhost:11434
+  temperature: 0.1
+
+# ── Two-Phase Pipeline ─────────────────────────────────────
+extraction:
+  max_facts: 5
+  min_importance: 3
+
+# ── Retrieval ──────────────────────────────────────────────
+retrieval:
+  # Default top-k for recall()
+  default_k: 10
+  # Vector similarity threshold (0.0 - 1.0)
+  similarity_threshold: 0.25
+  # Entity co-occurrence boost multiplier
+  entity_boost: 2.5
+  # Graph traversal max depth
+  max_graph_depth: 2
+
+# ── Synthesis ──────────────────────────────────────────────
+synthesis:
+  # Max tokens of context to feed the LLM
+  max_context_tokens: 3000
+  # Default output format
+  default_format: direct_answer
+  # Tier filter (A=authoritative, B=operational, C=support)
+  tier_filter:
+    - A
+    - B
+
+# ── Governance ─────────────────────────────────────────────
+governance:
+  # Enable governance validation on remember/recall
+  enabled: true
+  # Minimum content length for remember()
+  min_content_length: 1
+
+# ── Cache ──────────────────────────────────────────────────
+cache:
+  # TypeDB query cache TTL in seconds
+  ttl_seconds: 300
+  # Max cached entries
+  max_entries: 1024
+
+# ── Logging ────────────────────────────────────────────────
+logging:
+  # Log level: DEBUG, INFO, WARNING, ERROR
+  level: INFO
+  # Log intent classification decisions
+  log_intents: true
+  # Log causal triple extraction
+  log_causal: true
