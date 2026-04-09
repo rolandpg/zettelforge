@@ -1,0 +1,24 @@
+define
+
+# ── TypeDB 3.x Functions (replace 2.x rules) ──────────────
+# Functions enable reusable query patterns.
+# For inference-like behavior, use these in match clauses.
+
+# Get all aliases for a threat actor (transitive via alias-of chain)
+fun get_aliases($actor: threat-actor) -> { threat-actor }:
+    match
+        (canonical: $actor, aliased: $a) isa alias-of;
+    return { $a };
+
+# Get all tools/malware used by a threat actor (direct + via campaigns)
+fun get_tools_used($actor: threat-actor) -> { malware }:
+    match
+        (user: $actor, used: $m) isa uses;
+        $m isa malware;
+    return { $m };
+
+# Get all notes mentioning a STIX entity
+fun get_entity_notes($sdo: stix-domain-object) -> { zettel-note }:
+    match
+        (mentioned-entity: $sdo, note: $n) isa mentioned-in;
+    return { $n };
