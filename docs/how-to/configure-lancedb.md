@@ -15,7 +15,6 @@ Configure LanceDB vector search for optimal retrieval quality. Adjust embedding 
 ## Prerequisites
 
 - ZettelForge installed (`pip install zettelforge`)
-- Ollama running with an embedding model
 - Stored notes to test against (see [Store Threat Actor](store-threat-actor.md))
 
 ## Steps
@@ -26,26 +25,25 @@ Edit `config.yaml`:
 
 ```yaml
 embedding:
-  url: http://127.0.0.1:11434
-  model: nomic-embed-text-v2-moe:latest
+  provider: fastembed
+  model: nomic-embed-text-v1.5-Q
   dimensions: 768
 ```
 
 Or set via environment variables:
 
 ```bash
-export AMEM_EMBEDDING_URL=http://127.0.0.1:11434
-export AMEM_EMBEDDING_MODEL=nomic-embed-text-v2-moe:latest
+export ZETTELFORGE_EMBEDDING_PROVIDER=fastembed
+export AMEM_EMBEDDING_MODEL=nomic-embed-text-v1.5-Q
 ```
 
 Supported configurations:
 
-| Provider | URL | Model | Dimensions |
-|----------|-----|-------|------------|
-| Ollama (default) | `http://127.0.0.1:11434` | `nomic-embed-text-v2-moe:latest` | 768 |
-| Ollama (alternative) | `http://127.0.0.1:11434` | `nomic-embed-text` | 768 |
-| llama.cpp server | `http://127.0.0.1:8081` | `nomic-embed-text-v2-moe.gguf` | 768 |
-| Remote GPU | `http://gpu-box:11434` | `nomic-embed-text-v2-moe:latest` | 768 |
+| Provider | Config value | Model | Dimensions | Notes |
+|----------|-------------|-------|------------|-------|
+| fastembed (default) | `fastembed` | `nomic-embed-text-v1.5-Q` | 768 | In-process ONNX, ~130 MB, ~7ms/embed |
+| Ollama (optional) | `ollama` | `nomic-embed-text-v2-moe:latest` | 768 | Requires Ollama running on `embedding.url` |
+| llama.cpp server | `ollama` | `nomic-embed-text-v2-moe.gguf` | 768 | Any Ollama-compatible API endpoint |
 
 > [!WARNING]
 > Changing the embedding model after data has been indexed requires a full re-index. Existing vectors become incompatible with new model embeddings. Run `python scripts/rebuild_index.py` after changing models.
@@ -157,13 +155,13 @@ python scripts/rebuild_index.py
 ```
 
 > [!WARNING]
-> Rebuilding the index re-embeds all notes. This requires the embedding server to be running and takes approximately 1 second per 100 notes on local Ollama.
+> Rebuilding the index re-embeds all notes. With the default fastembed provider this takes approximately 0.7 seconds per 100 notes.
 
 ## LLM Quick Reference
 
 **Task**: Configure and tune LanceDB vector search for CTI retrieval workloads.
 
-**Embedding config**: `embedding.url` (default `http://127.0.0.1:11434`), `embedding.model` (default `nomic-embed-text-v2-moe:latest`), `embedding.dimensions` (default 768). Env overrides: `AMEM_EMBEDDING_URL`, `AMEM_EMBEDDING_MODEL`.
+**Embedding config**: `embedding.provider` (default `fastembed`, alternative `ollama`), `embedding.model` (default `nomic-embed-text-v1.5-Q`), `embedding.dimensions` (default 768). Env overrides: `ZETTELFORGE_EMBEDDING_PROVIDER`, `AMEM_EMBEDDING_MODEL`. The default fastembed provider runs in-process via ONNX with no external service required.
 
 **Retrieval config**: `retrieval.default_k` (10), `retrieval.similarity_threshold` (0.25, range 0.0-1.0), `retrieval.entity_boost` (2.5, multiplicative per overlapping entity), `retrieval.max_graph_depth` (2, hops in KG traversal).
 

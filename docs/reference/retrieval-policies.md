@@ -99,7 +99,7 @@ score = cosine_similarity(query_vector, note_vector)
 
 Where `cosine_similarity(a, b) = dot(a, b) / (norm(a) * norm(b))`.
 
-Embedding model: `nomic-embed-text-v2-moe` (768 dimensions). Embeddings are generated via Ollama.
+Embedding model: `nomic-embed-text-v1.5-Q` (768 dimensions). Embeddings are generated in-process via fastembed (ONNX).
 
 ### Entity Boost
 

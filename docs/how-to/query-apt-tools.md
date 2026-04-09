@@ -15,7 +15,7 @@ Retrieve tool-usage relationships for a threat actor using blended vector + grap
 ## Prerequisites
 
 - ZettelForge with stored CTI data (see [Store Threat Actor](store-threat-actor.md))
-- Ollama running with embedding and LLM models
+- Embedding and LLM models available (download automatically on first use)
 
 ## Steps
 
@@ -133,7 +133,7 @@ for actor in actors:
 ```
 
 > [!WARNING]
-> `synthesize()` requires a running LLM (Ollama). If the LLM is unavailable, use `traverse_graph()` or `get_entity_relationships()` for graph-only queries that do not require generation.
+> `synthesize()` requires the LLM (loaded in-process by default). If the LLM is unavailable, use `traverse_graph()` or `get_entity_relationships()` for graph-only queries that do not require generation.
 
 ## LLM Quick Reference
 
