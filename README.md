@@ -18,7 +18,8 @@ A production-grade memory system for AI agents, purpose-built for cyber threat i
 - **RAG Synthesis**: Answer generation in multiple formats (direct answer, brief, timeline, relationship map)
 - **Report Ingestion**: `remember_report()` for chunked news/threat report processing with published date metadata
 - **Graceful Fallback**: If TypeDB is unavailable, automatically falls back to JSONL knowledge graph
-- **Local-First**: Runs entirely on local hardware -- Ollama for LLM, LanceDB for vectors, TypeDB in Docker
+- **Zero-Server Embeddings**: 768-dim vectors generated in-process via fastembed (ONNX, 7ms/embed) -- no Ollama needed for embeddings
+- **Local-First**: Runs entirely on local hardware -- Ollama for LLM only, LanceDB for vectors, TypeDB in Docker
 
 ## Quick Start
 
@@ -31,8 +32,7 @@ pip install -e ".[dev]"
 # Start TypeDB (ontology layer)
 docker compose -f docker/docker-compose.yml up -d
 
-# Start Ollama (embeddings + LLM)
-ollama pull nomic-embed-text
+# Start Ollama (LLM only — embeddings run locally via fastembed)
 ollama pull qwen2.5:3b
 ollama serve
 ```
@@ -151,8 +151,7 @@ python3 -c "from zettelforge.schema.seed_aliases import seed_aliases; seed_alias
 # Install Ollama
 curl -fsSL https://ollama.com/install.sh | sh
 
-# Pull required models
-ollama pull nomic-embed-text    # Embeddings (768-dim)
+# Pull LLM model (embeddings run locally via fastembed — no model pull needed)
 ollama pull qwen2.5:3b          # LLM for extraction, classification, synthesis
 
 # Start server (runs on port 11434)
@@ -164,7 +163,7 @@ ollama serve
 ```bash
 # Create .env or export these variables
 export AMEM_DATA_DIR=~/.amem                    # LanceDB data + JSONL notes
-export AMEM_EMBEDDING_URL=http://127.0.0.1:8081 # Embedding server (llama.cpp)
+export ZETTELFORGE_EMBEDDING_PROVIDER=fastembed   # In-process (default, no server)
 export TYPEDB_HOST=localhost                      # TypeDB gRPC host
 export TYPEDB_PORT=1729                           # TypeDB gRPC port
 export TYPEDB_DATABASE=zettelforge                # TypeDB database name
@@ -396,7 +395,7 @@ volumes:
 
 ```bash
 docker compose -f docker-compose.full.yml up -d
-# Then pull models: docker exec -it <ollama-container> ollama pull nomic-embed-text
+# Then pull LLM: docker exec -it <ollama-container> ollama pull qwen2.5:3b
 ```
 
 ## Configuration
@@ -404,8 +403,9 @@ docker compose -f docker-compose.full.yml up -d
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `AMEM_DATA_DIR` | `~/.amem` | LanceDB vectors + JSONL notes |
-| `AMEM_EMBEDDING_URL` | `http://127.0.0.1:8081` | Embedding server endpoint |
-| `AMEM_EMBEDDING_MODEL` | `nomic-embed-text-v2-moe.gguf` | Embedding model |
+| `ZETTELFORGE_EMBEDDING_PROVIDER` | `fastembed` | `fastembed` (in-process) or `ollama` (HTTP server) |
+| `AMEM_EMBEDDING_URL` | `http://127.0.0.1:11434` | Embedding server (only when provider=ollama) |
+| `AMEM_EMBEDDING_MODEL` | `nomic-ai/nomic-embed-text-v1.5-Q` | Embedding model |
 | `TYPEDB_HOST` | `localhost` | TypeDB gRPC host |
 | `TYPEDB_PORT` | `1729` | TypeDB gRPC port |
 | `TYPEDB_DATABASE` | `zettelforge` | TypeDB database name |
@@ -580,6 +580,7 @@ ruff check src/zettelforge/
 - [x] **STIX 2.1 schema with 9 entity types and 8 relation types**
 - [x] **TypeDB alias inference (36 CTI aliases seeded)**
 - [x] **Report ingestion with chunking (`remember_report()`)**
+- [x] **In-process embeddings via fastembed (no Ollama for embeddings)**
 - [ ] Conversational entity extractor (improve LOCOMO from 15% to ~30%)
 - [ ] CTIBench adapter fixes (ATT&CK DB cross-reference)
 - [ ] LLM-judge scoring for benchmarks
