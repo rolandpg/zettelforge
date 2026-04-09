@@ -160,7 +160,7 @@ class TestMemoryUpdaterApply:
                 source_ref="extraction:2",
                 similar_notes=[old_note],
             )
-            assert status == "deleted"
+            assert status == "corrected"
             refreshed_old = mm.store.get_note_by_id(old_note.id)
             assert refreshed_old.links.superseded_by is not None
 

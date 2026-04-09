@@ -81,7 +81,7 @@ class MemoryUpdater:
             self.mm.store._rewrite_note(note)
             if similar_notes:
                 self.mm.mark_note_superseded(similar_notes[0].id, note.id)
-            return note, "deleted"
+            return note, "corrected"
 
         return None, "unknown"
 

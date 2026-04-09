@@ -27,7 +27,7 @@ class TestRememberWithExtraction:
         )
         assert len(results) >= 1
         for note, status in results:
-            assert status in ("added", "updated", "deleted", "noop")
+            assert status in ("added", "updated", "corrected", "noop")
             if status != "noop":
                 assert note is not None
 
