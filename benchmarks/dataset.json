@@ -1,0 +1,30 @@
+[
+  {
+    "day": 1,
+    "content": "Threat intel report: A new threat actor named Fancy Bear has been observed targeting the manufacturing sector using a custom malware dropper called DROPBEAR."
+  },
+  {
+    "day": 2,
+    "content": "Incident ticket: Server ALPHA in the manufacturing plant was compromised. We found traces of DROPBEAR."
+  },
+  {
+    "day": 5,
+    "content": "Security bulletin: Server ALPHA has been successfully patched and the malware was eradicated. Server ALPHA is now considered secure."
+  },
+  {
+    "day": 10,
+    "content": "Industry report: Cybersecurity firm CrowdStrike has formally attributed the DROPBEAR campaigns to APT28. They note that Fancy Bear and APT28 are aliases for the same Russian GRU unit."
+  },
+  {
+    "day": 15,
+    "content": "Vulnerability scan: Detected CVE-2024-1111 on the main firewall. This is a critical remote code execution vulnerability."
+  },
+  {
+    "day": 16,
+    "content": "Patch deployment: The firewall vulnerability CVE-2024-1111 has been patched system-wide."
+  },
+  {
+    "day": 20,
+    "content": "Threat briefing: APT28 has shifted tactics. They are no longer using DROPBEAR and have moved exclusively to exploiting edge devices using compromised credentials."
+  }
+]
