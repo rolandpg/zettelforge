@@ -20,30 +20,17 @@ from zettelforge.knowledge_graph import get_knowledge_graph
 class NoteConstructor:
     """Construct enriched memory notes from raw content"""
 
-    ENTITY_PATTERNS = {
-        'cves': re.compile(r'(CVE-\d{4}-\d{4,})', re.IGNORECASE),
-        'actors': re.compile(
-            r'\b(apt\d+|apt\s+\d+|apt\s+[a-z]+|lazarus|sandworm|volt\s+typhoon|unc\d+|cozy\s+bear|fancy\s+bear)\b',
-            re.IGNORECASE
-        ),
-        'tools': re.compile(
-            r'\b(cobalt\s+strike|metasploit|mimikatz|bloodhound|empire|covenant)\b',
-            re.IGNORECASE
-        ),
-        'campaigns': re.compile(
-            r'\b(operation\s+\w+|campaign\s+\w+)\b',
-            re.IGNORECASE
-        ),
-    }
+    def __init__(self) -> None:
+        from zettelforge.entity_indexer import EntityExtractor
+        self._extractor = EntityExtractor()
 
-    def extract_entities(self, text: str) -> Dict[str, List[str]]:
-        """Extract entities from text using regex patterns."""
-        entities = {}
-        for entity_type, pattern in self.ENTITY_PATTERNS.items():
-            matches = pattern.findall(text)
-            # Normalize
-            entities[entity_type] = list(set(m.lower().replace(' ', '-') for m in matches))
-        return entities
+    def extract_entities(self, text: str, use_llm: bool = True) -> Dict[str, List[str]]:
+        """Extract entities from text by delegating to EntityExtractor.
+
+        This is now the single source of truth for entity extraction.
+        Uses regex for CTI types and LLM NER for conversational types.
+        """
+        return self._extractor.extract_all(text, use_llm=use_llm)
 
     def construct(
         self,
@@ -209,27 +196,48 @@ JSON:"""
         
         return edges_added
 
-    def _infer_entity_type(self, entity_value: str) -> str:
-        """Infer entity type from entity value string."""
+    def _infer_entity_type(self, entity_value: str, entity_type_hint: str = "") -> str:
+        """Infer entity type from entity value string.
+
+        Args:
+            entity_value: The entity text to classify.
+            entity_type_hint: Optional type hint from LLM NER output.
+
+        Returns:
+            Entity type string.
+        """
         entity_lower = entity_value.lower()
-        
+
+        # If LLM provided a type hint, trust it (already classified)
+        type_hints = {
+            "person", "location", "organization", "event", "activity", "temporal",
+        }
+        if entity_type_hint in type_hints:
+            return entity_type_hint
+
         # CVE pattern
-        if 'cve-' in entity_lower or re.match(r'cve-\d{4}-\d+', entity_lower, re.I):
-            return 'cve'
-        
+        if "cve-" in entity_lower or re.match(r"cve-\d{4}-\d+", entity_lower, re.I):
+            return "cve"
+
         # Threat actor patterns
-        actor_patterns = ['apt', 'lazarus', 'sandworm', 'fancy bear', 'cozy bear', 'volt typhoon', 'north korea']
+        actor_patterns = [
+            "apt", "lazarus", "sandworm", "fancy bear", "cozy bear",
+            "volt typhoon", "north korea",
+        ]
         if any(pat in entity_lower for pat in actor_patterns):
-            return 'actor'
-        
+            return "actor"
+
         # Tool patterns
-        tool_patterns = ['cobalt strike', 'metasploit', 'mimikatz', 'bloodhound', 'dropbear', 'empire']
+        tool_patterns = [
+            "cobalt strike", "metasploit", "mimikatz", "bloodhound",
+            "dropbear", "empire",
+        ]
         if any(pat in entity_lower for pat in tool_patterns):
-            return 'tool'
-        
+            return "tool"
+
         # Campaign patterns
-        if 'operation' in entity_lower or 'campaign' in entity_lower:
-            return 'campaign'
-        
+        if "operation" in entity_lower or "campaign" in entity_lower:
+            return "campaign"
+
         # Default to 'entity'
-        return 'entity'
+        return "entity"
