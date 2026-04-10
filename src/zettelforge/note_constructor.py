@@ -20,17 +20,11 @@ from zettelforge.knowledge_graph import get_knowledge_graph
 class NoteConstructor:
     """Construct enriched memory notes from raw content"""
 
-    def __init__(self) -> None:
+    def extract_entities(self, text: str) -> Dict[str, List[str]]:
+        """Extract entities from text using the shared EntityExtractor."""
         from zettelforge.entity_indexer import EntityExtractor
-        self._extractor = EntityExtractor()
-
-    def extract_entities(self, text: str, use_llm: bool = True) -> Dict[str, List[str]]:
-        """Extract entities from text by delegating to EntityExtractor.
-
-        This is now the single source of truth for entity extraction.
-        Uses regex for CTI types and LLM NER for conversational types.
-        """
-        return self._extractor.extract_all(text, use_llm=use_llm)
+        extractor = EntityExtractor()
+        return extractor.extract_all(text)
 
     def construct(
         self,
