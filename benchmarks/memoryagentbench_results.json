@@ -1,0 +1,30 @@
+{
+  "meta": {
+    "date": "2026-04-10T16:14:14.197107",
+    "version": "zettelforge-2.0.0",
+    "benchmark": "MemoryAgentBench (ICLR 2026)",
+    "splits": [
+      "CR"
+    ],
+    "limit": 3
+  },
+  "by_split": {
+    "CR": {
+      "split": "CR",
+      "n_rows": 3,
+      "n_questions": 300,
+      "f1": 0.0121,
+      "em": 0.0,
+      "substr_em": 0.03,
+      "rouge_l": 0.0104,
+      "ingest_time_s": 82.6,
+      "query_time_s": 51.3,
+      "avg_query_ms": 171.0
+    }
+  },
+  "overall": {
+    "f1": 0.0121,
+    "em": 0.0,
+    "rouge_l": 0.0104
+  }
+}
