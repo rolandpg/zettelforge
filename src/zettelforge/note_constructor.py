@@ -20,30 +20,11 @@ from zettelforge.knowledge_graph import get_knowledge_graph
 class NoteConstructor:
     """Construct enriched memory notes from raw content"""
 
-    ENTITY_PATTERNS = {
-        'cves': re.compile(r'(CVE-\d{4}-\d{4,})', re.IGNORECASE),
-        'actors': re.compile(
-            r'\b(apt\d+|apt\s+\d+|apt\s+[a-z]+|lazarus|sandworm|volt\s+typhoon|unc\d+|cozy\s+bear|fancy\s+bear)\b',
-            re.IGNORECASE
-        ),
-        'tools': re.compile(
-            r'\b(cobalt\s+strike|metasploit|mimikatz|bloodhound|empire|covenant)\b',
-            re.IGNORECASE
-        ),
-        'campaigns': re.compile(
-            r'\b(operation\s+\w+|campaign\s+\w+)\b',
-            re.IGNORECASE
-        ),
-    }
-
     def extract_entities(self, text: str) -> Dict[str, List[str]]:
-        """Extract entities from text using regex patterns."""
-        entities = {}
-        for entity_type, pattern in self.ENTITY_PATTERNS.items():
-            matches = pattern.findall(text)
-            # Normalize
-            entities[entity_type] = list(set(m.lower().replace(' ', '-') for m in matches))
-        return entities
+        """Extract entities from text using the shared EntityExtractor."""
+        from zettelforge.entity_indexer import EntityExtractor
+        extractor = EntityExtractor()
+        return extractor.extract_all(text)
 
     def construct(
         self,
