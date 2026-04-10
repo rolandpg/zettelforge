@@ -1,6 +1,6 @@
 {
   "meta": {
-    "date": "2026-04-09T19:09:13.530150",
+    "date": "2026-04-10T07:33:40.306251",
     "version": "zettelforge-2.0.0",
     "source": "AI4Sec/cti-bench (NeurIPS 2024)",
     "k": 10,
@@ -13,14 +13,14 @@
       "precision": 0.0,
       "recall": 0.0,
       "f1": 0.0,
-      "p50_latency_ms": 6873.5,
-      "ingest_duration_s": 341.0,
+      "p50_latency_ms": 1170.2,
+      "ingest_duration_s": 745.1,
       "details": [
         {
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 6.498795591003727,
+          "latency_s": 2.2317490680143237,
           "predicted": [],
           "ground_truth": [
             "T1070",
@@ -28,13 +28,13 @@
             "T1083",
             "T1573"
           ],
-          "retrieved_count": 10
+          "retrieved_count": 9
         },
         {
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 6.681814092997229,
+          "latency_s": 1.1822127269988414,
           "predicted": [],
           "ground_truth": [
             "T1057",
@@ -50,7 +50,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 7.380306968989316,
+          "latency_s": 1.4720443990081549,
           "predicted": [],
           "ground_truth": [
             "T1027",
@@ -67,7 +67,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 4.847563752991846,
+          "latency_s": 0.03948473499622196,
           "predicted": [],
           "ground_truth": [
             "T1404",
@@ -96,7 +96,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 5.426158916990971,
+          "latency_s": 0.04030560201499611,
           "predicted": [],
           "ground_truth": [
             "T1005",
@@ -112,7 +112,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 6.208421154995449,
+          "latency_s": 1.1139522869780194,
           "predicted": [],
           "ground_truth": [
             "T1059",
@@ -125,7 +125,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 7.1896295309998095,
+          "latency_s": 1.1179098860011436,
           "predicted": [],
           "ground_truth": [
             "T1016",
@@ -140,7 +140,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 7.6424587380024604,
+          "latency_s": 18.372882983007003,
           "predicted": [],
           "ground_truth": [
             "T1059",
@@ -157,7 +157,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 7.054429577983683,
+          "latency_s": 1.5647500299965031,
           "predicted": [],
           "ground_truth": [
             "T1404",
@@ -174,7 +174,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 7.136501349013997,
+          "latency_s": 0.9972773050249089,
           "predicted": [],
           "ground_truth": [
             "T1071",
@@ -192,7 +192,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 6.524618750001537,
+          "latency_s": 1.0904561059724074,
           "predicted": [],
           "ground_truth": [
             "T1016",
@@ -208,7 +208,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 7.132683815987548,
+          "latency_s": 1.09763526901952,
           "predicted": [],
           "ground_truth": [
             "T1398",
@@ -227,7 +227,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 7.7503326880105305,
+          "latency_s": 1.020423835987458,
           "predicted": [],
           "ground_truth": [
             "T1474"
@@ -238,7 +238,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 7.302067582990276,
+          "latency_s": 1.3206395310116932,
           "predicted": [],
           "ground_truth": [
             "T1005",
@@ -259,7 +259,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 7.115411578008207,
+          "latency_s": 1.3854994300054386,
           "predicted": [],
           "ground_truth": [
             "T1008",
@@ -277,7 +277,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 7.385010755999247,
+          "latency_s": 1.432810256985249,
           "predicted": [],
           "ground_truth": [
             "T1406",
@@ -296,7 +296,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 7.460280497994972,
+          "latency_s": 1.2375796790001914,
           "predicted": [],
           "ground_truth": [
             "T1426",
@@ -311,7 +311,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 7.3364705340063665,
+          "latency_s": 1.4404001080256421,
           "predicted": [],
           "ground_truth": [
             "T1406",
@@ -325,7 +325,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 5.692097386985552,
+          "latency_s": 1.4009058059891686,
           "predicted": [],
           "ground_truth": [
             "T1422",
@@ -338,7 +338,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 5.155891928996425,
+          "latency_s": 0.0424796890001744,
           "predicted": [],
           "ground_truth": [
             "T1036",
@@ -354,7 +354,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 6.046878599008778,
+          "latency_s": 1.1240953000087757,
           "predicted": [],
           "ground_truth": [
             "T1422",
@@ -372,7 +372,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 7.87506941499305,
+          "latency_s": 1.1389743780018762,
           "predicted": [],
           "ground_truth": [
             "T1407",
@@ -392,7 +392,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 7.269947852997575,
+          "latency_s": 7.3975621609715745,
           "predicted": [],
           "ground_truth": [
             "T1041",
@@ -409,7 +409,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 6.441644570004428,
+          "latency_s": 1.239269221026916,
           "predicted": [],
           "ground_truth": [
             "T1005",
@@ -427,7 +427,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 6.336774519993924,
+          "latency_s": 1.232238778989995,
           "predicted": [],
           "ground_truth": [
             "T1406",
@@ -447,7 +447,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 3.7490915569942445,
+          "latency_s": 0.04413257600390352,
           "predicted": [],
           "ground_truth": [
             "T1505"
@@ -458,7 +458,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 6.13074080098886,
+          "latency_s": 0.8494644660095219,
           "predicted": [],
           "ground_truth": [
             "T1053"
@@ -469,7 +469,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 8.154687498987187,
+          "latency_s": 1.0958473089849576,
           "predicted": [],
           "ground_truth": [
             "T1005",
@@ -487,7 +487,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 4.706909420987358,
+          "latency_s": 0.044773314002668485,
           "predicted": [],
           "ground_truth": [
             "T1059",
@@ -501,7 +501,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 3.548673223995138,
+          "latency_s": 6.3524134189938195,
           "predicted": [],
           "ground_truth": [
             "T1005",
@@ -520,7 +520,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 7.048059850989375,
+          "latency_s": 1.2631606189825106,
           "predicted": [],
           "ground_truth": [
             "T1059",
@@ -529,13 +529,13 @@
             "T1559",
             "T1573"
           ],
-          "retrieved_count": 10
+          "retrieved_count": 9
         },
         {
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 7.248502208007267,
+          "latency_s": 1.1691218150081113,
           "predicted": [],
           "ground_truth": [
             "T1010",
@@ -552,7 +552,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 6.743263862997992,
+          "latency_s": 1.3242930640117265,
           "predicted": [],
           "ground_truth": [
             "T1016",
@@ -567,7 +567,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 6.693932797992602,
+          "latency_s": 0.9217065350094344,
           "predicted": [],
           "ground_truth": [
             "T1027",
@@ -586,7 +586,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 6.846582286991179,
+          "latency_s": 1.0814129060017876,
           "predicted": [],
           "ground_truth": [
             "T1409",
@@ -601,7 +601,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 7.78308268301771,
+          "latency_s": 1.2368354669888504,
           "predicted": [],
           "ground_truth": [
             "T1005",
@@ -615,7 +615,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 7.124613052990753,
+          "latency_s": 2.494741347996751,
           "predicted": [],
           "ground_truth": [
             "T1005",
@@ -632,7 +632,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 6.468987043015659,
+          "latency_s": 1.0698609910032246,
           "predicted": [],
           "ground_truth": [
             "T1071",
@@ -647,7 +647,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 6.294359120016452,
+          "latency_s": 1.4242649619991425,
           "predicted": [],
           "ground_truth": [
             "T1001",
@@ -663,7 +663,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 6.554920333001064,
+          "latency_s": 1.133503142016707,
           "predicted": [],
           "ground_truth": [
             "T1059",
@@ -683,7 +683,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 8.100847074005287,
+          "latency_s": 1.0850718939909711,
           "predicted": [],
           "ground_truth": [
             "T1048",
@@ -698,7 +698,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 6.82959832000779,
+          "latency_s": 1.049476902000606,
           "predicted": [],
           "ground_truth": [
             "T1083",
@@ -712,7 +712,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 6.727363409008831,
+          "latency_s": 1.1314723980030976,
           "predicted": [],
           "ground_truth": [
             "T1005",
@@ -728,7 +728,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 6.3219699549954385,
+          "latency_s": 1.3616399989987258,
           "predicted": [],
           "ground_truth": [
             "T1071",
@@ -743,7 +743,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 8.267001008993248,
+          "latency_s": 1.1712843989953399,
           "predicted": [],
           "ground_truth": [
             "T1041",
@@ -762,7 +762,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 7.662253829999827,
+          "latency_s": 1.1267633569950704,
           "predicted": [],
           "ground_truth": [
             "T1071",
@@ -779,7 +779,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 6.314167517994065,
+          "latency_s": 1.198635873006424,
           "predicted": [],
           "ground_truth": [
             "T1082",
@@ -790,13 +790,13 @@
             "T1554",
             "T1573"
           ],
-          "retrieved_count": 10
+          "retrieved_count": 9
         },
         {
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 6.900352327997098,
+          "latency_s": 1.3921962379827164,
           "predicted": [],
           "ground_truth": [
             "T1409",
@@ -812,7 +812,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 8.203465544007486,
+          "latency_s": 2.735355177981546,
           "predicted": [],
           "ground_truth": [
             "T1003",
@@ -828,7 +828,7 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 7.069640725996578,
+          "latency_s": 1.0714972369896714,
           "predicted": [],
           "ground_truth": [
             "T1057",
