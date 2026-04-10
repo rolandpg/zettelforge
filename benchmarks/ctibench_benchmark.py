@@ -34,10 +34,7 @@ from pathlib import Path
 from datetime import datetime
 from typing import List, Dict, Set, Tuple, Optional
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "memory"))
-from memory_manager import MemoryManager
-
-__version__ = "1.5.0"
+from zettelforge import MemoryManager, __version__
 
 
 # -- Data Loading -------------------------------------------------------------
