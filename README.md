@@ -487,7 +487,7 @@ Evaluated across three benchmark suites (2026-04-09):
 
 | Benchmark | What it measures | Key result |
 |-----------|-----------------|------------|
-| [LOCOMO](https://snap-research.github.io/locomo/) (ACL 2024) | Conversational memory recall | 15.0% accuracy, 0.33 avg score |
+| [LOCOMO](https://snap-research.github.io/locomo/) (ACL 2024) | Conversational memory recall | 18.0% accuracy, 0.37 avg score |
 | [CTIBench](https://huggingface.co/datasets/AI4Sec/cti-bench) (NeurIPS 2024) | CTI entity extraction & attribution | Baseline established |
 | RAGAS | Retrieval quality | 75.9% keyword presence |
 
@@ -500,7 +500,7 @@ Evaluated across three benchmark suites (2026-04-09):
 | temporal | 0.0% | 0.0% | -- |
 | open-domain | 30.0% | 30.0% | avg_score +0.025 |
 | adversarial | 35.0% | 35.0% | -- |
-| **Overall** | **14.0%** | **15.0%** | **+1pp, p95 latency 190s -> 1.3s** |
+| **Overall** | **14.0%** | **15.0%** | **v2.0.0: 18.0% (+4pp total)** |
 
 See the [full benchmark report](benchmarks/BENCHMARK_REPORT.md) for analysis and roadmap.
 
