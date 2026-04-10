@@ -190,27 +190,48 @@ JSON:"""
         
         return edges_added
 
-    def _infer_entity_type(self, entity_value: str) -> str:
-        """Infer entity type from entity value string."""
+    def _infer_entity_type(self, entity_value: str, entity_type_hint: str = "") -> str:
+        """Infer entity type from entity value string.
+
+        Args:
+            entity_value: The entity text to classify.
+            entity_type_hint: Optional type hint from LLM NER output.
+
+        Returns:
+            Entity type string.
+        """
         entity_lower = entity_value.lower()
-        
+
+        # If LLM provided a type hint, trust it (already classified)
+        type_hints = {
+            "person", "location", "organization", "event", "activity", "temporal",
+        }
+        if entity_type_hint in type_hints:
+            return entity_type_hint
+
         # CVE pattern
-        if 'cve-' in entity_lower or re.match(r'cve-\d{4}-\d+', entity_lower, re.I):
-            return 'cve'
-        
+        if "cve-" in entity_lower or re.match(r"cve-\d{4}-\d+", entity_lower, re.I):
+            return "cve"
+
         # Threat actor patterns
-        actor_patterns = ['apt', 'lazarus', 'sandworm', 'fancy bear', 'cozy bear', 'volt typhoon', 'north korea']
+        actor_patterns = [
+            "apt", "lazarus", "sandworm", "fancy bear", "cozy bear",
+            "volt typhoon", "north korea",
+        ]
         if any(pat in entity_lower for pat in actor_patterns):
-            return 'actor'
-        
+            return "actor"
+
         # Tool patterns
-        tool_patterns = ['cobalt strike', 'metasploit', 'mimikatz', 'bloodhound', 'dropbear', 'empire']
+        tool_patterns = [
+            "cobalt strike", "metasploit", "mimikatz", "bloodhound",
+            "dropbear", "empire",
+        ]
         if any(pat in entity_lower for pat in tool_patterns):
-            return 'tool'
-        
+            return "tool"
+
         # Campaign patterns
-        if 'operation' in entity_lower or 'campaign' in entity_lower:
-            return 'campaign'
-        
+        if "operation" in entity_lower or "campaign" in entity_lower:
+            return "campaign"
+
         # Default to 'entity'
-        return 'entity'
+        return "entity"
