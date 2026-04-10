@@ -53,14 +53,54 @@ class EntityExtractor:
         '"activity": ["swimming"], "temporal": ["last Tuesday"]}'
     )
 
+    # Regex for conversational person names from dialogue format "Name: text"
+    _PERSON_PATTERN = re.compile(r'(?:^|\n)\s*([A-Z][a-z]{2,15}):', re.MULTILINE)
+
+    # Common words that match the person pattern but aren't names
+    _NAME_STOPWORDS = {
+        'the', 'and', 'but', 'for', 'not', 'you', 'all', 'can', 'had',
+        'her', 'was', 'one', 'our', 'out', 'are', 'has', 'his', 'how',
+        'note', 'text', 'content', 'context', 'session', 'conversation',
+        'hey', 'wow', 'thanks', 'yeah', 'sure', 'well', 'really',
+        'monday', 'tuesday', 'wednesday', 'thursday', 'friday',
+        'saturday', 'sunday', 'january', 'february', 'march', 'april',
+        'may', 'june', 'july', 'august', 'september', 'october',
+        'november', 'december',
+    }
+
+    # Regex for common locations
+    _LOCATION_PATTERN = re.compile(
+        r'\b(New\s+York|Los\s+Angeles|San\s+Francisco|Chicago|London|Paris|Tokyo|'
+        r'Barcelona|Bali|Hawaii|Alaska|Banff|Nashville|Austin|Seattle|Portland|'
+        r'Denver|Miami|Boston|Atlanta|Dallas|Toronto|Vancouver|Sydney|Melbourne|'
+        r'Amsterdam|Rome|Dublin|Edinburgh|Munich|Vienna|Prague|Budapest|Lisbon|'
+        r'Madrid|Singapore|Bangkok|Seoul|Mumbai|Shanghai|Beijing|Dubai|Cairo)\b',
+        re.IGNORECASE
+    )
+
     def extract_regex(self, text: str) -> Dict[str, List[str]]:
-        """Extract CTI entities using regex patterns. Fast-path, no LLM needed."""
+        """Extract CTI + conversational entities using regex. Fast, no LLM."""
         results: Dict[str, List[str]] = {}
+
+        # CTI entities
         for entity_type, pattern in self.REGEX_PATTERNS.items():
             matches = pattern.findall(text)
             results[entity_type] = list(
                 set(m.lower().replace(" ", "-") for m in matches)
             )
+
+        # Person names from dialogue format
+        person_matches = self._PERSON_PATTERN.findall(text)
+        persons = set()
+        for name in person_matches:
+            if name.lower() not in self._NAME_STOPWORDS and len(name) >= 3:
+                persons.add(name.lower())
+        results['person'] = list(persons)
+
+        # Locations
+        loc_matches = self._LOCATION_PATTERN.findall(text)
+        results['location'] = list(set(m.lower().replace(' ', '-') for m in loc_matches))
+
         return results
 
     def extract_llm(self, text: str) -> Dict[str, List[str]]:
@@ -139,7 +179,7 @@ class EntityExtractor:
 
         return results
 
-    def extract_all(self, text: str, use_llm: bool = True) -> Dict[str, List[str]]:
+    def extract_all(self, text: str, use_llm: bool = False) -> Dict[str, List[str]]:
         """Extract all entity types from text.
 
         Uses regex for CTI types (always) and LLM for conversational types
