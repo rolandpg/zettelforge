@@ -30,7 +30,8 @@ class QueryIntent(Enum):
 INTENT_KEYWORDS = {
     QueryIntent.FACTUAL: [
         'cve-', 'cve ', 'vulnerability', 'exploit', 'malware', 'tool',
-        'actor', 'apt', 'threat', 'what is', 'what was', 'which'
+        'actor', 'apt', 'threat', 'what is', 'what was', 'which',
+        'who is', 'what are', 'name', 'identify', 'list',
     ],
     QueryIntent.TEMPORAL: [
         'when', 'timeline', 'since', 'before', 'after', 'changed',
@@ -38,7 +39,8 @@ INTENT_KEYWORDS = {
     ],
     QueryIntent.RELATIONAL: [
         'who uses', 'who targets', 'who conducts', 'related to',
-        'connected to', 'associated with', 'linked to', 'uses tool'
+        'connected to', 'associated with', 'linked to', 'uses tool',
+        'between', 'relationship', 'connection', 'link',
     ],
     QueryIntent.CAUSAL: [
         'why', 'because', 'caused by', 'enables', 'leads to',
@@ -46,7 +48,8 @@ INTENT_KEYWORDS = {
     ],
     QueryIntent.EXPLORATORY: [
         'tell me about', 'explain', 'describe', 'overview',
-        'information on', 'details about', 'context'
+        'information on', 'details about', 'context',
+        'summarize', 'what do we know', 'brief',
     ]
 }
 
@@ -57,7 +60,7 @@ class IntentClassifier:
     Uses keyword matching + optional LLM for ambiguous cases.
     """
     
-    def __init__(self, use_llm_fallback: bool = True):
+    def __init__(self, use_llm_fallback: bool = False):
         self.use_llm_fallback = use_llm_fallback
         self._llm_client = None
     

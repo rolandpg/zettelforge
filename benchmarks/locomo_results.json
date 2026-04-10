@@ -1,6 +1,6 @@
 {
   "meta": {
-    "date": "2026-04-10T09:43:41.117126",
+    "date": "2026-04-10T11:23:40.143692",
     "version": "zettelforge-2.0.0",
     "dataset": "/home/rolandpg/.openclaw/workspace-nexus/Locomo-Plus/data/locomo10.json",
     "per_category": 20,
@@ -10,51 +10,51 @@
   "ingest": {
     "ingested": 272,
     "errors": 0,
-    "duration_s": 4709.07,
+    "duration_s": 4703.93,
     "rate_per_s": 0.1
   },
   "by_category": {
     "single-hop": {
-      "accuracy": 15.0,
-      "avg_score": 0.275,
-      "p50_latency_ms": 1888.5040934983408,
-      "p95_latency_ms": 3455.79397000256,
+      "accuracy": 10.0,
+      "avg_score": 0.2,
+      "p50_latency_ms": 175.24397950910497,
+      "p95_latency_ms": 223.77727899583988,
       "n": 20
     },
     "multi-hop": {
       "accuracy": 0.0,
       "avg_score": 0.15,
-      "p50_latency_ms": 1247.5857755052857,
-      "p95_latency_ms": 1951.3601580110844,
+      "p50_latency_ms": 149.3712834926555,
+      "p95_latency_ms": 255.54526899941266,
       "n": 20
     },
     "temporal": {
       "accuracy": 5.0,
       "avg_score": 0.225,
-      "p50_latency_ms": 1186.9450094964122,
-      "p95_latency_ms": 1467.951931990683,
+      "p50_latency_ms": 158.09829549107235,
+      "p95_latency_ms": 189.2000990046654,
       "n": 20
     },
     "open-domain": {
       "accuracy": 40.0,
       "avg_score": 0.625,
-      "p50_latency_ms": 1240.4265134973684,
-      "p95_latency_ms": 1529.301848000614,
+      "p50_latency_ms": 151.13102398754563,
+      "p95_latency_ms": 222.4908150092233,
       "n": 20
     },
     "adversarial": {
       "accuracy": 30.0,
       "avg_score": 0.575,
-      "p50_latency_ms": 1177.7837300178362,
-      "p95_latency_ms": 1431.7056320142,
+      "p50_latency_ms": 178.55968650837895,
+      "p95_latency_ms": 287.00961600407027,
       "n": 20
     }
   },
   "overall": {
-    "accuracy": 18.0,
-    "avg_score": 0.37,
-    "p50_latency_ms": 1240.4265134973684,
-    "p95_latency_ms": 2282.0464719843585,
+    "accuracy": 17.0,
+    "avg_score": 0.355,
+    "p50_latency_ms": 156.6466920048697,
+    "p95_latency_ms": 223.53660999215208,
     "total_samples": 100
   },
   "details": [
@@ -62,9 +62,9 @@
       "category": "single-hop",
       "question": "What did Caroline research?",
       "gold_answer": "Adoption agencies",
-      "predicted": "[1:14 pm on 25 May, 2023] Conversation session 2:\nMelanie: Hey Caroline, since we last chatted, I've had a lot of things happening to me. I ran a charity race for mental health last Saturday \u2013 it was really rewarding. Really made me think about taking care of our minds.\nCaroline: That charity race sounds great, Mel! Making a difference & raising awareness for mental health is super rewarding - I'm really proud of you for taking part!\nMelanie: Thanks, Caroline! The event was really thought-provok",
-      "score": 1.0,
-      "latency_s": 3.456,
+      "predicted": "[1:56 pm on 8 May, 2023] Conversation session 1:\nCaroline: Hey Mel! Good to see you! How have you been?\nMelanie: Hey Caroline! Good to see you! I'm swamped with the kids & work. What's up with you? Anything new?\nCaroline: I went to a LGBTQ support group yesterday and it was so powerful.\nMelanie: Wow, that's cool, Caroline! What happened that was so awesome? Did you hear any inspiring stories?\nCaroline: The transgender stories were so inspiring! I was so happy and thankful for all the support.\nMe",
+      "score": 0.0,
+      "latency_s": 0.211,
       "retrieved": 10
     },
     {
@@ -73,25 +73,25 @@
       "gold_answer": "Transgender woman",
       "predicted": "[1:56 pm on 8 May, 2023] Conversation session 1:\nCaroline: Hey Mel! Good to see you! How have you been?\nMelanie: Hey Caroline! Good to see you! I'm swamped with the kids & work. What's up with you? Anything new?\nCaroline: I went to a LGBTQ support group yesterday and it was so powerful.\nMelanie: Wow, that's cool, Caroline! What happened that was so awesome? Did you hear any inspiring stories?\nCaroline: The transgender stories were so inspiring! I was so happy and thankful for all the support.\nMe",
       "score": 0.5,
-      "latency_s": 2.282,
+      "latency_s": 0.107,
       "retrieved": 10
     },
     {
       "category": "single-hop",
       "question": "What is Caroline's relationship status?",
       "gold_answer": "Single",
-      "predicted": "[9:55 am on 22 October, 2023] Conversation session 19:\nCaroline: Woohoo Melanie! I passed the adoption agency interviews last Friday! I'm so excited and thankful. This is a big move towards my goal of having a family.\nMelanie: Congrats, Caroline! Adoption sounds awesome. I'm so happy for you. These figurines I bought yesterday remind me of family love. Tell me, what's your vision for the future?\nCaroline: Thanks so much, Melanie! It's beautiful! It really brings home how much love's in families ",
+      "predicted": "[8:56 pm on 20 July, 2023] Conversation session 10:\nCaroline: Hey Melanie! Just wanted to say hi!\nMelanie: Hey Caroline! Good to talk to you again. What's up? Anything new since last time?\nCaroline: Hey Mel! A lot's happened since we last chatted - I just joined a new LGBTQ activist group last Tues. I'm meeting so many cool people who are as passionate as I am about rights and community support. I'm giving my voice and making a real difference, plus it's fulfilling in so many ways. It's just gre",
       "score": 0.0,
-      "latency_s": 1.589,
+      "latency_s": 0.154,
       "retrieved": 10
     },
     {
       "category": "single-hop",
       "question": "Where did Caroline move from 4 years ago?",
       "gold_answer": "Sweden",
-      "predicted": "[4:33 pm on 12 July, 2023] Conversation session 7:\nCaroline: Hey Mel, great to chat with you again! So much has happened since we last spoke - I went to an LGBTQ conference two days ago and it was really special. I got the chance to meet and connect with people who've gone through similar journeys. It was such a welcoming environment and I felt totally accepted. I'm really thankful for this amazing community - it's shown me how important it is to fight for trans rights and spread awareness.\nMela",
+      "predicted": "[7:55 pm on 9 June, 2023] Conversation session 3:\nCaroline: Hey Melanie! How's it going? I wanted to tell you about my school event last week. It was awesome! I talked about my transgender journey and encouraged students to get involved in the LGBTQ community. It was great to see their reactions. It made me reflect on how far I've come since I started transitioning three years ago.\nMelanie: Hey Caroline! Great to hear from you. Sounds like your event was amazing! I'm so proud of you for spreadin",
       "score": 0.0,
-      "latency_s": 2.127,
+      "latency_s": 0.192,
       "retrieved": 10
     },
     {
@@ -100,7 +100,7 @@
       "gold_answer": "counseling or mental health for Transgender people",
       "predicted": "[8:18 pm on 6 July, 2023] Conversation session 6:\nCaroline: Hey Mel! Long time no talk. Lots has been going on since then!\nMelanie: Hey Caroline! Missed you. Anything new? Spill the beans!\nCaroline: Since our last chat, I've been looking into counseling or mental health work more. I'm passionate about helping people and making a positive impact. It's tough, but really rewarding too. Anything new happening with you?\nMelanie: That's awesome, Caroline! Congrats on following your dreams. Yesterday I",
       "score": 1.0,
-      "latency_s": 1.714,
+      "latency_s": 0.216,
       "retrieved": 10
     },
     {
@@ -109,16 +109,16 @@
       "gold_answer": "pottery, camping, painting, swimming",
       "predicted": "[2:31 pm on 17 July, 2023] Conversation session 9:\nMelanie: Hey Caroline, hope all's good! I had a quiet weekend after we went camping with my fam two weekends ago. It was great to unplug and hang with the kids. What've you been up to? Anything fun over the weekend?\nCaroline: Hey Melanie! That sounds great! Last weekend I joined a mentorship program for LGBTQ youth - it's really rewarding to help the community.\nMelanie: Wow, Caroline! It's great that you're helping out. How's it going? Got any c",
       "score": 0.0,
-      "latency_s": 1.87,
+      "latency_s": 0.224,
       "retrieved": 10
     },
     {
       "category": "single-hop",
       "question": "Where has Melanie camped?",
       "gold_answer": "beach, mountains, forest",
-      "predicted": "[12:09 am on 13 September, 2023] Conversation session 16:\nCaroline: Hey Mel, long time no chat! I had a wicked day out with the gang last weekend - we went biking and saw some pretty cool stuff. It was so refreshing, and the pic I'm sending is just stunning, eh?\nMelanie: Hey Caroline! It's so good to hear from you! That pic is so beautiful, the colors really pop. Biking sounds like a great way to get out in nature. We went camping with the kids a few weeks ago, had a blast exploring the forest a",
-      "score": 0.5,
-      "latency_s": 2.464,
+      "predicted": "[2:31 pm on 17 July, 2023] Conversation session 9:\nMelanie: Hey Caroline, hope all's good! I had a quiet weekend after we went camping with my fam two weekends ago. It was great to unplug and hang with the kids. What've you been up to? Anything fun over the weekend?\nCaroline: Hey Melanie! That sounds great! Last weekend I joined a mentorship program for LGBTQ youth - it's really rewarding to help the community.\nMelanie: Wow, Caroline! It's great that you're helping out. How's it going? Got any c",
+      "score": 0.0,
+      "latency_s": 0.21,
       "retrieved": 10
     },
     {
@@ -127,7 +127,7 @@
       "gold_answer": "dinosaurs, nature",
       "predicted": "[1:51 pm on 15 July, 2023] Conversation session 8:\nCaroline: Hey Mel, what's up? Been a busy week since we talked.\nMelanie: Hey Caroline, it's been super busy here. So much since we talked! Last Fri I finally took my kids to a pottery workshop. We all made our own pots, it was fun and therapeutic!\nCaroline: Wow, Mel! Sounds like you and the kids had a blast. How'd they like it?\nMelanie: The kids loved it! They were so excited to get their hands dirty and make something with clay. It was special ",
       "score": 0.0,
-      "latency_s": 1.744,
+      "latency_s": 0.172,
       "retrieved": 10
     },
     {
@@ -136,16 +136,16 @@
       "gold_answer": "\"Nothing is Impossible\", \"Charlotte's Web\"",
       "predicted": "[10:37 am on 27 June, 2023] Conversation session 4:\nCaroline: Hey Melanie! Long time no talk! A lot's been going on in my life! Take a look at this.\nMelanie: Hey, Caroline! Nice to hear from you! Love the necklace, any special meaning to it?\nCaroline: Thanks, Melanie! This necklace is super special to me - a gift from my grandma in my home country, Sweden. She gave it to me when I was young, and it stands for love, faith and strength. It's like a reminder of my roots and all the love and support",
       "score": 0.0,
-      "latency_s": 1.778,
+      "latency_s": 0.212,
       "retrieved": 10
     },
     {
       "category": "single-hop",
       "question": "What does Melanie do to destress?",
       "gold_answer": "Running, pottery",
-      "predicted": "[2:31 pm on 17 July, 2023] Conversation session 9:\nMelanie: Hey Caroline, hope all's good! I had a quiet weekend after we went camping with my fam two weekends ago. It was great to unplug and hang with the kids. What've you been up to? Anything fun over the weekend?\nCaroline: Hey Melanie! That sounds great! Last weekend I joined a mentorship program for LGBTQ youth - it's really rewarding to help the community.\nMelanie: Wow, Caroline! It's great that you're helping out. How's it going? Got any c",
+      "predicted": "[8:18 pm on 6 July, 2023] Conversation session 6:\nCaroline: Hey Mel! Long time no talk. Lots has been going on since then!\nMelanie: Hey Caroline! Missed you. Anything new? Spill the beans!\nCaroline: Since our last chat, I've been looking into counseling or mental health work more. I'm passionate about helping people and making a positive impact. It's tough, but really rewarding too. Anything new happening with you?\nMelanie: That's awesome, Caroline! Congrats on following your dreams. Yesterday I",
       "score": 0.0,
-      "latency_s": 1.907,
+      "latency_s": 0.182,
       "retrieved": 10
     },
     {
@@ -154,7 +154,7 @@
       "gold_answer": "Pride parade, school speech, support group",
       "predicted": "[1:36 pm on 3 July, 2023] Conversation session 5:\nCaroline: Since we last spoke, some big things have happened. Last week I went to an LGBTQ+ pride parade. Everyone was so happy and it made me feel like I belonged. It showed me how much our community has grown, it was amazing!\nMelanie: Wow, Caroline, sounds like the parade was an awesome experience! It's great to see the love and support for the LGBTQ+ community. Congrats! Has this experience influenced your goals at all?\nCaroline: Thanks, Mel! ",
       "score": 0.5,
-      "latency_s": 1.838,
+      "latency_s": 0.12,
       "retrieved": 10
     },
     {
@@ -163,7 +163,7 @@
       "gold_answer": "Mentoring program, school speech",
       "predicted": "[2:24 pm on 14 August, 2023] Conversation session 11:\nMelanie: Hey Caroline! Last night was amazing! We celebrated my daughter's birthday with a concert surrounded by music, joy and the warm summer breeze. Seeing my kids' smiles was so awesome, and I'm so thankful for our special moments together.\nCaroline: Wow, sounds wonderful! Your love for your kids is so awesome. What concert was it? The advocacy event was a cool experience - so much love and support, amazing!\nMelanie: Thanks, Caroline! It ",
       "score": 0.0,
-      "latency_s": 1.231,
+      "latency_s": 0.107,
       "retrieved": 10
     },
     {
@@ -172,16 +172,16 @@
       "gold_answer": "sunset",
       "predicted": "[1:50 pm on 17 August, 2023] Conversation session 12:\nCaroline: Hey Mel! How're ya doin'? Recently, I had a not-so-great experience on a hike. I ran into a group of religious conservatives who said something that really upset me. It made me think how much work we still have to do for LGBTQ rights. It's been so helpful to have people around me who accept and support me, so I know I'll be ok!\nMelanie: Hey Caroline, sorry about the hike. It sucks when people are so closed-minded. Strong support rea",
       "score": 0.0,
-      "latency_s": 1.125,
+      "latency_s": 0.098,
       "retrieved": 10
     },
     {
       "category": "single-hop",
       "question": "What activities has Melanie done with her family?",
       "gold_answer": "Pottery, painting, camping, museum, swimming, hiking",
-      "predicted": "[3:19 pm on 28 August, 2023] Conversation session 15:\nCaroline: Hey Melanie, great to hear from you. What's been up since we talked?\nMelanie: Hey Caroline! Since we last spoke, I took my kids to a park yesterday. They had fun exploring and playing. It was nice seeing them have a good time outdoors. Time flies, huh? What's new with you?\nCaroline: Wow, your kids had so much fun at the park! Being outdoors can be really enjoyable. A lot happened since our last chat. I've been chasing my ambitions a",
+      "predicted": "[2:31 pm on 17 July, 2023] Conversation session 9:\nMelanie: Hey Caroline, hope all's good! I had a quiet weekend after we went camping with my fam two weekends ago. It was great to unplug and hang with the kids. What've you been up to? Anything fun over the weekend?\nCaroline: Hey Melanie! That sounds great! Last weekend I joined a mentorship program for LGBTQ youth - it's really rewarding to help the community.\nMelanie: Wow, Caroline! It's great that you're helping out. How's it going? Got any c",
       "score": 0.0,
-      "latency_s": 1.599,
+      "latency_s": 0.136,
       "retrieved": 10
     },
     {
@@ -190,16 +190,16 @@
       "gold_answer": "Joining activist group, going to pride parades, participating in an art show, mentoring program",
       "predicted": "[8:56 pm on 20 July, 2023] Conversation session 10:\nCaroline: Hey Melanie! Just wanted to say hi!\nMelanie: Hey Caroline! Good to talk to you again. What's up? Anything new since last time?\nCaroline: Hey Mel! A lot's happened since we last chatted - I just joined a new LGBTQ activist group last Tues. I'm meeting so many cool people who are as passionate as I am about rights and community support. I'm giving my voice and making a real difference, plus it's fulfilling in so many ways. It's just gre",
       "score": 0.5,
-      "latency_s": 2.228,
+      "latency_s": 0.135,
       "retrieved": 10
     },
     {
       "category": "single-hop",
       "question": "How many times has Melanie gone to the beach in 2023?",
       "gold_answer": "2",
-      "predicted": "[1:33 pm on 25 August, 2023] Conversation session 14:\nCaroline: Hey, Mel! How's it going? There's something I want to tell you. I went hiking last week and got into a bad spot with some people. It really bugged me, so I tried to apologize to them.\nMelanie: Wow, Caroline! Sorry that happened to you. It's tough when those things happen, but it's great you apologized. Takes a lot of courage and maturity! What do you think of this?\nCaroline: Thanks, Melanie! That plate is awesome! Did you make it?\nM",
+      "predicted": "[3:19 pm on 28 August, 2023] Conversation session 15:\nCaroline: Hey Melanie, great to hear from you. What's been up since we talked?\nMelanie: Hey Caroline! Since we last spoke, I took my kids to a park yesterday. They had fun exploring and playing. It was nice seeing them have a good time outdoors. Time flies, huh? What's new with you?\nCaroline: Wow, your kids had so much fun at the park! Being outdoors can be really enjoyable. A lot happened since our last chat. I've been chasing my ambitions a",
       "score": 1.0,
-      "latency_s": 2.282,
+      "latency_s": 0.185,
       "retrieved": 10
     },
     {
@@ -208,7 +208,7 @@
       "gold_answer": "abstract art",
       "predicted": "[1:51 pm on 15 July, 2023] Conversation session 8:\nCaroline: Hey Mel, what's up? Been a busy week since we talked.\nMelanie: Hey Caroline, it's been super busy here. So much since we talked! Last Fri I finally took my kids to a pottery workshop. We all made our own pots, it was fun and therapeutic!\nCaroline: Wow, Mel! Sounds like you and the kids had a blast. How'd they like it?\nMelanie: The kids loved it! They were so excited to get their hands dirty and make something with clay. It was special ",
       "score": 0.0,
-      "latency_s": 1.919,
+      "latency_s": 0.216,
       "retrieved": 10
     },
     {
@@ -217,7 +217,7 @@
       "gold_answer": "Her mentors, family, and friends",
       "predicted": "[1:50 pm on 17 August, 2023] Conversation session 12:\nCaroline: Hey Mel! How're ya doin'? Recently, I had a not-so-great experience on a hike. I ran into a group of religious conservatives who said something that really upset me. It made me think how much work we still have to do for LGBTQ rights. It's been so helpful to have people around me who accept and support me, so I know I'll be ok!\nMelanie: Hey Caroline, sorry about the hike. It sucks when people are so closed-minded. Strong support rea",
       "score": 0.0,
-      "latency_s": 2.138,
+      "latency_s": 0.178,
       "retrieved": 10
     },
     {
@@ -226,7 +226,7 @@
       "gold_answer": "bowls, cup",
       "predicted": "[1:51 pm on 15 July, 2023] Conversation session 8:\nCaroline: Hey Mel, what's up? Been a busy week since we talked.\nMelanie: Hey Caroline, it's been super busy here. So much since we talked! Last Fri I finally took my kids to a pottery workshop. We all made our own pots, it was fun and therapeutic!\nCaroline: Wow, Mel! Sounds like you and the kids had a blast. How'd they like it?\nMelanie: The kids loved it! They were so excited to get their hands dirty and make something with clay. It was special ",
       "score": 0.5,
-      "latency_s": 2.339,
+      "latency_s": 0.156,
       "retrieved": 10
     },
     {
@@ -235,7 +235,7 @@
       "gold_answer": "Horse, sunset, sunrise",
       "predicted": "[10:37 am on 27 June, 2023] Conversation session 4:\nCaroline: Hey Melanie! Long time no talk! A lot's been going on in my life! Take a look at this.\nMelanie: Hey, Caroline! Nice to hear from you! Love the necklace, any special meaning to it?\nCaroline: Thanks, Melanie! This necklace is super special to me - a gift from my grandma in my home country, Sweden. She gave it to me when I was young, and it stands for love, faith and strength. It's like a reminder of my roots and all the love and support",
       "score": 0.0,
-      "latency_s": 1.83,
+      "latency_s": 0.157,
       "retrieved": 10
     },
     {
@@ -244,7 +244,7 @@
       "gold_answer": "7 May 2023",
       "predicted": "[1:56 pm on 8 May, 2023] Conversation session 1:\nCaroline: Hey Mel! Good to see you! How have you been?\nMelanie: Hey Caroline! Good to see you! I'm swamped with the kids & work. What's up with you? Anything new?\nCaroline: I went to a LGBTQ support group yesterday and it was so powerful.\nMelanie: Wow, that's cool, Caroline! What happened that was so awesome? Did you hear any inspiring stories?\nCaroline: The transgender stories were so inspiring! I was so happy and thankful for all the support.\nMe",
       "score": 0.0,
-      "latency_s": 1.811,
+      "latency_s": 0.117,
       "retrieved": 10
     },
     {
@@ -253,7 +253,7 @@
       "gold_answer": "2022",
       "predicted": "[1:33 pm on 25 August, 2023] Conversation session 14:\nCaroline: Hey, Mel! How's it going? There's something I want to tell you. I went hiking last week and got into a bad spot with some people. It really bugged me, so I tried to apologize to them.\nMelanie: Wow, Caroline! Sorry that happened to you. It's tough when those things happen, but it's great you apologized. Takes a lot of courage and maturity! What do you think of this?\nCaroline: Thanks, Melanie! That plate is awesome! Did you make it?\nM",
       "score": 0.0,
-      "latency_s": 1.827,
+      "latency_s": 0.191,
       "retrieved": 10
     },
     {
@@ -262,7 +262,7 @@
       "gold_answer": "The sunday before 25 May 2023",
       "predicted": "[1:14 pm on 25 May, 2023] Conversation session 2:\nMelanie: Hey Caroline, since we last chatted, I've had a lot of things happening to me. I ran a charity race for mental health last Saturday \u2013 it was really rewarding. Really made me think about taking care of our minds.\nCaroline: That charity race sounds great, Mel! Making a difference & raising awareness for mental health is super rewarding - I'm really proud of you for taking part!\nMelanie: Thanks, Caroline! The event was really thought-provok",
       "score": 0.5,
-      "latency_s": 1.951,
+      "latency_s": 0.139,
       "retrieved": 10
     },
     {
@@ -271,7 +271,7 @@
       "gold_answer": "June 2023",
       "predicted": "[2:31 pm on 17 July, 2023] Conversation session 9:\nMelanie: Hey Caroline, hope all's good! I had a quiet weekend after we went camping with my fam two weekends ago. It was great to unplug and hang with the kids. What've you been up to? Anything fun over the weekend?\nCaroline: Hey Melanie! That sounds great! Last weekend I joined a mentorship program for LGBTQ youth - it's really rewarding to help the community.\nMelanie: Wow, Caroline! It's great that you're helping out. How's it going? Got any c",
       "score": 0.0,
-      "latency_s": 1.851,
+      "latency_s": 0.256,
       "retrieved": 10
     },
     {
@@ -280,7 +280,7 @@
       "gold_answer": "The week before 9 June 2023",
       "predicted": "[7:55 pm on 9 June, 2023] Conversation session 3:\nCaroline: Hey Melanie! How's it going? I wanted to tell you about my school event last week. It was awesome! I talked about my transgender journey and encouraged students to get involved in the LGBTQ community. It was great to see their reactions. It made me reflect on how far I've come since I started transitioning three years ago.\nMelanie: Hey Caroline! Great to hear from you. Sounds like your event was amazing! I'm so proud of you for spreadin",
       "score": 0.5,
-      "latency_s": 1.897,
+      "latency_s": 0.13,
       "retrieved": 10
     },
     {
@@ -289,7 +289,7 @@
       "gold_answer": "The week before 9 June 2023",
       "predicted": "[10:31 am on 13 October, 2023] Conversation session 17:\nCaroline: Hey Mel, what's up? Long time no see! I just contacted my mentor for adoption advice. I'm ready to be a mom and share my love and family. It's a great feeling. Anything new with you? Anything exciting going on?\nMelanie: Hey Caroline! Great to hear from you! Wow, what an amazing journey. Congrats!\nCaroline: Thanks, Melanie! I'm stoked to start this new chapter. It's been a dream to adopt and provide a safe, loving home for kids who",
       "score": 0.0,
-      "latency_s": 1.936,
+      "latency_s": 0.101,
       "retrieved": 10
     },
     {
@@ -298,7 +298,7 @@
       "gold_answer": "4 years",
       "predicted": "[1:56 pm on 8 May, 2023] Conversation session 1:\nCaroline: Hey Mel! Good to see you! How have you been?\nMelanie: Hey Caroline! Good to see you! I'm swamped with the kids & work. What's up with you? Anything new?\nCaroline: I went to a LGBTQ support group yesterday and it was so powerful.\nMelanie: Wow, that's cool, Caroline! What happened that was so awesome? Did you hear any inspiring stories?\nCaroline: The transgender stories were so inspiring! I was so happy and thankful for all the support.\nMe",
       "score": 0.0,
-      "latency_s": 1.565,
+      "latency_s": 0.123,
       "retrieved": 10
     },
     {
@@ -307,7 +307,7 @@
       "gold_answer": "10 years ago",
       "predicted": "[2:24 pm on 14 August, 2023] Conversation session 11:\nMelanie: Hey Caroline! Last night was amazing! We celebrated my daughter's birthday with a concert surrounded by music, joy and the warm summer breeze. Seeing my kids' smiles was so awesome, and I'm so thankful for our special moments together.\nCaroline: Wow, sounds wonderful! Your love for your kids is so awesome. What concert was it? The advocacy event was a cool experience - so much love and support, amazing!\nMelanie: Thanks, Caroline! It ",
       "score": 0.0,
-      "latency_s": 1.14,
+      "latency_s": 0.098,
       "retrieved": 10
     },
     {
@@ -316,7 +316,7 @@
       "gold_answer": "2 July 2023",
       "predicted": "[1:51 pm on 15 July, 2023] Conversation session 8:\nCaroline: Hey Mel, what's up? Been a busy week since we talked.\nMelanie: Hey Caroline, it's been super busy here. So much since we talked! Last Fri I finally took my kids to a pottery workshop. We all made our own pots, it was fun and therapeutic!\nCaroline: Wow, Mel! Sounds like you and the kids had a blast. How'd they like it?\nMelanie: The kids loved it! They were so excited to get their hands dirty and make something with clay. It was special ",
       "score": 0.0,
-      "latency_s": 1.161,
+      "latency_s": 0.104,
       "retrieved": 10
     },
     {
@@ -325,16 +325,16 @@
       "gold_answer": "July 2023",
       "predicted": "[4:33 pm on 12 July, 2023] Conversation session 7:\nCaroline: Hey Mel, great to chat with you again! So much has happened since we last spoke - I went to an LGBTQ conference two days ago and it was really special. I got the chance to meet and connect with people who've gone through similar journeys. It was such a welcoming environment and I felt totally accepted. I'm really thankful for this amazing community - it's shown me how important it is to fight for trans rights and spread awareness.\nMela",
       "score": 0.0,
-      "latency_s": 1.125,
+      "latency_s": 0.147,
       "retrieved": 10
     },
     {
       "category": "multi-hop",
       "question": "When did Melanie go to the museum?",
       "gold_answer": "5 July 2023",
-      "predicted": "[10:37 am on 27 June, 2023] Conversation session 4:\nCaroline: Hey Melanie! Long time no talk! A lot's been going on in my life! Take a look at this.\nMelanie: Hey, Caroline! Nice to hear from you! Love the necklace, any special meaning to it?\nCaroline: Thanks, Melanie! This necklace is super special to me - a gift from my grandma in my home country, Sweden. She gave it to me when I was young, and it stands for love, faith and strength. It's like a reminder of my roots and all the love and support",
+      "predicted": "[1:56 pm on 8 May, 2023] Conversation session 1:\nCaroline: Hey Mel! Good to see you! How have you been?\nMelanie: Hey Caroline! Good to see you! I'm swamped with the kids & work. What's up with you? Anything new?\nCaroline: I went to a LGBTQ support group yesterday and it was so powerful.\nMelanie: Wow, that's cool, Caroline! What happened that was so awesome? Did you hear any inspiring stories?\nCaroline: The transgender stories were so inspiring! I was so happy and thankful for all the support.\nMe",
       "score": 0.0,
-      "latency_s": 1.173,
+      "latency_s": 0.15,
       "retrieved": 10
     },
     {
@@ -343,7 +343,7 @@
       "gold_answer": "The week before 6 July 2023",
       "predicted": "[3:19 pm on 28 August, 2023] Conversation session 15:\nCaroline: Hey Melanie, great to hear from you. What's been up since we talked?\nMelanie: Hey Caroline! Since we last spoke, I took my kids to a park yesterday. They had fun exploring and playing. It was nice seeing them have a good time outdoors. Time flies, huh? What's new with you?\nCaroline: Wow, your kids had so much fun at the park! Being outdoors can be really enjoyable. A lot happened since our last chat. I've been chasing my ambitions a",
       "score": 0.0,
-      "latency_s": 1.026,
+      "latency_s": 0.187,
       "retrieved": 10
     },
     {
@@ -352,7 +352,7 @@
       "gold_answer": "10 July 2023",
       "predicted": "[4:33 pm on 12 July, 2023] Conversation session 7:\nCaroline: Hey Mel, great to chat with you again! So much has happened since we last spoke - I went to an LGBTQ conference two days ago and it was really special. I got the chance to meet and connect with people who've gone through similar journeys. It was such a welcoming environment and I felt totally accepted. I'm really thankful for this amazing community - it's shown me how important it is to fight for trans rights and spread awareness.\nMela",
       "score": 0.0,
-      "latency_s": 1.1,
+      "latency_s": 0.183,
       "retrieved": 10
     },
     {
@@ -361,7 +361,7 @@
       "gold_answer": "2022",
       "predicted": "[10:37 am on 27 June, 2023] Conversation session 4:\nCaroline: Hey Melanie! Long time no talk! A lot's been going on in my life! Take a look at this.\nMelanie: Hey, Caroline! Nice to hear from you! Love the necklace, any special meaning to it?\nCaroline: Thanks, Melanie! This necklace is super special to me - a gift from my grandma in my home country, Sweden. She gave it to me when I was young, and it stands for love, faith and strength. It's like a reminder of my roots and all the love and support",
       "score": 0.0,
-      "latency_s": 1.575,
+      "latency_s": 0.149,
       "retrieved": 10
     },
     {
@@ -370,7 +370,7 @@
       "gold_answer": "The friday before 15 July 2023",
       "predicted": "[9:55 am on 22 October, 2023] Conversation session 19:\nCaroline: Woohoo Melanie! I passed the adoption agency interviews last Friday! I'm so excited and thankful. This is a big move towards my goal of having a family.\nMelanie: Congrats, Caroline! Adoption sounds awesome. I'm so happy for you. These figurines I bought yesterday remind me of family love. Tell me, what's your vision for the future?\nCaroline: Thanks so much, Melanie! It's beautiful! It really brings home how much love's in families ",
       "score": 0.0,
-      "latency_s": 1.196,
+      "latency_s": 0.146,
       "retrieved": 10
     },
     {
@@ -379,7 +379,7 @@
       "gold_answer": "The Friday before 15 July 2023",
       "predicted": "[1:51 pm on 15 July, 2023] Conversation session 8:\nCaroline: Hey Mel, what's up? Been a busy week since we talked.\nMelanie: Hey Caroline, it's been super busy here. So much since we talked! Last Fri I finally took my kids to a pottery workshop. We all made our own pots, it was fun and therapeutic!\nCaroline: Wow, Mel! Sounds like you and the kids had a blast. How'd they like it?\nMelanie: The kids loved it! They were so excited to get their hands dirty and make something with clay. It was special ",
       "score": 0.5,
-      "latency_s": 1.13,
+      "latency_s": 0.165,
       "retrieved": 10
     },
     {
@@ -388,7 +388,7 @@
       "gold_answer": "The week before 27 June 2023",
       "predicted": "[2:31 pm on 17 July, 2023] Conversation session 9:\nMelanie: Hey Caroline, hope all's good! I had a quiet weekend after we went camping with my fam two weekends ago. It was great to unplug and hang with the kids. What've you been up to? Anything fun over the weekend?\nCaroline: Hey Melanie! That sounds great! Last weekend I joined a mentorship program for LGBTQ youth - it's really rewarding to help the community.\nMelanie: Wow, Caroline! It's great that you're helping out. How's it going? Got any c",
       "score": 0.0,
-      "latency_s": 1.001,
+      "latency_s": 0.191,
       "retrieved": 10
     },
     {
@@ -397,7 +397,7 @@
       "gold_answer": "The week before 3 July 2023",
       "predicted": "[1:36 pm on 3 July, 2023] Conversation session 5:\nCaroline: Since we last spoke, some big things have happened. Last week I went to an LGBTQ+ pride parade. Everyone was so happy and it made me feel like I belonged. It showed me how much our community has grown, it was amazing!\nMelanie: Wow, Caroline, sounds like the parade was an awesome experience! It's great to see the love and support for the LGBTQ+ community. Congrats! Has this experience influenced your goals at all?\nCaroline: Thanks, Mel! ",
       "score": 0.5,
-      "latency_s": 1.268,
+      "latency_s": 0.183,
       "retrieved": 10
     },
     {
@@ -406,7 +406,7 @@
       "gold_answer": "two weekends before 17 July 2023",
       "predicted": "[2:31 pm on 17 July, 2023] Conversation session 9:\nMelanie: Hey Caroline, hope all's good! I had a quiet weekend after we went camping with my fam two weekends ago. It was great to unplug and hang with the kids. What've you been up to? Anything fun over the weekend?\nCaroline: Hey Melanie! That sounds great! Last weekend I joined a mentorship program for LGBTQ youth - it's really rewarding to help the community.\nMelanie: Wow, Caroline! It's great that you're helping out. How's it going? Got any c",
       "score": 0.5,
-      "latency_s": 1.227,
+      "latency_s": 0.165,
       "retrieved": 10
     },
     {
@@ -415,16 +415,16 @@
       "gold_answer": "The weekend before 17 July 2023",
       "predicted": "[2:31 pm on 17 July, 2023] Conversation session 9:\nMelanie: Hey Caroline, hope all's good! I had a quiet weekend after we went camping with my fam two weekends ago. It was great to unplug and hang with the kids. What've you been up to? Anything fun over the weekend?\nCaroline: Hey Melanie! That sounds great! Last weekend I joined a mentorship program for LGBTQ youth - it's really rewarding to help the community.\nMelanie: Wow, Caroline! It's great that you're helping out. How's it going? Got any c",
       "score": 0.5,
-      "latency_s": 1.299,
+      "latency_s": 0.149,
       "retrieved": 10
     },
     {
       "category": "temporal",
       "question": "What fields would Caroline be likely to pursue in her educaton?",
       "gold_answer": "Psychology, counseling certification",
-      "predicted": "[3:19 pm on 28 August, 2023] Conversation session 15:\nCaroline: Hey Melanie, great to hear from you. What's been up since we talked?\nMelanie: Hey Caroline! Since we last spoke, I took my kids to a park yesterday. They had fun exploring and playing. It was nice seeing them have a good time outdoors. Time flies, huh? What's new with you?\nCaroline: Wow, your kids had so much fun at the park! Being outdoors can be really enjoyable. A lot happened since our last chat. I've been chasing my ambitions a",
+      "predicted": "[7:55 pm on 9 June, 2023] Conversation session 3:\nCaroline: Hey Melanie! How's it going? I wanted to tell you about my school event last week. It was awesome! I talked about my transgender journey and encouraged students to get involved in the LGBTQ community. It was great to see their reactions. It made me reflect on how far I've come since I started transitioning three years ago.\nMelanie: Hey Caroline! Great to hear from you. Sounds like your event was amazing! I'm so proud of you for spreadin",
       "score": 0.0,
-      "latency_s": 1.227,
+      "latency_s": 0.139,
       "retrieved": 10
     },
     {
@@ -433,16 +433,16 @@
       "gold_answer": "Likely no",
       "predicted": "[8:18 pm on 6 July, 2023] Conversation session 6:\nCaroline: Hey Mel! Long time no talk. Lots has been going on since then!\nMelanie: Hey Caroline! Missed you. Anything new? Spill the beans!\nCaroline: Since our last chat, I've been looking into counseling or mental health work more. I'm passionate about helping people and making a positive impact. It's tough, but really rewarding too. Anything new happening with you?\nMelanie: That's awesome, Caroline! Congrats on following your dreams. Yesterday I",
       "score": 0.5,
-      "latency_s": 1.319,
+      "latency_s": 0.189,
       "retrieved": 10
     },
     {
       "category": "temporal",
       "question": "Would Caroline likely have Dr. Seuss books on her bookshelf?",
       "gold_answer": "Yes, since she collects classic children's books",
-      "predicted": "[1:56 pm on 8 May, 2023] Conversation session 1:\nCaroline: Hey Mel! Good to see you! How have you been?\nMelanie: Hey Caroline! Good to see you! I'm swamped with the kids & work. What's up with you? Anything new?\nCaroline: I went to a LGBTQ support group yesterday and it was so powerful.\nMelanie: Wow, that's cool, Caroline! What happened that was so awesome? Did you hear any inspiring stories?\nCaroline: The transgender stories were so inspiring! I was so happy and thankful for all the support.\nMe",
+      "predicted": "[1:33 pm on 25 August, 2023] Conversation session 14:\nCaroline: Hey, Mel! How's it going? There's something I want to tell you. I went hiking last week and got into a bad spot with some people. It really bugged me, so I tried to apologize to them.\nMelanie: Wow, Caroline! Sorry that happened to you. It's tough when those things happen, but it's great you apologized. Takes a lot of courage and maturity! What do you think of this?\nCaroline: Thanks, Melanie! That plate is awesome! Did you make it?\nM",
       "score": 0.0,
-      "latency_s": 1.408,
+      "latency_s": 0.147,
       "retrieved": 10
     },
     {
@@ -451,7 +451,7 @@
       "gold_answer": "LIkely no; though she likes reading, she wants to be a counselor",
       "predicted": "[8:18 pm on 6 July, 2023] Conversation session 6:\nCaroline: Hey Mel! Long time no talk. Lots has been going on since then!\nMelanie: Hey Caroline! Missed you. Anything new? Spill the beans!\nCaroline: Since our last chat, I've been looking into counseling or mental health work more. I'm passionate about helping people and making a positive impact. It's tough, but really rewarding too. Anything new happening with you?\nMelanie: That's awesome, Caroline! Congrats on following your dreams. Yesterday I",
       "score": 0.0,
-      "latency_s": 1.468,
+      "latency_s": 0.095,
       "retrieved": 10
     },
     {
@@ -460,7 +460,7 @@
       "gold_answer": "Likely no, she does not refer to herself as part of it",
       "predicted": "[8:56 pm on 20 July, 2023] Conversation session 10:\nCaroline: Hey Melanie! Just wanted to say hi!\nMelanie: Hey Caroline! Good to talk to you again. What's up? Anything new since last time?\nCaroline: Hey Mel! A lot's happened since we last chatted - I just joined a new LGBTQ activist group last Tues. I'm meeting so many cool people who are as passionate as I am about rights and community support. I'm giving my voice and making a real difference, plus it's fulfilling in so many ways. It's just gre",
       "score": 0.5,
-      "latency_s": 1.116,
+      "latency_s": 0.162,
       "retrieved": 10
     },
     {
@@ -469,7 +469,7 @@
       "gold_answer": "National park; she likes the outdoors",
       "predicted": "[3:19 pm on 28 August, 2023] Conversation session 15:\nCaroline: Hey Melanie, great to hear from you. What's been up since we talked?\nMelanie: Hey Caroline! Since we last spoke, I took my kids to a park yesterday. They had fun exploring and playing. It was nice seeing them have a good time outdoors. Time flies, huh? What's new with you?\nCaroline: Wow, your kids had so much fun at the park! Being outdoors can be really enjoyable. A lot happened since our last chat. I've been chasing my ambitions a",
       "score": 0.5,
-      "latency_s": 1.261,
+      "latency_s": 0.182,
       "retrieved": 10
     },
     {
@@ -478,7 +478,7 @@
       "gold_answer": "Yes, she is supportive",
       "predicted": "[7:55 pm on 9 June, 2023] Conversation session 3:\nCaroline: Hey Melanie! How's it going? I wanted to tell you about my school event last week. It was awesome! I talked about my transgender journey and encouraged students to get involved in the LGBTQ community. It was great to see their reactions. It made me reflect on how far I've come since I started transitioning three years ago.\nMelanie: Hey Caroline! Great to hear from you. Sounds like your event was amazing! I'm so proud of you for spreadin",
       "score": 0.5,
-      "latency_s": 1.198,
+      "latency_s": 0.117,
       "retrieved": 10
     },
     {
@@ -487,7 +487,7 @@
       "gold_answer": "Liberal",
       "predicted": "[1:50 pm on 17 August, 2023] Conversation session 12:\nCaroline: Hey Mel! How're ya doin'? Recently, I had a not-so-great experience on a hike. I ran into a group of religious conservatives who said something that really upset me. It made me think how much work we still have to do for LGBTQ rights. It's been so helpful to have people around me who accept and support me, so I know I'll be ok!\nMelanie: Hey Caroline, sorry about the hike. It sucks when people are so closed-minded. Strong support rea",
       "score": 0.0,
-      "latency_s": 1.148,
+      "latency_s": 0.186,
       "retrieved": 10
     },
     {
@@ -496,7 +496,7 @@
       "gold_answer": "Somewhat, but not extremely religious",
       "predicted": "[1:50 pm on 17 August, 2023] Conversation session 12:\nCaroline: Hey Mel! How're ya doin'? Recently, I had a not-so-great experience on a hike. I ran into a group of religious conservatives who said something that really upset me. It made me think how much work we still have to do for LGBTQ rights. It's been so helpful to have people around me who accept and support me, so I know I'll be ok!\nMelanie: Hey Caroline, sorry about the hike. It sucks when people are so closed-minded. Strong support rea",
       "score": 0.5,
-      "latency_s": 1.145,
+      "latency_s": 0.176,
       "retrieved": 10
     },
     {
@@ -505,7 +505,7 @@
       "gold_answer": "Yes; it's classical music",
       "predicted": "[10:37 am on 27 June, 2023] Conversation session 4:\nCaroline: Hey Melanie! Long time no talk! A lot's been going on in my life! Take a look at this.\nMelanie: Hey, Caroline! Nice to hear from you! Love the necklace, any special meaning to it?\nCaroline: Thanks, Melanie! This necklace is super special to me - a gift from my grandma in my home country, Sweden. She gave it to me when I was young, and it stands for love, faith and strength. It's like a reminder of my roots and all the love and support",
       "score": 0.0,
-      "latency_s": 1.169,
+      "latency_s": 0.178,
       "retrieved": 10
     },
     {
@@ -514,7 +514,7 @@
       "gold_answer": "Thoughtful, authentic, driven",
       "predicted": "[1:56 pm on 8 May, 2023] Conversation session 1:\nCaroline: Hey Mel! Good to see you! How have you been?\nMelanie: Hey Caroline! Good to see you! I'm swamped with the kids & work. What's up with you? Anything new?\nCaroline: I went to a LGBTQ support group yesterday and it was so powerful.\nMelanie: Wow, that's cool, Caroline! What happened that was so awesome? Did you hear any inspiring stories?\nCaroline: The transgender stories were so inspiring! I was so happy and thankful for all the support.\nMe",
       "score": 0.0,
-      "latency_s": 1.136,
+      "latency_s": 0.189,
       "retrieved": 10
     },
     {
@@ -523,7 +523,7 @@
       "gold_answer": "Likely no; since this one went badly",
       "predicted": "[6:55 pm on 20 October, 2023] Conversation session 18:\nMelanie: Hey Caroline, that roadtrip this past weekend was insane! We were all freaked when my son got into an accident. We were so lucky he was okay. It was a real scary experience. Thankfully it's over now. What's been up since we last talked?\nCaroline: Oops, sorry 'bout the accident! Must have been traumatizing for you guys. Thank goodness your son's okay. Life sure can be a roller coaster.\nMelanie: Yeah, our trip got off to a bad start. ",
       "score": 0.0,
-      "latency_s": 1.247,
+      "latency_s": 0.115,
       "retrieved": 10
     },
     {
@@ -532,16 +532,16 @@
       "gold_answer": "No; she's in the process of adopting children.",
       "predicted": "[10:37 am on 27 June, 2023] Conversation session 4:\nCaroline: Hey Melanie! Long time no talk! A lot's been going on in my life! Take a look at this.\nMelanie: Hey, Caroline! Nice to hear from you! Love the necklace, any special meaning to it?\nCaroline: Thanks, Melanie! This necklace is super special to me - a gift from my grandma in my home country, Sweden. She gave it to me when I was young, and it stands for love, faith and strength. It's like a reminder of my roots and all the love and support",
       "score": 0.5,
-      "latency_s": 1.455,
+      "latency_s": 0.103,
       "retrieved": 10
     },
     {
       "category": "temporal",
       "question": "What might John's financial status be?",
       "gold_answer": "Middle-class or wealthy",
-      "predicted": "[2:36 pm on 29 April, 2022] Conversation session 8:\nJames: Hey John! What's up? Anything fun going on?\nJohn:  I'm currently taking on some freelance programming to hone my coding skills. It's challenging, but I'm determined to improve.\nJames: Freelancing can definitely be a great way to sharpen skills and gain experience. What projects are you currently working on?\nJohn: I'm actually working on a website for a local small business. It's my first professional project outside of class.\nJames: Cong",
+      "predicted": "[1:17 pm on 28 January, 2023] Conversation session 5:\nJohn: Hey Maria, since we last spoke I went to that community mtg. It was really interesting hearing everyone's worries and how it affects our area. It made me realize how crucial the upgrades are, especially for the kids. I'm really upset seeing the state of our education. How do you think we can make things better?\nMaria: Hey John, cool that you made it. You're right, it's really sad to see the state of education. We should fight for more m",
       "score": 0.0,
-      "latency_s": 1.159,
+      "latency_s": 0.157,
       "retrieved": 10
     },
     {
@@ -550,7 +550,7 @@
       "gold_answer": "Yes",
       "predicted": "[6:20 pm on 3 August, 2023] Conversation session 27:\nJohn: Hey Maria, hope you're doing OK. I had to share something cool with you - I asked family and friends to join the virtual support group I am a part of and be advocates for the military. It's been awesome seeing so many people coming together to back the courageous people serving our nation.\nMaria: Wow, John! Way to go helping veterans! I'm doing my part too, volunteering at a homeless shelter. It's so rewarding.\nJohn: Maria, that's great!",
       "score": 1.0,
-      "latency_s": 1.275,
+      "latency_s": 0.113,
       "retrieved": 10
     },
     {
@@ -559,7 +559,7 @@
       "gold_answer": "Political science, Public administration, Public affairs",
       "predicted": "[9:36 am on 2 April, 2023] Conversation session 9:\nMaria: Hey John, long time no see! I've been taking a poetry class lately to help me put my feelings into words. It's been a rough ride, but it's been good. How have you been?\nJohn: Hey Maria! Awesome to hear from you. Sounds like a great way to delve into your feelings. Since we spoke last, I've had quite the adventure!\n\nMaria: Congrats on finishing your degree, John! It must have been quite the adventure. How did it feel when you achieved such",
       "score": 0.0,
-      "latency_s": 1.219,
+      "latency_s": 0.12,
       "retrieved": 10
     },
     {
@@ -568,7 +568,7 @@
       "gold_answer": "Independence Day",
       "predicted": "[8:43 pm on 3 July, 2023] Conversation session 21:\nMaria: Hey John, long time no see! Sorry I didn't get back to you sooner... So much has happened! Check out these kids I met at the shelter!\nJohn: Hey Maria! Good to hear from you. Those little ones are adorable, any updates on them? How have you been?\nMaria: Hey John! They were great, their smiles warmed my heart. But something not so great happened yesterday...\nJohn: That's so sad. Can I do anything to help? What happened?\nMaria: A car ran a r",
       "score": 0.0,
-      "latency_s": 1.16,
+      "latency_s": 0.187,
       "retrieved": 10
     },
     {
@@ -577,7 +577,7 @@
       "gold_answer": "beach",
       "predicted": "[3:36 pm on 11 November, 2023] Conversation session 17:\nJohn: Hey Tim! Great to chat again. So much has happened!\nTim: Hey John! Great chatting with you as always. What's been happening lately? I've been reading as usual.\nJohn: My wife and I were road tripping out on the European coastline, and it was amazing! The views were spectacular, and we had lots of fun bonding and creating amazing memories. It was such a nice change to my regular life.\nTim: Wow! Sounds like an incredible road trip. I'm g",
       "score": 0.0,
-      "latency_s": 1.175,
+      "latency_s": 0.178,
       "retrieved": 10
     },
     {
@@ -586,16 +586,16 @@
       "gold_answer": "No, he has goals specifically in the U.S. like joining the military and running for office.",
       "predicted": "[5:34 pm on 6 December, 2023] Conversation session 21:\nTim: Hey John! Haven't talked in a few days, wanted to let you know I joined a travel club! Always been interested in different cultures and countries and I'm excited to check it out. Can't wait to meet new people and learn about what makes them unique!\nJohn: Hey Tim! That's cool! I love learning about different cultures. It's really cool to meet people with different backgrounds. My teammates come from all over.\nTim: Wow! How long have you ",
       "score": 0.5,
-      "latency_s": 1.171,
+      "latency_s": 0.16,
       "retrieved": 10
     },
     {
       "category": "temporal",
       "question": "What attributes describe John?",
       "gold_answer": "Selfless, family-oriented, passionate, rational",
-      "predicted": "[9:18 pm on 26 August, 2022] Conversation session 21:\nJames: Hey John! Look how cute it is. My dog came to me today while I was playing on the console. What is new?\nJohn:  Your pup is so cute, remind me what's their name? I've been helping my younger siblings out with programming since they joined the programming course. It's really cool to see them get into it.\nJames:  His name's Ned and he's been awesome since I adopted him. I can't imagine life without him. It's great to hear that your siblin",
+      "predicted": "[11:08 am on 16 August, 2023] Conversation session 32:\nJohn: Hey Maria! Guess what? I'm now part of the fire-fighting brigade. I'm super excited to be involved and help out my community!\nMaria: Wow John, that's impressive! You're really enthusiastic about making a change. How's your experience been so far?\nJohn:  I was impressed with their dedication and how well they worked together. Just being around them was so inspiring!\nMaria: That's amazing. Must have been awesome to see all those people w",
       "score": 0.0,
-      "latency_s": 1.129,
+      "latency_s": 0.15,
       "retrieved": 10
     },
     {
@@ -604,7 +604,7 @@
       "gold_answer": "mental health",
       "predicted": "[1:14 pm on 25 May, 2023] Conversation session 2:\nMelanie: Hey Caroline, since we last chatted, I've had a lot of things happening to me. I ran a charity race for mental health last Saturday \u2013 it was really rewarding. Really made me think about taking care of our minds.\nCaroline: That charity race sounds great, Mel! Making a difference & raising awareness for mental health is super rewarding - I'm really proud of you for taking part!\nMelanie: Thanks, Caroline! The event was really thought-provok",
       "score": 1.0,
-      "latency_s": 1.236,
+      "latency_s": 0.19,
       "retrieved": 10
     },
     {
@@ -613,7 +613,7 @@
       "gold_answer": "self-care is important",
       "predicted": "[1:14 pm on 25 May, 2023] Conversation session 2:\nMelanie: Hey Caroline, since we last chatted, I've had a lot of things happening to me. I ran a charity race for mental health last Saturday \u2013 it was really rewarding. Really made me think about taking care of our minds.\nCaroline: That charity race sounds great, Mel! Making a difference & raising awareness for mental health is super rewarding - I'm really proud of you for taking part!\nMelanie: Thanks, Caroline! The event was really thought-provok",
       "score": 1.0,
-      "latency_s": 1.524,
+      "latency_s": 0.18,
       "retrieved": 10
     },
     {
@@ -622,16 +622,16 @@
       "gold_answer": "by carving out some me-time each day for activities like running, reading, or playing the violin",
       "predicted": "[1:14 pm on 25 May, 2023] Conversation session 2:\nMelanie: Hey Caroline, since we last chatted, I've had a lot of things happening to me. I ran a charity race for mental health last Saturday \u2013 it was really rewarding. Really made me think about taking care of our minds.\nCaroline: That charity race sounds great, Mel! Making a difference & raising awareness for mental health is super rewarding - I'm really proud of you for taking part!\nMelanie: Thanks, Caroline! The event was really thought-provok",
       "score": 1.0,
-      "latency_s": 1.373,
+      "latency_s": 0.207,
       "retrieved": 10
     },
     {
       "category": "open-domain",
       "question": "What are Caroline's plans for the summer?",
       "gold_answer": "researching adoption agencies",
-      "predicted": "[2:31 pm on 17 July, 2023] Conversation session 9:\nMelanie: Hey Caroline, hope all's good! I had a quiet weekend after we went camping with my fam two weekends ago. It was great to unplug and hang with the kids. What've you been up to? Anything fun over the weekend?\nCaroline: Hey Melanie! That sounds great! Last weekend I joined a mentorship program for LGBTQ youth - it's really rewarding to help the community.\nMelanie: Wow, Caroline! It's great that you're helping out. How's it going? Got any c",
+      "predicted": "[2:24 pm on 14 August, 2023] Conversation session 11:\nMelanie: Hey Caroline! Last night was amazing! We celebrated my daughter's birthday with a concert surrounded by music, joy and the warm summer breeze. Seeing my kids' smiles was so awesome, and I'm so thankful for our special moments together.\nCaroline: Wow, sounds wonderful! Your love for your kids is so awesome. What concert was it? The advocacy event was a cool experience - so much love and support, amazing!\nMelanie: Thanks, Caroline! It ",
       "score": 0.0,
-      "latency_s": 1.17,
+      "latency_s": 0.144,
       "retrieved": 10
     },
     {
@@ -640,7 +640,7 @@
       "gold_answer": "LGBTQ+ individuals",
       "predicted": "[9:55 am on 22 October, 2023] Conversation session 19:\nCaroline: Woohoo Melanie! I passed the adoption agency interviews last Friday! I'm so excited and thankful. This is a big move towards my goal of having a family.\nMelanie: Congrats, Caroline! Adoption sounds awesome. I'm so happy for you. These figurines I bought yesterday remind me of family love. Tell me, what's your vision for the future?\nCaroline: Thanks so much, Melanie! It's beautiful! It really brings home how much love's in families ",
       "score": 0.0,
-      "latency_s": 1.35,
+      "latency_s": 0.132,
       "retrieved": 10
     },
     {
@@ -649,7 +649,7 @@
       "gold_answer": "because of their inclusivity and support for LGBTQ+ individuals",
       "predicted": "[9:55 am on 22 October, 2023] Conversation session 19:\nCaroline: Woohoo Melanie! I passed the adoption agency interviews last Friday! I'm so excited and thankful. This is a big move towards my goal of having a family.\nMelanie: Congrats, Caroline! Adoption sounds awesome. I'm so happy for you. These figurines I bought yesterday remind me of family love. Tell me, what's your vision for the future?\nCaroline: Thanks so much, Melanie! It's beautiful! It really brings home how much love's in families ",
       "score": 0.5,
-      "latency_s": 1.184,
+      "latency_s": 0.112,
       "retrieved": 10
     },
     {
@@ -658,7 +658,7 @@
       "gold_answer": "creating a family for kids who need one",
       "predicted": "[9:55 am on 22 October, 2023] Conversation session 19:\nCaroline: Woohoo Melanie! I passed the adoption agency interviews last Friday! I'm so excited and thankful. This is a big move towards my goal of having a family.\nMelanie: Congrats, Caroline! Adoption sounds awesome. I'm so happy for you. These figurines I bought yesterday remind me of family love. Tell me, what's your vision for the future?\nCaroline: Thanks so much, Melanie! It's beautiful! It really brings home how much love's in families ",
       "score": 1.0,
-      "latency_s": 1.297,
+      "latency_s": 0.098,
       "retrieved": 10
     },
     {
@@ -667,7 +667,7 @@
       "gold_answer": "she thinks Caroline is doing something amazing and will be an awesome mom",
       "predicted": "[3:31 pm on 23 August, 2023] Conversation session 13:\nCaroline: Hi Melanie! Hope you're doing good. Guess what I did this week? I took the first step towards becoming a mom - I applied to adoption agencies! It's a big decision, but I think I'm ready to give all my love to a child. I got lots of help from this adoption advice/assistance group I attended. It was great!\nMelanie: Caroline, congrats! So proud of you for taking this step. How does it feel? Also, do you have any pets?\nCaroline: Thanks,",
       "score": 0.5,
-      "latency_s": 1.142,
+      "latency_s": 0.134,
       "retrieved": 10
     },
     {
@@ -676,7 +676,7 @@
       "gold_answer": "Mel and her husband have been married for 5 years.",
       "predicted": "[4:25 pm on 26 December, 2023] Conversation session 21:\nSam: Hey Evan! Long time no see, how's it going?\nEvan: Hey Sam! Long time no see! Been up and down lately, got married last week - how about you?\nSam: Congratulations, Evan! Is that the woman from Canada?\nEvan: Yes, that's her, I don't know why we didn't get married before, because I was in love with her at first sight!\nSam: Wow, Evan! Love at first sight? That sounds like something straight out of a fairy tale. What are your thoughts on it",
       "score": 0.5,
-      "latency_s": 1.251,
+      "latency_s": 0.124,
       "retrieved": 10
     },
     {
@@ -685,7 +685,7 @@
       "gold_answer": "love, faith, and strength",
       "predicted": "[10:37 am on 27 June, 2023] Conversation session 4:\nCaroline: Hey Melanie! Long time no talk! A lot's been going on in my life! Take a look at this.\nMelanie: Hey, Caroline! Nice to hear from you! Love the necklace, any special meaning to it?\nCaroline: Thanks, Melanie! This necklace is super special to me - a gift from my grandma in my home country, Sweden. She gave it to me when I was young, and it stands for love, faith and strength. It's like a reminder of my roots and all the love and support",
       "score": 0.5,
-      "latency_s": 1.152,
+      "latency_s": 0.147,
       "retrieved": 10
     },
     {
@@ -694,7 +694,7 @@
       "gold_answer": "Sweden",
       "predicted": "[10:37 am on 27 June, 2023] Conversation session 4:\nCaroline: Hey Melanie! Long time no talk! A lot's been going on in my life! Take a look at this.\nMelanie: Hey, Caroline! Nice to hear from you! Love the necklace, any special meaning to it?\nCaroline: Thanks, Melanie! This necklace is super special to me - a gift from my grandma in my home country, Sweden. She gave it to me when I was young, and it stands for love, faith and strength. It's like a reminder of my roots and all the love and support",
       "score": 1.0,
-      "latency_s": 1.522,
+      "latency_s": 0.151,
       "retrieved": 10
     },
     {
@@ -703,7 +703,7 @@
       "gold_answer": "necklace",
       "predicted": "[10:37 am on 27 June, 2023] Conversation session 4:\nCaroline: Hey Melanie! Long time no talk! A lot's been going on in my life! Take a look at this.\nMelanie: Hey, Caroline! Nice to hear from you! Love the necklace, any special meaning to it?\nCaroline: Thanks, Melanie! This necklace is super special to me - a gift from my grandma in my home country, Sweden. She gave it to me when I was young, and it stands for love, faith and strength. It's like a reminder of my roots and all the love and support",
       "score": 1.0,
-      "latency_s": 1.218,
+      "latency_s": 0.155,
       "retrieved": 10
     },
     {
@@ -712,16 +712,16 @@
       "gold_answer": "art and self-expression",
       "predicted": "[10:37 am on 27 June, 2023] Conversation session 4:\nCaroline: Hey Melanie! Long time no talk! A lot's been going on in my life! Take a look at this.\nMelanie: Hey, Caroline! Nice to hear from you! Love the necklace, any special meaning to it?\nCaroline: Thanks, Melanie! This necklace is super special to me - a gift from my grandma in my home country, Sweden. She gave it to me when I was young, and it stands for love, faith and strength. It's like a reminder of my roots and all the love and support",
       "score": 1.0,
-      "latency_s": 1.244,
+      "latency_s": 0.101,
       "retrieved": 10
     },
     {
       "category": "open-domain",
       "question": "What did Melanie and her family do while camping?",
       "gold_answer": "explored nature, roasted marshmallows, and went on a hike",
-      "predicted": "[3:19 pm on 28 August, 2023] Conversation session 15:\nCaroline: Hey Melanie, great to hear from you. What's been up since we talked?\nMelanie: Hey Caroline! Since we last spoke, I took my kids to a park yesterday. They had fun exploring and playing. It was nice seeing them have a good time outdoors. Time flies, huh? What's new with you?\nCaroline: Wow, your kids had so much fun at the park! Being outdoors can be really enjoyable. A lot happened since our last chat. I've been chasing my ambitions a",
+      "predicted": "[2:31 pm on 17 July, 2023] Conversation session 9:\nMelanie: Hey Caroline, hope all's good! I had a quiet weekend after we went camping with my fam two weekends ago. It was great to unplug and hang with the kids. What've you been up to? Anything fun over the weekend?\nCaroline: Hey Melanie! That sounds great! Last weekend I joined a mentorship program for LGBTQ youth - it's really rewarding to help the community.\nMelanie: Wow, Caroline! It's great that you're helping out. How's it going? Got any c",
       "score": 0.5,
-      "latency_s": 1.215,
+      "latency_s": 0.151,
       "retrieved": 10
     },
     {
@@ -730,7 +730,7 @@
       "gold_answer": "working with trans people, helping them accept themselves and supporting their mental health",
       "predicted": "[8:18 pm on 6 July, 2023] Conversation session 6:\nCaroline: Hey Mel! Long time no talk. Lots has been going on since then!\nMelanie: Hey Caroline! Missed you. Anything new? Spill the beans!\nCaroline: Since our last chat, I've been looking into counseling or mental health work more. I'm passionate about helping people and making a positive impact. It's tough, but really rewarding too. Anything new happening with you?\nMelanie: That's awesome, Caroline! Congrats on following your dreams. Yesterday I",
       "score": 0.5,
-      "latency_s": 1.199,
+      "latency_s": 0.113,
       "retrieved": 10
     },
     {
@@ -739,7 +739,7 @@
       "gold_answer": "LGBTQ+ counseling workshop",
       "predicted": "[1:51 pm on 15 July, 2023] Conversation session 8:\nCaroline: Hey Mel, what's up? Been a busy week since we talked.\nMelanie: Hey Caroline, it's been super busy here. So much since we talked! Last Fri I finally took my kids to a pottery workshop. We all made our own pots, it was fun and therapeutic!\nCaroline: Wow, Mel! Sounds like you and the kids had a blast. How'd they like it?\nMelanie: The kids loved it! They were so excited to get their hands dirty and make something with clay. It was special ",
       "score": 0.0,
-      "latency_s": 1.098,
+      "latency_s": 0.176,
       "retrieved": 10
     },
     {
@@ -748,7 +748,7 @@
       "gold_answer": "therapeutic methods and how to best work with trans people",
       "predicted": "[4:33 pm on 12 July, 2023] Conversation session 7:\nCaroline: Hey Mel, great to chat with you again! So much has happened since we last spoke - I went to an LGBTQ conference two days ago and it was really special. I got the chance to meet and connect with people who've gone through similar journeys. It was such a welcoming environment and I felt totally accepted. I'm really thankful for this amazing community - it's shown me how important it is to fight for trans rights and spread awareness.\nMela",
       "score": 0.5,
-      "latency_s": 1.272,
+      "latency_s": 0.166,
       "retrieved": 10
     },
     {
@@ -757,16 +757,16 @@
       "gold_answer": "her own journey and the support she received, and how counseling improved her life",
       "predicted": "[8:18 pm on 6 July, 2023] Conversation session 6:\nCaroline: Hey Mel! Long time no talk. Lots has been going on since then!\nMelanie: Hey Caroline! Missed you. Anything new? Spill the beans!\nCaroline: Since our last chat, I've been looking into counseling or mental health work more. I'm passionate about helping people and making a positive impact. It's tough, but really rewarding too. Anything new happening with you?\nMelanie: That's awesome, Caroline! Congrats on following your dreams. Yesterday I",
       "score": 0.5,
-      "latency_s": 1.1,
+      "latency_s": 0.175,
       "retrieved": 10
     },
     {
       "category": "open-domain",
       "question": "What kind of place does Caroline want to create for people?",
       "gold_answer": "a safe and inviting place for people to grow",
-      "predicted": "[8:18 pm on 6 July, 2023] Conversation session 6:\nCaroline: Hey Mel! Long time no talk. Lots has been going on since then!\nMelanie: Hey Caroline! Missed you. Anything new? Spill the beans!\nCaroline: Since our last chat, I've been looking into counseling or mental health work more. I'm passionate about helping people and making a positive impact. It's tough, but really rewarding too. Anything new happening with you?\nMelanie: That's awesome, Caroline! Congrats on following your dreams. Yesterday I",
+      "predicted": "[1:33 pm on 25 August, 2023] Conversation session 14:\nCaroline: Hey, Mel! How's it going? There's something I want to tell you. I went hiking last week and got into a bad spot with some people. It really bugged me, so I tried to apologize to them.\nMelanie: Wow, Caroline! Sorry that happened to you. It's tough when those things happen, but it's great you apologized. Takes a lot of courage and maturity! What do you think of this?\nCaroline: Thanks, Melanie! That plate is awesome! Did you make it?\nM",
       "score": 0.5,
-      "latency_s": 1.291,
+      "latency_s": 0.182,
       "retrieved": 10
     },
     {
@@ -775,7 +775,7 @@
       "gold_answer": "Yes",
       "predicted": "[1:33 pm on 25 August, 2023] Conversation session 14:\nCaroline: Hey, Mel! How's it going? There's something I want to tell you. I went hiking last week and got into a bad spot with some people. It really bugged me, so I tried to apologize to them.\nMelanie: Wow, Caroline! Sorry that happened to you. It's tough when those things happen, but it's great you apologized. Takes a lot of courage and maturity! What do you think of this?\nCaroline: Thanks, Melanie! That plate is awesome! Did you make it?\nM",
       "score": 1.0,
-      "latency_s": 1.529,
+      "latency_s": 0.222,
       "retrieved": 10
     },
     {
@@ -784,7 +784,7 @@
       "gold_answer": "self-care is important",
       "predicted": "[1:14 pm on 25 May, 2023] Conversation session 2:\nMelanie: Hey Caroline, since we last chatted, I've had a lot of things happening to me. I ran a charity race for mental health last Saturday \u2013 it was really rewarding. Really made me think about taking care of our minds.\nCaroline: That charity race sounds great, Mel! Making a difference & raising awareness for mental health is super rewarding - I'm really proud of you for taking part!\nMelanie: Thanks, Caroline! The event was really thought-provok",
       "score": 1.0,
-      "latency_s": 1.17,
+      "latency_s": 0.222,
       "retrieved": 10
     },
     {
@@ -793,7 +793,7 @@
       "gold_answer": "researching adoption agencies",
       "predicted": "[9:55 am on 22 October, 2023] Conversation session 19:\nCaroline: Woohoo Melanie! I passed the adoption agency interviews last Friday! I'm so excited and thankful. This is a big move towards my goal of having a family.\nMelanie: Congrats, Caroline! Adoption sounds awesome. I'm so happy for you. These figurines I bought yesterday remind me of family love. Tell me, what's your vision for the future?\nCaroline: Thanks so much, Melanie! It's beautiful! It really brings home how much love's in families ",
       "score": 0.5,
-      "latency_s": 1.174,
+      "latency_s": 0.213,
       "retrieved": 10
     },
     {
@@ -802,7 +802,7 @@
       "gold_answer": "LGBTQ+ individuals",
       "predicted": "[9:55 am on 22 October, 2023] Conversation session 19:\nCaroline: Woohoo Melanie! I passed the adoption agency interviews last Friday! I'm so excited and thankful. This is a big move towards my goal of having a family.\nMelanie: Congrats, Caroline! Adoption sounds awesome. I'm so happy for you. These figurines I bought yesterday remind me of family love. Tell me, what's your vision for the future?\nCaroline: Thanks so much, Melanie! It's beautiful! It really brings home how much love's in families ",
       "score": 0.0,
-      "latency_s": 1.147,
+      "latency_s": 0.224,
       "retrieved": 10
     },
     {
@@ -811,7 +811,7 @@
       "gold_answer": "because of their inclusivity and support for LGBTQ+ individuals",
       "predicted": "[9:55 am on 22 October, 2023] Conversation session 19:\nCaroline: Woohoo Melanie! I passed the adoption agency interviews last Friday! I'm so excited and thankful. This is a big move towards my goal of having a family.\nMelanie: Congrats, Caroline! Adoption sounds awesome. I'm so happy for you. These figurines I bought yesterday remind me of family love. Tell me, what's your vision for the future?\nCaroline: Thanks so much, Melanie! It's beautiful! It really brings home how much love's in families ",
       "score": 0.5,
-      "latency_s": 1.102,
+      "latency_s": 0.158,
       "retrieved": 10
     },
     {
@@ -820,7 +820,7 @@
       "gold_answer": "creating a family for kids who need one",
       "predicted": "[9:55 am on 22 October, 2023] Conversation session 19:\nCaroline: Woohoo Melanie! I passed the adoption agency interviews last Friday! I'm so excited and thankful. This is a big move towards my goal of having a family.\nMelanie: Congrats, Caroline! Adoption sounds awesome. I'm so happy for you. These figurines I bought yesterday remind me of family love. Tell me, what's your vision for the future?\nCaroline: Thanks so much, Melanie! It's beautiful! It really brings home how much love's in families ",
       "score": 1.0,
-      "latency_s": 1.181,
+      "latency_s": 0.129,
       "retrieved": 10
     },
     {
@@ -829,7 +829,7 @@
       "gold_answer": "love, faith, and strength",
       "predicted": "[10:37 am on 27 June, 2023] Conversation session 4:\nCaroline: Hey Melanie! Long time no talk! A lot's been going on in my life! Take a look at this.\nMelanie: Hey, Caroline! Nice to hear from you! Love the necklace, any special meaning to it?\nCaroline: Thanks, Melanie! This necklace is super special to me - a gift from my grandma in my home country, Sweden. She gave it to me when I was young, and it stands for love, faith and strength. It's like a reminder of my roots and all the love and support",
       "score": 0.5,
-      "latency_s": 1.151,
+      "latency_s": 0.182,
       "retrieved": 10
     },
     {
@@ -838,7 +838,7 @@
       "gold_answer": "Sweden",
       "predicted": "[10:37 am on 27 June, 2023] Conversation session 4:\nCaroline: Hey Melanie! Long time no talk! A lot's been going on in my life! Take a look at this.\nMelanie: Hey, Caroline! Nice to hear from you! Love the necklace, any special meaning to it?\nCaroline: Thanks, Melanie! This necklace is super special to me - a gift from my grandma in my home country, Sweden. She gave it to me when I was young, and it stands for love, faith and strength. It's like a reminder of my roots and all the love and support",
       "score": 1.0,
-      "latency_s": 1.158,
+      "latency_s": 0.147,
       "retrieved": 10
     },
     {
@@ -847,7 +847,7 @@
       "gold_answer": "necklace",
       "predicted": "[10:37 am on 27 June, 2023] Conversation session 4:\nCaroline: Hey Melanie! Long time no talk! A lot's been going on in my life! Take a look at this.\nMelanie: Hey, Caroline! Nice to hear from you! Love the necklace, any special meaning to it?\nCaroline: Thanks, Melanie! This necklace is super special to me - a gift from my grandma in my home country, Sweden. She gave it to me when I was young, and it stands for love, faith and strength. It's like a reminder of my roots and all the love and support",
       "score": 1.0,
-      "latency_s": 1.322,
+      "latency_s": 0.142,
       "retrieved": 10
     },
     {
@@ -856,7 +856,7 @@
       "gold_answer": "necklace",
       "predicted": "[10:37 am on 27 June, 2023] Conversation session 4:\nCaroline: Hey Melanie! Long time no talk! A lot's been going on in my life! Take a look at this.\nMelanie: Hey, Caroline! Nice to hear from you! Love the necklace, any special meaning to it?\nCaroline: Thanks, Melanie! This necklace is super special to me - a gift from my grandma in my home country, Sweden. She gave it to me when I was young, and it stands for love, faith and strength. It's like a reminder of my roots and all the love and support",
       "score": 1.0,
-      "latency_s": 1.345,
+      "latency_s": 0.191,
       "retrieved": 10
     },
     {
@@ -865,7 +865,7 @@
       "gold_answer": "art and self-expression",
       "predicted": "[10:37 am on 27 June, 2023] Conversation session 4:\nCaroline: Hey Melanie! Long time no talk! A lot's been going on in my life! Take a look at this.\nMelanie: Hey, Caroline! Nice to hear from you! Love the necklace, any special meaning to it?\nCaroline: Thanks, Melanie! This necklace is super special to me - a gift from my grandma in my home country, Sweden. She gave it to me when I was young, and it stands for love, faith and strength. It's like a reminder of my roots and all the love and support",
       "score": 1.0,
-      "latency_s": 1.432,
+      "latency_s": 0.157,
       "retrieved": 10
     },
     {
@@ -874,7 +874,7 @@
       "gold_answer": "explored nature, roasted marshmallows, and went on a hike",
       "predicted": "[2:31 pm on 17 July, 2023] Conversation session 9:\nMelanie: Hey Caroline, hope all's good! I had a quiet weekend after we went camping with my fam two weekends ago. It was great to unplug and hang with the kids. What've you been up to? Anything fun over the weekend?\nCaroline: Hey Melanie! That sounds great! Last weekend I joined a mentorship program for LGBTQ youth - it's really rewarding to help the community.\nMelanie: Wow, Caroline! It's great that you're helping out. How's it going? Got any c",
       "score": 0.5,
-      "latency_s": 1.119,
+      "latency_s": 0.146,
       "retrieved": 10
     },
     {
@@ -883,7 +883,7 @@
       "gold_answer": "working with trans people, helping them accept themselves and supporting their mental health",
       "predicted": "[8:18 pm on 6 July, 2023] Conversation session 6:\nCaroline: Hey Mel! Long time no talk. Lots has been going on since then!\nMelanie: Hey Caroline! Missed you. Anything new? Spill the beans!\nCaroline: Since our last chat, I've been looking into counseling or mental health work more. I'm passionate about helping people and making a positive impact. It's tough, but really rewarding too. Anything new happening with you?\nMelanie: That's awesome, Caroline! Congrats on following your dreams. Yesterday I",
       "score": 0.5,
-      "latency_s": 1.192,
+      "latency_s": 0.197,
       "retrieved": 10
     },
     {
@@ -892,7 +892,7 @@
       "gold_answer": "LGBTQ+ counseling workshop",
       "predicted": "[8:18 pm on 6 July, 2023] Conversation session 6:\nCaroline: Hey Mel! Long time no talk. Lots has been going on since then!\nMelanie: Hey Caroline! Missed you. Anything new? Spill the beans!\nCaroline: Since our last chat, I've been looking into counseling or mental health work more. I'm passionate about helping people and making a positive impact. It's tough, but really rewarding too. Anything new happening with you?\nMelanie: That's awesome, Caroline! Congrats on following your dreams. Yesterday I",
       "score": 0.5,
-      "latency_s": 1.207,
+      "latency_s": 0.15,
       "retrieved": 10
     },
     {
@@ -901,7 +901,7 @@
       "gold_answer": "her own journey and the support she received, and how counseling improved her life",
       "predicted": "[8:18 pm on 6 July, 2023] Conversation session 6:\nCaroline: Hey Mel! Long time no talk. Lots has been going on since then!\nMelanie: Hey Caroline! Missed you. Anything new? Spill the beans!\nCaroline: Since our last chat, I've been looking into counseling or mental health work more. I'm passionate about helping people and making a positive impact. It's tough, but really rewarding too. Anything new happening with you?\nMelanie: That's awesome, Caroline! Congrats on following your dreams. Yesterday I",
       "score": 0.5,
-      "latency_s": 1.204,
+      "latency_s": 0.136,
       "retrieved": 10
     },
     {
@@ -910,7 +910,7 @@
       "gold_answer": "a safe and inviting place for people to grow",
       "predicted": "[8:56 pm on 20 July, 2023] Conversation session 10:\nCaroline: Hey Melanie! Just wanted to say hi!\nMelanie: Hey Caroline! Good to talk to you again. What's up? Anything new since last time?\nCaroline: Hey Mel! A lot's happened since we last chatted - I just joined a new LGBTQ activist group last Tues. I'm meeting so many cool people who are as passionate as I am about rights and community support. I'm giving my voice and making a real difference, plus it's fulfilling in so many ways. It's just gre",
       "score": 0.5,
-      "latency_s": 1.173,
+      "latency_s": 0.214,
       "retrieved": 10
     },
     {
@@ -919,16 +919,16 @@
       "gold_answer": "No",
       "predicted": "[1:33 pm on 25 August, 2023] Conversation session 14:\nCaroline: Hey, Mel! How's it going? There's something I want to tell you. I went hiking last week and got into a bad spot with some people. It really bugged me, so I tried to apologize to them.\nMelanie: Wow, Caroline! Sorry that happened to you. It's tough when those things happen, but it's great you apologized. Takes a lot of courage and maturity! What do you think of this?\nCaroline: Thanks, Melanie! That plate is awesome! Did you make it?\nM",
       "score": 0.0,
-      "latency_s": 1.198,
+      "latency_s": 0.287,
       "retrieved": 10
     },
     {
       "category": "adversarial",
       "question": "What are the new shoes that Caroline got used for?",
       "gold_answer": "Running",
-      "predicted": "[3:19 pm on 28 August, 2023] Conversation session 15:\nCaroline: Hey Melanie, great to hear from you. What's been up since we talked?\nMelanie: Hey Caroline! Since we last spoke, I took my kids to a park yesterday. They had fun exploring and playing. It was nice seeing them have a good time outdoors. Time flies, huh? What's new with you?\nCaroline: Wow, your kids had so much fun at the park! Being outdoors can be really enjoyable. A lot happened since our last chat. I've been chasing my ambitions a",
+      "predicted": "[8:18 pm on 6 July, 2023] Conversation session 6:\nCaroline: Hey Mel! Long time no talk. Lots has been going on since then!\nMelanie: Hey Caroline! Missed you. Anything new? Spill the beans!\nCaroline: Since our last chat, I've been looking into counseling or mental health work more. I'm passionate about helping people and making a positive impact. It's tough, but really rewarding too. Anything new happening with you?\nMelanie: That's awesome, Caroline! Congrats on following your dreams. Yesterday I",
       "score": 0.0,
-      "latency_s": 1.142,
+      "latency_s": 0.266,
       "retrieved": 10
     },
     {
@@ -937,7 +937,7 @@
       "gold_answer": "To de-stress and clear her mind",
       "predicted": "[1:14 pm on 25 May, 2023] Conversation session 2:\nMelanie: Hey Caroline, since we last chatted, I've had a lot of things happening to me. I ran a charity race for mental health last Saturday \u2013 it was really rewarding. Really made me think about taking care of our minds.\nCaroline: That charity race sounds great, Mel! Making a difference & raising awareness for mental health is super rewarding - I'm really proud of you for taking part!\nMelanie: Thanks, Caroline! The event was really thought-provok",
       "score": 0.5,
-      "latency_s": 1.284,
+      "latency_s": 0.215,
       "retrieved": 10
     },
     {
@@ -946,7 +946,7 @@
       "gold_answer": "Her mental health",
       "predicted": "[1:14 pm on 25 May, 2023] Conversation session 2:\nMelanie: Hey Caroline, since we last chatted, I've had a lot of things happening to me. I ran a charity race for mental health last Saturday \u2013 it was really rewarding. Really made me think about taking care of our minds.\nCaroline: That charity race sounds great, Mel! Making a difference & raising awareness for mental health is super rewarding - I'm really proud of you for taking part!\nMelanie: Thanks, Caroline! The event was really thought-provok",
       "score": 0.5,
-      "latency_s": 1.418,
+      "latency_s": 0.175,
       "retrieved": 10
     },
     {
@@ -955,7 +955,7 @@
       "gold_answer": "many people wanting to create loving homes for children in need",
       "predicted": "[9:55 am on 22 October, 2023] Conversation session 19:\nCaroline: Woohoo Melanie! I passed the adoption agency interviews last Friday! I'm so excited and thankful. This is a big move towards my goal of having a family.\nMelanie: Congrats, Caroline! Adoption sounds awesome. I'm so happy for you. These figurines I bought yesterday remind me of family love. Tell me, what's your vision for the future?\nCaroline: Thanks so much, Melanie! It's beautiful! It really brings home how much love's in families ",
       "score": 0.5,
-      "latency_s": 1.153,
+      "latency_s": 0.12,
       "retrieved": 10
     }
   ]

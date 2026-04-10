@@ -6,6 +6,7 @@ Main interface for agent memory operations.
 """
 import os
 import json
+import threading
 from datetime import datetime
 from pathlib import Path
 from typing import List, Optional, Dict, Any, Tuple
@@ -22,6 +23,22 @@ from zettelforge.knowledge_graph import get_knowledge_graph
 from zettelforge.governance_validator import GovernanceValidator, GovernanceViolationError
 from zettelforge.fact_extractor import FactExtractor, ExtractedFact
 from zettelforge.memory_updater import MemoryUpdater, UpdateOperation
+
+
+# ── Reranker singleton ───────────────────────────────────────────────────────
+_reranker = None
+_reranker_lock = threading.Lock()
+
+
+def _get_reranker():
+    """Get or create cross-encoder reranker (singleton, ~80MB, loads once)."""
+    global _reranker
+    if _reranker is None:
+        with _reranker_lock:
+            if _reranker is None:
+                from fastembed.rerank.cross_encoder import TextCrossEncoder
+                _reranker = TextCrossEncoder("Xenova/ms-marco-MiniLM-L-6-v2")
+    return _reranker
 
 
 class MemoryManager:
@@ -312,8 +329,7 @@ class MemoryManager:
         # Cross-encoder reranking: reorder results by query-document relevance
         if len(results) > 1:
             try:
-                from fastembed.rerank.cross_encoder import TextCrossEncoder
-                reranker = TextCrossEncoder("Xenova/ms-marco-MiniLM-L-6-v2")
+                reranker = _get_reranker()
                 docs = [n.content.raw[:512] for n in results]
                 scores = list(reranker.rerank(query, docs))
                 paired = sorted(zip(scores, results), key=lambda x: x[0], reverse=True)
