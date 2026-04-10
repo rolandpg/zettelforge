@@ -101,10 +101,12 @@ class VectorRetriever:
         # Try LanceDB first if available
         if use_lancedb and self.store.lancedb:
             try:
-                return self._retrieve_via_lancedb(query, domain, k, include_links)
+                results = self._retrieve_via_lancedb(query, domain, k, include_links)
+                if results:
+                    return results
             except Exception as e:
                 print(f"[VectorRetriever] LanceDB search failed: {e}, falling back to in-memory")
-        
+
         # Fallback: In-memory cosine similarity
         return self._retrieve_via_memory(query, domain, k, include_links)
     
