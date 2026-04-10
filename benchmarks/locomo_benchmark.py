@@ -196,8 +196,8 @@ def answer_question(mm: MemoryManager, question: str, k: int = 10) -> Tuple[str,
 
     context = "\n".join(context_parts[:k])
 
-    # Use LLM synthesis for focused answers (RFC-001 Step 4)
-    answer = _synthesize_answer(question, context)
+    # Return raw context for keyword-overlap scoring (no LLM synthesis)
+    answer = context[:2000]
     latency = time.perf_counter() - start
 
     return answer, evidence_ids, latency
