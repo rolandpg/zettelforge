@@ -39,7 +39,7 @@ class TypeDBConfig:
 class EmbeddingConfig:
     provider: str = "fastembed"  # "fastembed" (in-process ONNX) or "ollama" (HTTP server)
     url: str = "http://127.0.0.1:11434"  # only used when provider=ollama
-    model: str = "BAAI/bge-base-en-v1.5"
+    model: str = "nomic-ai/nomic-embed-text-v1.5-Q"
     dimensions: int = 768
 
 

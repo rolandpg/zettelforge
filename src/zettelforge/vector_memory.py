@@ -25,7 +25,7 @@ from typing import List, Dict, Optional
 
 # ── Configuration ─────────────────────────────────────────────────────────────
 
-DEFAULT_EMBEDDING_MODEL = "BAAI/bge-base-en-v1.5"
+DEFAULT_EMBEDDING_MODEL = "nomic-ai/nomic-embed-text-v1.5-Q"
 DEFAULT_EMBEDDING_PROVIDER = "fastembed"  # "fastembed" or "ollama"
 DEFAULT_EMBEDDING_URL = "http://127.0.0.1:11434"
 

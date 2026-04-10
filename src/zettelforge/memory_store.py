@@ -125,13 +125,8 @@ class MemoryStore:
                 tbl = self.lancedb.create_table(table_name, schema=schema)
             # Create optimized vector index per governance and performance requirements
             # Only create index if table is new (not on every insert)
-            if table_name not in tables:
-                tbl.create_index(
-                    metric="cosine",
-                    index_type="IVF_FLAT",  # IVF_FLAT: exact IVF buckets (no PQ compression)
-                    num_partitions=256,
-                    num_sub_vectors=None  # Not used by IVF_FLAT
-                )
+            # Skip index creation on table create — index after enough data accumulates
+            # LanceDB IVF_FLAT needs at least num_partitions rows to build
 
             table = self.lancedb.open_table(table_name)
             table.add([{

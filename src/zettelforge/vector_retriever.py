@@ -98,8 +98,16 @@ class VectorRetriever:
         Retrieve notes relevant to query using LanceDB vector search.
         Falls back to in-memory search if LanceDB unavailable.
         """
-        # Always use in-memory cosine similarity (reliable, works with any embedding model)
-        # LanceDB search is available but unreliable with quantized embeddings
+        # Try LanceDB first (IVF_FLAT index, no double-quantization)
+        if use_lancedb and self.store.lancedb:
+            try:
+                results = self._retrieve_via_lancedb(query, domain, k, include_links)
+                if results:
+                    return results
+            except Exception:
+                pass  # Fall through to in-memory
+
+        # Fallback: In-memory cosine similarity (always works)
         return self._retrieve_via_memory(query, domain, k, include_links)
     
     def _retrieve_via_lancedb(
