@@ -247,6 +247,32 @@ class MemoryManager:
             query=query, domain=domain, k=k, include_links=include_links
         )
 
+        # Temporal boost: for temporal queries, prioritize notes containing dates from the query
+        if intent.value == "temporal":
+            try:
+                import dateparser
+                import re as _re
+                # Extract date-like strings from query
+                date_patterns = _re.findall(
+                    r'\b(?:january|february|march|april|may|june|july|august|september|'
+                    r'october|november|december)\s+\d{1,2}(?:,?\s+\d{4})?|\b\d{4}\b|\b\d{1,2}/\d{1,2}/\d{2,4}\b',
+                    query, _re.IGNORECASE
+                )
+                if date_patterns:
+                    # Boost notes containing any of the extracted dates
+                    date_lower = [d.lower() for d in date_patterns]
+                    boosted = []
+                    rest = []
+                    for note in vector_results:
+                        content_lower = note.content.raw.lower()
+                        if any(d in content_lower for d in date_lower):
+                            boosted.append(note)
+                        else:
+                            rest.append(note)
+                    vector_results = boosted + rest
+            except ImportError:
+                pass
+
         # Graph retrieval
         from zettelforge.graph_retriever import GraphRetriever
         from zettelforge.blended_retriever import BlendedRetriever
@@ -270,9 +296,37 @@ class MemoryManager:
         if len(results) < len(vector_results):
             results = vector_results[:k]
 
+        # Entity-augmented recall: also pull notes via entity index for query entities
+        # This ensures multi-entity answers (e.g., "tools used by APT28") include all
+        # relevant notes, not just the top-k by vector similarity
+        result_ids = {n.id for n in results}
+        for etype, values in resolved.items():
+            for evalue in values:
+                if evalue:
+                    entity_notes = self.recall_entity(etype, evalue, k=3)
+                    for en in entity_notes:
+                        if en.id not in result_ids:
+                            results.append(en)
+                            result_ids.add(en.id)
+
+        # Cross-encoder reranking: reorder results by query-document relevance
+        if len(results) > 1:
+            try:
+                from fastembed.rerank.cross_encoder import TextCrossEncoder
+                reranker = TextCrossEncoder("Xenova/ms-marco-MiniLM-L-6-v2")
+                docs = [n.content.raw[:512] for n in results]
+                scores = list(reranker.rerank(query, docs))
+                paired = sorted(zip(scores, results), key=lambda x: x[0], reverse=True)
+                results = [note for _, note in paired]
+            except Exception:
+                pass  # Reranking is optional — fall back to original order
+
         # Filter superseded notes
         if exclude_superseded:
             results = [n for n in results if not n.links.superseded_by]
+
+        # Cap at k after entity augmentation and reranking
+        results = results[:k]
 
         # Track access
         for note in results:
