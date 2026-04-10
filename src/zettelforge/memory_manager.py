@@ -74,13 +74,13 @@ class MemoryManager:
         self.store.write_note(note)
         self.stats['notes_created'] += 1
 
-        # Alias resolution and indexing
-        raw_entities = self.indexer.extractor.extract_all(note.content.raw)
-        
+        # Alias resolution and indexing (regex-only for speed; LLM NER runs on recall)
+        raw_entities = self.indexer.extractor.extract_all(note.content.raw, use_llm=False)
+
         resolved_entities = {}
         for etype, elist in raw_entities.items():
             resolved_entities[etype] = [self.resolver.resolve(etype, e) for e in elist]
-            
+
         self.indexer.add_note(note.id, resolved_entities)
         
         # Phase 3: Check supersession
