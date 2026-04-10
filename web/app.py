@@ -33,6 +33,7 @@ from pydantic import BaseModel
 from typing import Optional, List
 
 from zettelforge import MemoryManager, __version__
+from web.auth import register_auth_routes, get_mm_for_request, get_current_user
 
 app = FastAPI(
     title="ThreatRecall",
@@ -40,7 +41,10 @@ app = FastAPI(
     version=__version__,
 )
 
-# Global memory manager
+# Register OAuth/JWT auth routes
+register_auth_routes(app)
+
+# Default memory manager (for unauthenticated/single-tenant mode)
 mm = MemoryManager()
 
 
@@ -70,9 +74,10 @@ class SyncRequest(BaseModel):
 # ── API endpoints ────────────────────────────────────────────────────────────
 
 @app.post("/api/recall")
-async def recall(req: RecallRequest):
+async def recall(request: Request, req: RecallRequest):
+    tenant_mm = get_mm_for_request(request)
     start = time.perf_counter()
-    results = mm.recall(req.query, domain=req.domain, k=req.k, exclude_superseded=False)
+    results = tenant_mm.recall(req.query, domain=req.domain, k=req.k, exclude_superseded=False)
     latency = time.perf_counter() - start
 
     return {
@@ -96,9 +101,10 @@ async def recall(req: RecallRequest):
 
 
 @app.post("/api/remember")
-async def remember(req: RememberRequest):
+async def remember(request: Request, req: RememberRequest):
+    tenant_mm = get_mm_for_request(request)
     start = time.perf_counter()
-    note, status = mm.remember(
+    note, status = tenant_mm.remember(
         content=req.content,
         source_type=req.source_type,
         source_ref=req.source_ref,
@@ -115,9 +121,10 @@ async def remember(req: RememberRequest):
 
 
 @app.post("/api/synthesize")
-async def synthesize(req: SynthesizeRequest):
+async def synthesize(request: Request, req: SynthesizeRequest):
+    tenant_mm = get_mm_for_request(request)
     start = time.perf_counter()
-    result = mm.synthesize(req.query, format=req.format, k=req.k)
+    result = tenant_mm.synthesize(req.query, format=req.format, k=req.k)
     latency = time.perf_counter() - start
 
     return {
@@ -130,8 +137,9 @@ async def synthesize(req: SynthesizeRequest):
 
 
 @app.get("/api/stats")
-async def stats():
-    s = mm.get_stats()
+async def stats(request: Request):
+    tenant_mm = get_mm_for_request(request)
+    s = tenant_mm.get_stats()
     return {
         "version": __version__,
         "total_notes": s.get("total_notes", 0),
@@ -142,11 +150,12 @@ async def stats():
 
 
 @app.post("/api/sync")
-async def sync(req: SyncRequest):
+async def sync(request: Request, req: SyncRequest):
     try:
         from zettelforge.opencti_sync import sync_opencti
+        tenant_mm = get_mm_for_request(request)
         result = sync_opencti(
-            mm,
+            tenant_mm,
             limit=req.limit,
             entity_types=req.entity_types,
             use_extraction=False,
@@ -212,6 +221,7 @@ HTML_PAGE = """<!DOCTYPE html>
         <h1>ThreatRecall</h1>
         <span class="version" id="version"></span>
         <span class="stats" id="stats"></span>
+        <span id="user-info" style="margin-left:auto;display:flex;align-items:center;gap:8px;"></span>
     </div>
     <div class="container">
         <div class="search-box">
@@ -311,6 +321,19 @@ HTML_PAGE = """<!DOCTYPE html>
         fetch('/api/stats').then(r=>r.json()).then(d => {
             document.getElementById('version').textContent = `v${d.version}`;
             document.getElementById('stats').textContent = `${d.total_notes} notes | ${d.retrievals} recalls`;
+        });
+        // Load auth state
+        fetch('/auth/me').then(r=>r.json()).then(d => {
+            const el = document.getElementById('user-info');
+            if (d.authenticated) {
+                el.innerHTML = `<img src="${d.picture||''}" style="width:24px;height:24px;border-radius:50%;" onerror="this.style.display='none'"> <span style="color:#c9d1d9;font-size:13px;">${d.name}</span> <a href="/auth/logout" style="color:#8b949e;font-size:12px;text-decoration:none;">logout</a>`;
+            } else {
+                fetch('/auth/providers').then(r=>r.json()).then(p => {
+                    if (p.providers.length > 0) {
+                        el.innerHTML = p.providers.map(pr => `<a href="/auth/login/${pr}" style="padding:4px 12px;background:#21262d;border-radius:4px;color:#58a6ff;font-size:12px;text-decoration:none;">Login with ${pr}</a>`).join(' ');
+                    }
+                });
+            }
         });
     </script>
 </body>
