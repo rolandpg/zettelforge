@@ -1,224 +1,158 @@
 ---
 name: zettelforge
-description: ZettelForge (Agentic Memory System) - A production-grade agent memory system with vector search, knowledge graph, entity indexing, and synthesis layer. Use this skill when the user wants to store, retrieve, or synthesize information across sessions, build persistent agent memory, or implement RAG-as-answer capabilities. Automatically triggers on memory-related requests, persistence needs, cross-session recall, or knowledge management tasks.
+description: "ZettelForge v2.0.0 — Production CTI agentic memory system. Hybrid TypeDB (STIX 2.1 ontology) + LanceDB (vector search). Zero external AI dependencies: fastembed for embeddings, llama-cpp-python for LLM. 75% accuracy on CTI queries, 18% on LOCOMO. Use when agents need persistent memory, threat intel retrieval, entity extraction, graph traversal, or RAG synthesis."
 ---
 
-# ZettelForge: Agentic Memory System
+# ZettelForge v2.0.0: Agentic Memory System
 
-A production-grade memory system for AI agents. Store, retrieve, and synthesize information with vector search, knowledge graphs, and entity-aware linking.
+Production-grade memory for CTI analysis. Hybrid TypeDB (STIX 2.1) + LanceDB (vectors). Zero external AI dependencies.
 
-## ⚠️ Known Issues (2026-04-08)
+## Status (2026-04-10)
 
-**Critical**: Vector retrieval via LanceDB is non-functional. The following features are **currently broken**:
-- ❌ Synthesis layer (`mm.synthesize()`) - returns "No answer" due to empty context retrieval
-- ❌ Semantic similarity search (vector retrieval returns empty)
-- ❌ Temporal reasoning in synthesis
-- ❌ Multi-hop graph traversal in synthesis
+All systems operational:
+- ✅ Vector retrieval (fastembed, in-memory cosine similarity)
+- ✅ Knowledge graph (TypeDB STIX 2.1 with JSONL fallback)
+- ✅ Entity extraction (10 types: CVE, actor, tool, campaign, person, location, org, event, activity, temporal)
+- ✅ Two-phase extraction pipeline (FactExtractor → MemoryUpdater)
+- ✅ Cross-encoder reranking (ms-marco-MiniLM)
+- ✅ Synthesis layer (direct_answer, synthesized_brief, timeline_analysis, relationship_map)
+- ✅ 36 CTI aliases seeded (APT28/Fancy Bear/Strontium, etc.)
 
-**Working features**:
-- ✅ JSONL note storage
-- ✅ Entity extraction and indexing
-- ✅ Entity-based recall (`recall_actor`, `recall_cve`)
-- ✅ Intent classification (routes correctly)
+## Benchmarks
 
-**Fix in progress**: See `research/zettelforge_synthesis_fix_plan.md`
-
----
+| Benchmark | Score | What it tests |
+|-----------|-------|--------------|
+| **CTI Retrieval** | **75.0%** | Attribution, CVE linkage, tools, temporal, multi-hop |
+| **LOCOMO** | **18.0%** | Conversational memory recall |
+| **RAGAS** | **78.1%** | Retrieval quality (keyword presence) |
 
 ## Quick Start
 
 ```python
 from zettelforge import MemoryManager
 
-# Initialize
 mm = MemoryManager()
 
-# Store a memory
-note, reason = mm.remember("CVE-2024-3094 is a backdoor in XZ Utils")
+# Store threat intel
+note, status = mm.remember(
+    "APT28 uses Cobalt Strike for lateral movement via CVE-2024-1111",
+    domain="cti"
+)
 
-# Retrieve memories
-results = mm.recall("XZ backdoor", k=5)
+# Two-phase extraction (selective, deduplicating)
+results = mm.remember_with_extraction(
+    "APT28 dropped DROPBEAR, now exploits edge devices.",
+    domain="cti"
+)
 
-# Entity lookup
-apt28_notes = mm.recall_actor("APT28", k=10)
-cve_notes = mm.recall_cve("CVE-2024-3094")
+# Ingest reports (auto-chunks)
+results = mm.remember_report(
+    content="Full threat report text...",
+    source_url="https://example.com/report",
+    domain="cti"
+)
 
-# Synthesize answer
-answer = mm.synthesize("What do we know about XZ backdoor?", format="direct_answer")
+# Retrieve — blended vector + graph, cross-encoder reranked
+results = mm.recall("What tools does APT28 use?", k=10)
+
+# Alias resolution works automatically
+results = mm.recall_actor("Fancy Bear")  # resolves to APT28
+
+# Entity lookups
+mm.recall_cve("CVE-2024-3094")
+mm.recall_tool("cobalt-strike")
+
+# Graph traversal
+paths = mm.traverse_graph("actor", "apt28", max_depth=2)
+
+# Synthesize answers
+result = mm.synthesize("Summarize APT28 activity", format="synthesized_brief")
 ```
-
-## Installation
-
-```bash
-pip install amem
-```
-
-Or install from source:
-```bash
-git clone https://github.com/rolandpg/amem.git
-cd amem
-pip install -e .
-```
-
-## Core Features
-
-| Feature | Description |
-|---------|-------------|
-| **Vector Storage** | LanceDB-backed semantic search with Ollama embeddings |
-| **Entity Indexing** | Automatic extraction of CVEs, actors, tools, campaigns |
-| **Knowledge Graph** | Relationship mapping between entities and notes |
-| **Synthesis Layer** | RAG-as-answer with multiple output formats |
-| **Alias Resolution** | Normalized entity names (e.g., "Fancy Bear" → "apt28") |
-| **Epistemic Tiers** | A/B/C quality classification |
-| **Cold Archive** | Automatic archival of low-confidence notes |
 
 ## Architecture
 
 ```
-User Query → MemoryManager
-    ├── Vector Retriever (semantic search)
-    ├── Entity Index (fast lookup)
-    ├── Knowledge Graph (relationships)
-    └── Synthesis Layer (RAG-as-answer)
+Agent → MemoryManager
+  ├─ NoteConstructor → EntityExtractor (10 types, regex + optional LLM NER)
+  ├─ FactExtractor → MemoryUpdater (ADD/UPDATE/DELETE/NOOP)
+  ├─ TypeDB (STIX 2.1: 9 entity types, 8 relation types, inference)
+  │   └─ JSONL fallback if TypeDB unavailable
+  ├─ LanceDB (768-dim fastembed vectors, IVF_PQ index)
+  │   └─ In-memory cosine similarity fallback
+  ├─ BlendedRetriever (vector + graph, intent-weighted)
+  ├─ Cross-encoder reranker (ms-marco-MiniLM, 80MB)
+  ├─ Entity-augmented recall (entity index supplements vector results)
+  ├─ Temporal boost (date extraction for temporal queries)
+  └─ SynthesisGenerator (RAG, 4 output formats)
 ```
 
-## Response Formats
+## Retrieval Pipeline
 
-**⚠️ WARNING**: Synthesis layer is currently non-functional due to broken vector retrieval. The following formats are documented but do not work:
-
-- `direct_answer`: Concise answer with sources **[BROKEN - returns "No answer"]**
-- `synthesized_brief`: Thematic analysis **[BROKEN]**
-- `timeline_analysis`: Chronological events **[BROKEN]**
-- `relationship_map`: Entity connections **[BROKEN]**
-
-**Use `mm.recall()` or `mm.recall_actor()` instead for working retrieval.**
+```
+Query → IntentClassifier (factual/temporal/relational/causal/exploratory)
+  → VectorRetriever (cosine similarity + entity boost)
+  → GraphRetriever (BFS from query entities, hop-distance scoring)
+  → BlendedRetriever (policy-weighted merge)
+  → Entity-augmented recall (entity index supplements)
+  → Temporal boost (for temporal queries)
+  → Cross-encoder reranking (ms-marco-MiniLM)
+  → List[MemoryNote]
+```
 
 ## Configuration
 
+```yaml
+# config.yaml
+embedding:
+  provider: fastembed           # or "ollama"
+  model: nomic-ai/nomic-embed-text-v1.5-Q
+llm:
+  provider: local               # or "ollama"
+  model: Qwen/Qwen2.5-3B-Instruct-GGUF
+typedb:
+  host: localhost
+  port: 1729
+backend: typedb                  # or "jsonl"
+```
+
 Environment variables:
 ```bash
-AMEM_DATA_DIR=/path/to/data    # Default: ~/.amem
-AMEM_OLLAMA_URL=http://localhost:11434
-AMEM_EMBEDDING_MODEL=nomic-embed-text
+ZETTELFORGE_BACKEND=jsonl                    # Skip TypeDB
+ZETTELFORGE_EMBEDDING_PROVIDER=ollama        # Use Ollama for embeddings
+ZETTELFORGE_LLM_PROVIDER=ollama              # Use Ollama for LLM
 ```
-
-## MAGMA Extensions (2026-04)
-
-Four improvements from MAGMA/Kumiho research:
-
-### 1. Causal Triple Extraction
-LLM-based extraction of causal relationships from notes:
-```python
-from zettelforge.note_constructor import NoteConstructor
-constructor = NoteConstructor()
-triples = constructor.extract_causal_triples(text, note_id)
-edges = constructor.store_causal_edges(triples, note_id)
-```
-Relations: `causes`, `enables`, `targets`, `uses`, `exploits`, `attributed_to`, `related_to`
-
-### 2. Temporal Graph
-Time-based indexing and queries:
-```python
-from zettelforge.knowledge_graph import get_knowledge_graph
-kg = get_knowledge_graph()
-timeline = kg.get_entity_timeline("actor", "apt28")
-changes = kg.get_changes_since("2024-01-01")
-```
-Temporal edge types: `SUPERSEDES`, `TEMPORAL_BEFORE`, `TEMPORAL_AFTER`
-
-### 3. Intent Classifier
-Adaptive query routing at recall time:
-```python
-from zettelforge.intent_classifier import get_intent_classifier
-classifier = get_intent_classifier()
-intent, meta = classifier.classify("What changed since May 2024?")
-policy = classifier.get_traversal_policy(intent)
-```
-Intent types: `factual`, `temporal`, `relational`, `causal`, `exploratory`
-
-### 4. Adaptive Recall
-`mm.recall()` now routes based on intent:
-- Factual → entity index
-- Temporal → temporal graph
-- Relational/Causal → graph traversal
-- Exploratory → vector search
-
-## CTI Platform Integration (v1.2.0)
-
-Bi-directional sync with Django CTI database:
-```python
-from zettelforge import get_cti_connector, import_cti_to_memory, unified_recall
-
-# Connect to CTI platform
-connector = get_cti_connector()
-
-# Search CTI platform
-actors = connector.search_cti("APT28", entity_type="actor")
-cves = connector.search_cti("CVE-2024", entity_type="cve")
-
-# Import CTI to memory
-import_cti_to_memory(mm, query="APT28", entity_type="actor")
-
-# Unified recall
-results = unified_recall(mm, "APT28")
-# results = {"memory": [...], "cti": [...]}
-```
-
-**CTI Stats:** 30 actors, 1559 CVEs, 90K+ IOCs accessible
-
-## Proactive Context Injection (v1.2.0)
-
-Auto-preload relevant context before agent tasks:
-```python
-from zettelforge import ContextInjector, get_cti_connector, get_memory_manager
-
-# Setup
-injector = ContextInjector(memory_manager=mm, cti_connector=cti)
-
-# Before task - returns relevant memory + CTI
-context = injector.inject_context("Analyze CVE-2024-1111")
-
-# Inject into LLM prompt
-enhanced_prompt = injector.inject_into_prompt(task, base_prompt)
-```
-
-**Task Classification:** cve_analysis, threat_actor_research, incident_response, malware_analysis, planning
-
-## Sigma Rule Generation (v1.3.0)
-
-Generate detection rules from CTI IOCs:
-```python
-from zettelforge import get_cti_connector, get_sigma_generator
-
-cti = get_cti_connector()
-sigma = get_sigma_generator(cti)
-
-# Generate rules for a threat actor
-rules = sigma.generate_from_actor("microsoft", min_confidence="LOW")
-
-# Export to Sigma YAML
-yaml_out = sigma.export_yaml(rules)
-
-# Export to Sentinel KQL
-kql = sigma.export_sentinel(rules)
-```
-
-**Output Formats:** Sigma YAML, Microsoft Sentinel KQL
 
 ## API Reference
 
-See `docs/API.md` for complete API documentation.
+| Method | Description |
+|--------|------------|
+| `remember(content, domain)` | Store a note (append-only) |
+| `remember_with_extraction(content, domain)` | Two-phase: extract facts → ADD/UPDATE/DELETE/NOOP |
+| `remember_report(content, source_url)` | Chunked report ingestion |
+| `recall(query, k, domain)` | Blended retrieval (vector + graph + reranking) |
+| `recall_actor(name)` / `recall_cve(id)` / `recall_tool(name)` | Fast entity lookup |
+| `synthesize(query, format)` | RAG synthesis (direct_answer, brief, timeline, relationship_map) |
+| `traverse_graph(type, value, max_depth)` | Knowledge graph traversal |
+| `get_context(query, token_budget)` | Formatted context for prompt injection |
 
-## Development
+## STIX 2.1 Entity Types
 
-```bash
-# Run tests
-python -m pytest tests/ -v
+threat-actor, malware, tool, attack-pattern, vulnerability, campaign, indicator, infrastructure, zettel-note (bridge to LanceDB)
 
-# Run specific phase tests
-python tests/test_phase_7.py
-```
+## STIX Relationship Types
+
+uses, targets, attributed-to, indicates, mitigates, mentioned-in, supersedes, alias-of
+
+## Dependencies (zero external servers for AI)
+
+| Component | Package | Server needed? |
+|-----------|---------|:-:|
+| Embeddings | fastembed (ONNX, 130MB) | No |
+| LLM | llama-cpp-python (GGUF, 2GB) | No |
+| Vectors | LanceDB | No |
+| Ontology | TypeDB (Docker) | Yes |
+| Reranking | fastembed cross-encoder (80MB) | No |
 
 ## License
 
-MIT License - See LICENSE file
+MIT

@@ -13,8 +13,8 @@ ZettelForge v2.0.0 was evaluated across five benchmark suites. The system runs w
 | Benchmark | What it measures | Key result |
 |-----------|-----------------|------------|
 | **CTI Retrieval** | Real CTI queries (attribution, CVE linkage, tools) | **75.0% accuracy** |
-| **LOCOMO** (ACL 2024) | Conversational memory recall | 15.0% accuracy |
-| **MemPalace comparison** | Head-to-head on LOCOMO | MemPalace 26% vs ZettelForge 15% |
+| **LOCOMO** (ACL 2024) | Conversational memory recall | **18.0% accuracy** |
+| **MemPalace comparison** | Head-to-head on LOCOMO | MemPalace 26% vs ZettelForge 18% |
 | **RAGAS** | Retrieval quality metrics | 78.1% keyword presence |
 | **CTIBench** (NeurIPS 2024) | ATT&CK technique extraction | Baseline (methodology fix needed) |
 
@@ -66,16 +66,16 @@ Tool attribution scores 40% because queries like "What tools does APT28 use?" ma
 
 ### Version Progression
 
-| Category | v1.3.0 | v1.5.0 | v2.0.0 |
-|----------|--------|--------|--------|
-| single-hop | 5.0% | 10.0% | **10.0%** |
-| multi-hop | 0.0% | 0.0% | **0.0%** |
-| temporal | 0.0% | 0.0% | **0.0%** |
-| open-domain | 30.0% | 30.0% | **35.0%** |
+| Category | v1.3.0 | v1.5.0 | v2.0.0 (with retrieval improvements) |
+|----------|--------|--------|---------------------------------------|
+| single-hop | 5.0% | 10.0% | **15.0%** |
+| multi-hop | 0.0% | 0.0% | **0.0%** (avg_score 0.15) |
+| temporal | 0.0% | 0.0% | **5.0%** |
+| open-domain | 30.0% | 30.0% | **40.0%** |
 | adversarial | 35.0% | 35.0% | **30.0%** |
-| **Overall** | **14.0%** | **15.0%** | **15.0%** |
-| p50 latency | 238ms | 344ms | **663ms** |
-| p95 latency | 190,000ms | 1,305ms | **1,083ms** |
+| **Overall** | **14.0%** | **15.0%** | **18.0%** |
+| p50 latency | 238ms | 344ms | **1,240ms** |
+| p95 latency | 190,000ms | 1,305ms | **2,282ms** |
 
 ### Why LOCOMO Scores Are Low
 
@@ -92,7 +92,7 @@ Additionally, the supersession logic aggressively marks LOCOMO sessions as super
 | LangMem | 58.1% | 60s | Cloud API |
 | OpenAI Memory | 52.9% | 0.9s | Cloud API |
 | MemPalace | 26.0% | 170ms | None (ChromaDB) |
-| **ZettelForge 2.0.0** | **15.0%** | **1.1s** | **None (fastembed + GGUF)** |
+| **ZettelForge 2.0.0** | **18.0%** | **2.3s** | **None (fastembed + GGUF)** |
 
 ---
 
@@ -107,8 +107,8 @@ Additionally, the supersession logic aggressively marks LOCOMO sessions as super
 | temporal | 0.0% | **10.0%** | +10 |
 | open-domain | 35.0% | **55.0%** | +20 |
 | adversarial | 30.0% | **50.0%** | +20 |
-| **Overall** | **15.0%** | **26.0%** | **+11** |
-| p50 latency | 663ms | **130ms** | 5x faster |
+| **Overall** | **18.0%** | **26.0%** | **+8** |
+| p50 latency | 1,240ms | **130ms** | 10x faster |
 
 ### Why MemPalace Wins on LOCOMO
 
