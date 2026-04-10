@@ -1,7 +1,7 @@
 {
   "meta": {
-    "date": "2026-04-09T11:46:33.915201",
-    "version": "zettelforge-1.5.0",
+    "date": "2026-04-09T21:28:11.666846",
+    "version": "zettelforge-2.0.0",
     "dataset": "/home/rolandpg/.openclaw/workspace-nexus/Locomo-Plus/data/locomo10.json",
     "per_category": 20,
     "k": 10,
@@ -10,16 +10,16 @@
   "ingest": {
     "ingested": 272,
     "errors": 0,
-    "duration_s": 41.88,
-    "rate_per_s": 6.5
+    "duration_s": 6000.2,
+    "rate_per_s": 0.0
   },
   "scores": {
-    "string_similarity": 0.1772,
-    "keyword_presence": 0.7585
+    "string_similarity": 0.1783,
+    "keyword_presence": 0.7531
   },
   "latency": {
-    "p50_ms": 320.1,
-    "p95_ms": 377.9
+    "p50_ms": 4675.1,
+    "p95_ms": 9207.1
   },
   "by_category": {
     "single-hop": {
