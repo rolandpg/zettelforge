@@ -74,13 +74,13 @@ class MemoryManager:
         self.store.write_note(note)
         self.stats['notes_created'] += 1
 
-        # Alias resolution and indexing
-        raw_entities = self.indexer.extractor.extract_all(note.content.raw)
-        
+        # Alias resolution and indexing (regex-only for speed; LLM NER runs on recall)
+        raw_entities = self.indexer.extractor.extract_all(note.content.raw, use_llm=False)
+
         resolved_entities = {}
         for etype, elist in raw_entities.items():
             resolved_entities[etype] = [self.resolver.resolve(etype, e) for e in elist]
-            
+
         self.indexer.add_note(note.id, resolved_entities)
         
         # Phase 3: Check supersession
@@ -284,7 +284,7 @@ class MemoryManager:
     ) -> List[MemoryNote]:
         """
         Fast lookup by entity type and value.
-        entity_type: 'cve', 'actor', 'tool', 'campaign', 'sector'
+        entity_type: 'cve', 'actor', 'tool', 'campaign', 'person', 'location', 'organization', 'event', 'activity', 'temporal'
         """
         self.stats['entity_index_hits'] += 1
         note_ids = self.indexer.get_note_ids(entity_type, entity_value.lower())
@@ -351,6 +351,8 @@ class MemoryManager:
                 kg.add_edge(etype, evalue, "note", note.id, "MENTIONED_IN", edge_props)
 
         # 3. Inferred Entity-to-Entity Relationships (Heuristic)
+
+        # --- CTI relationships ---
         actors = resolved_entities.get("actor", [])
         tools = resolved_entities.get("tool", [])
         cves = resolved_entities.get("cve", [])
@@ -372,6 +374,36 @@ class MemoryManager:
                 kg.add_edge("tool", t, "asset", asset, "TARGETS_ASSET", edge_props)
             for c in cves:
                 kg.add_edge("tool", t, "cve", c, "EXPLOITS_CVE", edge_props)
+
+        # --- Conversational relationships (RFC-001) ---
+        persons = resolved_entities.get("person", [])
+        locations = resolved_entities.get("location", [])
+        organizations = resolved_entities.get("organization", [])
+        events = resolved_entities.get("event", [])
+        activities = resolved_entities.get("activity", [])
+        temporals = resolved_entities.get("temporal", [])
+
+        for p in persons:
+            for org in organizations:
+                kg.add_edge("person", p, "organization", org, "AFFILIATED_WITH", edge_props)
+            for ev in events:
+                kg.add_edge("person", p, "event", ev, "ATTENDED", edge_props)
+            for loc in locations:
+                kg.add_edge("person", p, "location", loc, "LOCATED_AT", edge_props)
+            for act in activities:
+                kg.add_edge("person", p, "activity", act, "PARTICIPATES_IN", edge_props)
+
+        for ev in events:
+            for loc in locations:
+                kg.add_edge("event", ev, "location", loc, "HELD_AT", edge_props)
+            for org in organizations:
+                kg.add_edge("event", ev, "organization", org, "ORGANIZED_BY", edge_props)
+            for tmp in temporals:
+                kg.add_edge("event", ev, "temporal", tmp, "OCCURRED_ON", edge_props)
+
+        for org in organizations:
+            for loc in locations:
+                kg.add_edge("organization", org, "location", loc, "BASED_IN", edge_props)
 
         # 4. LLM-based Causal Triple Extraction (MAGMA-style)
         # This is the slow path - only run for important CTI notes
@@ -415,7 +447,10 @@ class MemoryManager:
         if not candidates:
             return None
             
-        new_entities = {k: resolved_entities.get(k, []) for k in ["cve", "actor", "tool", "campaign", "asset"]}
+        new_entities = {k: resolved_entities.get(k, []) for k in [
+            "cve", "actor", "tool", "campaign", "asset",
+            "person", "location", "organization", "event", "activity", "temporal",
+        ]}
         best_match = None
         best_score = 0.0
         
@@ -423,13 +458,13 @@ class MemoryManager:
             if candidate.links.superseded_by:
                 continue
                 
-            cand_entities = self.indexer.extractor.extract_all(candidate.content.raw)
+            cand_entities = self.indexer.extractor.extract_all(candidate.content.raw, use_llm=False)
             cand_resolved = {}
             for k, v in cand_entities.items():
                 cand_resolved[k] = [self.resolver.resolve(k, e) for e in v]
                 
             overlap = 0
-            for key in ["cve", "actor", "tool", "campaign", "asset"]:
+            for key in ["cve", "actor", "tool", "campaign", "asset", "person", "location", "organization", "event", "activity", "temporal"]:
                 new_set = set(e.lower() for e in new_entities.get(key, []))
                 cand_set = set(e.lower() for e in cand_resolved.get(key, []))
                 overlap += len(new_set & cand_set)
