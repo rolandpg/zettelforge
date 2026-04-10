@@ -266,6 +266,10 @@ class MemoryManager:
             k=k,
         )
 
+        # Fallback: if blending produced fewer results than vector alone, use vector
+        if len(results) < len(vector_results):
+            results = vector_results[:k]
+
         # Filter superseded notes
         if exclude_superseded:
             results = [n for n in results if not n.links.superseded_by]
