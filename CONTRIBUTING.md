@@ -8,15 +8,16 @@ Thank you for your interest in contributing to ZettelForge! This document provid
 2. Create a virtual environment: `python -m venv venv`
 3. Activate it: `source venv/bin/activate` (or `venv\Scripts\activate` on Windows)
 4. Install in development mode: `pip install -e ".[dev]"`
-5. Install Ollama and pull the embedding model: `ollama pull nomic-embed-text`
+5. Install Ollama and pull the LLM model: `ollama pull qwen2.5:3b`
+   (Embeddings run in-process via fastembed — no Ollama embedding model needed)
 
 ## Development Workflow
 
 1. Create a feature branch: `git checkout -b feature/your-feature-name`
 2. Make your changes
 3. Run tests: `pytest tests/ -v`
-4. Run linting: `ruff check src/amem/`
-5. Run formatting: `black src/amem/`
+4. Run linting: `ruff check src/zettelforge/`
+5. Run formatting: `black src/zettelforge/`
 6. Commit with clear messages
 7. Push and create a pull request
 

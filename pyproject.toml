@@ -46,7 +46,7 @@ dev = [
 
 [project.urls]
 Homepage = "https://github.com/rolandpg/zettelforge"
-Documentation = "https://github.com/rolandpg/zettelforge/blob/main/docs/"
+Documentation = "https://github.com/rolandpg/zettelforge/blob/master/docs/"
 Repository = "https://github.com/rolandpg/zettelforge"
 Issues = "https://github.com/rolandpg/zettelforge/issues"
 

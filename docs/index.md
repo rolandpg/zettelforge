@@ -8,6 +8,8 @@ last_updated: "2026-04-09"
 version: "2.0.0"
 ---
 
+> **Note:** ZettelForge is the internal codebase name. ThreatRecall is the product name used in this documentation.
+
 # ThreatRecall Documentation
 
 ThreatRecall is a production-grade agentic memory system for cyber threat intelligence (CTI). It combines a STIX 2.1 knowledge graph in TypeDB with vector-indexed Zettelkasten notes in LanceDB so that AI agents and SOC analysts can store, recall, and synthesize threat intelligence using natural language.

@@ -2,7 +2,7 @@
 
 ## What Was Created
 
-A standalone, production-ready Python package for ZettelForge (Agentic Memory) that can be:
+A standalone, production-ready Python package for ZettelForge (internal codebase name) / ThreatRecall (product name) — an agentic memory system for cyber threat intelligence that can be:
 1. Installed as a Python package via pip
 2. Used as an OpenClaw skill
 3. Published to GitHub as an open-source project
@@ -11,9 +11,8 @@ A standalone, production-ready Python package for ZettelForge (Agentic Memory) t
 ## Directory Structure
 
 ```
-~/.openclaw/workspace/skills/amem/
+zettelforge/
 ├── .github/workflows/ci.yml    # GitHub Actions CI/CD
-├── .git/                        # Git repository
 ├── .gitignore                   # Git ignore rules
 ├── CONTRIBUTING.md              # Contribution guidelines
 ├── LICENSE                      # MIT License
@@ -21,17 +20,50 @@ A standalone, production-ready Python package for ZettelForge (Agentic Memory) t
 ├── README.md                    # Project documentation
 ├── SKILL.md                     # OpenClaw skill definition
 ├── pyproject.toml               # Python package config
-├── src/amem/                    # Source code
-│   ├── __init__.py             # Package init
-│   ├── entity_indexer.py       # Entity extraction/indexing
-│   ├── memory_manager.py       # Main API
-│   ├── memory_store.py         # JSONL storage
-│   ├── note_constructor.py     # Note enrichment
-│   ├── note_schema.py          # Pydantic schemas
-│   ├── vector_memory.py        # LanceDB vector store
-│   └── vector_retriever.py     # Semantic search
+├── config.default.yaml          # Default configuration
+├── config.example.yaml          # Example configuration
+├── docker/
+│   └── docker-compose.yml       # TypeDB container
+├── src/zettelforge/             # Source code
+│   ├── __init__.py              # Package init
+│   ├── memory_manager.py        # Primary agent interface
+│   ├── typedb_client.py         # TypeDB STIX 2.1 knowledge graph client
+│   ├── note_schema.py           # Pydantic MemoryNote model
+│   ├── note_constructor.py      # Content enrichment, entity extraction
+│   ├── memory_store.py          # JSONL + LanceDB persistence
+│   ├── fact_extractor.py        # Phase 1: LLM salient fact extraction
+│   ├── memory_updater.py        # Phase 2: ADD/UPDATE/DELETE/NOOP decisions
+│   ├── knowledge_graph.py       # Graph factory (TypeDB-first, JSONL fallback)
+│   ├── graph_retriever.py       # BFS traversal, hop-distance scoring
+│   ├── blended_retriever.py     # Merge vector + graph with policy weights
+│   ├── vector_retriever.py      # Cosine similarity + entity boost
+│   ├── vector_memory.py         # LanceDB vector store implementation
+│   ├── intent_classifier.py     # Query intent routing
+│   ├── entity_indexer.py        # Entity extraction and O(1) index
+│   ├── alias_resolver.py        # TypeDB alias resolution + JSON fallback
+│   ├── synthesis_generator.py   # RAG answer generation
+│   ├── synthesis_validator.py   # Synthesis output validation
+│   ├── governance_validator.py  # Governance controls (GOV-003/007/011/012)
+│   ├── context_injection.py     # Proactive agent context loading
+│   ├── cti_integration.py       # OpenCTI platform connector
+│   ├── sigma_generator.py       # Sigma rule generation from IOCs
+│   ├── llm_client.py            # LLM provider abstraction (local/Ollama)
+│   ├── config.py                # Configuration loading and validation
+│   ├── cache.py                 # Result caching layer
+│   ├── observability.py         # Logging, metrics, and tracing
+│   ├── ontology.py              # TypeDB ontology helpers
+│   ├── retry.py                 # Retry/backoff utilities
+│   └── schema/
+│       ├── stix_core.tql        # STIX 2.1 TypeQL schema definition
+│       ├── stix_rules.tql       # TypeDB inference functions
+│       └── seed_aliases.py      # CTI alias seeding script
+├── benchmarks/
+│   ├── BENCHMARK_REPORT.md      # Unified results and analysis
+│   ├── locomo_benchmark.py      # LOCOMO evaluation script
+│   ├── ctibench_benchmark.py    # CTIBench adapter (NeurIPS 2024)
+│   └── ragas_benchmark.py       # RAGAS retrieval quality wrapper
 └── tests/
-    └── test_basic.py           # Unit tests
+    └── (test suite — 82 tests)
 ```
 
 ## Key Features Packaged
@@ -39,136 +71,121 @@ A standalone, production-ready Python package for ZettelForge (Agentic Memory) t
 | Feature | Status | File |
 |---------|--------|------|
 | Core MemoryNote schema | ✅ | note_schema.py |
-| JSONL storage | ✅ | memory_store.py |
-| Vector storage (LanceDB) | ✅ | vector_memory.py |
+| JSONL + LanceDB storage | ✅ | memory_store.py |
+| Vector storage (LanceDB, 768-dim IVF_PQ) | ✅ | vector_memory.py |
 | Semantic retrieval | ✅ | vector_retriever.py |
-| Entity extraction | ✅ | entity_indexer.py |
-| Entity-based lookup | ✅ | memory_manager.py |
-| Main API (remember/recall) | ✅ | memory_manager.py |
+| Entity extraction (10 types) | ✅ | entity_indexer.py |
+| Entity-based fast lookup | ✅ | memory_manager.py |
+| Main API (remember/recall/synthesize) | ✅ | memory_manager.py |
+| TypeDB STIX 2.1 knowledge graph | ✅ | typedb_client.py |
+| 36 seeded CTI aliases | ✅ | schema/seed_aliases.py |
+| Two-phase extraction pipeline | ✅ | fact_extractor.py, memory_updater.py |
+| Blended vector + graph retrieval | ✅ | blended_retriever.py |
+| Intent-based query routing | ✅ | intent_classifier.py |
+| RAG synthesis (4 formats) | ✅ | synthesis_generator.py |
+| Report ingestion (chunked) | ✅ | memory_manager.py |
+| In-process embeddings (fastembed) | ✅ | vector_memory.py |
+| In-process LLM (llama-cpp-python) | ✅ | llm_client.py |
+| Cross-encoder reranking | ✅ | vector_retriever.py |
+| Governance enforcement | ✅ | governance_validator.py |
+| Proactive context injection | ✅ | context_injection.py |
+| Sigma rule generation | ✅ | sigma_generator.py |
+| OpenCTI platform connector | ✅ | cti_integration.py |
+| Causal triple extraction | ✅ | knowledge_graph.py |
+| Alias resolution | ✅ | alias_resolver.py |
+| TypeDB-first with JSONL fallback | ✅ | knowledge_graph.py |
 
 ## Installation
 
 ### Local Development
 
 ```bash
-cd ~/.openclaw/workspace/skills/amem
+git clone https://github.com/rolandpg/zettelforge.git
+cd zettelforge
 pip install -e ".[dev]"
 ```
 
 ### Usage
 
 ```python
-from amem import MemoryManager
+from zettelforge import MemoryManager
 
 mm = MemoryManager()
 
 # Store memory
-note, status = mm.remember("CVE-2024-3094 is a backdoor", domain="security_ops")
+note, status = mm.remember("APT28 uses Cobalt Strike", domain="cti")
 
 # Retrieve
-results = mm.recall("XZ backdoor", k=5)
+results = mm.recall("APT28 tools", k=5)
 
 # Entity lookup
 cve_notes = mm.recall_cve("CVE-2024-3094")
+
+# Synthesize
+result = mm.synthesize("Summarize APT28 activity", format="synthesized_brief")
 ```
 
-## Next Steps to Publish on GitHub
+## Publishing to GitHub
 
-1. **Create GitHub Repository:**
-   ```bash
-   # Option 1: Using GitHub CLI
-   gh repo create rolandpg/amem --public --source=. --remote=origin --push
-   
-   # Option 2: Manual
-   # - Go to https://github.com/new
-   # - Create repo named "amem"
-   # - Follow push instructions
-   ```
+The package is already published at: https://github.com/rolandpg/zettelforge
 
-2. **Push to GitHub:**
-   ```bash
-   cd ~/.openclaw/workspace/skills/amem
-   git branch -m main
-   git remote add origin https://github.com/rolandpg/amem.git
-   git push -u origin main
-   ```
+To publish updates:
+```bash
+git add .
+git commit -m "feat: your change"
+git push origin master
+```
 
-3. **Set Up CI/CD:**
-   - GitHub Actions workflow already configured
-   - Will run tests on Python 3.10, 3.11, 3.12
-   - Runs linting, type checking, and tests
+## Future: Publish to PyPI
 
-4. **Future: Publish to PyPI:**
-   ```bash
-   # Build package
-   python -m build
-   
-   # Upload to PyPI (requires account)
-   python -m twine upload dist/*
-   ```
+```bash
+# Build package
+python -m build
 
-## Differences from Original ZettelForge
-
-| Aspect | Original | Packaged |
-|--------|----------|----------|
-| Location | `~/.openclaw/workspace/memory/` | `~/.openclaw/workspace/skills/amem/` |
-| Hardcoded paths | Yes | Environment configurable |
-| Dependencies | Inline imports | Proper package deps in pyproject.toml |
-| Tests | Phase-based (143 tests) | Simplified basic tests |
-| Synthesis Layer | Phase 7 (complete) | Not included (can add later) |
-| Knowledge Graph | Phase 6 (complete) | Not included (can add later) |
-| Evolution | Multi-phase | Simplified |
-
-## What's NOT Included (Yet)
-
-These advanced features from the original ZettelForge can be added in future versions:
-
-1. **Synthesis Layer (Phase 7)** - RAG-as-answer with LLM generation
-2. **Knowledge Graph (Phase 6)** - Full graph with IEP 2.0
-3. **Note Evolution** - Multi-phase note refinement
-4. **Link Generator** - Automatic note linking
-5. **Alias Resolution** - Entity name normalization
-6. **Cold Archive** - Automatic low-confidence archival
-7. **Burn-in Tests** - Comprehensive stress testing
+# Upload to PyPI (requires account)
+python -m twine upload dist/*
+```
 
 ## Configuration
 
 Environment variables for customization:
 
 ```bash
-export AMEM_DATA_DIR=/path/to/data        # Default: ~/.amem
-export AMEM_OLLAMA_URL=http://localhost:11434
-export AMEM_EMBEDDING_MODEL=nomic-embed-text
+export AMEM_DATA_DIR=/path/to/data          # Default: ~/.amem
+export ZETTELFORGE_BACKEND=typedb           # "typedb" or "jsonl" (fallback)
+export ZETTELFORGE_EMBEDDING_PROVIDER=fastembed  # "fastembed" (default) or "ollama"
+export TYPEDB_HOST=localhost
+export TYPEDB_PORT=1729
+export TYPEDB_DATABASE=zettelforge
 ```
 
 ## Version
 
-Current: **1.0.0-alpha.1**
+Current: **2.0.0**
 
 Following semantic versioning:
-- Alpha: Early testing, API may change
-- Beta: Feature complete, testing bugs
-- 1.0.0: Production ready
+- 2.0.0: Production ready — hybrid TypeDB + LanceDB, STIX 2.1, fastembed, two-phase pipeline
 
 ## Git Commit
 
-Initial commit hash: `9da469e`
+Latest release: `v2.0.0`
 
 ```
-Initial commit: ZettelForge Agentic Memory System v1.0.0-alpha.1
-17 files changed, 2001 insertions(+)
+ZettelForge v2.0.0: Hybrid TypeDB + LanceDB agentic memory system
 ```
 
-## Ready for Development
+## Ready for Production
 
 The package is ready for:
 - ✅ Local installation and testing
-- ✅ GitHub repository creation
-- ✅ CI/CD pipeline
+- ✅ GitHub repository
+- ✅ CI/CD pipeline (GitHub Actions)
 - ✅ OpenClaw skill usage
+- ✅ TypeDB STIX 2.1 ontology layer
+- ✅ In-process AI (fastembed + llama-cpp-python, no external servers)
 - 🔄 Future PyPI publication
 
 ---
 
 Created: 2026-04-05
-Location: ~/.openclaw/workspace/skills/amem/
+Updated: 2026-04-10

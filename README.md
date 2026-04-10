@@ -1,4 +1,6 @@
-# ZettelForge: Agentic Memory System
+# ZettelForge / ThreatRecall: Agentic Memory System
+
+> **ZettelForge** is the internal codebase name. **ThreatRecall** is the product name used in external-facing documentation and branding.
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -481,6 +483,23 @@ mm.traverse_graph("actor", "apt28", max_depth=2)
 mm.get_entity_relationships("actor", "apt28")
 ```
 
+#### Context Injection
+
+```python
+# ProactiveAgentMixin / context_injection.py
+context = mm.get_context("What tools does APT28 use?", token_budget=2000)
+# Returns formatted context string for prompt injection
+```
+
+#### Governance Validator
+
+```python
+# governance_validator.py enforces GOV-003/007/011/012 on every operation
+# Data classification (GOV-003), retention (GOV-007),
+# access control (GOV-011), and audit logging (GOV-012)
+# are applied automatically — no manual calls required.
+```
+
 ## Benchmarks
 
 Evaluated across three benchmark suites (2026-04-09):
@@ -489,7 +508,7 @@ Evaluated across three benchmark suites (2026-04-09):
 |-----------|-----------------|------------|
 | [LOCOMO](https://snap-research.github.io/locomo/) (ACL 2024) | Conversational memory recall | 18.0% accuracy, 0.37 avg score |
 | [CTIBench](https://huggingface.co/datasets/AI4Sec/cti-bench) (NeurIPS 2024) | CTI entity extraction & attribution | Baseline established |
-| RAGAS | Retrieval quality | 75.9% keyword presence |
+| RAGAS | Retrieval quality | 78.1% keyword presence |
 
 ### LOCOMO Results (v1.3.0 -> v1.5.0)
 
@@ -519,13 +538,22 @@ src/zettelforge/
     graph_retriever.py      # BFS traversal, hop-distance scoring
     blended_retriever.py    # Merge vector + graph with policy weights
     vector_retriever.py     # Cosine similarity + entity boost
+    vector_memory.py        # LanceDB vector store implementation
     intent_classifier.py    # Query intent routing
     entity_indexer.py       # Entity extraction and O(1) index
     alias_resolver.py       # TypeDB alias resolution + JSON fallback
     synthesis_generator.py  # RAG answer generation
+    synthesis_validator.py  # Synthesis output validation
+    governance_validator.py # Governance controls (GOV-003/007/011/012)
+    context_injection.py    # Proactive agent context loading
     cti_integration.py      # OpenCTI platform connector
     sigma_generator.py      # Sigma rule generation from IOCs
-    context_injection.py    # Proactive agent context loading
+    llm_client.py           # LLM provider abstraction (local/Ollama)
+    config.py               # Configuration loading and validation
+    cache.py                # Result caching layer
+    observability.py        # Logging, metrics, and tracing
+    ontology.py             # TypeDB ontology helpers
+    retry.py                # Retry/backoff utilities
     schema/
         stix_core.tql       # STIX 2.1 TypeQL schema definition
         stix_rules.tql      # TypeDB inference functions
@@ -602,5 +630,6 @@ MIT License - see [LICENSE](LICENSE) file
 
 - Repository: https://github.com/rolandpg/zettelforge
 - Issues: https://github.com/rolandpg/zettelforge/issues
+- Documentation: [docs/index.md](docs/index.md)
 - Benchmark Report: [benchmarks/BENCHMARK_REPORT.md](benchmarks/BENCHMARK_REPORT.md)
 - Architecture Plan: [docs/superpowers/plans/2026-04-09-hybrid-typedb-lancedb-architecture.md](docs/superpowers/plans/2026-04-09-hybrid-typedb-lancedb-architecture.md)
