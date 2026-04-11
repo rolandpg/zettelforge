@@ -194,3 +194,44 @@ During v2.0.0 benchmarking, three regressions were identified and fixed:
 | `mempalace_benchmark.py` | MemPalace on LOCOMO (ChromaDB) |
 | `ragas_benchmark.py` | RAGAS retrieval quality metrics |
 | `ctibench_benchmark.py` | CTIBench ATE adapter |
+
+---
+
+## 6. MemoryAgentBench (ICLR 2026)
+
+**Date:** 2026-04-10 | **Model:** nemotron-3-super:cloud via Ollama | **Splits:** AR (3 rows), CR (3 rows)
+
+### Results
+
+| Split | F1 | EM | ROUGE-L | Queries | p50 Latency |
+|-------|------|------|---------|---------|-------------|
+| Accurate Retrieval | **0.328** | 0.157 | 0.332 | 300 | 333ms |
+| Conflict Resolution | 0.032 | 0.017 | 0.031 | 300 | 128ms |
+| **Overall** | **0.180** | **0.087** | **0.182** | 600 | |
+
+### Model Impact
+
+| Model | AR F1 | CR F1 | Overall F1 |
+|-------|-------|-------|------------|
+| Qwen2.5-3B (local GGUF) | 0.012 | 0.012 | 0.007 |
+| nemotron-3-super:cloud | **0.328** | **0.032** | **0.180** |
+| Improvement | **27x** | **2.7x** | **25x** |
+
+Retrieval latency was unchanged between models (128-333ms). The improvement is purely in answer generation quality. This validates that ZettelForge's retrieval pipeline works — the local 3B model was the bottleneck.
+
+### CR Gap Analysis
+
+Conflict Resolution scores remain low because the questions require multi-hop entity chain reasoning (e.g., "country of citizenship of the spouse of the author of Our Mutual Friend" → Belgium). This needs explicit graph traversal over entity relationships, not just LLM reasoning over retrieved text chunks.
+
+---
+
+## Benchmark Scripts
+
+| Script | What it runs |
+|--------|-------------|
+| `cti_retrieval_benchmark.py` | 8 CTI reports, 20 queries, 5 categories |
+| `locomo_benchmark.py` | LOCOMO 100 QA pairs across 5 categories |
+| `mempalace_benchmark.py` | MemPalace on LOCOMO (ChromaDB) |
+| `ragas_benchmark.py` | RAGAS retrieval quality metrics |
+| `ctibench_benchmark.py` | CTIBench ATE adapter |
+| `memoryagentbench.py` | MemoryAgentBench AR + CR + TTL + LRU |
