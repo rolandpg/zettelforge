@@ -19,6 +19,7 @@ Endpoints:
 import os
 import sys
 import time
+import logging
 from pathlib import Path
 
 # Ensure zettelforge is importable
@@ -35,6 +36,8 @@ from typing import Optional, List
 from zettelforge import MemoryManager, __version__
 from zettelforge.edition import is_enterprise, edition_name, EditionError
 from web.auth import register_auth_routes, get_mm_for_request, get_current_user
+
+logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title="ThreatRecall" if is_enterprise() else "ZettelForge",
@@ -208,8 +211,9 @@ async def sync(request: Request, req: SyncRequest):
             use_extraction=False,
         )
         return result
-    except Exception as e:
-        return JSONResponse(status_code=500, content={"error": str(e)})
+    except Exception:
+        logger.exception("OpenCTI sync failed")
+        return JSONResponse(status_code=500, content={"error": "Internal server error"})
 
 
 # ── HTML Frontend ────────────────────────────────────────────────────────────
