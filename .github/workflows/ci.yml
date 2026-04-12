@@ -42,7 +42,7 @@ jobs:
       env:
         ZETTELFORGE_BACKEND: jsonl
       run: |
-        pytest tests/ -v --ignore=tests/test_typedb_client.py --cov=zettelforge --cov-report=xml
+        pytest tests/ -v --cov=zettelforge --cov-report=xml
 
     - name: Upload coverage
       uses: codecov/codecov-action@v3
