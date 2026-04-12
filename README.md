@@ -2,9 +2,30 @@
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-2.0.0-green.svg)](https://github.com/rolandpg/zettelforge)
+[![CI](https://github.com/rolandpg/zettelforge/actions/workflows/ci.yml/badge.svg)](https://github.com/rolandpg/zettelforge/actions)
+[![Version](https://img.shields.io/badge/version-2.1.0-green.svg)](https://github.com/rolandpg/zettelforge)
 
-A production-grade memory system for AI agents, purpose-built for cyber threat intelligence (CTI). Combines a **TypeDB STIX 2.1 ontology layer** with **LanceDB vector search**, knowledge graph traversal, and intent-based query routing to give agents persistent, structured memory across sessions.
+A production-grade memory system for AI agents, purpose-built for cyber threat intelligence (CTI). Combines **LanceDB vector search** with a **knowledge graph**, blended retrieval, and intent-based query routing to give agents persistent, structured memory across sessions.
+
+Built by [Threatengram](https://threatengram.com).
+
+## Community vs Enterprise
+
+**ZettelForge Community** (MIT) is a fully-featured agentic memory system:
+- Two-phase extraction pipeline (LLM fact extraction + ADD/UPDATE/DELETE decisions)
+- Blended retrieval (vector similarity + knowledge graph traversal)
+- Cross-encoder reranking, intent-adaptive query routing
+- Causal triple extraction, LLM-powered entity extraction (10 types)
+- JSONL knowledge graph, direct-answer RAG synthesis
+- MCP server for Claude Code / AI agent integration
+- Runs entirely on local hardware -- zero cloud dependencies
+
+**[ThreatRecall Enterprise](https://threatengram.com/enterprise)** (BSL-1.1) adds scale, analyst workflows, and integrations:
+- TypeDB STIX 2.1 ontology with inference rules (replaces JSONL at scale)
+- Temporal KG queries, multi-hop graph traversal, advanced synthesis formats
+- Report ingestion, OpenCTI integration, Sigma rule generation
+- Multi-tenant OAuth/JWT authentication, proactive context injection
+- Priority support from Threatengram
 
 ## Features
 

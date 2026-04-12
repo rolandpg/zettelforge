@@ -36,7 +36,15 @@ from authlib.integrations.starlette_client import OAuth
 
 # ── Configuration ────────────────────────────────────────────────────────────
 
-JWT_SECRET = os.environ.get("JWT_SECRET", "threatrecall-dev-secret-change-in-production")
+JWT_SECRET = os.environ.get("JWT_SECRET", "")
+if not JWT_SECRET:
+    import warnings
+    JWT_SECRET = "threatrecall-dev-insecure-DO-NOT-USE-IN-PRODUCTION"
+    warnings.warn(
+        "JWT_SECRET is not set. Using an insecure default. "
+        "Set the JWT_SECRET environment variable before deploying to production.",
+        stacklevel=1,
+    )
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRY_HOURS = int(os.environ.get("JWT_EXPIRY_HOURS", "24"))
 BASE_URL = os.environ.get("THREATRECALL_BASE_URL", "http://localhost:8088")

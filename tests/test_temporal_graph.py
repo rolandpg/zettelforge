@@ -2,14 +2,24 @@
 """
 Test temporal graph functionality in ZettelForge.
 Validates Task 2: Temporal graph indexing and queries.
+
+Note: Temporal queries are Enterprise features. Tests use the
+enable_enterprise fixture from conftest.py.
 """
 import sys
 import tempfile
 import time
-# Package installed via pip - no sys.path manipulation needed
+import pytest
 
+# Package installed via pip - no sys.path manipulation needed
 from zettelforge import MemoryManager
 from zettelforge.knowledge_graph import KnowledgeGraph, get_knowledge_graph
+
+
+@pytest.fixture(autouse=True)
+def _enterprise(enable_enterprise):
+    """All temporal graph tests require Enterprise."""
+    pass
 
 
 def test_temporal_graph():

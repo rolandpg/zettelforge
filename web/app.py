@@ -33,15 +33,16 @@ from pydantic import BaseModel
 from typing import Optional, List
 
 from zettelforge import MemoryManager, __version__
+from zettelforge.edition import is_enterprise, edition_name, EditionError
 from web.auth import register_auth_routes, get_mm_for_request, get_current_user
 
 app = FastAPI(
-    title="ThreatRecall",
-    description="CTI Agentic Memory System",
+    title="ThreatRecall" if is_enterprise() else "ZettelForge",
+    description=edition_name(),
     version=__version__,
 )
 
-# Register OAuth/JWT auth routes
+# Register OAuth/JWT auth routes (Enterprise: full OAuth, Community: pass-through)
 register_auth_routes(app)
 
 # Default memory manager (for unauthenticated/single-tenant mode)
@@ -142,6 +143,8 @@ async def stats(request: Request):
     s = tenant_mm.get_stats()
     return {
         "version": __version__,
+        "edition": "enterprise" if is_enterprise() else "community",
+        "edition_name": edition_name(),
         "total_notes": s.get("total_notes", 0),
         "notes_created": s.get("notes_created", 0),
         "retrievals": s.get("retrievals", 0),
@@ -149,8 +152,52 @@ async def stats(request: Request):
     }
 
 
+@app.get("/api/edition")
+async def edition_info():
+    """Return current edition and available features."""
+    features = {
+        # Community — full-featured agentic memory system
+        "vector_search": True,
+        "blended_retrieval": True,
+        "cross_encoder_reranking": True,
+        "two_phase_extraction": True,
+        "intent_adaptive_routing": True,
+        "causal_triple_extraction": True,
+        "entity_extraction_llm": True,
+        "knowledge_graph_jsonl": True,
+        "direct_answer_synthesis": True,
+        "mcp_server": True,
+        # Enterprise — scale, analyst workflows, integrations, ops
+        "typedb_stix_ontology": is_enterprise(),
+        "temporal_graph_queries": is_enterprise(),
+        "graph_traversal_multihop": is_enterprise(),
+        "advanced_synthesis_formats": is_enterprise(),
+        "report_ingestion": is_enterprise(),
+        "alias_resolution_typedb": is_enterprise(),
+        "opencti_integration": is_enterprise(),
+        "sigma_generation": is_enterprise(),
+        "context_injection": is_enterprise(),
+        "multi_tenant_auth": is_enterprise(),
+    }
+    return {
+        "edition": "enterprise" if is_enterprise() else "community",
+        "edition_name": edition_name(),
+        "version": __version__,
+        "features": features,
+        "upgrade_url": "https://threatengram.com/enterprise" if not is_enterprise() else None,
+    }
+
+
 @app.post("/api/sync")
 async def sync(request: Request, req: SyncRequest):
+    if not is_enterprise():
+        return JSONResponse(
+            status_code=402,
+            content={
+                "error": "OpenCTI sync requires ThreatRecall Enterprise",
+                "upgrade_url": "https://threatengram.com/enterprise",
+            },
+        )
     try:
         from zettelforge.opencti_sync import sync_opencti
         tenant_mm = get_mm_for_request(request)
@@ -317,10 +364,17 @@ HTML_PAGE = """<!DOCTYPE html>
         }
         function escHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
         document.getElementById('query').addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
-        // Load stats
+        // Load stats + edition
         fetch('/api/stats').then(r=>r.json()).then(d => {
-            document.getElementById('version').textContent = `v${d.version}`;
+            const edBadge = d.edition === 'enterprise' ? 'Enterprise' : 'Community';
+            document.getElementById('version').textContent = `v${d.version} (${edBadge})`;
             document.getElementById('stats').textContent = `${d.total_notes} notes | ${d.retrievals} recalls`;
+            // Hide enterprise-only tabs in Community
+            if (d.edition !== 'enterprise') {
+                document.querySelectorAll('.tabs button').forEach(b => {
+                    if (b.textContent === 'OpenCTI Sync') b.style.display = 'none';
+                });
+            }
         });
         // Load auth state
         fetch('/auth/me').then(r=>r.json()).then(d => {

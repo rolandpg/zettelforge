@@ -102,10 +102,10 @@ class NoteConstructor:
     
     def extract_causal_triples(self, text: str, note_id: str = "") -> List[Dict[str, str]]:
         """
-        Use LLM to extract causal triples from text.
+        Use LLM to extract causal triples from text.  [Enterprise]
         Returns list of {subject, relation, object, note_id}
-        
-        Example: "APT28 uses DROPBEAR malware" → {subject: "APT28", relation: "uses", object: "DROPBEAR"}
+
+        Example: "APT28 uses DROPBEAR malware" -> {subject: "APT28", relation: "uses", object: "DROPBEAR"}
         """
         prompt = f"""Extract causal relationships from the following text as JSON.
 Return a JSON array of triples with fields: subject, relation, object.

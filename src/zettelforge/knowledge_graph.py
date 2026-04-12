@@ -178,18 +178,30 @@ class KnowledgeGraph:
         return edge_id
 
     def get_entity_timeline(self, entity_type: str, entity_value: str) -> List[Dict]:
-        """Get timeline of states for an entity."""
+        """Get timeline of states for an entity.  [Enterprise]"""
+        from zettelforge.edition import is_enterprise, EditionError
+        if not is_enterprise():
+            raise EditionError(
+                "'get_entity_timeline' (temporal knowledge graph queries) requires "
+                "ThreatRecall Enterprise. https://threatengram.com/enterprise"
+            )
         entity_key = f"{entity_type}:{entity_value}"
         timeline = self._entity_timeline.get(entity_key, [])
-        
+
         # Sort by timestamp
         timeline.sort(key=lambda x: x['timestamp'] or '')
         return timeline
 
     def get_changes_since(self, timestamp: str) -> List[Dict]:
-        """Get all entity changes since a given timestamp."""
+        """Get all entity changes since a given timestamp.  [Enterprise]"""
+        from zettelforge.edition import is_enterprise, EditionError
+        if not is_enterprise():
+            raise EditionError(
+                "'get_changes_since' (temporal knowledge graph queries) requires "
+                "ThreatRecall Enterprise. https://threatengram.com/enterprise"
+            )
         changes = []
-        
+
         for ts, edges in self._temporal_index.items():
             if ts >= timestamp:
                 for edge in edges:
@@ -201,7 +213,7 @@ class KnowledgeGraph:
                         'relationship': edge.get('relationship'),
                         'to': f"{to_node.get('entity_type')}:{to_node.get('entity_value')}"
                     })
-        
+
         changes.sort(key=lambda x: x['timestamp'])
         return changes
 
@@ -347,8 +359,8 @@ class KnowledgeGraph:
         return results
 
     def get_latest_state(self, entity_type: str, entity_value: str) -> Optional[Dict]:
-        """Get the latest known state of an entity."""
-        timeline = self.get_entity_timeline(entity_type, entity_value)
+        """Get the latest known state of an entity.  [Enterprise]"""
+        timeline = self.get_entity_timeline(entity_type, entity_value)  # gate enforced there
         if timeline:
             return timeline[-1]
         return None
@@ -360,13 +372,18 @@ _kg_lock = threading.Lock()
 
 
 def get_knowledge_graph() -> KnowledgeGraph:
-    """Get global knowledge graph instance. Tries TypeDB first, falls back to JSONL."""
+    """Get global knowledge graph instance.
+
+    Enterprise: Tries TypeDB first, falls back to JSONL.
+    Community: Always uses JSONL.
+    """
     global _kg_instance
     if _kg_instance is None:
         with _kg_lock:
             if _kg_instance is None:
+                from zettelforge.edition import is_enterprise
                 backend = os.environ.get("ZETTELFORGE_BACKEND", "typedb")
-                if backend == "typedb":
+                if backend == "typedb" and is_enterprise():
                     try:
                         from zettelforge.typedb_client import TypeDBKnowledgeGraph
                         _kg_instance = TypeDBKnowledgeGraph()
@@ -374,5 +391,11 @@ def get_knowledge_graph() -> KnowledgeGraph:
                         print(f"[KG] TypeDB unavailable ({e}), falling back to JSONL")
                         _kg_instance = KnowledgeGraph()
                 else:
+                    if backend == "typedb" and not is_enterprise():
+                        import logging
+                        logging.getLogger("zettelforge.edition").info(
+                            "[Community] TypeDB STIX ontology requires Enterprise edition "
+                            "— using JSONL graph. https://threatengram.com/enterprise"
+                        )
                     _kg_instance = KnowledgeGraph()
     return _kg_instance
