@@ -2,7 +2,7 @@
   "meta": {
     "date": "2026-04-10T07:55:22.121262",
     "system": "mempalace",
-    "dataset": "/home/rolandpg/.openclaw/workspace-nexus/Locomo-Plus/data/locomo10.json",
+    "dataset": "data/locomo10.json",
     "per_category": 20,
     "judge": "keyword",
     "k": 10

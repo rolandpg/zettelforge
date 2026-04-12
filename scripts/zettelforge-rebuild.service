@@ -4,10 +4,10 @@ After=network.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/python3 /home/rolandpg/.openclaw/workspace-nexus/skills/zettelforge/scripts/rebuild_index.py
-WorkingDirectory=/home/rolandpg/.openclaw/workspace-nexus/skills/zettelforge
-Environment=AMEM_DATA_DIR=/home/rolandpg/.amem
-User=rolandpg
+ExecStart=/usr/bin/python3 /opt/zettelforge/scripts/rebuild_index.py
+WorkingDirectory=/opt/zettelforge
+Environment=AMEM_DATA_DIR=/var/lib/zettelforge
+User=zettelforge
 
 [Install]
 WantedBy=multi-user.target

@@ -21,7 +21,7 @@ Usage:
         "mcpServers": {
             "threatrecall": {
                 "command": "python3",
-                "args": ["/home/rolandpg/projects/zettelforge/web/mcp_server.py"]
+                "args": ["web/mcp_server.py"]
             }
         }
     }

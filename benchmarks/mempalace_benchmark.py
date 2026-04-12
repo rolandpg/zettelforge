@@ -26,7 +26,7 @@ from locomo_benchmark import (
 )
 
 # MemPalace imports
-MEMPALACE_PATH = Path("/home/rolandpg/.openclaw/workspace-nexus/mempalace-test")
+MEMPALACE_PATH = Path(os.environ.get("MEMPALACE_PATH", "mempalace-test"))
 sys.path.insert(0, str(MEMPALACE_PATH))
 
 
