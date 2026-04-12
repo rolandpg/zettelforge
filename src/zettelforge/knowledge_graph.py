@@ -178,18 +178,30 @@ class KnowledgeGraph:
         return edge_id
 
     def get_entity_timeline(self, entity_type: str, entity_value: str) -> List[Dict]:
-        """Get timeline of states for an entity."""
+        """Get timeline of states for an entity.  [Enterprise]"""
+        from zettelforge.edition import is_enterprise, EditionError
+        if not is_enterprise():
+            raise EditionError(
+                "'get_entity_timeline' (temporal knowledge graph queries) requires "
+                "ThreatRecall Enterprise. https://threatengram.com/enterprise"
+            )
         entity_key = f"{entity_type}:{entity_value}"
         timeline = self._entity_timeline.get(entity_key, [])
-        
+
         # Sort by timestamp
         timeline.sort(key=lambda x: x['timestamp'] or '')
         return timeline
 
     def get_changes_since(self, timestamp: str) -> List[Dict]:
-        """Get all entity changes since a given timestamp."""
+        """Get all entity changes since a given timestamp.  [Enterprise]"""
+        from zettelforge.edition import is_enterprise, EditionError
+        if not is_enterprise():
+            raise EditionError(
+                "'get_changes_since' (temporal knowledge graph queries) requires "
+                "ThreatRecall Enterprise. https://threatengram.com/enterprise"
+            )
         changes = []
-        
+
         for ts, edges in self._temporal_index.items():
             if ts >= timestamp:
                 for edge in edges:
@@ -201,7 +213,7 @@ class KnowledgeGraph:
                         'relationship': edge.get('relationship'),
                         'to': f"{to_node.get('entity_type')}:{to_node.get('entity_value')}"
                     })
-        
+
         changes.sort(key=lambda x: x['timestamp'])
         return changes
 
@@ -347,8 +359,8 @@ class KnowledgeGraph:
         return results
 
     def get_latest_state(self, entity_type: str, entity_value: str) -> Optional[Dict]:
-        """Get the latest known state of an entity."""
-        timeline = self.get_entity_timeline(entity_type, entity_value)
+        """Get the latest known state of an entity.  [Enterprise]"""
+        timeline = self.get_entity_timeline(entity_type, entity_value)  # gate enforced there
         if timeline:
             return timeline[-1]
         return None

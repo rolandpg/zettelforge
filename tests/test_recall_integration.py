@@ -1,9 +1,19 @@
-"""Integration tests for rewritten recall() with graph traversal."""
+"""Integration tests for rewritten recall() with graph traversal.
+
+Note: Blended retrieval (graph + vector) is an Enterprise feature.
+Tests use the enable_enterprise fixture from conftest.py.
+"""
 import pytest
 import tempfile
 import time
 
 from zettelforge.memory_manager import MemoryManager
+
+
+@pytest.fixture(autouse=True)
+def _enterprise(enable_enterprise):
+    """All recall integration tests require Enterprise."""
+    pass
 
 
 @pytest.fixture

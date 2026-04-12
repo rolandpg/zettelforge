@@ -128,10 +128,12 @@ class MemoryManager:
         max_facts: int = 5,
     ) -> List[Tuple[Optional[MemoryNote], str]]:
         """
-        Mem0-style two-phase pipeline: extract salient facts, then decide ADD/UPDATE/DELETE/NOOP.
+        Mem0-style two-phase pipeline.  [Enterprise]
 
         Phase 1 (Extraction): LLM distills content into scored candidate facts.
         Phase 2 (Update): Each fact is compared to existing notes; LLM decides operation.
+
+        Community users should use remember() for direct storage instead.
 
         Args:
             content: Raw text to process.
@@ -145,7 +147,17 @@ class MemoryManager:
         Returns:
             List of (MemoryNote or None, status) tuples.
             Status is one of: "added", "updated", "corrected", "noop".
+
+        Raises:
+            EditionError: If called in Community edition.
         """
+        if not is_enterprise():
+            from zettelforge.edition import EditionError
+            raise EditionError(
+                "'remember_with_extraction' (Mem0-style two-phase pipeline) requires "
+                "ThreatRecall Enterprise. Use remember() for direct storage in "
+                "Community edition. https://threatengram.com/enterprise"
+            )
         # Phase 1: Extraction
         extractor = FactExtractor(max_facts=max_facts)
         facts = extractor.extract(content, context=context)
@@ -350,15 +362,15 @@ class MemoryManager:
 
         # ── Enterprise: Cross-encoder reranking ─────────────────────────────
         if len(results) > 1:
-            reranker = _get_reranker()  # Returns None in Community
-            if reranker is not None:
-                try:
+            try:
+                reranker = _get_reranker()  # Returns None in Community
+                if reranker is not None:
                     docs = [n.content.raw[:512] for n in results]
                     scores = list(reranker.rerank(query, docs))
                     paired = sorted(zip(scores, results), key=lambda x: x[0], reverse=True)
                     results = [note for _, note in paired]
-                except Exception:
-                    pass  # Reranking is optional — fall back to original order
+            except Exception:
+                pass  # Reranking is optional — fall back to original order
 
         # Filter superseded notes
         if exclude_superseded:

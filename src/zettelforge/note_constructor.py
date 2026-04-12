@@ -102,11 +102,14 @@ class NoteConstructor:
     
     def extract_causal_triples(self, text: str, note_id: str = "") -> List[Dict[str, str]]:
         """
-        Use LLM to extract causal triples from text.
+        Use LLM to extract causal triples from text.  [Enterprise]
         Returns list of {subject, relation, object, note_id}
-        
-        Example: "APT28 uses DROPBEAR malware" → {subject: "APT28", relation: "uses", object: "DROPBEAR"}
+
+        Example: "APT28 uses DROPBEAR malware" -> {subject: "APT28", relation: "uses", object: "DROPBEAR"}
         """
+        from zettelforge.edition import is_enterprise
+        if not is_enterprise():
+            return []  # Silent fallback — causal extraction is optional enrichment
         prompt = f"""Extract causal relationships from the following text as JSON.
 Return a JSON array of triples with fields: subject, relation, object.
 Relations must be one of: {', '.join(self.CAUSAL_RELATIONS)}
@@ -158,9 +161,12 @@ JSON:"""
 
     def store_causal_edges(self, triples: List[Dict], note_id: str = "") -> int:
         """
-        Store causal triples as edges in KnowledgeGraph.
+        Store causal triples as edges in KnowledgeGraph.  [Enterprise]
         Returns number of edges added.
         """
+        from zettelforge.edition import is_enterprise
+        if not is_enterprise():
+            return 0
         if not triples:
             return 0
         

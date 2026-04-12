@@ -135,11 +135,26 @@ Respond with just the intent name (factual, temporal, relational, exploratory, o
             'scores': {}
         }
     
+    # Community fallback: uniform vector-only policy
+    _COMMUNITY_POLICY = {
+        'vector': 0.6,
+        'entity_index': 0.4,
+        'graph': 0.0,
+        'temporal': 0.0,
+        'top_k': 10,
+    }
+
     def get_traversal_policy(self, intent: QueryIntent) -> Dict:
         """
         Get traversal policy weights based on intent.
-        Returns dict of (retriever_weight, graph_weight, temporal_weight)
+
+        Community: Returns uniform vector+entity policy (no graph/temporal weighting).
+        Enterprise: Returns intent-adaptive policies with graph and temporal weights.
         """
+        from zettelforge.edition import is_enterprise
+        if not is_enterprise():
+            return self._COMMUNITY_POLICY
+
         policies = {
             QueryIntent.FACTUAL: {
                 'vector': 0.3,

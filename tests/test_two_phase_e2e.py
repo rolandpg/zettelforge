@@ -1,9 +1,19 @@
-"""End-to-end tests for Mem0-style two-phase pipeline."""
+"""End-to-end tests for Mem0-style two-phase pipeline.
+
+Note: Two-phase extraction is an Enterprise feature. Tests use the
+enable_enterprise fixture from conftest.py.
+"""
 import pytest
 import tempfile
 from unittest.mock import patch
 
 from zettelforge import MemoryManager
+
+
+@pytest.fixture(autouse=True)
+def _enterprise(enable_enterprise):
+    """All two-phase pipeline tests require Enterprise."""
+    pass
 
 
 @pytest.fixture

@@ -1,8 +1,10 @@
 """
-Memory Updater - Phase 2 of Mem0-style two-phase pipeline.
+Memory Updater - Phase 2 of Mem0-style two-phase pipeline.  [Enterprise]
 
 Compares new facts against existing notes and decides:
 ADD (new), UPDATE (refine), DELETE (contradict), or NOOP (duplicate).
+
+Requires ThreatRecall Enterprise. Community edition uses direct remember().
 """
 import json
 import re
@@ -31,6 +33,13 @@ class MemoryUpdater:
         )
 
     def decide(self, fact_text: str, similar_notes: List[MemoryNote]) -> UpdateOperation:
+        from zettelforge.edition import is_enterprise, EditionError
+        if not is_enterprise():
+            raise EditionError(
+                "'MemoryUpdater.decide' (intelligent ADD/UPDATE/DELETE decisions) "
+                "requires ThreatRecall Enterprise. https://threatengram.com/enterprise"
+            )
+
         if not similar_notes:
             return UpdateOperation.ADD
 

@@ -1,8 +1,18 @@
-"""Tests for FactExtractor - Phase 1 of Mem0-style pipeline."""
+"""Tests for FactExtractor - Phase 1 of Mem0-style pipeline.
+
+Note: FactExtractor is an Enterprise feature. Tests use the
+enable_enterprise fixture from conftest.py.
+"""
 import pytest
 from unittest.mock import patch, MagicMock
 
 from zettelforge.fact_extractor import FactExtractor, ExtractedFact
+
+
+@pytest.fixture(autouse=True)
+def _enterprise(enable_enterprise):
+    """All FactExtractor tests require Enterprise."""
+    pass
 
 
 class TestExtractedFact:
