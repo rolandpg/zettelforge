@@ -28,19 +28,21 @@ jobs:
 
     - name: Lint with ruff
       run: |
-        ruff check src/amem/
+        ruff check src/zettelforge/
 
     - name: Format check with black
       run: |
-        black --check src/amem/
+        black --check src/zettelforge/
 
     - name: Type check with mypy
       run: |
-        mypy src/amem/ --ignore-missing-imports
+        mypy src/zettelforge/ --ignore-missing-imports
 
     - name: Test with pytest
+      env:
+        ZETTELFORGE_BACKEND: jsonl
       run: |
-        pytest tests/ -v --cov=amem --cov-report=xml
+        pytest tests/ -v --ignore=tests/test_typedb_client.py --cov=zettelforge --cov-report=xml
 
     - name: Upload coverage
       uses: codecov/codecov-action@v3
