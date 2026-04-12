@@ -92,6 +92,16 @@ class LoggingConfig:
 
 
 @dataclass
+class EnterpriseConfig:
+    """Enterprise edition settings (ignored in Community)."""
+    license_key: str = ""
+    blended_retrieval: bool = True
+    cross_encoder_reranking: bool = True
+    report_ingestion: bool = True
+    multi_tenant: bool = False
+
+
+@dataclass
 class ZettelForgeConfig:
     storage: StorageConfig = field(default_factory=StorageConfig)
     typedb: TypeDBConfig = field(default_factory=TypeDBConfig)
@@ -104,6 +114,7 @@ class ZettelForgeConfig:
     governance: GovernanceConfig = field(default_factory=GovernanceConfig)
     cache: CacheConfig = field(default_factory=CacheConfig)
     logging: LoggingConfig = field(default_factory=LoggingConfig)
+    enterprise: EnterpriseConfig = field(default_factory=EnterpriseConfig)
 
 
 def _find_config_file() -> Optional[Path]:
@@ -227,6 +238,11 @@ def _apply_yaml(cfg: ZettelForgeConfig, data: dict):
             if hasattr(cfg.logging, k):
                 setattr(cfg.logging, k, v)
 
+    if "enterprise" in data and isinstance(data["enterprise"], dict):
+        for k, v in data["enterprise"].items():
+            if hasattr(cfg.enterprise, k):
+                setattr(cfg.enterprise, k, v)
+
 
 def _apply_env(cfg: ZettelForgeConfig):
     """Apply environment variable overrides (highest priority)."""
@@ -265,6 +281,10 @@ def _apply_env(cfg: ZettelForgeConfig):
         cfg.llm.model = v
     if v := os.environ.get("ZETTELFORGE_LLM_URL"):
         cfg.llm.url = v
+
+    # Enterprise
+    if v := os.environ.get("THREATENGRAM_LICENSE_KEY"):
+        cfg.enterprise.license_key = v
 
 
 # ── Singleton ──────────────────────────────────────────────
