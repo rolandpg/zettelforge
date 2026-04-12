@@ -104,17 +104,13 @@ class EntityExtractor:
         return results
 
     def extract_llm(self, text: str) -> Dict[str, List[str]]:
-        """Extract conversational entities using LLM NER.  [Enterprise]
+        """Extract conversational entities using LLM NER.
 
         Returns dict with person, location, organization, event, activity, temporal keys.
-        Falls back to empty dicts in Community edition or on failure.
+        Falls back to empty dicts on failure.
         """
         conversational_types = ["person", "location", "organization", "event", "activity", "temporal"]
         empty = {t: [] for t in conversational_types}
-
-        from zettelforge.edition import is_enterprise
-        if not is_enterprise():
-            return empty  # Community: regex-only entity extraction
 
         if len(text.strip()) < 10:
             return empty

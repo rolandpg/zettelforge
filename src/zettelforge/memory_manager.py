@@ -35,12 +35,7 @@ _reranker_lock = threading.Lock()
 
 
 def _get_reranker():
-    """Get or create cross-encoder reranker (singleton, ~80MB, loads once).
-
-    Enterprise only. Returns None in Community edition.
-    """
-    if not is_enterprise():
-        return None
+    """Get or create cross-encoder reranker (singleton, ~80MB, loads once)."""
     global _reranker
     if _reranker is None:
         with _reranker_lock:
@@ -128,12 +123,10 @@ class MemoryManager:
         max_facts: int = 5,
     ) -> List[Tuple[Optional[MemoryNote], str]]:
         """
-        Mem0-style two-phase pipeline.  [Enterprise]
+        Mem0-style two-phase pipeline: extract salient facts, then decide ADD/UPDATE/DELETE/NOOP.
 
         Phase 1 (Extraction): LLM distills content into scored candidate facts.
         Phase 2 (Update): Each fact is compared to existing notes; LLM decides operation.
-
-        Community users should use remember() for direct storage instead.
 
         Args:
             content: Raw text to process.
@@ -147,17 +140,7 @@ class MemoryManager:
         Returns:
             List of (MemoryNote or None, status) tuples.
             Status is one of: "added", "updated", "corrected", "noop".
-
-        Raises:
-            EditionError: If called in Community edition.
         """
-        if not is_enterprise():
-            from zettelforge.edition import EditionError
-            raise EditionError(
-                "'remember_with_extraction' (Mem0-style two-phase pipeline) requires "
-                "ThreatRecall Enterprise. Use remember() for direct storage in "
-                "Community edition. https://threatengram.com/enterprise"
-            )
         # Phase 1: Extraction
         extractor = FactExtractor(max_facts=max_facts)
         facts = extractor.extract(content, context=context)
@@ -271,10 +254,11 @@ class MemoryManager:
         exclude_superseded: bool = True
     ) -> List[MemoryNote]:
         """
-        Retrieve memories relevant to query.
+        Retrieve memories relevant to query using blended vector + graph retrieval.
 
-        Community: Vector search with entity-augmented recall.
-        Enterprise: Blended vector + graph retrieval, cross-encoder reranking.
+        Uses intent classifier to determine retrieval strategy weights,
+        then combines vector similarity and graph traversal results
+        with cross-encoder reranking.
         """
         self.stats['retrievals'] += 1
 
@@ -321,30 +305,26 @@ class MemoryManager:
             except ImportError:
                 pass
 
-        # ── Enterprise: Blended retrieval (vector + graph) ──────────────────
-        if is_enterprise():
-            from zettelforge.graph_retriever import GraphRetriever
-            from zettelforge.blended_retriever import BlendedRetriever
-            kg = get_knowledge_graph()
-            graph_retriever = GraphRetriever(kg)
-            graph_results = graph_retriever.retrieve_note_ids(
-                query_entities=resolved, max_depth=2
-            )
+        # Blended retrieval: combine vector similarity with graph traversal
+        from zettelforge.graph_retriever import GraphRetriever
+        from zettelforge.blended_retriever import BlendedRetriever
+        kg = get_knowledge_graph()
+        graph_retriever = GraphRetriever(kg)
+        graph_results = graph_retriever.retrieve_note_ids(
+            query_entities=resolved, max_depth=2
+        )
 
-            blender = BlendedRetriever()
-            results = blender.blend(
-                vector_results=vector_results,
-                graph_results=graph_results,
-                policy=policy,
-                note_lookup=lambda nid: self.store.get_note_by_id(nid),
-                k=k,
-            )
+        blender = BlendedRetriever()
+        results = blender.blend(
+            vector_results=vector_results,
+            graph_results=graph_results,
+            policy=policy,
+            note_lookup=lambda nid: self.store.get_note_by_id(nid),
+            k=k,
+        )
 
-            # Fallback: if blending produced fewer results than vector alone, use vector
-            if len(results) < len(vector_results):
-                results = vector_results[:k]
-        else:
-            # ── Community: Vector-only retrieval ────────────────────────────
+        # Fallback: if blending produced fewer results than vector alone, use vector
+        if len(results) < len(vector_results):
             results = vector_results[:k]
 
         # Entity-augmented recall: also pull notes via entity index for query entities

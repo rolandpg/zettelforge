@@ -8,25 +8,28 @@ Enterprise is activated by EITHER:
   - A valid THREATENGRAM_LICENSE_KEY environment variable
   - The presence of an installed zettelforge-enterprise package
 
-Community edition provides:
-  - Core memory pipeline (remember, recall, vector search)
-  - JSONL knowledge graph
-  - Basic entity extraction (regex)
-  - Two-phase extraction pipeline
+Community edition is a fully-featured agentic memory system:
+  - Two-phase extraction pipeline (LLM fact extraction + ADD/UPDATE/DELETE)
+  - Blended retrieval (vector + knowledge graph)
+  - Cross-encoder reranking
+  - Intent-adaptive query routing
+  - Causal triple extraction
+  - LLM-powered entity extraction (10 types)
+  - JSONL knowledge graph with relationships
+  - Direct-answer RAG synthesis
   - MCP server integration
   - Single-tenant operation
 
-Enterprise adds:
-  - STIX 2.1 TypeDB ontology with inference rules
-  - Blended retrieval (vector + graph hybrid)
-  - Graph traversal (BFS multi-hop)
+Enterprise adds scale, analyst workflows, integrations, and operations:
+  - STIX 2.1 TypeDB ontology with inference rules (replaces JSONL graph)
+  - Temporal knowledge graph queries (timeline, changes-since)
+  - Multi-hop graph traversal (BFS)
+  - Advanced RAG synthesis (synthesized_brief, timeline, relationship_map)
+  - Report ingestion with auto-chunking
   - TypeDB-backed alias resolution
   - OpenCTI platform integration
   - Sigma rule generation
-  - Advanced RAG synthesis (4 output formats)
   - Proactive context injection
-  - Report ingestion with auto-chunking
-  - Cross-encoder reranking
   - Multi-tenant OAuth/JWT authentication
   - Priority support from Threatengram
 """

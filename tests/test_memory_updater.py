@@ -1,8 +1,4 @@
-"""Tests for MemoryUpdater - Phase 2 of Mem0-style pipeline.
-
-Note: MemoryUpdater is an Enterprise feature. Tests use the
-enable_enterprise fixture from conftest.py.
-"""
+"""Tests for MemoryUpdater - Phase 2 of Mem0-style pipeline."""
 import pytest
 import tempfile
 from unittest.mock import patch, MagicMock
@@ -11,13 +7,6 @@ from datetime import datetime
 from zettelforge.memory_updater import MemoryUpdater, UpdateOperation
 from zettelforge.memory_manager import MemoryManager
 from zettelforge.note_schema import MemoryNote, Content, Semantic, Embedding, Metadata
-
-
-@pytest.fixture(autouse=True)
-def _enterprise(enable_enterprise):
-    """All MemoryUpdater tests require Enterprise."""
-    pass
-
 
 NOW = datetime.now().isoformat()
 

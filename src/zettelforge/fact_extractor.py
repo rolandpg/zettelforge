@@ -1,10 +1,8 @@
 """
-Fact Extractor - Phase 1 of Mem0-style two-phase pipeline.  [Enterprise]
+Fact Extractor - Phase 1 of Mem0-style two-phase pipeline.
 
 Extracts salient facts from raw content using LLM, with importance scoring.
 Only the important facts proceed to storage, reducing redundancy and noise.
-
-Requires ThreatRecall Enterprise. Community edition uses direct remember().
 """
 import json
 import re
@@ -20,7 +18,7 @@ class ExtractedFact:
 
 
 class FactExtractor:
-    """Extract salient facts from content using LLM.  [Enterprise]"""
+    """Extract salient facts from content using LLM."""
 
     def __init__(
         self,
@@ -35,13 +33,6 @@ class FactExtractor:
         content: str,
         context: str = "",
     ) -> List[ExtractedFact]:
-        from zettelforge.edition import is_enterprise, EditionError
-        if not is_enterprise():
-            raise EditionError(
-                "'FactExtractor.extract' (LLM-based fact extraction) requires "
-                "ThreatRecall Enterprise. Use remember() for direct storage in "
-                "Community edition. https://threatengram.com/enterprise"
-            )
         prompt = self._build_prompt(content, context)
 
         try:

@@ -107,9 +107,6 @@ class NoteConstructor:
 
         Example: "APT28 uses DROPBEAR malware" -> {subject: "APT28", relation: "uses", object: "DROPBEAR"}
         """
-        from zettelforge.edition import is_enterprise
-        if not is_enterprise():
-            return []  # Silent fallback — causal extraction is optional enrichment
         prompt = f"""Extract causal relationships from the following text as JSON.
 Return a JSON array of triples with fields: subject, relation, object.
 Relations must be one of: {', '.join(self.CAUSAL_RELATIONS)}
@@ -161,12 +158,9 @@ JSON:"""
 
     def store_causal_edges(self, triples: List[Dict], note_id: str = "") -> int:
         """
-        Store causal triples as edges in KnowledgeGraph.  [Enterprise]
+        Store causal triples as edges in KnowledgeGraph.
         Returns number of edges added.
         """
-        from zettelforge.edition import is_enterprise
-        if not is_enterprise():
-            return 0
         if not triples:
             return 0
         

@@ -156,24 +156,27 @@ async def stats(request: Request):
 async def edition_info():
     """Return current edition and available features."""
     features = {
+        # Community — full-featured agentic memory system
         "vector_search": True,
-        "entity_extraction": True,
-        "jsonl_knowledge_graph": True,
+        "blended_retrieval": True,
+        "cross_encoder_reranking": True,
         "two_phase_extraction": True,
-        "intent_classification": True,
-        "mcp_server": True,
+        "intent_adaptive_routing": True,
+        "causal_triple_extraction": True,
+        "entity_extraction_llm": True,
+        "knowledge_graph_jsonl": True,
         "direct_answer_synthesis": True,
-        # Enterprise features
+        "mcp_server": True,
+        # Enterprise — scale, analyst workflows, integrations, ops
         "typedb_stix_ontology": is_enterprise(),
-        "blended_retrieval": is_enterprise(),
-        "graph_traversal": is_enterprise(),
-        "cross_encoder_reranking": is_enterprise(),
+        "temporal_graph_queries": is_enterprise(),
+        "graph_traversal_multihop": is_enterprise(),
+        "advanced_synthesis_formats": is_enterprise(),
+        "report_ingestion": is_enterprise(),
         "alias_resolution_typedb": is_enterprise(),
         "opencti_integration": is_enterprise(),
         "sigma_generation": is_enterprise(),
-        "advanced_synthesis_formats": is_enterprise(),
         "context_injection": is_enterprise(),
-        "report_ingestion": is_enterprise(),
         "multi_tenant_auth": is_enterprise(),
     }
     return {

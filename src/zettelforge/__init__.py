@@ -52,6 +52,8 @@ from zettelforge.intent_classifier import IntentClassifier, get_intent_classifie
 from zettelforge.note_constructor import NoteConstructor
 from zettelforge.fact_extractor import FactExtractor, ExtractedFact
 from zettelforge.memory_updater import MemoryUpdater, UpdateOperation
+from zettelforge.graph_retriever import GraphRetriever, ScoredResult
+from zettelforge.blended_retriever import BlendedRetriever
 
 __version__ = "2.1.0"
 __all__ = [
@@ -74,6 +76,10 @@ __all__ = [
     # Knowledge Graph
     "KnowledgeGraph",
     "get_knowledge_graph",
+    # Retrieval
+    "GraphRetriever",
+    "ScoredResult",
+    "BlendedRetriever",
     # Ontology
     "TypedEntityStore",
     "OntologyValidator",
@@ -95,12 +101,10 @@ __all__ = [
 ]
 
 # ── Enterprise-only imports (conditional) ───────────────────────────────────
-# These are only available when running Enterprise edition.
-# Importing them in Community won't fail, but using them will raise EditionError.
+# These require Enterprise edition. Importing in Community won't fail,
+# but using the gated methods will raise EditionError.
 
 if is_enterprise():
-    from zettelforge.graph_retriever import GraphRetriever, ScoredResult
-    from zettelforge.blended_retriever import BlendedRetriever
     from zettelforge.cti_integration import (
         CTIPlatformConnector,
         get_cti_connector,
@@ -129,10 +133,6 @@ if is_enterprise():
         # Enterprise: TypeDB
         "TypeDBKnowledgeGraph",
         "get_typedb_knowledge_graph",
-        # Enterprise: Graph Retrieval
-        "GraphRetriever",
-        "ScoredResult",
-        "BlendedRetriever",
         # Enterprise: CTI Integration
         "CTIPlatformConnector",
         "get_cti_connector",
