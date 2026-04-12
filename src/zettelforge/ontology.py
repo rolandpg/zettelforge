@@ -1,6 +1,6 @@
 """
 Ontology Integration - Typed Entity System with Constraints
-ZettelForge + Ontology融合 (2026-04-06)
+ZettelForge + Ontology (2026-04-06)
 
 Adds typed entities with validation to ZettelForge knowledge graph.
 Supports Person, Project, Task, Event, Document, Credential, and more.

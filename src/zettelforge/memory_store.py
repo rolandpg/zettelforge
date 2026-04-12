@@ -8,7 +8,7 @@ import hashlib
 import tempfile
 from datetime import datetime
 from pathlib import Path
-from typing import List, Optional, Iterator
+from typing import Dict, List, Optional, Iterator
 
 from zettelforge.note_schema import MemoryNote
 
@@ -37,6 +37,7 @@ class MemoryStore:
         self.jsonl_path.parent.mkdir(parents=True, exist_ok=True)
         self.lance_path.mkdir(parents=True, exist_ok=True)
         self._lancedb = None
+        self._note_cache: Optional[Dict[str, MemoryNote]] = None
     
     @property
     def lancedb(self):
@@ -67,6 +68,23 @@ class MemoryStore:
         suffix = str(random.randint(0, 9999)).zfill(4)
         return f"note_{ts}_{suffix}"
     
+    def _ensure_cache(self):
+        """Load all notes into memory cache on first access."""
+        if self._note_cache is not None:
+            return
+        self._note_cache = {}
+        if not self.jsonl_path.exists():
+            return
+        with open(self.jsonl_path, "r") as f:
+            for line in f:
+                if line.strip():
+                    try:
+                        data = json.loads(line)
+                        note = MemoryNote(**data)
+                        self._note_cache[note.id] = note
+                    except Exception:
+                        pass
+
     def write_note(self, note: MemoryNote) -> None:
         """Append a note to the JSONL store"""
         note.id = note.id or self.generate_note_id()
@@ -79,7 +97,11 @@ class MemoryStore:
         # Write to JSONL
         with open(self.jsonl_path, "a") as f:
             f.write(note.model_dump_json() + "\n")
-        
+
+        # Update in-memory cache
+        if self._note_cache is not None:
+            self._note_cache[note.id] = note
+
         # Index in LanceDB if available
         if self.lancedb:
             self._index_in_lance(note)
@@ -103,13 +125,8 @@ class MemoryStore:
                 tbl = self.lancedb.create_table(table_name, schema=schema)
             # Create optimized vector index per governance and performance requirements
             # Only create index if table is new (not on every insert)
-            if table_name not in tables:
-                tbl.create_index(
-                    metric="cosine",
-                    index_type="IVF_PQ",  # Balanced performance/accuracy
-                    num_partitions=256,
-                    num_sub_vectors=16
-                )
+            # Skip index creation on table create — index after enough data accumulates
+            # LanceDB IVF_FLAT needs at least num_partitions rows to build
 
             table = self.lancedb.open_table(table_name)
             table.add([{
@@ -141,10 +158,13 @@ class MemoryStore:
         return notes
     
     def iterate_notes(self) -> Iterator[MemoryNote]:
-        """Iterate through notes without loading all into memory"""
+        """Iterate through notes. Uses in-memory cache after first load."""
+        self._ensure_cache()
+        yield from self._note_cache.values()
+        return
+        # Dead code below — kept for reference of old disk-based path
         if not self.jsonl_path.exists():
             return
-        
         with open(self.jsonl_path, "r") as f:
             for line in f:
                 if line.strip():
@@ -155,11 +175,9 @@ class MemoryStore:
                         print(f"Failed to parse note: {e}")
     
     def get_note_by_id(self, note_id: str) -> Optional[MemoryNote]:
-        """Retrieve a specific note by ID"""
-        for note in self.iterate_notes():
-            if note.id == note_id:
-                return note
-        return None
+        """Retrieve a specific note by ID. O(1) via cache."""
+        self._ensure_cache()
+        return self._note_cache.get(note_id)
     
     def get_notes_by_domain(self, domain: str) -> List[MemoryNote]:
         """Retrieve all notes for a specific domain"""
@@ -210,11 +228,14 @@ class MemoryStore:
                 for n in notes:
                     f.write(json.dumps(n) + "\n")
             os.replace(tmp_path, self.jsonl_path)  # atomic on POSIX
+            # Update cache
+            if self._note_cache is not None:
+                self._note_cache[note.id] = note
         except:
             if os.path.exists(tmp_path):
                 os.unlink(tmp_path)
             raise
-    
+
     def export_snapshot(self, output_path: str) -> None:
         """Export full memory state for cold storage"""
         import shutil

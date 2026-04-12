@@ -1,7 +1,7 @@
 include README.md
 include LICENSE
+include LICENSE-ENTERPRISE
 include pyproject.toml
 recursive-include src/zettelforge *.py
-recursive-include src/zettelforge/schema *.tql
 recursive-include tests *.py
 recursive-include docs *.md

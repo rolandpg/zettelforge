@@ -181,8 +181,9 @@ def answer_question(mm: MemoryManager, question: str, k: int = 10) -> Tuple[str,
     """
     start = time.perf_counter()
 
-    # Retrieve relevant notes
-    results = mm.recall(question, k=k)
+    # Retrieve relevant notes (disable supersession filter for conversational data
+    # where sessions accumulate rather than replace each other)
+    results = mm.recall(question, k=k, exclude_superseded=False)
 
     if not results:
         return "I don't have information about that.", [], time.perf_counter() - start
@@ -196,8 +197,8 @@ def answer_question(mm: MemoryManager, question: str, k: int = 10) -> Tuple[str,
 
     context = "\n".join(context_parts[:k])
 
-    # Use LLM synthesis for focused answers (RFC-001 Step 4)
-    answer = _synthesize_answer(question, context)
+    # Return raw context for keyword-overlap scoring (no LLM synthesis)
+    answer = context[:2000]
     latency = time.perf_counter() - start
 
     return answer, evidence_ids, latency

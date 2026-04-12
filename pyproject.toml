@@ -4,10 +4,10 @@ build-backend = "hatchling.build"
 
 [project]
 name = "zettelforge"
-version = "2.0.0"
+version = "2.1.0"
 description = "ZettelForge: Agentic Memory System with vector search, knowledge graph, and synthesis"
 readme = "README.md"
-license = {text = "MIT"}
+license = "MIT"
 requires-python = ">=3.10"
 authors = [
     {name = "Patrick Roland", email = "patrick@groland.com"}
@@ -23,6 +23,8 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
+
+# Core dependencies (Community edition — MIT licensed)
 dependencies = [
     "lancedb>=0.5.0",
     "pyarrow>=14.0.0",
@@ -30,12 +32,25 @@ dependencies = [
     "numpy>=1.24.0",
     "requests>=2.31.0",
     "tantivy>=0.11.0",
-    "typedb-driver>=3.8.0",
     "fastembed>=0.8.0",
     "llama-cpp-python>=0.3.0",
+    "httpx>=0.25.0",
 ]
 
 [project.optional-dependencies]
+
+# Enterprise: install the separate zettelforge-enterprise package
+# pip install zettelforge-enterprise
+enterprise = [
+    "zettelforge-enterprise>=2.1.0",
+]
+
+# Web UI (ThreatRecall)
+web = [
+    "fastapi>=0.100.0",
+    "uvicorn>=0.20.0",
+]
+
 dev = [
     "pytest>=7.0.0",
     "pytest-asyncio>=0.21.0",

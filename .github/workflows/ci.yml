@@ -39,6 +39,8 @@ jobs:
         mypy src/zettelforge/ --ignore-missing-imports
 
     - name: Test with pytest
+      env:
+        ZETTELFORGE_BACKEND: jsonl
       run: |
         pytest tests/ -v --cov=zettelforge --cov-report=xml
 
