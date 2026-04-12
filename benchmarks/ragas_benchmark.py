@@ -161,7 +161,7 @@ def run_ragas_benchmark(
 
     for i, qa in enumerate(qa_pairs):
         start = time.perf_counter()
-        results = mm.recall(qa["question"], k=k)
+        results = mm.recall(qa["question"], k=k, exclude_superseded=False)
         latency = time.perf_counter() - start
         latencies.append(latency)
 

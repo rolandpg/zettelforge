@@ -8,7 +8,9 @@ Thank you for your interest in contributing to ZettelForge! This document provid
 2. Create a virtual environment: `python -m venv venv`
 3. Activate it: `source venv/bin/activate` (or `venv\Scripts\activate` on Windows)
 4. Install in development mode: `pip install -e ".[dev]"`
-5. Install Ollama and pull the embedding model: `ollama pull nomic-embed-text`
+5. Run tests to verify your setup: `ZETTELFORGE_BACKEND=jsonl pytest tests/ -v --ignore=tests/test_typedb_client.py`
+
+No external services (Ollama, TypeDB) are required for development. Embeddings run in-process via fastembed, and the knowledge graph defaults to JSONL.
 
 ## Development Workflow
 
@@ -19,6 +21,15 @@ Thank you for your interest in contributing to ZettelForge! This document provid
 5. Run formatting: `black src/zettelforge/`
 6. Commit with clear messages
 7. Push and create a pull request
+
+## Community vs Enterprise
+
+ZettelForge uses an open-core model:
+
+- **Community (MIT)** -- everything in `src/zettelforge/` except `enterprise/`. Contributions here are welcome and encouraged.
+- **Enterprise (BSL-1.1)** -- code in `src/zettelforge/enterprise/` and features gated behind `is_enterprise()`. These are maintained by Threatengram.
+
+If you're unsure whether a feature belongs in Community or Enterprise, open an issue to discuss before starting work.
 
 ## Code Style
 
@@ -32,7 +43,7 @@ Thank you for your interest in contributing to ZettelForge! This document provid
 
 - Write tests for new features
 - Ensure all tests pass before submitting PR
-- Aim for high test coverage
+- Tests that require Enterprise features should use the `enable_enterprise` fixture from `tests/conftest.py`
 - Use meaningful test names that describe behavior
 
 ## Commit Messages

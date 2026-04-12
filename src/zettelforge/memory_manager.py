@@ -3,9 +3,13 @@ Memory Manager - Primary Agent Interface
 A-MEM Agentic Memory Architecture V1.0
 
 Main interface for agent memory operations.
+
+Community edition: vector search, JSONL graph, basic entity extraction.
+Enterprise edition: blended retrieval, cross-encoder reranking, report ingestion.
 """
 import os
 import json
+import threading
 from datetime import datetime
 from pathlib import Path
 from typing import List, Optional, Dict, Any, Tuple
@@ -22,6 +26,23 @@ from zettelforge.knowledge_graph import get_knowledge_graph
 from zettelforge.governance_validator import GovernanceValidator, GovernanceViolationError
 from zettelforge.fact_extractor import FactExtractor, ExtractedFact
 from zettelforge.memory_updater import MemoryUpdater, UpdateOperation
+from zettelforge.edition import is_enterprise
+
+
+# ── Reranker singleton ───────────────────────────────────────────────────────
+_reranker = None
+_reranker_lock = threading.Lock()
+
+
+def _get_reranker():
+    """Get or create cross-encoder reranker (singleton, ~80MB, loads once)."""
+    global _reranker
+    if _reranker is None:
+        with _reranker_lock:
+            if _reranker is None:
+                from fastembed.rerank.cross_encoder import TextCrossEncoder
+                _reranker = TextCrossEncoder("Xenova/ms-marco-MiniLM-L-6-v2")
+    return _reranker
 
 
 class MemoryManager:
@@ -160,7 +181,7 @@ class MemoryManager:
         chunk_size: int = 3000,
     ) -> List[Tuple[Optional[MemoryNote], str]]:
         """
-        Ingest a news report or threat report.
+        Ingest a news report or threat report.  [Enterprise]
 
         Chunks long content, runs two-phase extraction on each chunk,
         and stores published_date as temporal metadata.
@@ -176,7 +197,17 @@ class MemoryManager:
 
         Returns:
             List of (MemoryNote or None, status) tuples across all chunks.
+
+        Raises:
+            EditionError: If called in Community edition.
         """
+        if not is_enterprise():
+            from zettelforge.edition import EditionError
+            raise EditionError(
+                "'remember_report' (report ingestion with auto-chunking) requires "
+                "ThreatRecall Enterprise. Set THREATENGRAM_LICENSE_KEY or visit "
+                "https://threatengram.com/enterprise"
+            )
         source_ref = source_url or "report"
 
         # Chunk long content on sentence boundaries
@@ -226,7 +257,8 @@ class MemoryManager:
         Retrieve memories relevant to query using blended vector + graph retrieval.
 
         Uses intent classifier to determine retrieval strategy weights,
-        then combines vector similarity and graph traversal results.
+        then combines vector similarity and graph traversal results
+        with cross-encoder reranking.
         """
         self.stats['retrievals'] += 1
 
@@ -242,12 +274,38 @@ class MemoryManager:
         for etype, elist in query_entities.items():
             resolved[etype] = [self.resolver.resolve(etype, e) for e in elist]
 
-        # Vector retrieval
+        # Vector retrieval (Community + Enterprise)
         vector_results = self.retriever.retrieve(
             query=query, domain=domain, k=k, include_links=include_links
         )
 
-        # Graph retrieval
+        # Temporal boost: for temporal queries, prioritize notes containing dates from the query
+        if intent.value == "temporal":
+            try:
+                import dateparser
+                import re as _re
+                # Extract date-like strings from query
+                date_patterns = _re.findall(
+                    r'\b(?:january|february|march|april|may|june|july|august|september|'
+                    r'october|november|december)\s+\d{1,2}(?:,?\s+\d{4})?|\b\d{4}\b|\b\d{1,2}/\d{1,2}/\d{2,4}\b',
+                    query, _re.IGNORECASE
+                )
+                if date_patterns:
+                    # Boost notes containing any of the extracted dates
+                    date_lower = [d.lower() for d in date_patterns]
+                    boosted = []
+                    rest = []
+                    for note in vector_results:
+                        content_lower = note.content.raw.lower()
+                        if any(d in content_lower for d in date_lower):
+                            boosted.append(note)
+                        else:
+                            rest.append(note)
+                    vector_results = boosted + rest
+            except ImportError:
+                pass
+
+        # Blended retrieval: combine vector similarity with graph traversal
         from zettelforge.graph_retriever import GraphRetriever
         from zettelforge.blended_retriever import BlendedRetriever
         kg = get_knowledge_graph()
@@ -256,7 +314,6 @@ class MemoryManager:
             query_entities=resolved, max_depth=2
         )
 
-        # Blend results
         blender = BlendedRetriever()
         results = blender.blend(
             vector_results=vector_results,
@@ -266,9 +323,41 @@ class MemoryManager:
             k=k,
         )
 
+        # Fallback: if blending produced fewer results than vector alone, use vector
+        if len(results) < len(vector_results):
+            results = vector_results[:k]
+
+        # Entity-augmented recall: also pull notes via entity index for query entities
+        # This ensures multi-entity answers (e.g., "tools used by APT28") include all
+        # relevant notes, not just the top-k by vector similarity
+        result_ids = {n.id for n in results}
+        for etype, values in resolved.items():
+            for evalue in values:
+                if evalue:
+                    entity_notes = self.recall_entity(etype, evalue, k=3)
+                    for en in entity_notes:
+                        if en.id not in result_ids:
+                            results.append(en)
+                            result_ids.add(en.id)
+
+        # ── Enterprise: Cross-encoder reranking ─────────────────────────────
+        if len(results) > 1:
+            try:
+                reranker = _get_reranker()  # Returns None in Community
+                if reranker is not None:
+                    docs = [n.content.raw[:512] for n in results]
+                    scores = list(reranker.rerank(query, docs))
+                    paired = sorted(zip(scores, results), key=lambda x: x[0], reverse=True)
+                    results = [note for _, note in paired]
+            except Exception:
+                pass  # Reranking is optional — fall back to original order
+
         # Filter superseded notes
         if exclude_superseded:
             results = [n for n in results if not n.links.superseded_by]
+
+        # Cap at k after entity augmentation and reranking
+        results = results[:k]
 
         # Track access
         for note in results:
@@ -511,17 +600,28 @@ class MemoryManager:
     def get_entity_relationships(self, entity_type: str, entity_value: str) -> List[Dict]:
         """Get direct relationships for an entity from the knowledge graph."""
         kg = get_knowledge_graph()
-        
+
         # Resolve alias if necessary
         canonical = self.resolver.resolve(entity_type, entity_value)
-        
+
         return kg.get_neighbors(entity_type, canonical)
 
     def traverse_graph(self, start_type: str, start_value: str, max_depth: int = 2) -> List[Dict]:
-        """Traverse relationships from a starting entity."""
+        """Traverse relationships from a starting entity.  [Enterprise]
+
+        Multi-hop graph traversal requires Enterprise edition.
+        Community users can use get_entity_relationships() for direct neighbors.
+        """
+        if not is_enterprise():
+            from zettelforge.edition import EditionError
+            raise EditionError(
+                "'traverse_graph' (multi-hop BFS traversal) requires ThreatRecall Enterprise. "
+                "Use get_entity_relationships() for direct neighbors in Community edition. "
+                "https://threatengram.com/enterprise"
+            )
         kg = get_knowledge_graph()
         canonical = self.resolver.resolve(start_type, start_value)
-        
+
         return kg.traverse(start_type, canonical, max_depth)
 
     # === Phase 7: Synthesis Layer ===
@@ -536,20 +636,31 @@ class MemoryManager:
         """
         Synthesize an answer from retrieved memories (Phase 7 RAG-as-Answer).
 
+        Community: "direct_answer" format only.
+        Enterprise: All formats — "direct_answer", "synthesized_brief",
+                    "timeline_analysis", "relationship_map".
+
         Args:
             query: The question to answer
-            format: Output format - "direct_answer", "synthesized_brief",
-                    "timeline_analysis", or "relationship_map"
+            format: Output format (see above)
             k: Number of notes to retrieve for context
             tier_filter: Filter by tier ["A", "B"] or ["A", "B", "C"]
 
         Returns:
             Dictionary with synthesis result, metadata, and sources
 
-        Example:
-            result = mm.synthesize("What do we know about APT28?", format="synthesized_brief")
-            print(result["synthesis"]["summary"])
+        Raises:
+            EditionError: If an advanced format is used in Community edition.
         """
+        _ENTERPRISE_FORMATS = {"synthesized_brief", "timeline_analysis", "relationship_map"}
+        if format in _ENTERPRISE_FORMATS and not is_enterprise():
+            from zettelforge.edition import EditionError
+            raise EditionError(
+                f"Synthesis format '{format}' requires ThreatRecall Enterprise. "
+                f"Community edition supports 'direct_answer'. "
+                f"Set THREATENGRAM_LICENSE_KEY or visit https://threatengram.com/enterprise"
+            )
+
         gen = get_synthesis_generator()
         return gen.synthesize(
             query=query,

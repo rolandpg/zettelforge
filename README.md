@@ -1,129 +1,84 @@
-# ZettelForge: Agentic Memory System
+# ZettelForge
+
+**Give your AI agents memory that persists, connects, and reasons.**
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-2.0.0-green.svg)](https://github.com/rolandpg/zettelforge)
+[![CI](https://github.com/rolandpg/zettelforge/actions/workflows/ci.yml/badge.svg)](https://github.com/rolandpg/zettelforge/actions)
+[![Version](https://img.shields.io/badge/version-2.1.0-green.svg)](https://github.com/rolandpg/zettelforge/releases)
 
-A production-grade memory system for AI agents, purpose-built for cyber threat intelligence (CTI). Combines a **TypeDB STIX 2.1 ontology layer** with **LanceDB vector search**, knowledge graph traversal, and intent-based query routing to give agents persistent, structured memory across sessions.
+## The Problem
 
-## Features
+Your AI agent starts from zero every session. Context from yesterday's threat hunt, last week's incident, or the report you read an hour ago -- gone. The agent has no memory, no entity relationships, no sense of what changed since the last time it ran.
 
-- **Hybrid Architecture**: TypeDB for STIX 2.1 ontology (entities, relations, inference) + LanceDB for vector embeddings and Zettelkasten notes
-- **STIX 2.1 Schema**: 9 typed entity types (threat-actor, malware, vulnerability, etc.), 8 relationship types (uses, targets, attributed-to, etc.), with confidence and temporal validity on every relation
-- **Inference-Ready**: TypeDB functions for transitive alias resolution, tool attribution via campaigns, and entity-to-note bridging
-- **Blended Retrieval**: Combines vector similarity + knowledge graph traversal, weighted by query intent
-- **Two-Phase Extraction Pipeline**: Mem0-style selective ingestion -- LLM extracts salient facts with importance scores, then decides ADD/UPDATE/DELETE/NOOP per fact
-- **36 CTI Aliases Seeded**: APT28/Fancy Bear/Strontium/Forest Blizzard, APT29/Cozy Bear/Midnight Blizzard, Lazarus/Hidden Cobra, and more -- resolved via TypeDB at query time
-- **Entity Extraction**: Automatic indexing of CVEs, threat actors, tools, campaigns with alias resolution
-- **RAG Synthesis**: Answer generation in multiple formats (direct answer, brief, timeline, relationship map)
-- **Report Ingestion**: `remember_report()` for chunked news/threat report processing with published date metadata
-- **Graceful Fallback**: If TypeDB is unavailable, automatically falls back to JSONL knowledge graph
-- **Zero-Server Embeddings**: 768-dim vectors generated in-process via fastembed (ONNX, 7ms/embed) -- no Ollama needed for embeddings
-- **Local-First**: Runs entirely on local hardware -- Ollama for LLM only, LanceDB for vectors, TypeDB in Docker
+You've tried RAG over documents. You get semantic search but no structure -- no "APT28 uses Cobalt Strike which exploits CVE-2024-1111" chain of reasoning. No deduplication. No contradiction detection. No way to ask "what changed since Tuesday?"
 
-## Quick Start
+ZettelForge fixes this.
 
-```bash
-# Clone and install
-git clone https://github.com/rolandpg/zettelforge.git
-cd zettelforge
-pip install -e ".[dev]"
+## What It Does
 
-# Start TypeDB (ontology layer)
-docker compose -f docker/docker-compose.yml up -d
-
-# Start Ollama (LLM only — embeddings run locally via fastembed)
-ollama pull qwen2.5:3b
-ollama serve
-```
+ZettelForge is an **agentic memory system** -- a structured, persistent knowledge store that AI agents can write to, read from, and reason over. Purpose-built for cyber threat intelligence, but works for any domain.
 
 ```python
 from zettelforge import MemoryManager
 
 mm = MemoryManager()
 
-# Store a memory -- entities go to TypeDB, text+vectors to LanceDB
-note, status = mm.remember(
-    "APT28 uses Cobalt Strike for lateral movement via CVE-2024-1111",
-    domain="cti"
+# Store intelligence -- entities are auto-extracted, graph edges are built
+mm.remember("APT28 uses Cobalt Strike for lateral movement via CVE-2024-1111", domain="cti")
+
+# New intel arrives -- LLM decides: is this new, an update, or a contradiction?
+mm.remember_with_extraction(
+    "APT28 has shifted tactics. They dropped DROPBEAR and now exploit edge devices."
 )
 
-# Two-phase extraction (selective, deduplicating)
-results = mm.remember_with_extraction(
-    "APT28 has shifted tactics. They dropped DROPBEAR and now exploit edge devices.",
-    domain="cti"
-)
+# Retrieve -- blends vector similarity + knowledge graph traversal
+results = mm.recall("What tools does APT28 use?")
+# Returns Cobalt Strike note (high confidence), DROPBEAR note (superseded)
 
-# Ingest a threat report (auto-chunks, extracts per chunk)
-results = mm.remember_report(
-    content=open("report.txt").read(),
-    source_url="https://example.com/apt28-report",
-    published_date="2026-04-09",
-    domain="cti"
-)
+# Alias resolution works automatically
+mm.recall_actor("Fancy Bear")  # resolves to APT28
 
-# Retrieve -- blends vector similarity + STIX graph traversal
-results = mm.recall("What tools does APT28 use?", k=10)
-
-# Alias resolution works automatically via TypeDB
-results = mm.recall_actor("Fancy Bear")  # resolves to APT28
-
-# Synthesize answers
-result = mm.synthesize("Summarize APT28 activity", format="synthesized_brief")
-
-# Traverse the STIX knowledge graph
-paths = mm.traverse_graph("actor", "apt28", max_depth=2)
-# APT28 -[USES_TOOL]-> cobalt-strike -[EXPLOITS_CVE]-> CVE-2024-1111
+# Synthesize answers from memory
+mm.synthesize("Summarize APT28 activity")
 ```
 
-## Architecture
+No cloud. No API keys. Runs entirely on your laptop.
 
-```
-┌──────────────────────────────────────────────────────────────────────┐
-│                           MemoryManager                              │
-│  remember()  remember_with_extraction()  remember_report()           │
-│  recall()    synthesize()    traverse_graph()                        │
-├──────────┬───────────┬──────────────┬───────────┬────────────────────┤
-│  Note    │  Fact     │   Memory     │  Blended  │   Synthesis        │
-│Constructor│ Extractor │  Updater     │ Retriever │   Generator        │
-│(enrich)  │(Phase 1)  │(Phase 2)     │(vec+graph)│   (RAG)            │
-├──────────┴───────────┴──────────────┼───────────┴────────────────────┤
-│       Entity Indexer + Alias        │  Intent Classifier             │
-│       Resolver (TypeDB-first)       │  (factual/temporal/causal)     │
-├─────────────────────────────────────┼────────────────────────────────┤
-│                                     │                                │
-│   ┌─────────────────────────┐       │  ┌──────────────────────────┐  │
-│   │  TypeDB (Ontology)      │       │  │  LanceDB (Conversational)│  │
-│   │  STIX 2.1 Schema        │       │  │  Vector Embeddings       │  │
-│   │  9 Entity Types         │◄──────┤  │  Zettelkasten Notes      │  │
-│   │  8 Relation Types       │bridge │  │  768-dim nomic-embed     │  │
-│   │  Alias Inference        │───────►  │  Unstructured Reports    │  │
-│   │  Temporal Edges         │       │  │  IVF_PQ Index            │  │
-│   │  Confidence Scoring     │       │  │                          │  │
-│   └─────────────────────────┘       │  └──────────────────────────┘  │
-│         mentioned-in bridge ────────┘                                │
-└──────────────────────────────────────────────────────────────────────┘
-```
+## How It Works
 
-The **bridge** between the two databases is the `mentioned-in` relation in TypeDB, which stores `(entity) --mentioned-in--> (note-id)`. The note itself (raw text + vector embedding) lives in LanceDB. This clean separation means:
-- **TypeDB** answers: "what entities exist and how are they related?"
-- **LanceDB** answers: "what context exists about this topic?"
-- **BlendedRetriever** merges both answers using intent-based policy weights
+Every `remember()` call triggers a pipeline:
 
-## Deployment
+1. **Entity Extraction** -- regex + LLM NER identifies CVEs, actors, tools, campaigns, people, locations, orgs (10 types)
+2. **Knowledge Graph Update** -- entities become nodes, co-occurrence becomes edges, LLM infers causal triples ("APT28 *uses* Cobalt Strike")
+3. **Vector Embedding** -- 768-dim fastembed (ONNX, in-process, 7ms/embed) stored in LanceDB
 
-### Option 1: On-Premises (Homelab / Air-Gapped)
+Every `recall()` call blends two retrieval strategies:
 
-Best for: security-sensitive environments, development, single-analyst workstations.
+1. **Vector similarity** -- semantic search over embeddings
+2. **Graph traversal** -- BFS over knowledge graph edges, scored by hop distance
+3. **Intent routing** -- query classified as factual/temporal/relational/causal/exploratory, weights adjusted per type
+4. **Cross-encoder reranking** -- ms-marco-MiniLM reorders final results by relevance
 
-**Prerequisites:**
-- Linux (Ubuntu 22.04+ / RHEL 9+) or macOS 13+
-- Docker 24+ and Docker Compose v2
-- Python 3.10+
-- 8 GB RAM minimum (4 GB TypeDB + 2 GB Ollama + 2 GB ZettelForge)
-- 20 GB disk (TypeDB data + LanceDB vectors + Ollama models)
+The **two-phase extraction** pipeline (`remember_with_extraction`) goes further:
+- **Phase 1**: LLM extracts salient facts with importance scores
+- **Phase 2**: Each fact is compared to existing memory -- LLM decides ADD, UPDATE, DELETE, or NOOP
 
-**Step 1: Clone and install**
+This means your agent's memory self-corrects. Stale intel gets superseded. Contradictions get resolved. Duplicates get skipped.
+
+## Benchmarks
+
+Evaluated against published academic benchmarks:
+
+| Benchmark | What it measures | Score |
+|-----------|-----------------|-------|
+| **CTI Retrieval** | Attribution, CVE linkage, multi-hop | **75.0%** |
+| **RAGAS** | Retrieval quality (keyword presence) | **78.1%** |
+| **LOCOMO** (ACL 2024) | Conversational memory recall | **18.0%** |
+
+See the [full benchmark report](benchmarks/BENCHMARK_REPORT.md) for methodology and analysis.
+
+## Quick Start
 
 ```bash
 git clone https://github.com/rolandpg/zettelforge.git
@@ -131,476 +86,126 @@ cd zettelforge
 pip install -e .
 ```
 
-**Step 2: Start TypeDB**
-
-```bash
-# Start TypeDB container
-docker compose -f docker/docker-compose.yml up -d
-
-# Verify it's running
-docker compose -f docker/docker-compose.yml ps
-# Should show: typedb  Up (healthy)  0.0.0.0:1729->1729/tcp
-
-# Seed CTI aliases (one-time)
-python3 -c "from zettelforge.schema.seed_aliases import seed_aliases; seed_aliases()"
-```
-
-**Step 3: Start Ollama**
-
-```bash
-# Install Ollama
-curl -fsSL https://ollama.com/install.sh | sh
-
-# Pull LLM model (embeddings run locally via fastembed — no model pull needed)
-ollama pull qwen2.5:3b          # LLM for extraction, classification, synthesis
-
-# Start server (runs on port 11434)
-ollama serve
-```
-
-**Step 4: Configure environment**
-
-```bash
-# Create .env or export these variables
-export AMEM_DATA_DIR=~/.amem                    # LanceDB data + JSONL notes
-export ZETTELFORGE_EMBEDDING_PROVIDER=fastembed   # In-process (default, no server)
-export TYPEDB_HOST=localhost                      # TypeDB gRPC host
-export TYPEDB_PORT=1729                           # TypeDB gRPC port
-export TYPEDB_DATABASE=zettelforge                # TypeDB database name
-export ZETTELFORGE_BACKEND=typedb                 # "typedb" or "jsonl" (fallback)
-```
-
-**Step 5: Verify**
-
-```bash
-# Run tests
-pytest tests/ -v
-
-# Quick smoke test
-python3 -c "
+```python
 from zettelforge import MemoryManager
 mm = MemoryManager()
-note, status = mm.remember('APT28 uses Cobalt Strike', domain='cti')
-print(f'Status: {status}, Note: {note.id}')
-results = mm.recall('APT28 tools', k=3)
-print(f'Recall: {len(results)} results')
-"
+note, _ = mm.remember("APT28 uses Cobalt Strike for lateral movement", domain="cti")
+results = mm.recall("What tools does APT28 use?")
+print(results[0].content.raw)
 ```
 
-**Air-gapped deployment notes:**
-- Pre-pull Docker images: `docker save typedb/typedb:latest | gzip > typedb.tar.gz`
-- Pre-download Ollama models: copy `~/.ollama/models/` from a connected machine
-- All data stays local -- no external API calls required
+No TypeDB, no Ollama, no Docker -- just `pip install`. Embeddings run in-process via fastembed. LLM features (extraction, synthesis) activate when Ollama is available.
 
----
-
-### Option 2: Azure Cloud (SaaS / Team Deployment)
-
-Best for: multi-analyst teams, integration with Azure Sentinel/Defender, scalable workloads.
-
-**Architecture on Azure:**
-
-```
-┌─────────────────────────────────────────────────────┐
-│                   Azure Resource Group                │
-│                                                       │
-│  ┌─────────────────┐    ┌──────────────────────────┐ │
-│  │ Azure Container  │    │ Azure Container Instance │ │
-│  │ Instance: TypeDB │    │ or App Service:          │ │
-│  │ (1729, 8000)     │    │ ZettelForge API          │ │
-│  │ 4 GB RAM         │    │ + Ollama sidecar         │ │
-│  └────────┬─────────┘    └────────────┬─────────────┘ │
-│           │ gRPC                      │               │
-│           └───────────┬───────────────┘               │
-│                       │                               │
-│  ┌────────────────────▼──────────────────────────┐   │
-│  │         Azure Blob Storage                     │   │
-│  │  - LanceDB vector data                         │   │
-│  │  - JSONL notes (fallback)                      │   │
-│  │  - Ollama model cache                          │   │
-│  └────────────────────────────────────────────────┘   │
-│                                                       │
-│  ┌────────────────────────────────────────────────┐   │
-│  │  Azure Key Vault                               │   │
-│  │  - TypeDB credentials                          │   │
-│  │  - API keys                                    │   │
-│  └────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────┘
-```
-
-**Step 1: Create Resource Group**
+### With Ollama (enables LLM features)
 
 ```bash
-az group create --name rg-zettelforge --location eastus2
+ollama pull qwen2.5:3b && ollama serve
+# ZettelForge auto-detects Ollama for extraction and synthesis
 ```
 
-**Step 2: Deploy TypeDB as Azure Container Instance**
+### MCP Server (Claude Code / AI agent integration)
 
 ```bash
-az container create \
-  --resource-group rg-zettelforge \
-  --name typedb-server \
-  --image typedb/typedb:latest \
-  --cpu 2 --memory 4 \
-  --ports 1729 8000 \
-  --azure-file-volume-share-name typedb-data \
-  --azure-file-volume-account-name <storage-account> \
-  --azure-file-volume-mount-path /opt/typedb/server/data \
-  --restart-policy Always \
-  --dns-name-label zettelforge-typedb
+python web/mcp_server.py
+# Exposes: remember, recall, synthesize, entity, graph, stats
 ```
 
-**Step 3: Deploy ZettelForge as Azure App Service**
+Add to `.claude.json`:
+```json
+{
+  "mcpServers": {
+    "threatrecall": {
+      "command": "python3",
+      "args": ["web/mcp_server.py"]
+    }
+  }
+}
+```
+
+## Integrations
+
+### ATHF (Agentic Threat Hunting Framework)
+
+Ingest completed [ATHF](https://github.com/Nebulock-Inc/agentic-threat-hunting-framework) hunts into ZettelForge memory. MITRE techniques and IOCs are extracted and linked in the knowledge graph.
 
 ```bash
-# Create App Service Plan (B2 minimum for Ollama models)
-az appservice plan create \
-  --name plan-zettelforge \
-  --resource-group rg-zettelforge \
-  --sku B2 --is-linux
-
-# Deploy from container (build your own image or use the repo)
-az webapp create \
-  --resource-group rg-zettelforge \
-  --plan plan-zettelforge \
-  --name zettelforge-api \
-  --runtime "PYTHON:3.12"
-
-# Configure environment
-az webapp config appsettings set \
-  --resource-group rg-zettelforge \
-  --name zettelforge-api \
-  --settings \
-    TYPEDB_HOST=zettelforge-typedb.eastus2.azurecontainer.io \
-    TYPEDB_PORT=1729 \
-    TYPEDB_DATABASE=zettelforge \
-    ZETTELFORGE_BACKEND=typedb \
-    AMEM_DATA_DIR=/home/site/data \
-    AMEM_EMBEDDING_URL=http://localhost:11434
+python examples/athf_bridge.py /path/to/hunts/
+# 12 hunt(s) parsed
+# Ingested 12/12 hunts into ZettelForge
 ```
 
-**Step 4: Store secrets in Key Vault**
+See [examples/athf_bridge.py](examples/athf_bridge.py).
+
+## Architecture
+
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│                           MemoryManager                              │
+│  remember()  remember_with_extraction()  recall()  synthesize()      │
+├──────────┬───────────┬──────────────┬───────────┬────────────────────┤
+│  Note    │  Fact     │   Memory     │  Blended  │   Synthesis        │
+│Constructor│ Extractor │  Updater     │ Retriever │   Generator        │
+│(enrich)  │(Phase 1)  │(Phase 2)     │(vec+graph)│   (RAG)            │
+├──────────┴───────────┴──────────────┼───────────┴────────────────────┤
+│       Entity Indexer + Alias        │  Intent Classifier             │
+│       Resolver                      │  (factual/temporal/causal)     │
+├─────────────────────────────────────┼────────────────────────────────┤
+│   Knowledge Graph (JSONL)           │  LanceDB (Vectors)             │
+│   Entity nodes + edges              │  768-dim fastembed (ONNX)      │
+│   Causal triple inference           │  Zettelkasten notes            │
+│   [Enterprise: TypeDB STIX 2.1]    │  IVF_PQ index                  │
+└─────────────────────────────────────┴────────────────────────────────┘
+```
+
+## Community vs Enterprise
+
+**ZettelForge Community** (MIT) is everything above -- a complete, production-ready agentic memory system. Free, open-source, local-first.
+
+**[ThreatRecall Enterprise](https://threatengram.com/enterprise)** (BSL-1.1) adds what teams need in production:
+
+| Feature | What it adds |
+|---------|-------------|
+| TypeDB STIX 2.1 ontology | Replaces JSONL graph at scale -- inference rules, 9 entity types, 8 relation types, 36 CTI aliases |
+| Temporal KG queries | "What changed since Tuesday?" -- `get_changes_since()`, `get_entity_timeline()` |
+| Multi-hop graph traversal | `traverse_graph()` with BFS across relationship chains |
+| Advanced synthesis | `synthesized_brief`, `timeline_analysis`, `relationship_map` |
+| Report ingestion | `remember_report()` with auto-chunking for long threat reports |
+| OpenCTI integration | Bi-directional sync with OpenCTI platform |
+| Sigma rule generation | Sigma YAML detection rules from IOCs |
+| Multi-tenant auth | OAuth/JWT with per-tenant data isolation |
+| Context injection | Auto-load relevant context before agent tasks |
 
 ```bash
-az keyvault create \
-  --name kv-zettelforge \
-  --resource-group rg-zettelforge
-
-az keyvault secret set \
-  --vault-name kv-zettelforge \
-  --name typedb-password \
-  --value "<your-typedb-password>"
-```
-
-**Step 5: Persistent storage for LanceDB**
-
-```bash
-# Create storage account for LanceDB vectors and notes
-az storage account create \
-  --name stzettelforge \
-  --resource-group rg-zettelforge \
-  --sku Standard_LRS
-
-az storage share create \
-  --name zettelforge-data \
-  --account-name stzettelforge
-
-# Mount as persistent volume in App Service
-az webapp config storage-account add \
-  --resource-group rg-zettelforge \
-  --name zettelforge-api \
-  --custom-id data-mount \
-  --storage-type AzureFiles \
-  --share-name zettelforge-data \
-  --account-name stzettelforge \
-  --mount-path /home/site/data
-```
-
-**Alternative: GPU-enabled for larger models**
-
-For production workloads requiring larger LLMs (70B+ parameters), use Azure Container Instances with GPU or Azure Kubernetes Service:
-
-```bash
-# ACI with GPU (for Ollama with large models)
-az container create \
-  --resource-group rg-zettelforge \
-  --name zettelforge-gpu \
-  --image your-registry.azurecr.io/zettelforge:latest \
-  --cpu 4 --memory 16 \
-  --gpu-count 1 --gpu-sku V100 \
-  --ports 8080 \
-  --environment-variables \
-    TYPEDB_HOST=zettelforge-typedb.eastus2.azurecontainer.io \
-    ZETTELFORGE_BACKEND=typedb
-```
-
-**Azure cost estimate (B2 tier):**
-
-| Resource | SKU | Monthly |
-|----------|-----|---------|
-| TypeDB ACI | 2 vCPU, 4 GB | ~$70 |
-| App Service | B2 (2 vCPU, 3.5 GB) | ~$55 |
-| Storage (Files) | Standard LRS, 50 GB | ~$3 |
-| Key Vault | Standard | ~$1 |
-| **Total** | | **~$130/mo** |
-
----
-
-### Option 3: Docker Compose (All-in-One)
-
-Best for: quick evaluation, demos, CI/CD testing.
-
-Create `docker-compose.full.yml`:
-
-```yaml
-services:
-  typedb:
-    image: typedb/typedb:latest
-    ports:
-      - "1729:1729"
-    volumes:
-      - typedb-data:/opt/typedb/server/data
-    restart: unless-stopped
-
-  ollama:
-    image: ollama/ollama:latest
-    ports:
-      - "11434:11434"
-    volumes:
-      - ollama-data:/root/.ollama
-    restart: unless-stopped
-
-  zettelforge:
-    build: .
-    depends_on:
-      - typedb
-      - ollama
-    environment:
-      TYPEDB_HOST: typedb
-      TYPEDB_PORT: 1729
-      TYPEDB_DATABASE: zettelforge
-      ZETTELFORGE_BACKEND: typedb
-      AMEM_EMBEDDING_URL: http://ollama:11434
-      AMEM_DATA_DIR: /data
-    volumes:
-      - zettelforge-data:/data
-    ports:
-      - "8080:8080"
-
-volumes:
-  typedb-data:
-  ollama-data:
-  zettelforge-data:
-```
-
-```bash
-docker compose -f docker-compose.full.yml up -d
-# Then pull LLM: docker exec -it <ollama-container> ollama pull qwen2.5:3b
+pip install zettelforge-enterprise
+export THREATENGRAM_LICENSE_KEY="TG-xxxx-xxxx-xxxx-xxxx"
 ```
 
 ## Configuration
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `AMEM_DATA_DIR` | `~/.amem` | LanceDB vectors + JSONL notes |
-| `ZETTELFORGE_EMBEDDING_PROVIDER` | `fastembed` | `fastembed` (in-process) or `ollama` (HTTP server) |
-| `AMEM_EMBEDDING_URL` | `http://127.0.0.1:11434` | Embedding server (only when provider=ollama) |
-| `AMEM_EMBEDDING_MODEL` | `nomic-ai/nomic-embed-text-v1.5-Q` | Embedding model |
-| `TYPEDB_HOST` | `localhost` | TypeDB gRPC host |
-| `TYPEDB_PORT` | `1729` | TypeDB gRPC port |
-| `TYPEDB_DATABASE` | `zettelforge` | TypeDB database name |
-| `ZETTELFORGE_BACKEND` | `typedb` | `typedb` or `jsonl` (fallback) |
+| `AMEM_DATA_DIR` | `~/.amem` | Data directory |
+| `ZETTELFORGE_BACKEND` | `jsonl` | `jsonl` or `typedb` [Enterprise] |
+| `ZETTELFORGE_LLM_PROVIDER` | `local` | `local` (llama-cpp) or `ollama` |
+| `THREATENGRAM_LICENSE_KEY` | | Enterprise license key |
 
-## API Reference
+See [config.default.yaml](config.default.yaml) for all options.
 
-### MemoryManager
+## Contributing
 
-Primary interface for all memory operations.
-
-#### `remember(content, source_type, source_ref, domain)`
-
-Store a memory. Entities extracted to TypeDB, text + vectors to LanceDB.
-
-```python
-note, status = mm.remember("APT28 targets NATO", domain="cti")
-```
-
-#### `remember_with_extraction(content, domain, context, min_importance, max_facts)`
-
-Two-phase Mem0-style pipeline. Phase 1: LLM extracts salient facts. Phase 2: ADD/UPDATE/DELETE/NOOP per fact.
-
-```python
-results = mm.remember_with_extraction(
-    "APT28 dropped DROPBEAR, now uses edge device exploitation",
-    domain="cti", min_importance=3
-)
-```
-
-#### `remember_report(content, source_url, published_date, domain, chunk_size)`
-
-Ingest a news or threat report. Auto-chunks long content and runs two-phase extraction per chunk.
-
-```python
-results = mm.remember_report(
-    content="Full report text...",
-    source_url="https://example.com/report",
-    published_date="2026-04-09",
-    domain="cti"
-)
-```
-
-#### `recall(query, domain, k, include_links, exclude_superseded)`
-
-Blended retrieval: vector similarity + STIX graph traversal, weighted by intent.
-
-```python
-results = mm.recall("What tools does APT28 use?", k=10)
-```
-
-#### `synthesize(query, format, k, tier_filter)`
-
-RAG synthesis over retrieved memories.
-
-```python
-result = mm.synthesize("Summarize APT28 activity", format="synthesized_brief")
-# formats: "direct_answer", "synthesized_brief", "timeline_analysis", "relationship_map"
-```
-
-#### Entity Lookups
-
-```python
-mm.recall_cve("CVE-2024-3094")        # Fast CVE lookup
-mm.recall_actor("Fancy Bear")         # Resolves to APT28 via TypeDB alias-of
-mm.recall_tool("cobalt-strike")       # Tool/malware lookup
-```
-
-#### Knowledge Graph
-
-```python
-mm.traverse_graph("actor", "apt28", max_depth=2)
-mm.get_entity_relationships("actor", "apt28")
-```
-
-## Benchmarks
-
-Evaluated across three benchmark suites (2026-04-09):
-
-| Benchmark | What it measures | Key result |
-|-----------|-----------------|------------|
-| [LOCOMO](https://snap-research.github.io/locomo/) (ACL 2024) | Conversational memory recall | 15.0% accuracy, 0.33 avg score |
-| [CTIBench](https://huggingface.co/datasets/AI4Sec/cti-bench) (NeurIPS 2024) | CTI entity extraction & attribution | Baseline established |
-| RAGAS | Retrieval quality | 75.9% keyword presence |
-
-### LOCOMO Results (v1.3.0 -> v1.5.0)
-
-| Category | v1.3.0 | v1.5.0 | Change |
-|----------|--------|--------|--------|
-| single-hop | 5.0% | 10.0% | +5.0 |
-| multi-hop | 0.0% | 0.0% | avg_score 0.0 -> 0.15 |
-| temporal | 0.0% | 0.0% | -- |
-| open-domain | 30.0% | 30.0% | avg_score +0.025 |
-| adversarial | 35.0% | 35.0% | -- |
-| **Overall** | **14.0%** | **15.0%** | **+1pp, p95 latency 190s -> 1.3s** |
-
-See the [full benchmark report](benchmarks/BENCHMARK_REPORT.md) for analysis and roadmap.
-
-## Project Structure
-
-```
-src/zettelforge/
-    memory_manager.py       # Primary agent interface
-    typedb_client.py        # TypeDB STIX 2.1 knowledge graph client
-    note_schema.py          # Pydantic MemoryNote model
-    note_constructor.py     # Content enrichment, entity extraction
-    memory_store.py         # JSONL + LanceDB persistence
-    fact_extractor.py       # Phase 1: LLM salient fact extraction
-    memory_updater.py       # Phase 2: ADD/UPDATE/DELETE/NOOP decisions
-    knowledge_graph.py      # Graph factory (TypeDB-first, JSONL fallback)
-    graph_retriever.py      # BFS traversal, hop-distance scoring
-    blended_retriever.py    # Merge vector + graph with policy weights
-    vector_retriever.py     # Cosine similarity + entity boost
-    intent_classifier.py    # Query intent routing
-    entity_indexer.py       # Entity extraction and O(1) index
-    alias_resolver.py       # TypeDB alias resolution + JSON fallback
-    synthesis_generator.py  # RAG answer generation
-    cti_integration.py      # OpenCTI platform connector
-    sigma_generator.py      # Sigma rule generation from IOCs
-    context_injection.py    # Proactive agent context loading
-    schema/
-        stix_core.tql       # STIX 2.1 TypeQL schema definition
-        stix_rules.tql      # TypeDB inference functions
-        seed_aliases.py     # CTI alias seeding script
-
-docker/
-    docker-compose.yml      # TypeDB container
-
-benchmarks/
-    BENCHMARK_REPORT.md     # Unified results and analysis
-    locomo_benchmark.py     # LOCOMO evaluation script
-    ctibench_benchmark.py   # CTIBench adapter (NeurIPS 2024)
-    ragas_benchmark.py      # RAGAS retrieval quality wrapper
-```
-
-## Development
-
-```bash
-git clone https://github.com/rolandpg/zettelforge.git
-cd zettelforge
-pip install -e ".[dev]"
-
-# Start TypeDB
-docker compose -f docker/docker-compose.yml up -d
-
-# Run tests (82 tests)
-pytest tests/ -v
-
-# Run benchmarks
-python benchmarks/locomo_benchmark.py --samples 20
-python benchmarks/ctibench_benchmark.py --task ate --samples 50
-python benchmarks/ragas_benchmark.py --samples 20
-
-# Format and lint
-black src/zettelforge/
-ruff check src/zettelforge/
-```
-
-## Roadmap
-
-- [x] Core storage and retrieval (JSONL + LanceDB)
-- [x] Entity extraction and indexing (CVEs, actors, tools, campaigns)
-- [x] Knowledge graph with temporal indexing
-- [x] Intent-based query routing
-- [x] RAG synthesis layer
-- [x] Causal triple extraction
-- [x] CTI platform integration + Sigma generation
-- [x] Mem0-style two-phase extraction pipeline (v1.4.0)
-- [x] Graph traversal retrieval with blended scoring (v1.5.0)
-- [x] Benchmark suite: LOCOMO + CTIBench + RAGAS
-- [x] **Hybrid TypeDB + LanceDB architecture (v2.0.0)**
-- [x] **STIX 2.1 schema with 9 entity types and 8 relation types**
-- [x] **TypeDB alias inference (36 CTI aliases seeded)**
-- [x] **Report ingestion with chunking (`remember_report()`)**
-- [x] **In-process embeddings via fastembed (no Ollama for embeddings)**
-- [ ] Conversational entity extractor (improve LOCOMO from 15% to ~30%)
-- [ ] CTIBench adapter fixes (ATT&CK DB cross-reference)
-- [ ] LLM-judge scoring for benchmarks
-- [ ] Azure Bicep/Terraform IaC templates
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and the Community/Enterprise boundary.
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) file
+- **Community**: [MIT](LICENSE)
+- **Enterprise**: [BSL-1.1](LICENSE-ENTERPRISE) (converts to Apache-2.0 after 4 years)
+
+Built by [Threatengram](https://threatengram.com).
 
 ## Acknowledgments
 
 - Inspired by [Zettelkasten](https://en.wikipedia.org/wiki/Zettelkasten) and [A-Mem](https://arxiv.org/abs/2602.10715) (NeurIPS 2025)
-- Two-phase pipeline inspired by [Mem0](https://mem0.ai/research) architecture
+- Two-phase pipeline inspired by [Mem0](https://mem0.ai/research)
 - STIX 2.1 schema informed by [typedb-cti](https://github.com/typedb-osi/typedb-cti)
 - Benchmarked against [LOCOMO](https://snap-research.github.io/locomo/) (ACL 2024) and [CTIBench](https://arxiv.org/abs/2406.07599) (NeurIPS 2024)
-- Ontology: [TypeDB](https://typedb.com) (Apache-2.0) | Vectors: [LanceDB](https://lancedb.com) | LLM: [Ollama](https://ollama.com) | Schema: [Pydantic](https://pydantic.dev)
-
-## Links
-
-- Repository: https://github.com/rolandpg/zettelforge
-- Issues: https://github.com/rolandpg/zettelforge/issues
-- Benchmark Report: [benchmarks/BENCHMARK_REPORT.md](benchmarks/BENCHMARK_REPORT.md)
-- Architecture Plan: [docs/superpowers/plans/2026-04-09-hybrid-typedb-lancedb-architecture.md](docs/superpowers/plans/2026-04-09-hybrid-typedb-lancedb-architecture.md)
+- [LanceDB](https://lancedb.com) | [fastembed](https://github.com/qdrant/fastembed) | [Pydantic](https://pydantic.dev) | [TypeDB](https://typedb.com)
