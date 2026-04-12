@@ -15,8 +15,8 @@ Thank you for your interest in contributing to ZettelForge! This document provid
 1. Create a feature branch: `git checkout -b feature/your-feature-name`
 2. Make your changes
 3. Run tests: `pytest tests/ -v`
-4. Run linting: `ruff check src/amem/`
-5. Run formatting: `black src/amem/`
+4. Run linting: `ruff check src/zettelforge/`
+5. Run formatting: `black src/zettelforge/`
 6. Commit with clear messages
 7. Push and create a pull request
 
