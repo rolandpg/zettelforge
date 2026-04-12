@@ -1,7 +1,7 @@
 Business Source License 1.1
 
 Licensor: Threatengram, Inc.
-Licensed Work: ThreatRecall Enterprise (src/zettelforge/enterprise/)
+Licensed Work: ThreatRecall Enterprise (zettelforge-enterprise package)
 Change Date: Four years from each release date
 Change License: Apache License, Version 2.0
 
@@ -14,7 +14,7 @@ production use, provided that you do not offer the Licensed Work as a
 commercial hosted service to third parties without a separate commercial
 agreement with Threatengram, Inc.
 
-All files outside of src/zettelforge/enterprise/ remain under the MIT
-license (see LICENSE).
+All files in this repository (rolandpg/zettelforge) are MIT licensed.
+The enterprise package (rolandpg/zettelforge-enterprise) is BSL-1.1.
 
 Contact: enterprise@threatengram.com

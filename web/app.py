@@ -199,7 +199,7 @@ async def sync(request: Request, req: SyncRequest):
             },
         )
     try:
-        from zettelforge.opencti_sync import sync_opencti
+        from zettelforge_enterprise.opencti_sync import sync_opencti
         tenant_mm = get_mm_for_request(request)
         result = sync_opencti(
             tenant_mm,

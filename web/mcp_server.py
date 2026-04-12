@@ -124,8 +124,11 @@ def handle_tool_call(name: str, arguments: dict) -> dict:
         }
 
     elif name == "threatrecall_sync":
+        from zettelforge.edition import is_enterprise
+        if not is_enterprise():
+            return {"error": "OpenCTI sync requires ThreatRecall Enterprise. https://threatengram.com/enterprise"}
         try:
-            from zettelforge.opencti_sync import sync_opencti
+            from zettelforge_enterprise.opencti_sync import sync_opencti
             limit = arguments.get("limit", 20)
             return sync_opencti(mm, limit=limit, use_extraction=False)
         except Exception as e:
