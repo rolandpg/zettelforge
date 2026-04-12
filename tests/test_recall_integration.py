@@ -1,4 +1,4 @@
-"""Integration tests for rewritten recall() with graph traversal."""
+"""Integration tests for recall() with blended vector + graph retrieval."""
 import pytest
 import tempfile
 import time
