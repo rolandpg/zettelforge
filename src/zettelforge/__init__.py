@@ -101,51 +101,19 @@ __all__ = [
 ]
 
 # ── Enterprise-only imports (conditional) ───────────────────────────────────
-# These require Enterprise edition. Importing in Community won't fail,
-# but using the gated methods will raise EditionError.
+# These require the separate zettelforge-enterprise package.
+# pip install zettelforge-enterprise
 
 if is_enterprise():
-    from zettelforge.cti_integration import (
-        CTIPlatformConnector,
-        get_cti_connector,
-        import_cti_to_memory,
-        unified_recall,
-    )
-    from zettelforge.context_injection import (
-        ContextInjector,
-        get_context_injector,
-        inject_for_task,
-        ProactiveAgentMixin,
-    )
-    from zettelforge.sigma_generator import (
-        SigmaGenerator,
-        get_sigma_generator,
-        generate_actor_rules,
-        generate_sentinel_rules,
-    )
-
     try:
-        from zettelforge.typedb_client import TypeDBKnowledgeGraph, get_typedb_knowledge_graph
+        from zettelforge_enterprise import (
+            get_typedb_client,
+            get_sigma_generator as _get_sigma_gen,
+            get_cti_connector as _get_cti_conn,
+            get_context_injector as _get_ctx_inj,
+        )
+        __all__ += [
+            "get_typedb_client",
+        ]
     except ImportError:
-        pass  # TypeDB driver not installed
-
-    __all__ += [
-        # Enterprise: TypeDB
-        "TypeDBKnowledgeGraph",
-        "get_typedb_knowledge_graph",
-        # Enterprise: CTI Integration
-        "CTIPlatformConnector",
-        "get_cti_connector",
-        "import_cti_to_memory",
-        "unified_recall",
-        # Enterprise: Context Injection
-        "ContextInjector",
-        "get_context_injector",
-        "inject_for_task",
-        "ProactiveAgentMixin",
-        # Enterprise: Sigma Generation
-        "SigmaGenerator",
-        "get_sigma_generator",
-        "generate_actor_rules",
-        "generate_sentinel_rules",
-    ]
+        pass  # Enterprise package not installed

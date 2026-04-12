@@ -385,7 +385,7 @@ def get_knowledge_graph() -> KnowledgeGraph:
                 backend = os.environ.get("ZETTELFORGE_BACKEND", "typedb")
                 if backend == "typedb" and is_enterprise():
                     try:
-                        from zettelforge.typedb_client import TypeDBKnowledgeGraph
+                        from zettelforge_enterprise.typedb_client import TypeDBKnowledgeGraph
                         _kg_instance = TypeDBKnowledgeGraph()
                     except Exception as e:
                         print(f"[KG] TypeDB unavailable ({e}), falling back to JSONL")
