@@ -2,7 +2,7 @@
   "meta": {
     "date": "2026-04-09T09:22:51.782228",
     "version": "zettelforge-1.3.0",
-    "dataset": "/home/rolandpg/.openclaw/workspace-nexus/Locomo-Plus/data/locomo10.json",
+    "dataset": "data/locomo10.json",
     "per_category": 20,
     "judge": "keyword",
     "k": 10

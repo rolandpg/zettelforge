@@ -130,7 +130,7 @@ class TestFastembedBackend:
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `cd /home/rolandpg/projects/zettelforge && python3 -m pytest tests/test_embedding.py -v`
+Run: `python3 -m pytest tests/test_embedding.py -v`
 Expected: FAIL (`_get_embed_model` doesn't exist yet)
 
 - [ ] **Step 3: Rewrite vector_memory.py embedding functions**
@@ -222,12 +222,12 @@ Add `import threading` to the imports at the top of the file if not already pres
 
 - [ ] **Step 4: Run test to verify it passes**
 
-Run: `cd /home/rolandpg/projects/zettelforge && python3 -m pytest tests/test_embedding.py -v`
+Run: `python3 -m pytest tests/test_embedding.py -v`
 Expected: All 6 tests PASS
 
 - [ ] **Step 5: Run existing test suite to check regressions**
 
-Run: `cd /home/rolandpg/projects/zettelforge && python3 -m pytest tests/test_basic.py tests/test_recall_integration.py tests/test_typedb_client.py -v`
+Run: `python3 -m pytest tests/test_basic.py tests/test_recall_integration.py tests/test_typedb_client.py -v`
 Expected: All pass (embedding dimension unchanged at 768)
 
 - [ ] **Step 6: Commit**
@@ -283,7 +283,7 @@ q_emb = get_embedding(query)
 
 - [ ] **Step 4: Run tests**
 
-Run: `cd /home/rolandpg/projects/zettelforge && python3 -m pytest tests/ -v --ignore=tests/test_cti_integration.py`
+Run: `python3 -m pytest tests/ -v --ignore=tests/test_cti_integration.py`
 
 - [ ] **Step 5: Commit**
 
@@ -374,7 +374,7 @@ dependencies = [
 - [ ] **Step 5: Run full test suite**
 
 ```bash
-cd /home/rolandpg/projects/zettelforge
+cd zettelforge
 python3 -m pytest tests/test_embedding.py tests/test_basic.py tests/test_config.py tests/test_typedb_client.py -v
 ```
 
