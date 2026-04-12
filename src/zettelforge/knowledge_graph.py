@@ -360,13 +360,18 @@ _kg_lock = threading.Lock()
 
 
 def get_knowledge_graph() -> KnowledgeGraph:
-    """Get global knowledge graph instance. Tries TypeDB first, falls back to JSONL."""
+    """Get global knowledge graph instance.
+
+    Enterprise: Tries TypeDB first, falls back to JSONL.
+    Community: Always uses JSONL.
+    """
     global _kg_instance
     if _kg_instance is None:
         with _kg_lock:
             if _kg_instance is None:
+                from zettelforge.edition import is_enterprise
                 backend = os.environ.get("ZETTELFORGE_BACKEND", "typedb")
-                if backend == "typedb":
+                if backend == "typedb" and is_enterprise():
                     try:
                         from zettelforge.typedb_client import TypeDBKnowledgeGraph
                         _kg_instance = TypeDBKnowledgeGraph()
@@ -374,5 +379,11 @@ def get_knowledge_graph() -> KnowledgeGraph:
                         print(f"[KG] TypeDB unavailable ({e}), falling back to JSONL")
                         _kg_instance = KnowledgeGraph()
                 else:
+                    if backend == "typedb" and not is_enterprise():
+                        import logging
+                        logging.getLogger("zettelforge.edition").info(
+                            "[Community] TypeDB STIX ontology requires Enterprise edition "
+                            "— using JSONL graph. https://threatengram.com/enterprise"
+                        )
                     _kg_instance = KnowledgeGraph()
     return _kg_instance
