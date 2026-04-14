@@ -1,12 +1,14 @@
 """
 Structured logging for ZettelForge (GOV-012 compliant).
 
-Provides structlog-based JSON logging with OCSF-compatible timestamps,
-dual output to stdout and rotating file, and a shared get_logger interface.
+All structured/OCSF logs go to rotating files only (never stdout).
+Only WARNING+ errors are printed to stderr so operators see failures
+without OCSF event noise drowning out application output.
 """
 
 import logging
 import os
+import sys
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from typing import Optional
@@ -15,8 +17,7 @@ import structlog
 
 _configured = False
 
-# OCSF class_uids that go to audit log (auth, authz, account, config change)
-_AUDIT_OCSF_CLASSES = {"3001", "3003", "3005", "5002"}
+# OCSF event prefixes routed to the dedicated audit log
 _AUDIT_EVENT_PREFIXES = (
     "ocsf_authentication",
     "ocsf_authorization",
@@ -37,19 +38,22 @@ def configure_logging(
     level: str = "INFO",
     log_file: Optional[str] = None,
     audit_log_file: Optional[str] = None,
-    log_to_stdout: bool = True,
+    log_to_stderr: bool = True,
     max_bytes: int = 10 * 1024 * 1024,
     backup_count: int = 9,
     audit_backup_count: int = 52,
 ) -> None:
     """Configure structlog with JSON output per GOV-012.
 
+    Structured logs (including OCSF events) go to rotating log files only.
+    stderr receives WARNING+ messages so operators see errors without
+    info-level OCSF noise.
+
     Args:
-        level: Minimum log level (DEBUG, INFO, WARNING, ERROR).
+        level: Minimum log level for file output (DEBUG, INFO, WARNING, ERROR).
         log_file: Path to rotating log file. None disables file logging.
         audit_log_file: Path to audit log for security events (OCSF 3001/3003/3005/5002).
-            Rotates separately with higher backup count for ~1 year retention.
-        log_to_stdout: Whether to also log to stdout.
+        log_to_stderr: Whether to print WARNING+ to stderr.
         max_bytes: Max bytes per log file before rotation.
         backup_count: Number of rotated backup files to keep.
         audit_backup_count: Number of audit log backups (~1 year at 10MB each).
@@ -60,58 +64,80 @@ def configure_logging(
 
     numeric_level = getattr(logging, level.upper(), logging.INFO)
 
-    handlers: list[logging.Handler] = []
-
-    if log_to_stdout:
-        stdout_handler = logging.StreamHandler()
-        stdout_handler.setLevel(numeric_level)
-        handlers.append(stdout_handler)
+    # Build the list of file destinations for structlog
+    _log_files: list[object] = []
 
     if log_file:
         log_path = Path(log_file)
         log_path.parent.mkdir(parents=True, exist_ok=True)
+        _log_files.append(open(log_path, "a"))  # noqa: SIM115 — long-lived file handle
+
+    # Audit log: separate file for security-critical OCSF events
+    # (handled at the stdlib level via a filter, not structlog)
+    if audit_log_file:
+        audit_path = Path(audit_log_file)
+        audit_path.parent.mkdir(parents=True, exist_ok=True)
+
+    # stdlib logging: used only for stderr warnings and audit log routing
+    stdlib_handlers: list[logging.Handler] = []
+
+    if log_to_stderr:
+        stderr_handler = logging.StreamHandler(sys.stderr)
+        stderr_handler.setLevel(logging.WARNING)
+        stderr_handler.setFormatter(logging.Formatter("%(levelname)s: %(message)s"))
+        stdlib_handlers.append(stderr_handler)
+
+    if log_file:
         file_handler = RotatingFileHandler(
             str(log_path),
             maxBytes=max_bytes,
             backupCount=backup_count,
         )
         file_handler.setLevel(numeric_level)
-        handlers.append(file_handler)
+        file_handler.setFormatter(logging.Formatter("%(message)s"))
+        stdlib_handlers.append(file_handler)
 
-    # Audit log: separate file for security-critical OCSF events
     if audit_log_file:
-        audit_path = Path(audit_log_file)
-        audit_path.parent.mkdir(parents=True, exist_ok=True)
         audit_handler = RotatingFileHandler(
             str(audit_path),
             maxBytes=max_bytes,
             backupCount=audit_backup_count,
         )
         audit_handler.setLevel(logging.INFO)
-        # Only capture audit events (OCSF auth/authz/config/account classes)
+        audit_handler.setFormatter(logging.Formatter("%(message)s"))
         audit_handler.addFilter(_AuditFilter())
-        handlers.append(audit_handler)
+        stdlib_handlers.append(audit_handler)
 
     logging.basicConfig(
         format="%(message)s",
         level=numeric_level,
-        handlers=handlers,
+        handlers=stdlib_handlers,
         force=True,
     )
 
+    # structlog: JSON to log file (not stdout/stderr)
+    # Use stdlib integration so structlog events flow through the handlers above
     structlog.configure(
         processors=[
             structlog.contextvars.merge_contextvars,
-            structlog.processors.add_log_level,
+            structlog.stdlib.add_log_level,
             structlog.processors.TimeStamper(fmt="iso", utc=True, key="time"),
             structlog.processors.StackInfoRenderer(),
             structlog.processors.format_exc_info,
-            structlog.processors.JSONRenderer(),
+            structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
         ],
-        wrapper_class=structlog.make_filtering_bound_logger(numeric_level),
+        wrapper_class=structlog.stdlib.BoundLogger,
         context_class=dict,
-        logger_factory=structlog.PrintLoggerFactory(),
+        logger_factory=structlog.stdlib.LoggerFactory(),
+        cache_logger_on_first_use=True,
     )
+
+    # Formatter for stdlib handlers that renders structlog events as JSON
+    formatter = structlog.stdlib.ProcessorFormatter(
+        processor=structlog.processors.JSONRenderer(),
+    )
+    for handler in stdlib_handlers:
+        handler.setFormatter(formatter)
 
     _configured = True
 
