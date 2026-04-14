@@ -9,11 +9,19 @@ Enterprise edition: blended retrieval, cross-encoder reranking, report ingestion
 """
 import os
 import json
+import time
 import threading
+import uuid
 from datetime import datetime
 from pathlib import Path
 from typing import List, Optional, Dict, Any, Tuple
 
+from zettelforge.log import get_logger
+from zettelforge.ocsf import (
+    log_api_activity, log_authorization,
+    STATUS_SUCCESS, STATUS_FAILURE,
+    SEVERITY_INFO, SEVERITY_MEDIUM, SEVERITY_HIGH,
+)
 from zettelforge.note_schema import MemoryNote
 from zettelforge.memory_store import MemoryStore, get_default_data_dir
 from zettelforge.note_constructor import NoteConstructor
@@ -62,6 +70,7 @@ class MemoryManager:
         self.governance = GovernanceValidator()
         self.resolver = AliasResolver()
 
+        self._logger = get_logger("zettelforge.memory")
         self.stats = {
             'notes_created': 0,
             'retrievals': 0,
@@ -80,8 +89,24 @@ class MemoryManager:
         
         Returns: (note, status)
         """
+        request_id = uuid.uuid4().hex
+        start = time.perf_counter()
+
         # Governance validation
-        self.governance.enforce("remember", content)
+        try:
+            self.governance.enforce("remember", content)
+            log_authorization(
+                actor="system", resource="remember",
+                status_id=STATUS_SUCCESS, policy="GOV-011",
+                request_id=request_id,
+            )
+        except GovernanceViolationError:
+            log_authorization(
+                actor="system", resource="remember",
+                status_id=STATUS_FAILURE, severity_id=SEVERITY_HIGH,
+                policy="GOV-011", request_id=request_id,
+            )
+            raise
 
         # Construct note
         note = self.constructor.construct(
@@ -103,13 +128,19 @@ class MemoryManager:
             resolved_entities[etype] = [self.resolver.resolve(etype, e) for e in elist]
 
         self.indexer.add_note(note.id, resolved_entities)
-        
+
         # Phase 3: Check supersession
         self._check_supersession(note, resolved_entities)
-        
+
         # Phase 6: Knowledge Graph Update
         self._update_knowledge_graph(note, resolved_entities)
 
+        duration_ms = (time.perf_counter() - start) * 1000
+        log_api_activity(
+            operation="remember", status_id=STATUS_SUCCESS,
+            note_id=note.id, domain=domain, duration_ms=duration_ms,
+            request_id=request_id,
+        )
         return note, "created"
 
     def remember_with_extraction(
@@ -260,6 +291,8 @@ class MemoryManager:
         then combines vector similarity and graph traversal results
         with cross-encoder reranking.
         """
+        request_id = uuid.uuid4().hex
+        start = time.perf_counter()
         self.stats['retrievals'] += 1
 
         # Classify query intent
@@ -363,6 +396,13 @@ class MemoryManager:
         for note in results:
             note.increment_access()
 
+        duration_ms = (time.perf_counter() - start) * 1000
+        log_api_activity(
+            operation="recall", status_id=STATUS_SUCCESS,
+            query=query[:200], domain=domain, k=k,
+            result_count=len(results), duration_ms=duration_ms,
+            request_id=request_id,
+        )
         return results
 
     def recall_entity(
@@ -661,14 +701,27 @@ class MemoryManager:
                 f"Set THREATENGRAM_LICENSE_KEY or visit https://threatengram.com/enterprise"
             )
 
+        request_id = uuid.uuid4().hex
+        start = time.perf_counter()
+
         gen = get_synthesis_generator()
-        return gen.synthesize(
+        result = gen.synthesize(
             query=query,
             memory_manager=self,
             format=format,
             k=k,
             tier_filter=tier_filter
         )
+
+        duration_ms = (time.perf_counter() - start) * 1000
+        source_count = len(result.get("sources", []))
+        log_api_activity(
+            operation="synthesize", status_id=STATUS_SUCCESS,
+            query=query[:200], format=format,
+            source_count=source_count, duration_ms=duration_ms,
+            request_id=request_id,
+        )
+        return result
 
     def validate_synthesis(self, response: Dict) -> Tuple[bool, List[str]]:
         """
