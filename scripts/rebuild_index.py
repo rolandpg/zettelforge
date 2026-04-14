@@ -57,10 +57,23 @@ def rebuild_indexes(jsonl_path=None, lance_path=None):
         # Drop existing tables so we rebuild from scratch
         existing = store.lancedb.list_tables()
         tables = existing.tables if hasattr(existing, 'tables') else (existing if isinstance(existing, list) else [])
-        for t in tables:
-            if t.startswith('notes_'):
+        note_tables = [t for t in tables if t.startswith('notes_')]
+        dropped_tables = []
+        failed_drops = []
+        for t in note_tables:
+            try:
                 store.lancedb.drop_table(t)
-        print(f"  Dropped {len([t for t in tables if t.startswith('notes_')])} stale table(s)")
+                dropped_tables.append(t)
+            except Exception as e:
+                failed_drops.append((t, str(e)))
+        print(f"  Dropped {len(dropped_tables)} stale table(s)")
+        if failed_drops:
+            print("  Failed to drop the following stale table(s):")
+            for table_name, error in failed_drops:
+                print(f"    {table_name}: {error}")
+            raise RuntimeError(
+                "Could not drop all stale LanceDB tables; aborting reindex to avoid inconsistent state."
+            )
         
         # Count by domain
         domain_counts = {}
