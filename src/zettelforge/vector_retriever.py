@@ -4,10 +4,14 @@ A-MEM Agentic Memory Architecture V1.0
 
 Retrieves relevant notes based on embedding similarity with domain filtering.
 """
+import time
 from typing import List, Optional, Tuple, Dict
 import numpy as np
 
+from zettelforge.log import get_logger
 from zettelforge.note_schema import MemoryNote
+
+_logger = get_logger("zettelforge.retriever")
 from zettelforge.memory_store import MemoryStore
 from zettelforge.vector_memory import get_embedding
 from zettelforge.entity_indexer import EntityExtractor
@@ -75,7 +79,7 @@ class VectorRetriever:
                 note.embedding.vector = new_vector
                 return new_vector
         except Exception as e:
-            print(f"[VectorRetriever] Failed to regenerate embedding for {note.id}: {e}")
+            _logger.warning("embedding_regeneration_failed", note_id=note.id, error=str(e))
         
         return note.embedding.vector
 
@@ -165,7 +169,7 @@ class VectorRetriever:
                         all_results.append((note, 1.0 - score))
 
             except Exception as e:
-                print(f"[VectorRetriever] Error searching table {table_name}: {e}")
+                _logger.error("lancedb_search_failed", table_name=table_name, error=str(e), exc_info=True)
                 continue
 
         # Sort by similarity score (higher is better)
@@ -261,7 +265,7 @@ class VectorRetriever:
 
         # Log debug info
         if invalid_embeddings > 0:
-            print(f"[VectorRetriever] Skipped {invalid_embeddings} notes with invalid embeddings")
+            _logger.warning("invalid_embeddings_skipped", count=invalid_embeddings)
 
         scored.sort(key=lambda x: x[1], reverse=True)
         results = [note for note, sim in scored[:k]]
