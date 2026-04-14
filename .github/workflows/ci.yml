@@ -119,7 +119,8 @@ jobs:
         if [ -f CODEOWNERS ] || [ -f .github/CODEOWNERS ] || [ -f docs/CODEOWNERS ]; then
           echo "GOV-006 PASS: CODEOWNERS found"
         else
-          echo "GOV-006 WARN: No CODEOWNERS file (required by GOV-006)"
+          echo "GOV-006 FAIL: No CODEOWNERS file (required by GOV-006)"
+          exit 1
         fi
 
   build:

@@ -15,11 +15,6 @@ class GovernanceValidator:
     """
 
     def __init__(self, governance_dir: Path = None):
-        if governance_dir is None:
-            governance_dir = Path(
-                "~/.openclaw/workspace/governance-documentation-package/governance"
-            ).expanduser()
-
         self.governance_dir = governance_dir
         self.rules = self._load_governance_rules()
 
