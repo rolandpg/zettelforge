@@ -541,9 +541,9 @@ class MemoryManager:
                 triples = self.constructor.extract_causal_triples(note.content.raw, note.id)
                 if triples:
                     edges = self.constructor.store_causal_edges(triples, note.id)
-                    print(f"[Causal] Extracted {len(triples)} triples, stored {edges} edges for note {note.id}")
+                    self._logger.info("causal_triples_stored", note_id=note.id, triples=len(triples), edges=edges)
             except Exception as e:
-                print(f"[Causal] Extraction failed: {e}")
+                self._logger.warning("causal_extraction_failed", note_id=note.id, error=str(e))
 
     def mark_note_superseded(self, note_id: str, superseded_by_id: str) -> bool:
         old_note = self.store.get_note_by_id(note_id)

@@ -388,14 +388,15 @@ def get_knowledge_graph() -> KnowledgeGraph:
                         from zettelforge_enterprise.typedb_client import TypeDBKnowledgeGraph
                         _kg_instance = TypeDBKnowledgeGraph()
                     except Exception as e:
-                        print(f"[KG] TypeDB unavailable ({e}), falling back to JSONL")
+                        from zettelforge.log import get_logger as _get_logger
+                        _get_logger("zettelforge.kg").warning("typedb_unavailable_fallback_jsonl", error=str(e))
                         _kg_instance = KnowledgeGraph()
                 else:
                     if backend == "typedb" and not is_enterprise():
-                        import logging
-                        logging.getLogger("zettelforge.edition").info(
-                            "[Community] TypeDB STIX ontology requires Enterprise edition "
-                            "— using JSONL graph. https://threatengram.com/enterprise"
+                        from zettelforge.log import get_logger as _get_logger
+                        _get_logger("zettelforge.edition").info(
+                            "community_edition_jsonl_graph",
+                            detail="TypeDB STIX ontology requires Enterprise edition"
                         )
                     _kg_instance = KnowledgeGraph()
     return _kg_instance

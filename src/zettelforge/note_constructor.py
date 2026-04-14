@@ -12,6 +12,10 @@ import json
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple
 
+from zettelforge.log import get_logger
+
+_logger = get_logger("zettelforge.constructor")
+
 from zettelforge.note_schema import MemoryNote, Content, Semantic, Embedding, Metadata
 from zettelforge.vector_memory import get_embedding
 from zettelforge.knowledge_graph import get_knowledge_graph
@@ -153,7 +157,7 @@ JSON:"""
             return triples
             
         except Exception as e:
-            print(f"Causal extraction failed: {e}")
+            _logger.warning("causal_extraction_failed", error=str(e))
             return []
 
     def store_causal_edges(self, triples: List[Dict], note_id: str = "") -> int:
@@ -186,7 +190,7 @@ JSON:"""
                     )
                     edges_added += 1
                 except Exception as e:
-                    print(f"Failed to add edge {subject}-{relation}-{obj}: {e}")
+                    _logger.warning("edge_add_failed", subject=subject, relation=relation, obj=obj, error=str(e))
         
         return edges_added
 

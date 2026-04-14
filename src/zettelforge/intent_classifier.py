@@ -16,6 +16,10 @@ import re
 from enum import Enum
 from typing import Dict, List, Optional, Tuple
 
+from zettelforge.log import get_logger
+
+_logger = get_logger("zettelforge.intent")
+
 
 class QueryIntent(Enum):
     FACTUAL = "factual"          # Entity lookup (CVE, actor, tool)
@@ -127,7 +131,7 @@ Respond with just the intent name (factual, temporal, relational, exploratory, o
                         'llm_response': intent_name
                     }
         except Exception as e:
-            print(f"LLM classification failed: {e}")
+            _logger.warning("llm_classification_failed", error=str(e))
         
         return QueryIntent.EXPLORATORY, {
             'confidence': 0.5,
