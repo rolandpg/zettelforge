@@ -262,5 +262,38 @@ class TestMemoryManager:
             assert len(results) >= 0  # May be 0 if embedding not available
 
 
+    def test_remember_with_evolve_false(self):
+        """Test that evolve=False stores directly (default backward-compat path)."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            mm = MemoryManager(
+                jsonl_path=f"{tmpdir}/notes.jsonl", lance_path=f"{tmpdir}/vectordb"
+            )
+            note, status = mm.remember(
+                "APT28 targets government agencies",
+                domain="cti",
+                evolve=False,
+            )
+            assert status == "created"
+            assert note.id is not None
+            assert mm.store.count_notes() == 1
+
+    def test_remember_evolve_accepts_flag(self):
+        """Test that remember() accepts evolve parameter without error."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            mm = MemoryManager(
+                jsonl_path=f"{tmpdir}/notes.jsonl", lance_path=f"{tmpdir}/vectordb"
+            )
+            # evolve=True triggers LLM pipeline, which may fail without LLM.
+            # The key test is that the parameter is accepted and falls through
+            # to direct store when extraction yields no facts.
+            note, status = mm.remember(
+                "Test content for evolution",
+                domain="general",
+                evolve=True,
+            )
+            assert note is not None
+            assert status in ("created", "added", "updated", "corrected", "noop")
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

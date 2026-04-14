@@ -27,9 +27,12 @@ mm = MemoryManager()
 # Store intelligence -- entities are auto-extracted, graph edges are built
 mm.remember("APT28 uses Cobalt Strike for lateral movement via CVE-2024-1111", domain="cti")
 
-# New intel arrives -- LLM decides: is this new, an update, or a contradiction?
-mm.remember_with_extraction(
-    "APT28 has shifted tactics. They dropped DROPBEAR and now exploit edge devices."
+# New intel arrives -- evolve=True enables memory evolution:
+# LLM extracts facts, compares to existing notes, decides ADD/UPDATE/DELETE/NOOP
+mm.remember(
+    "APT28 has shifted tactics. They dropped DROPBEAR and now exploit edge devices.",
+    domain="cti",
+    evolve=True,   # existing APT28 note gets superseded, not duplicated
 )
 
 # Retrieve -- blends vector similarity + knowledge graph traversal
@@ -52,6 +55,14 @@ Every `remember()` call triggers a pipeline:
 1. **Entity Extraction** -- regex + LLM NER identifies CVEs, actors, tools, campaigns, people, locations, orgs (10 types)
 2. **Knowledge Graph Update** -- entities become nodes, co-occurrence becomes edges, LLM infers causal triples ("APT28 *uses* Cobalt Strike")
 3. **Vector Embedding** -- 768-dim fastembed (ONNX, in-process, 7ms/embed) stored in LanceDB
+4. **Supersession Check** -- entity overlap detection marks stale notes as superseded
+
+With `evolve=True`, the **memory evolution** pipeline adds two LLM-driven steps:
+
+- **Phase 1 (Extraction)**: LLM extracts salient facts with importance scores
+- **Phase 2 (Update Decision)**: Each fact is compared to existing memory -- LLM decides ADD, UPDATE, DELETE, or NOOP
+
+This means your agent's memory self-corrects. Stale intel gets superseded. Contradictions get resolved. Duplicates get skipped. The MCP server and web API default to `evolve=True`.
 
 Every `recall()` call blends two retrieval strategies:
 
@@ -59,12 +70,6 @@ Every `recall()` call blends two retrieval strategies:
 2. **Graph traversal** -- BFS over knowledge graph edges, scored by hop distance
 3. **Intent routing** -- query classified as factual/temporal/relational/causal/exploratory, weights adjusted per type
 4. **Cross-encoder reranking** -- ms-marco-MiniLM reorders final results by relevance
-
-The **two-phase extraction** pipeline (`remember_with_extraction`) goes further:
-- **Phase 1**: LLM extracts salient facts with importance scores
-- **Phase 2**: Each fact is compared to existing memory -- LLM decides ADD, UPDATE, DELETE, or NOOP
-
-This means your agent's memory self-corrects. Stale intel gets superseded. Contradictions get resolved. Duplicates get skipped.
 
 ## Benchmarks
 
