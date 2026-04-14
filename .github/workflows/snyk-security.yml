@@ -16,8 +16,6 @@ jobs:
       security-events: write
       actions: read
     runs-on: ubuntu-latest
-    # Only run if SNYK_TOKEN secret is configured
-    if: ${{ secrets.SNYK_TOKEN != '' }}
     steps:
       - uses: actions/checkout@v6
 
@@ -36,18 +34,30 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
+      - name: Check Snyk token
+        id: check_token
+        run: |
+          if [ -z "${{ secrets.SNYK_TOKEN }}" ]; then
+            echo "has_token=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::SNYK_TOKEN not configured — skipping security scan"
+          else
+            echo "has_token=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Snyk Code test (SAST)
+        if: steps.check_token.outputs.has_token == 'true'
         run: snyk code test --sarif > snyk-code.sarif || true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
       - name: Snyk Open Source test (SCA)
+        if: steps.check_token.outputs.has_token == 'true'
         run: snyk test --all-projects || true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
       - name: Upload SARIF to GitHub
-        if: always()
+        if: steps.check_token.outputs.has_token == 'true'
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: snyk-code.sarif

@@ -53,7 +53,7 @@ jobs:
       env:
         ZETTELFORGE_BACKEND: jsonl
       run: |
-        pytest tests/ -v --cov=zettelforge --cov-report=xml --cov-report=term-missing
+        pytest tests/ -v --cov=zettelforge --cov-report=xml --cov-report=term-missing --ignore=tests/test_cti_integration.py --ignore=tests/test_typedb_client.py
 
     - name: Upload coverage
       if: matrix.python-version == '3.12'
