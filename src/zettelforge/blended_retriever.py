@@ -5,6 +5,7 @@ Merges results from VectorRetriever and GraphRetriever using
 intent-based policy weights. Notes found by both sources get
 combined scores and rank higher.
 """
+
 from typing import Callable, Dict, List, Optional
 
 from zettelforge.graph_retriever import ScoredResult

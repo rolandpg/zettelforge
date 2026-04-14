@@ -14,6 +14,7 @@ Event classes:
     1007 - Process Activity (service start/stop, rebuild)
     3005 - Account Change (stub for multi-tenant)
 """
+
 from datetime import datetime, timezone
 from typing import Any, Optional
 
@@ -83,6 +84,7 @@ def _base_fields(
 
 # ── 6002: API Activity ──────────────────────────────────────────────────
 
+
 def log_api_activity(
     operation: str,
     status_id: int = STATUS_SUCCESS,
@@ -118,6 +120,7 @@ def log_api_activity(
 
 # ── 3001: Authentication ─────────────────────────────────────────────────
 
+
 def log_authentication(
     actor: str,
     auth_protocol: str,
@@ -149,6 +152,7 @@ def log_authentication(
 
 
 # ── 3003: Authorization ──────────────────────────────────────────────────
+
 
 def log_authorization(
     actor: str,
@@ -184,6 +188,7 @@ def log_authorization(
 
 
 # ── 5002: Configuration Change ───────────────────────────────────────────
+
 
 def log_config_change(
     resource: str,
@@ -221,6 +226,7 @@ def log_config_change(
 
 # ── 1001: File Activity ─────────────────────────────────────────────────
 
+
 def log_file_activity(
     file_path: str,
     activity: str,
@@ -256,6 +262,7 @@ def log_file_activity(
 
 # ── 1007: Process Activity ──────────────────────────────────────────────
 
+
 def log_process_activity(
     process_name: str,
     activity: str,
@@ -284,6 +291,7 @@ def log_process_activity(
 
 
 # ── 3005: Account Change (stub) ─────────────────────────────────────────
+
 
 def log_account_change(
     actor: str,

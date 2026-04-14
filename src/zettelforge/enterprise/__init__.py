@@ -12,6 +12,7 @@ def is_licensed() -> bool:
     """Check for enterprise license via the separate enterprise package."""
     try:
         from zettelforge_enterprise import is_licensed as _check
+
         return _check()
     except ImportError:
         return False

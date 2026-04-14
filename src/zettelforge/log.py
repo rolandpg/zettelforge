@@ -4,6 +4,7 @@ Structured logging for ZettelForge (GOV-012 compliant).
 Provides structlog-based JSON logging with OCSF-compatible timestamps,
 dual output to stdout and rotating file, and a shared get_logger interface.
 """
+
 import logging
 import os
 from logging.handlers import RotatingFileHandler
@@ -12,12 +13,16 @@ from typing import Optional
 
 import structlog
 
-
 _configured = False
 
 # OCSF class_uids that go to audit log (auth, authz, account, config change)
 _AUDIT_OCSF_CLASSES = {"3001", "3003", "3005", "5002"}
-_AUDIT_EVENT_PREFIXES = ("ocsf_authentication", "ocsf_authorization", "ocsf_account_change", "ocsf_config_change")
+_AUDIT_EVENT_PREFIXES = (
+    "ocsf_authentication",
+    "ocsf_authorization",
+    "ocsf_account_change",
+    "ocsf_config_change",
+)
 
 
 class _AuditFilter(logging.Filter):

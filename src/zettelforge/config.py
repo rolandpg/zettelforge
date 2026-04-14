@@ -15,6 +15,7 @@ Usage:
     cfg.embedding.url     # "http://127.0.0.1:11434"
     cfg.retrieval.default_k  # 10
 """
+
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -48,7 +49,9 @@ class EmbeddingConfig:
 @dataclass
 class LLMConfig:
     provider: str = "local"  # "local" (llama-cpp-python, in-process) or "ollama" (HTTP server)
-    model: str = "Qwen/Qwen2.5-3B-Instruct-GGUF"  # HuggingFace repo for local, model name for ollama
+    model: str = (
+        "Qwen/Qwen2.5-3B-Instruct-GGUF"  # HuggingFace repo for local, model name for ollama
+    )
     url: str = "http://localhost:11434"  # only used when provider=ollama
     temperature: float = 0.1
 
@@ -102,6 +105,7 @@ class LoggingConfig:
 @dataclass
 class EnterpriseConfig:
     """Enterprise edition settings (ignored in Community)."""
+
     license_key: str = ""
     blended_retrieval: bool = True
     cross_encoder_reranking: bool = True
@@ -144,6 +148,7 @@ def _load_yaml(path: Path) -> dict:
     """Load YAML file, return empty dict on failure."""
     try:
         import yaml
+
         with open(path) as f:
             return yaml.safe_load(f) or {}
     except ImportError:

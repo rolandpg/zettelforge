@@ -2,21 +2,25 @@
 Memory Note Schema - A-MEM Zettelkasten-inspired
 Roland Fleet Agentic Memory Architecture V1.0
 """
-from pydantic import BaseModel, Field
-from typing import Optional, List
+
 from datetime import datetime
+from typing import List, Optional
+
+from pydantic import BaseModel, Field
 
 
 class Content(BaseModel):
     """Raw content and source metadata"""
+
     raw: str
     source_type: str  # conversation | task_output | ingestion | observation
-    source_ref: str   # subagent:task_id or conversation:session_id
+    source_ref: str  # subagent:task_id or conversation:session_id
 
 
 class Semantic(BaseModel):
     """LLM-generated semantic enrichment"""
-    context: str                    # One-sentence contextual summary
+
+    context: str  # One-sentence contextual summary
     keywords: List[str] = Field(default_factory=list, max_length=7)
     tags: List[str] = Field(default_factory=list, max_length=5)
     entities: List[str] = Field(default_factory=list)
@@ -24,6 +28,7 @@ class Semantic(BaseModel):
 
 class Embedding(BaseModel):
     """Embedding vector and metadata"""
+
     model: str = "nomic-ai/nomic-embed-text-v1.5-Q"
     vector: List[float] = Field(default_factory=list)
     dimensions: int = 768
@@ -32,6 +37,7 @@ class Embedding(BaseModel):
 
 class Links(BaseModel):
     """Conceptual links to other notes"""
+
     related: List[str] = Field(default_factory=list)
     superseded_by: Optional[str] = None
     supersedes: List[str] = Field(default_factory=list)  # Notes this note supersedes
@@ -40,6 +46,7 @@ class Links(BaseModel):
 
 class Metadata(BaseModel):
     """Note lifecycle and access metadata"""
+
     access_count: int = 0
     last_accessed: Optional[str] = None
     evolution_count: int = 0
@@ -52,34 +59,32 @@ class Metadata(BaseModel):
 
 class MemoryNote(BaseModel):
     """Complete memory note schema"""
-    id: str                          # note_YYYYMMDD_HHMMSS_xxxx
+
+    id: str  # note_YYYYMMDD_HHMMSS_xxxx
     version: int = 1
-    created_at: str                   # ISO 8601 timestamp
-    updated_at: str                  # ISO 8601 timestamp
+    created_at: str  # ISO 8601 timestamp
+    updated_at: str  # ISO 8601 timestamp
     evolved_from: Optional[str] = None
     evolved_by: List[str] = Field(default_factory=list)
-    
+
     content: Content
     semantic: Semantic
     embedding: Embedding
     links: Links = Field(default_factory=Links)
     metadata: Metadata = Field(default_factory=Metadata)
-    
+
     def increment_access(self):
         """Track note access for maintenance decisions"""
         self.metadata.access_count += 1
         self.metadata.last_accessed = datetime.now().isoformat()
-    
+
     def increment_evolution(self, evolved_by_note_id: str):
         """Record evolution event"""
         self.metadata.evolution_count += 1
         self.evolved_by.append(evolved_by_note_id)
         # Confidence decay: evolved notes lose confidence
         self.metadata.confidence = min(self.metadata.confidence, 0.95)
-    
+
     def should_flag_for_review(self) -> bool:
         """Check if note should be flagged for human review"""
-        return (
-            self.metadata.confidence < 0.5 or 
-            self.metadata.evolution_count > 5
-        )
+        return self.metadata.confidence < 0.5 or self.metadata.evolution_count > 5

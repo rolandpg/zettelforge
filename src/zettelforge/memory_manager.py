@@ -7,35 +7,34 @@ Main interface for agent memory operations.
 Community edition: vector search, JSONL graph, basic entity extraction.
 Enterprise edition: blended retrieval, cross-encoder reranking, report ingestion.
 """
-import os
-import json
-import time
+
 import threading
+import time
 import uuid
 from datetime import datetime
-from pathlib import Path
-from typing import List, Optional, Dict, Any, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
-from zettelforge.log import get_logger
-from zettelforge.ocsf import (
-    log_api_activity, log_authorization,
-    STATUS_SUCCESS, STATUS_FAILURE,
-    SEVERITY_INFO, SEVERITY_MEDIUM, SEVERITY_HIGH,
-)
-from zettelforge.note_schema import MemoryNote
-from zettelforge.memory_store import MemoryStore, get_default_data_dir
-from zettelforge.note_constructor import NoteConstructor
-from zettelforge.entity_indexer import EntityIndexer
-from zettelforge.vector_retriever import VectorRetriever
 from zettelforge.alias_resolver import AliasResolver
-from zettelforge.synthesis_generator import SynthesisGenerator, get_synthesis_generator
-from zettelforge.synthesis_validator import SynthesisValidator, get_synthesis_validator
-from zettelforge.knowledge_graph import get_knowledge_graph
-from zettelforge.governance_validator import GovernanceValidator, GovernanceViolationError
-from zettelforge.fact_extractor import FactExtractor, ExtractedFact
-from zettelforge.memory_updater import MemoryUpdater, UpdateOperation
 from zettelforge.edition import is_enterprise
-
+from zettelforge.entity_indexer import EntityIndexer
+from zettelforge.fact_extractor import FactExtractor
+from zettelforge.governance_validator import GovernanceValidator, GovernanceViolationError
+from zettelforge.knowledge_graph import get_knowledge_graph
+from zettelforge.log import get_logger
+from zettelforge.memory_store import MemoryStore, get_default_data_dir
+from zettelforge.memory_updater import MemoryUpdater
+from zettelforge.note_constructor import NoteConstructor
+from zettelforge.note_schema import MemoryNote
+from zettelforge.ocsf import (
+    SEVERITY_HIGH,
+    STATUS_FAILURE,
+    STATUS_SUCCESS,
+    log_api_activity,
+    log_authorization,
+)
+from zettelforge.synthesis_generator import get_synthesis_generator
+from zettelforge.synthesis_validator import get_synthesis_validator
+from zettelforge.vector_retriever import VectorRetriever
 
 # ── Reranker singleton ───────────────────────────────────────────────────────
 _reranker = None
@@ -49,6 +48,7 @@ def _get_reranker():
         with _reranker_lock:
             if _reranker is None:
                 from fastembed.rerank.cross_encoder import TextCrossEncoder
+
                 _reranker = TextCrossEncoder("Xenova/ms-marco-MiniLM-L-6-v2")
     return _reranker
 
@@ -58,11 +58,7 @@ class MemoryManager:
     Main interface for agent memory operations.
     """
 
-    def __init__(
-        self,
-        jsonl_path: Optional[str] = None,
-        lance_path: Optional[str] = None
-    ):
+    def __init__(self, jsonl_path: Optional[str] = None, lance_path: Optional[str] = None):
         self.store = MemoryStore(jsonl_path=jsonl_path, lance_path=lance_path)
         self.constructor = NoteConstructor()
         self.indexer = EntityIndexer()
@@ -71,22 +67,18 @@ class MemoryManager:
         self.resolver = AliasResolver()
 
         self._logger = get_logger("zettelforge.memory")
-        self.stats = {
-            'notes_created': 0,
-            'retrievals': 0,
-            'entity_index_hits': 0
-        }
+        self.stats = {"notes_created": 0, "retrievals": 0, "entity_index_hits": 0}
 
     def remember(
         self,
         content: str,
         source_type: str = "conversation",
         source_ref: str = "",
-        domain: str = "general"
+        domain: str = "general",
     ) -> Tuple[MemoryNote, str]:
         """
         Create a new memory note from content.
-        
+
         Returns: (note, status)
         """
         request_id = uuid.uuid4().hex
@@ -96,29 +88,31 @@ class MemoryManager:
         try:
             self.governance.enforce("remember", content)
             log_authorization(
-                actor="system", resource="remember",
-                status_id=STATUS_SUCCESS, policy="GOV-011",
+                actor="system",
+                resource="remember",
+                status_id=STATUS_SUCCESS,
+                policy="GOV-011",
                 request_id=request_id,
             )
         except GovernanceViolationError:
             log_authorization(
-                actor="system", resource="remember",
-                status_id=STATUS_FAILURE, severity_id=SEVERITY_HIGH,
-                policy="GOV-011", request_id=request_id,
+                actor="system",
+                resource="remember",
+                status_id=STATUS_FAILURE,
+                severity_id=SEVERITY_HIGH,
+                policy="GOV-011",
+                request_id=request_id,
             )
             raise
 
         # Construct note
         note = self.constructor.construct(
-            raw_content=content,
-            source_type=source_type,
-            source_ref=source_ref,
-            domain=domain
+            raw_content=content, source_type=source_type, source_ref=source_ref, domain=domain
         )
 
         # Write to store
         self.store.write_note(note)
-        self.stats['notes_created'] += 1
+        self.stats["notes_created"] += 1
 
         # Alias resolution and indexing (regex-only for speed; LLM NER runs on recall)
         raw_entities = self.indexer.extractor.extract_all(note.content.raw, use_llm=False)
@@ -137,8 +131,11 @@ class MemoryManager:
 
         duration_ms = (time.perf_counter() - start) * 1000
         log_api_activity(
-            operation="remember", status_id=STATUS_SUCCESS,
-            note_id=note.id, domain=domain, duration_ms=duration_ms,
+            operation="remember",
+            status_id=STATUS_SUCCESS,
+            note_id=note.id,
+            domain=domain,
+            duration_ms=duration_ms,
             request_id=request_id,
         )
         return note, "created"
@@ -234,6 +231,7 @@ class MemoryManager:
         """
         if not is_enterprise():
             from zettelforge.edition import EditionError
+
             raise EditionError(
                 "'remember_report' (report ingestion with auto-chunking) requires "
                 "ThreatRecall Enterprise. Set THREATENGRAM_LICENSE_KEY or visit "
@@ -246,7 +244,7 @@ class MemoryManager:
         if len(content) <= chunk_size:
             chunks = [content]
         else:
-            sentences = content.replace('\n', ' ').split('. ')
+            sentences = content.replace("\n", " ").split(". ")
             current_chunk = ""
             for sentence in sentences:
                 if len(current_chunk) + len(sentence) + 2 > chunk_size and current_chunk:
@@ -282,7 +280,7 @@ class MemoryManager:
         domain: Optional[str] = None,
         k: int = 10,
         include_links: bool = True,
-        exclude_superseded: bool = True
+        exclude_superseded: bool = True,
     ) -> List[MemoryNote]:
         """
         Retrieve memories relevant to query using blended vector + graph retrieval.
@@ -293,10 +291,11 @@ class MemoryManager:
         """
         request_id = uuid.uuid4().hex
         start = time.perf_counter()
-        self.stats['retrievals'] += 1
+        self.stats["retrievals"] += 1
 
         # Classify query intent
         from zettelforge.intent_classifier import get_intent_classifier
+
         classifier = get_intent_classifier()
         intent, intent_meta = classifier.classify(query)
         policy = classifier.get_traversal_policy(intent)
@@ -315,13 +314,16 @@ class MemoryManager:
         # Temporal boost: for temporal queries, prioritize notes containing dates from the query
         if intent.value == "temporal":
             try:
-                import dateparser
                 import re as _re
+
+                import dateparser  # noqa: F401
+
                 # Extract date-like strings from query
                 date_patterns = _re.findall(
-                    r'\b(?:january|february|march|april|may|june|july|august|september|'
-                    r'october|november|december)\s+\d{1,2}(?:,?\s+\d{4})?|\b\d{4}\b|\b\d{1,2}/\d{1,2}/\d{2,4}\b',
-                    query, _re.IGNORECASE
+                    r"\b(?:january|february|march|april|may|june|july|august|september|"
+                    r"october|november|december)\s+\d{1,2}(?:,?\s+\d{4})?|\b\d{4}\b|\b\d{1,2}/\d{1,2}/\d{2,4}\b",
+                    query,
+                    _re.IGNORECASE,
                 )
                 if date_patterns:
                     # Boost notes containing any of the extracted dates
@@ -339,13 +341,12 @@ class MemoryManager:
                 pass
 
         # Blended retrieval: combine vector similarity with graph traversal
-        from zettelforge.graph_retriever import GraphRetriever
         from zettelforge.blended_retriever import BlendedRetriever
+        from zettelforge.graph_retriever import GraphRetriever
+
         kg = get_knowledge_graph()
         graph_retriever = GraphRetriever(kg)
-        graph_results = graph_retriever.retrieve_note_ids(
-            query_entities=resolved, max_depth=2
-        )
+        graph_results = graph_retriever.retrieve_note_ids(query_entities=resolved, max_depth=2)
 
         blender = BlendedRetriever()
         results = blender.blend(
@@ -398,24 +399,23 @@ class MemoryManager:
 
         duration_ms = (time.perf_counter() - start) * 1000
         log_api_activity(
-            operation="recall", status_id=STATUS_SUCCESS,
-            query=query[:200], domain=domain, k=k,
-            result_count=len(results), duration_ms=duration_ms,
+            operation="recall",
+            status_id=STATUS_SUCCESS,
+            query=query[:200],
+            domain=domain,
+            k=k,
+            result_count=len(results),
+            duration_ms=duration_ms,
             request_id=request_id,
         )
         return results
 
-    def recall_entity(
-        self,
-        entity_type: str,
-        entity_value: str,
-        k: int = 5
-    ) -> List[MemoryNote]:
+    def recall_entity(self, entity_type: str, entity_value: str, k: int = 5) -> List[MemoryNote]:
         """
         Fast lookup by entity type and value.
         entity_type: 'cve', 'actor', 'tool', 'campaign', 'person', 'location', 'organization', 'event', 'activity', 'temporal'
         """
-        self.stats['entity_index_hits'] += 1
+        self.stats["entity_index_hits"] += 1
         note_ids = self.indexer.get_note_ids(entity_type, entity_value.lower())
         notes = []
         for nid in note_ids[:k]:
@@ -426,43 +426,33 @@ class MemoryManager:
 
     def recall_cve(self, cve_id: str, k: int = 5) -> List[MemoryNote]:
         """Fast lookup by CVE-ID (case-insensitive)"""
-        return self.recall_entity('cve', cve_id.upper(), k)
+        return self.recall_entity("cve", cve_id.upper(), k)
 
     def recall_actor(self, actor_name: str, k: int = 5) -> List[MemoryNote]:
         """Fast lookup by threat actor name"""
-        return self.recall_entity('actor', actor_name.lower(), k)
+        return self.recall_entity("actor", actor_name.lower(), k)
 
     def recall_tool(self, tool_name: str, k: int = 5) -> List[MemoryNote]:
         """Fast lookup by tool name"""
-        return self.recall_entity('tool', tool_name.lower(), k)
+        return self.recall_entity("tool", tool_name.lower(), k)
 
     def get_context(
-        self,
-        query: str,
-        domain: Optional[str] = None,
-        k: int = 10,
-        token_budget: int = 4000
+        self, query: str, domain: Optional[str] = None, k: int = 10, token_budget: int = 4000
     ) -> str:
         """
         Get formatted memory context for agent prompt injection.
         """
         return self.retriever.get_memory_context(
-            query=query,
-            domain=domain,
-            k=k,
-            token_budget=token_budget
+            query=query, domain=domain, k=k, token_budget=token_budget
         )
 
     def get_stats(self) -> Dict:
         """Get memory system statistics"""
         return {
             **self.stats,
-            'total_notes': self.store.count_notes(),
-            'entity_index': self.indexer.stats()
+            "total_notes": self.store.count_notes(),
+            "entity_index": self.indexer.stats(),
         }
-
-
-
 
     def _update_knowledge_graph(self, note: MemoryNote, resolved_entities: Dict[str, List[str]]):
         kg = get_knowledge_graph()
@@ -470,7 +460,9 @@ class MemoryManager:
         edge_props = {"first_observed": now, "confidence": note.metadata.confidence}
 
         # 1. Add Note node
-        note_id = kg.add_node("note", note.id, {"content": note.content.raw[:200], "domain": note.metadata.domain})
+        kg.add_node(
+            "note", note.id, {"content": note.content.raw[:200], "domain": note.metadata.domain}
+        )
 
         # 2. Add Entity Nodes and MENTIONED_IN edges
         all_entities = []
@@ -536,12 +528,17 @@ class MemoryManager:
 
         # 4. LLM-based Causal Triple Extraction (MAGMA-style)
         # This is the slow path - only run for important CTI notes
-        if note.metadata.domain in ["cti", "incident", "threat_intel"] or len(note.content.raw) > 200:
+        if (
+            note.metadata.domain in ["cti", "incident", "threat_intel"]
+            or len(note.content.raw) > 200
+        ):
             try:
                 triples = self.constructor.extract_causal_triples(note.content.raw, note.id)
                 if triples:
                     edges = self.constructor.store_causal_edges(triples, note.id)
-                    self._logger.info("causal_triples_stored", note_id=note.id, triples=len(triples), edges=edges)
+                    self._logger.info(
+                        "causal_triples_stored", note_id=note.id, triples=len(triples), edges=edges
+                    )
             except Exception as e:
                 self._logger.warning("causal_extraction_failed", note_id=note.id, error=str(e))
 
@@ -557,50 +554,79 @@ class MemoryManager:
 
         self.store._rewrite_note(old_note)
         self.store._rewrite_note(new_note)
-        
+
         # Add temporal edge to knowledge graph (Task 2)
         kg = get_knowledge_graph()
         kg.add_temporal_edge(
-            from_type="note", from_value=superseded_by_id,
-            to_type="note", to_value=note_id,
+            from_type="note",
+            from_value=superseded_by_id,
+            to_type="note",
+            to_value=note_id,
             relationship="SUPERSEDES",
             timestamp=datetime.now().isoformat(),
-            properties={"supersedes": note_id}
+            properties={"supersedes": note_id},
         )
-        
+
         return True
 
-    def _check_supersession(self, new_note: MemoryNote, resolved_entities: Dict[str, List[str]]) -> Optional[MemoryNote]:
+    def _check_supersession(
+        self, new_note: MemoryNote, resolved_entities: Dict[str, List[str]]
+    ) -> Optional[MemoryNote]:
         from datetime import datetime
+
         candidates = [n for n in self.store.iterate_notes() if n.id != new_note.id]
         if not candidates:
             return None
-            
-        new_entities = {k: resolved_entities.get(k, []) for k in [
-            "cve", "actor", "tool", "campaign", "asset",
-            "person", "location", "organization", "event", "activity", "temporal",
-        ]}
+
+        new_entities = {
+            k: resolved_entities.get(k, [])
+            for k in [
+                "cve",
+                "actor",
+                "tool",
+                "campaign",
+                "asset",
+                "person",
+                "location",
+                "organization",
+                "event",
+                "activity",
+                "temporal",
+            ]
+        }
         best_match = None
         best_score = 0.0
-        
+
         for candidate in candidates:
             if candidate.links.superseded_by:
                 continue
-                
+
             cand_entities = self.indexer.extractor.extract_all(candidate.content.raw, use_llm=False)
             cand_resolved = {}
             for k, v in cand_entities.items():
                 cand_resolved[k] = [self.resolver.resolve(k, e) for e in v]
-                
+
             overlap = 0
-            for key in ["cve", "actor", "tool", "campaign", "asset", "person", "location", "organization", "event", "activity", "temporal"]:
+            for key in [
+                "cve",
+                "actor",
+                "tool",
+                "campaign",
+                "asset",
+                "person",
+                "location",
+                "organization",
+                "event",
+                "activity",
+                "temporal",
+            ]:
                 new_set = set(e.lower() for e in new_entities.get(key, []))
                 cand_set = set(e.lower() for e in cand_resolved.get(key, []))
                 overlap += len(new_set & cand_set)
-                
+
             if overlap == 0:
                 continue
-                
+
             score = float(overlap)
             try:
                 new_ts = datetime.fromisoformat(new_note.created_at)
@@ -610,16 +636,16 @@ class MemoryManager:
                     score += min(age_diff_hours / 24, 1.0)
             except Exception:
                 self._logger.debug("supersession_timestamp_parse_failed", exc_info=True)
-                
+
             if score > best_score:
                 best_score = score
                 best_match = candidate
-                
+
         # Lowered threshold slightly for benchmark tracking context
         if best_match and best_score >= 1.0:
             self.mark_note_superseded(best_match.id, new_note.id)
             return best_match
-            
+
         return None
 
     def snapshot(self) -> str:
@@ -633,7 +659,6 @@ class MemoryManager:
         self.store.export_snapshot(str(snapshot_dir))
 
         return str(snapshot_dir / f"notes_{timestamp}.jsonl")
-
 
     # === Phase 6: Knowledge Graph Retrieval ===
 
@@ -654,6 +679,7 @@ class MemoryManager:
         """
         if not is_enterprise():
             from zettelforge.edition import EditionError
+
             raise EditionError(
                 "'traverse_graph' (multi-hop BFS traversal) requires ThreatRecall Enterprise. "
                 "Use get_entity_relationships() for direct neighbors in Community edition. "
@@ -667,11 +693,7 @@ class MemoryManager:
     # === Phase 7: Synthesis Layer ===
 
     def synthesize(
-        self,
-        query: str,
-        format: str = "direct_answer",
-        k: int = 10,
-        tier_filter: List[str] = None
+        self, query: str, format: str = "direct_answer", k: int = 10, tier_filter: List[str] = None
     ) -> Dict[str, Any]:
         """
         Synthesize an answer from retrieved memories (Phase 7 RAG-as-Answer).
@@ -692,9 +714,10 @@ class MemoryManager:
         Raises:
             EditionError: If an advanced format is used in Community edition.
         """
-        _ENTERPRISE_FORMATS = {"synthesized_brief", "timeline_analysis", "relationship_map"}
-        if format in _ENTERPRISE_FORMATS and not is_enterprise():
+        _enterprise_formats = {"synthesized_brief", "timeline_analysis", "relationship_map"}
+        if format in _enterprise_formats and not is_enterprise():
             from zettelforge.edition import EditionError
+
             raise EditionError(
                 f"Synthesis format '{format}' requires ThreatRecall Enterprise. "
                 f"Community edition supports 'direct_answer'. "
@@ -706,19 +729,18 @@ class MemoryManager:
 
         gen = get_synthesis_generator()
         result = gen.synthesize(
-            query=query,
-            memory_manager=self,
-            format=format,
-            k=k,
-            tier_filter=tier_filter
+            query=query, memory_manager=self, format=format, k=k, tier_filter=tier_filter
         )
 
         duration_ms = (time.perf_counter() - start) * 1000
         source_count = len(result.get("sources", []))
         log_api_activity(
-            operation="synthesize", status_id=STATUS_SUCCESS,
-            query=query[:200], format=format,
-            source_count=source_count, duration_ms=duration_ms,
+            operation="synthesize",
+            status_id=STATUS_SUCCESS,
+            query=query[:200],
+            format=format,
+            source_count=source_count,
+            duration_ms=duration_ms,
             request_id=request_id,
         )
         return result

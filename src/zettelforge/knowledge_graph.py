@@ -16,12 +16,11 @@ Temporal Graph Extension (2026-04-06):
 
 import json
 import os
-import uuid
 import threading
-import re
+import uuid
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional
 
 
 class KnowledgeGraph:
@@ -32,7 +31,7 @@ class KnowledgeGraph:
 
     def __init__(self, data_dir: Optional[str] = None):
         from zettelforge.memory_store import get_default_data_dir
-        
+
         base_dir = Path(data_dir) if data_dir else get_default_data_dir()
         self.nodes_file = base_dir / "kg_nodes.jsonl"
         self.edges_file = base_dir / "kg_edges.jsonl"
@@ -48,7 +47,7 @@ class KnowledgeGraph:
         # Temporal edges indexed by timestamp
         self._temporal_index: Dict[str, List[Dict]] = {}  # timestamp -> temporal edges
         self._entity_timeline: Dict[str, List[Dict]] = {}  # entity_value -> timeline of states
-        
+
         self._lock = threading.RLock()
         self._load_all()
 
@@ -72,7 +71,10 @@ class KnowledgeGraph:
                             edge = json.loads(line)
                             self._cache_edge(edge)
                             # Index temporal edges
-                            if edge.get('relationship', '').startswith('TEMPORAL_') or edge.get('relationship') == 'SUPERSEDES':
+                            if (
+                                edge.get("relationship", "").startswith("TEMPORAL_")
+                                or edge.get("relationship") == "SUPERSEDES"
+                            ):
                                 self._index_temporal_edge(edge)
                         except json.JSONDecodeError:
                             continue
@@ -87,13 +89,15 @@ class KnowledgeGraph:
 
     def _cache_edge(self, edge: Dict):
         self._edges[edge["edge_id"]] = edge
-        
+
         from_id = edge["from_node_id"]
         to_id = edge["to_node_id"]
-        
+
         if from_id not in self._edges_from:
             self._edges_from[from_id] = []
-        existing = next((e for e in self._edges_from[from_id] if e["edge_id"] == edge["edge_id"]), None)
+        existing = next(
+            (e for e in self._edges_from[from_id] if e["edge_id"] == edge["edge_id"]), None
+        )
         if existing:
             existing.update(edge)
         else:
@@ -101,85 +105,87 @@ class KnowledgeGraph:
 
         if to_id not in self._edges_to:
             self._edges_to[to_id] = []
-        existing_to = next((e for e in self._edges_to[to_id] if e["edge_id"] == edge["edge_id"]), None)
+        existing_to = next(
+            (e for e in self._edges_to[to_id] if e["edge_id"] == edge["edge_id"]), None
+        )
         if existing_to:
             existing_to.update(edge)
         else:
             self._edges_to[to_id].append(edge)
 
     # ===== Temporal Indexing (Task 2) =====
-    
+
     def _parse_timestamp(self, ts_string: str) -> Optional[datetime]:
         """Parse various timestamp formats."""
         if not ts_string:
             return None
-        
+
         # ISO format
         try:
-            return datetime.fromisoformat(ts_string.replace('Z', '+00:00'))
-        except:
+            return datetime.fromisoformat(ts_string.replace("Z", "+00:00"))
+        except Exception:
             pass
-        
+
         # Common formats
-        formats = ['%Y-%m-%d', '%Y-%m-%d %H:%M:%S', '%d %b %Y', '%B %d, %Y']
+        formats = ["%Y-%m-%d", "%Y-%m-%d %H:%M:%S", "%d %b %Y", "%B %d, %Y"]
         for fmt in formats:
             try:
                 return datetime.strptime(ts_string, fmt)
-            except:
+            except Exception:
                 continue
         return None
 
     def _index_temporal_edge(self, edge: Dict):
         """Index a temporal edge in the temporal index."""
-        ts = edge.get('properties', {}).get('timestamp') or edge.get('created_at', '')
+        ts = edge.get("properties", {}).get("timestamp") or edge.get("created_at", "")
         if ts:
             if ts not in self._temporal_index:
                 self._temporal_index[ts] = []
             self._temporal_index[ts].append(edge)
-        
+
         # Also index in entity timeline
-        from_node = self._nodes.get(edge.get('from_node_id'), {})
-        to_node = self._nodes.get(edge.get('to_node_id'), {})
-        
+        from_node = self._nodes.get(edge.get("from_node_id"), {})
+        to_node = self._nodes.get(edge.get("to_node_id"), {})
+
         entity_key = f"{from_node.get('entity_type')}:{from_node.get('entity_value')}"
         if entity_key not in self._entity_timeline:
             self._entity_timeline[entity_key] = []
-        
-        self._entity_timeline[entity_key].append({
-            'edge': edge,
-            'timestamp': ts,
-            'to_entity': f"{to_node.get('entity_type')}:{to_node.get('entity_value')}"
-        })
+
+        self._entity_timeline[entity_key].append(
+            {
+                "edge": edge,
+                "timestamp": ts,
+                "to_entity": f"{to_node.get('entity_type')}:{to_node.get('entity_value')}",
+            }
+        )
 
     def add_temporal_edge(
         self,
-        from_type: str, from_value: str,
-        to_type: str, to_value: str,
+        from_type: str,
+        from_value: str,
+        to_type: str,
+        to_value: str,
         relationship: str,  # TEMPORAL_BEFORE, TEMPORAL_AFTER, SUPERSEDES
         timestamp: str,
-        properties: Optional[Dict] = None
+        properties: Optional[Dict] = None,
     ) -> str:
         """Add a temporal edge with timestamp."""
         props = properties or {}
-        props['timestamp'] = timestamp
-        
-        edge_id = self.add_edge(
-            from_type, from_value,
-            to_type, to_value,
-            relationship,
-            props
-        )
-        
+        props["timestamp"] = timestamp
+
+        edge_id = self.add_edge(from_type, from_value, to_type, to_value, relationship, props)
+
         # Index in temporal structures
         edge = self._edges.get(edge_id)
         if edge:
             self._index_temporal_edge(edge)
-        
+
         return edge_id
 
     def get_entity_timeline(self, entity_type: str, entity_value: str) -> List[Dict]:
         """Get timeline of states for an entity.  [Enterprise]"""
-        from zettelforge.edition import is_enterprise, EditionError
+        from zettelforge.edition import EditionError, is_enterprise
+
         if not is_enterprise():
             raise EditionError(
                 "'get_entity_timeline' (temporal knowledge graph queries) requires "
@@ -189,12 +195,13 @@ class KnowledgeGraph:
         timeline = self._entity_timeline.get(entity_key, [])
 
         # Sort by timestamp
-        timeline.sort(key=lambda x: x['timestamp'] or '')
+        timeline.sort(key=lambda x: x["timestamp"] or "")
         return timeline
 
     def get_changes_since(self, timestamp: str) -> List[Dict]:
         """Get all entity changes since a given timestamp.  [Enterprise]"""
-        from zettelforge.edition import is_enterprise, EditionError
+        from zettelforge.edition import EditionError, is_enterprise
+
         if not is_enterprise():
             raise EditionError(
                 "'get_changes_since' (temporal knowledge graph queries) requires "
@@ -205,21 +212,25 @@ class KnowledgeGraph:
         for ts, edges in self._temporal_index.items():
             if ts >= timestamp:
                 for edge in edges:
-                    from_node = self._nodes.get(edge.get('from_node_id'), {})
-                    to_node = self._nodes.get(edge.get('to_node_id'), {})
-                    changes.append({
-                        'timestamp': ts,
-                        'from': f"{from_node.get('entity_type')}:{from_node.get('entity_value')}",
-                        'relationship': edge.get('relationship'),
-                        'to': f"{to_node.get('entity_type')}:{to_node.get('entity_value')}"
-                    })
+                    from_node = self._nodes.get(edge.get("from_node_id"), {})
+                    to_node = self._nodes.get(edge.get("to_node_id"), {})
+                    changes.append(
+                        {
+                            "timestamp": ts,
+                            "from": f"{from_node.get('entity_type')}:{from_node.get('entity_value')}",
+                            "relationship": edge.get("relationship"),
+                            "to": f"{to_node.get('entity_type')}:{to_node.get('entity_value')}",
+                        }
+                    )
 
-        changes.sort(key=lambda x: x['timestamp'])
+        changes.sort(key=lambda x: x["timestamp"])
         return changes
 
     # ===== Core Graph Operations =====
-    
-    def add_node(self, entity_type: str, entity_value: str, properties: Optional[Dict] = None) -> str:
+
+    def add_node(
+        self, entity_type: str, entity_value: str, properties: Optional[Dict] = None
+    ) -> str:
         """Add or update a node. Returns node_id."""
         with self._lock:
             # Check if exists
@@ -240,7 +251,7 @@ class KnowledgeGraph:
                 "entity_value": entity_value,
                 "properties": properties or {},
                 "created_at": datetime.now().isoformat(),
-                "updated_at": datetime.now().isoformat()
+                "updated_at": datetime.now().isoformat(),
             }
             self._cache_node(node)
             self._append_jsonl(self.nodes_file, node)
@@ -248,10 +259,12 @@ class KnowledgeGraph:
 
     def add_edge(
         self,
-        from_type: str, from_value: str,
-        to_type: str, to_value: str,
+        from_type: str,
+        from_value: str,
+        to_type: str,
+        to_value: str,
         relationship: str,
-        properties: Optional[Dict] = None
+        properties: Optional[Dict] = None,
     ) -> str:
         """Add or update a relationship edge between two entities. Auto-creates nodes."""
         with self._lock:
@@ -281,15 +294,15 @@ class KnowledgeGraph:
                 "relationship": relationship,
                 "properties": properties or {},
                 "created_at": datetime.now().isoformat(),
-                "updated_at": datetime.now().isoformat()
+                "updated_at": datetime.now().isoformat(),
             }
             self._cache_edge(edge)
             self._append_jsonl(self.edges_file, edge)
-            
+
             # Index temporal edges
-            if relationship.startswith('TEMPORAL_') or relationship == 'SUPERSEDES':
+            if relationship.startswith("TEMPORAL_") or relationship == "SUPERSEDES":
                 self._index_temporal_edge(edge)
-            
+
             return edge_id
 
     def _append_jsonl(self, path: Path, data: Dict):
@@ -305,7 +318,9 @@ class KnowledgeGraph:
             return self._nodes.get(node_id)
         return None
 
-    def get_neighbors(self, entity_type: str, entity_value: str, relationship: Optional[str] = None) -> List[Dict]:
+    def get_neighbors(
+        self, entity_type: str, entity_value: str, relationship: Optional[str] = None
+    ) -> List[Dict]:
         """Get all adjacent nodes (outgoing edges) for a given node."""
         node_id = self._node_index.get(entity_type, {}).get(entity_value)
         if not node_id:
@@ -317,11 +332,13 @@ class KnowledgeGraph:
                 continue
             to_node = self._nodes.get(edge["to_node_id"])
             if to_node:
-                neighbors.append({
-                    "node": to_node,
-                    "relationship": edge["relationship"],
-                    "edge_properties": edge.get("properties", {})
-                })
+                neighbors.append(
+                    {
+                        "node": to_node,
+                        "relationship": edge["relationship"],
+                        "edge_properties": edge.get("properties", {}),
+                    }
+                )
         return neighbors
 
     def traverse(self, start_type: str, start_value: str, max_depth: int = 2) -> List[Dict]:
@@ -332,29 +349,30 @@ class KnowledgeGraph:
 
         visited = set()
         results = []
-        
+
         def _dfs(current_id, depth, path):
             if depth > max_depth or current_id in visited:
                 return
             visited.add(current_id)
-            
+
             for edge in self._edges_from.get(current_id, []):
                 to_id = edge["to_node_id"]
                 rel = edge["relationship"]
                 to_node = self._nodes.get(to_id)
-                if not to_node: continue
-                
+                if not to_node:
+                    continue
+
                 step = {
                     "from_type": self._nodes[current_id]["entity_type"],
                     "from_value": self._nodes[current_id]["entity_value"],
                     "relationship": rel,
                     "to_type": to_node["entity_type"],
-                    "to_value": to_node["entity_value"]
+                    "to_value": to_node["entity_value"],
                 }
                 new_path = path + [step]
                 results.append(new_path)
                 _dfs(to_id, depth + 1, new_path)
-                
+
         _dfs(start_node_id, 1, [])
         return results
 
@@ -382,21 +400,27 @@ def get_knowledge_graph() -> KnowledgeGraph:
         with _kg_lock:
             if _kg_instance is None:
                 from zettelforge.edition import is_enterprise
+
                 backend = os.environ.get("ZETTELFORGE_BACKEND", "typedb")
                 if backend == "typedb" and is_enterprise():
                     try:
                         from zettelforge_enterprise.typedb_client import TypeDBKnowledgeGraph
+
                         _kg_instance = TypeDBKnowledgeGraph()
                     except Exception as e:
                         from zettelforge.log import get_logger as _get_logger
-                        _get_logger("zettelforge.kg").warning("typedb_unavailable_fallback_jsonl", error=str(e))
+
+                        _get_logger("zettelforge.kg").warning(
+                            "typedb_unavailable_fallback_jsonl", error=str(e)
+                        )
                         _kg_instance = KnowledgeGraph()
                 else:
                     if backend == "typedb" and not is_enterprise():
                         from zettelforge.log import get_logger as _get_logger
+
                         _get_logger("zettelforge.edition").info(
                             "community_edition_jsonl_graph",
-                            detail="TypeDB STIX ontology requires Enterprise edition"
+                            detail="TypeDB STIX ontology requires Enterprise edition",
                         )
                     _kg_instance = KnowledgeGraph()
     return _kg_instance

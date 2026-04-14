@@ -8,6 +8,7 @@ Conversational Entity Extension (RFC-001):
 - New entity types: person, location, organization, event, activity, temporal
 - EntityExtractor is now the single source of truth (NoteConstructor delegates here)
 """
+
 import json
 import re
 from pathlib import Path
@@ -41,9 +42,17 @@ class EntityExtractor:
     # All entity types the system recognizes
     ENTITY_TYPES: List[str] = [
         # CTI (regex)
-        "cve", "actor", "tool", "campaign",
+        "cve",
+        "actor",
+        "tool",
+        "campaign",
         # Conversational (LLM)
-        "person", "location", "organization", "event", "activity", "temporal",
+        "person",
+        "location",
+        "organization",
+        "event",
+        "activity",
+        "temporal",
     ]
 
     # NER prompt for conversational entity extraction
@@ -58,28 +67,70 @@ class EntityExtractor:
     )
 
     # Regex for conversational person names from dialogue format "Name: text"
-    _PERSON_PATTERN = re.compile(r'(?:^|\n)\s*([A-Z][a-z]{2,15}):', re.MULTILINE)
+    _PERSON_PATTERN = re.compile(r"(?:^|\n)\s*([A-Z][a-z]{2,15}):", re.MULTILINE)
 
     # Common words that match the person pattern but aren't names
     _NAME_STOPWORDS = {
-        'the', 'and', 'but', 'for', 'not', 'you', 'all', 'can', 'had',
-        'her', 'was', 'one', 'our', 'out', 'are', 'has', 'his', 'how',
-        'note', 'text', 'content', 'context', 'session', 'conversation',
-        'hey', 'wow', 'thanks', 'yeah', 'sure', 'well', 'really',
-        'monday', 'tuesday', 'wednesday', 'thursday', 'friday',
-        'saturday', 'sunday', 'january', 'february', 'march', 'april',
-        'may', 'june', 'july', 'august', 'september', 'october',
-        'november', 'december',
+        "the",
+        "and",
+        "but",
+        "for",
+        "not",
+        "you",
+        "all",
+        "can",
+        "had",
+        "her",
+        "was",
+        "one",
+        "our",
+        "out",
+        "are",
+        "has",
+        "his",
+        "how",
+        "note",
+        "text",
+        "content",
+        "context",
+        "session",
+        "conversation",
+        "hey",
+        "wow",
+        "thanks",
+        "yeah",
+        "sure",
+        "well",
+        "really",
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+        "saturday",
+        "sunday",
+        "january",
+        "february",
+        "march",
+        "april",
+        "may",
+        "june",
+        "july",
+        "august",
+        "september",
+        "october",
+        "november",
+        "december",
     }
 
     # Regex for common locations
     _LOCATION_PATTERN = re.compile(
-        r'\b(New\s+York|Los\s+Angeles|San\s+Francisco|Chicago|London|Paris|Tokyo|'
-        r'Barcelona|Bali|Hawaii|Alaska|Banff|Nashville|Austin|Seattle|Portland|'
-        r'Denver|Miami|Boston|Atlanta|Dallas|Toronto|Vancouver|Sydney|Melbourne|'
-        r'Amsterdam|Rome|Dublin|Edinburgh|Munich|Vienna|Prague|Budapest|Lisbon|'
-        r'Madrid|Singapore|Bangkok|Seoul|Mumbai|Shanghai|Beijing|Dubai|Cairo)\b',
-        re.IGNORECASE
+        r"\b(New\s+York|Los\s+Angeles|San\s+Francisco|Chicago|London|Paris|Tokyo|"
+        r"Barcelona|Bali|Hawaii|Alaska|Banff|Nashville|Austin|Seattle|Portland|"
+        r"Denver|Miami|Boston|Atlanta|Dallas|Toronto|Vancouver|Sydney|Melbourne|"
+        r"Amsterdam|Rome|Dublin|Edinburgh|Munich|Vienna|Prague|Budapest|Lisbon|"
+        r"Madrid|Singapore|Bangkok|Seoul|Mumbai|Shanghai|Beijing|Dubai|Cairo)\b",
+        re.IGNORECASE,
     )
 
     def extract_regex(self, text: str) -> Dict[str, List[str]]:
@@ -89,9 +140,7 @@ class EntityExtractor:
         # CTI entities
         for entity_type, pattern in self.REGEX_PATTERNS.items():
             matches = pattern.findall(text)
-            results[entity_type] = list(
-                set(m.lower().replace(" ", "-") for m in matches)
-            )
+            results[entity_type] = list(set(m.lower().replace(" ", "-") for m in matches))
 
         # Person names from dialogue format
         person_matches = self._PERSON_PATTERN.findall(text)
@@ -99,11 +148,11 @@ class EntityExtractor:
         for name in person_matches:
             if name.lower() not in self._NAME_STOPWORDS and len(name) >= 3:
                 persons.add(name.lower())
-        results['person'] = list(persons)
+        results["person"] = list(persons)
 
         # Locations
         loc_matches = self._LOCATION_PATTERN.findall(text)
-        results['location'] = list(set(m.lower().replace(' ', '-') for m in loc_matches))
+        results["location"] = list(set(m.lower().replace(" ", "-") for m in loc_matches))
 
         return results
 
@@ -113,7 +162,14 @@ class EntityExtractor:
         Returns dict with person, location, organization, event, activity, temporal keys.
         Falls back to empty dicts on failure.
         """
-        conversational_types = ["person", "location", "organization", "event", "activity", "temporal"]
+        conversational_types = [
+            "person",
+            "location",
+            "organization",
+            "event",
+            "activity",
+            "temporal",
+        ]
         empty = {t: [] for t in conversational_types}
 
         if len(text.strip()) < 10:
@@ -136,9 +192,7 @@ class EntityExtractor:
             _logger.warning("llm_entity_extraction_failed", exc_info=True)
             return empty
 
-    def _parse_ner_output(
-        self, output: str, expected_types: List[str]
-    ) -> Dict[str, List[str]]:
+    def _parse_ner_output(self, output: str, expected_types: List[str]) -> Dict[str, List[str]]:
         """Parse LLM NER output into normalized entity dict."""
         empty = {t: [] for t in expected_types}
 
@@ -238,9 +292,7 @@ class EntityIndexer:
                 data = json.load(f)
                 for entity_type in self.index:
                     if entity_type in data:
-                        self.index[entity_type] = {
-                            k: set(v) for k, v in data[entity_type].items()
-                        }
+                        self.index[entity_type] = {k: set(v) for k, v in data[entity_type].items()}
             return True
         except Exception:
             _logger.warning("entity_index_save_failed", exc_info=True)
@@ -250,10 +302,7 @@ class EntityIndexer:
         """Save index to disk."""
         self.index_path.parent.mkdir(parents=True, exist_ok=True)
         with open(self.index_path, "w") as f:
-            data = {
-                k: {kk: list(vv) for kk, vv in v.items()}
-                for k, v in self.index.items()
-            }
+            data = {k: {kk: list(vv) for kk, vv in v.items()} for k, v in self.index.items()}
             json.dump(data, f, indent=2)
 
     def add_note(self, note_id: str, entities: Dict[str, List[str]]) -> None:
@@ -289,9 +338,7 @@ class EntityIndexer:
         query_lower = query.lower()
         results: Dict[str, List[str]] = {}
         for etype, entities in self.index.items():
-            matches = [
-                ev for ev in entities.keys() if ev.startswith(query_lower)
-            ][:limit]
+            matches = [ev for ev in entities.keys() if ev.startswith(query_lower)][:limit]
             if matches:
                 results[etype] = matches
         return results

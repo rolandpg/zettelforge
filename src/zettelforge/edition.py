@@ -34,9 +34,9 @@ Enterprise adds scale, analyst workflows, integrations, and operations:
   - Priority support from Threatengram
 """
 
-import os
 import enum
 import functools
+import os
 from typing import Optional
 
 
@@ -64,6 +64,7 @@ def get_edition() -> Edition:
     # Check 2: Enterprise package installed
     try:
         from zettelforge.enterprise import is_licensed  # noqa: F401
+
         if is_licensed():
             _edition = Edition.ENTERPRISE
             return _edition
@@ -119,6 +120,7 @@ def require_enterprise(feature_name: str):
     When called in Community edition, raises EditionError with a
     clear message about upgrading.
     """
+
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
@@ -128,7 +130,9 @@ def require_enterprise(feature_name: str):
                     f"Set THREATENGRAM_LICENSE_KEY or visit https://threatengram.com/enterprise"
                 )
             return func(*args, **kwargs)
+
         return wrapper
+
     return decorator
 
 
@@ -145,6 +149,7 @@ def enterprise_fallback(feature_name: str, fallback_return=None):
             if not is_enterprise():
                 if feature_name not in _warned:
                     import logging
+
                     logging.getLogger("zettelforge.edition").info(
                         "[Community] %s requires Enterprise edition — using fallback. "
                         "https://threatengram.com/enterprise",
@@ -153,12 +158,15 @@ def enterprise_fallback(feature_name: str, fallback_return=None):
                     _warned.add(feature_name)
                 return fallback_return
             return func(*args, **kwargs)
+
         return wrapper
+
     return decorator
 
 
 class EditionError(Exception):
     """Raised when an Enterprise feature is used in Community edition."""
+
     pass
 
 
