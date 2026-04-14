@@ -3,6 +3,7 @@ Basic tests for ZettelForge
 """
 import pytest
 import tempfile
+import uuid
 from datetime import datetime
 from pathlib import Path
 
@@ -130,6 +131,59 @@ class TestMemoryStore:
             retrieved = store.get_note_by_id("test_003")
             assert retrieved is not None
             assert retrieved.content.raw == "Test content"
+
+
+class TestLanceDBIndexing:
+    """Test LanceDB vector index population (issue #26)"""
+
+    def test_multiple_notes_indexed(self):
+        """Multiple notes in the same domain should all appear in the LanceDB table."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            store = MemoryStore(
+                jsonl_path=f"{tmpdir}/notes.jsonl",
+                lance_path=f"{tmpdir}/vectordb"
+            )
+            # Write 5 notes to the same domain
+            for i in range(5):
+                note = MemoryNote(
+                    id=f"lance_{i}",
+                    created_at=NOW,
+                    updated_at=NOW,
+                    content=Content(raw=f"Content {i}", source_type="test", source_ref=""),
+                    semantic=Semantic(context="ctx", keywords=["k"], tags=[], entities=[]),
+                    embedding=Embedding(vector=[float(i)] * 768),
+                    metadata=Metadata(domain="cti"),
+                )
+                store.write_note(note)
+
+            tbl = store.lancedb.open_table("notes_cti")
+            assert len(tbl) == 5, f"Expected 5 rows, got {len(tbl)}"
+
+    def test_multiple_domains(self):
+        """Notes across different domains should create separate tables."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            store = MemoryStore(
+                jsonl_path=f"{tmpdir}/notes.jsonl",
+                lance_path=f"{tmpdir}/vectordb"
+            )
+            for domain in ("cti", "general", "cti", "general", "cti"):
+                note = MemoryNote(
+                    id=f"lance_{domain}_{uuid.uuid4().hex}",
+                    created_at=NOW,
+                    updated_at=NOW,
+                    content=Content(raw=f"Content for {domain}", source_type="test", source_ref=""),
+                    semantic=Semantic(context="ctx", keywords=[], tags=[], entities=[]),
+                    embedding=Embedding(vector=[1.0] * 768),
+                    metadata=Metadata(domain=domain),
+                )
+                store.write_note(note)
+
+            result = store.lancedb.list_tables()
+            tables = result.tables if hasattr(result, 'tables') else result
+            assert "notes_cti" in tables
+            assert "notes_general" in tables
+            assert len(store.lancedb.open_table("notes_cti")) == 3
+            assert len(store.lancedb.open_table("notes_general")) == 2
 
 
 class TestEntityExtractor:

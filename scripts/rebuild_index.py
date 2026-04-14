@@ -53,15 +53,27 @@ def rebuild_indexes(jsonl_path=None, lance_path=None):
     
     # 2. Reindex LanceDB
     print("\n[2/2] Reindexing LanceDB...")
-    if store.lancedb:
-        # Clear existing tables and reindex
-        result = store.lancedb.list_tables()
-        if hasattr(result, 'tables'):
-            tables = result.tables
-        else:
-            tables = []
-        
-        print(f"  Existing tables: {tables}")
+    if store.lancedb is not None:
+        # Drop existing tables so we rebuild from scratch
+        existing = store.lancedb.list_tables()
+        tables = existing.tables if hasattr(existing, 'tables') else (existing if isinstance(existing, list) else [])
+        note_tables = [t for t in tables if t.startswith('notes_')]
+        dropped_tables = []
+        failed_drops = []
+        for t in note_tables:
+            try:
+                store.lancedb.drop_table(t)
+                dropped_tables.append(t)
+            except Exception as e:
+                failed_drops.append((t, str(e)))
+        print(f"  Dropped {len(dropped_tables)} stale table(s)")
+        if failed_drops:
+            print("  Failed to drop the following stale table(s):")
+            for table_name, error in failed_drops:
+                print(f"    {table_name}: {error}")
+            raise RuntimeError(
+                "Could not drop all stale LanceDB tables; aborting reindex to avoid inconsistent state."
+            )
         
         # Count by domain
         domain_counts = {}
@@ -85,11 +97,8 @@ def rebuild_indexes(jsonl_path=None, lance_path=None):
         print(f"  Indexed: {indexed}/{len(notes)} notes")
         
         # Verify
-        result = store.lancedb.list_tables()
-        if hasattr(result, 'tables'):
-            tables = result.tables
-        else:
-            tables = []
+        final = store.lancedb.list_tables()
+        tables = final.tables if hasattr(final, 'tables') else (final if isinstance(final, list) else [])
         print(f"  Final tables: {tables}")
         
         for t in tables:
@@ -105,7 +114,7 @@ def rebuild_indexes(jsonl_path=None, lance_path=None):
     print("="*50)
     print(f"JSONL notes: {len(notes)}")
     print(f"Entity index: {result['stats']}")
-    if store.lancedb:
+    if store.lancedb is not None:
         print(f"LanceDB: Reindexed {indexed} notes")
 
 
