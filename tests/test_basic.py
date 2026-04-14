@@ -3,6 +3,7 @@ Basic tests for ZettelForge
 """
 import pytest
 import tempfile
+import uuid
 from datetime import datetime
 from pathlib import Path
 
@@ -167,7 +168,7 @@ class TestLanceDBIndexing:
             )
             for domain in ("cti", "general", "cti", "general", "cti"):
                 note = MemoryNote(
-                    id=f"lance_{domain}_{id(domain)}",
+                    id=f"lance_{domain}_{uuid.uuid4().hex}",
                     created_at=NOW,
                     updated_at=NOW,
                     content=Content(raw=f"Content for {domain}", source_type="test", source_ref=""),
