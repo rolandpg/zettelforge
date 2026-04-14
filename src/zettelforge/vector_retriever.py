@@ -9,14 +9,14 @@ from typing import List, Optional
 
 import numpy as np
 
-from zettelforge.log import get_logger
-from zettelforge.note_schema import MemoryNote
-
-_logger = get_logger("zettelforge.retriever")
 from zettelforge.alias_resolver import AliasResolver
 from zettelforge.entity_indexer import EntityExtractor
+from zettelforge.log import get_logger
 from zettelforge.memory_store import MemoryStore
+from zettelforge.note_schema import MemoryNote
 from zettelforge.vector_memory import get_embedding
+
+_logger = get_logger("zettelforge.retriever")
 
 
 def cosine_similarity(a: List[float], b: List[float]) -> float:
