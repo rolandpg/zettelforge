@@ -87,7 +87,6 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "src/zettelforge/__init__.py" = ["F401", "E402"]  # re-exports and conditional imports
-"tests/**/*.py" = ["S101"]  # allow assert in tests
 
 [tool.ruff.format]
 quote-style = "double"
