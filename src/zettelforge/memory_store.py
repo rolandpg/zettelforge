@@ -6,11 +6,19 @@ import json
 import os
 import hashlib
 import tempfile
+import time
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Iterator
 
+from zettelforge.log import get_logger
+from zettelforge.ocsf import (
+    log_file_activity, STATUS_SUCCESS, STATUS_FAILURE,
+    SEVERITY_INFO, SEVERITY_HIGH,
+)
 from zettelforge.note_schema import MemoryNote
+
+_logger = get_logger("zettelforge.store")
 
 
 def get_default_data_dir() -> Path:
@@ -47,7 +55,7 @@ class MemoryStore:
                 import lancedb
                 self._lancedb = lancedb.connect(str(self.lance_path))
             except Exception as e:
-                print(f"LanceDB connection failed: {e}")
+                _logger.error("lancedb_connection_failed", error=str(e), exc_info=True)
                 self._lancedb = None
         return self._lancedb
     
@@ -83,7 +91,7 @@ class MemoryStore:
                         note = MemoryNote(**data)
                         self._note_cache[note.id] = note
                     except Exception:
-                        pass
+                        _logger.debug("note_cache_warmup_skipped", exc_info=True)
 
     def write_note(self, note: MemoryNote) -> None:
         """Append a note to the JSONL store"""
@@ -108,10 +116,11 @@ class MemoryStore:
     
     def _index_in_lance(self, note: MemoryNote) -> None:
         """Index note in LanceDB vector store"""
+        start = time.perf_counter()
+        table_name = f"notes_{note.metadata.domain}"
         try:
             import pyarrow as pa
 
-            table_name = f"notes_{note.metadata.domain}"
             note_data = {
                 "id": note.id,
                 "vector": note.embedding.vector if note.embedding.vector else [0.0] * 768,
@@ -136,11 +145,31 @@ class MemoryStore:
                     ("created_at", pa.string()),
                 ])
                 self.lancedb.create_table(table_name, data=[note_data], schema=schema)
+                activity = "Create"
             else:
                 tbl = self.lancedb.open_table(table_name)
                 tbl.add([note_data])
+                activity = "Update"
+
+            duration_ms = (time.perf_counter() - start) * 1000
+            log_file_activity(
+                file_path=table_name, activity=activity,
+                status_id=STATUS_SUCCESS,
+                note_id=note.id, duration_ms=duration_ms,
+            )
         except Exception as e:
-            print(f"LanceDB indexing failed: {e}")
+            duration_ms = (time.perf_counter() - start) * 1000
+            _logger.error(
+                "lancedb_indexing_failed",
+                table_name=table_name, note_id=note.id,
+                error=str(e), duration_ms=round(duration_ms, 2),
+                exc_info=True,
+            )
+            log_file_activity(
+                file_path=table_name, activity="Update",
+                status_id=STATUS_FAILURE, severity_id=SEVERITY_HIGH,
+                note_id=note.id, error=str(e), duration_ms=duration_ms,
+            )
     
     def read_all_notes(self) -> List[MemoryNote]:
         """Read all notes from JSONL store"""
@@ -155,7 +184,7 @@ class MemoryStore:
                         data = json.loads(line)
                         notes.append(MemoryNote(**data))
                     except Exception as e:
-                        print(f"Failed to parse note: {e}")
+                        _logger.warning("note_parse_failed", error=str(e))
         return notes
     
     def iterate_notes(self) -> Iterator[MemoryNote]:
@@ -173,7 +202,7 @@ class MemoryStore:
                         data = json.loads(line)
                         yield MemoryNote(**data)
                     except Exception as e:
-                        print(f"Failed to parse note: {e}")
+                        _logger.warning("note_parse_failed", error=str(e))
     
     def get_note_by_id(self, note_id: str) -> Optional[MemoryNote]:
         """Retrieve a specific note by ID. O(1) via cache."""

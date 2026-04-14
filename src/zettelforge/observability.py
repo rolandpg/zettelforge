@@ -2,15 +2,13 @@
 Observability for ZettelForge
 Implements GOV-012 (Observability & Logging Standards)
 """
-import logging
 import time
 from functools import wraps
 from typing import Callable, Any, Dict
-from datetime import datetime
 
-# Configure structured logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("zettelforge")
+from zettelforge.log import get_logger
+
+logger = get_logger("zettelforge.observability")
 
 
 class Observability:
@@ -36,7 +34,6 @@ class Observability:
         self.metrics["total_latency_ms"] += duration_ms
         
         log_data = {
-            "timestamp": datetime.now().isoformat(),
             "operation": operation,
             "duration_ms": round(duration_ms, 2),
             "success": success,
@@ -44,9 +41,9 @@ class Observability:
         }
         
         if success:
-            logger.info(f"ZettelForge operation completed: {log_data}")
+            logger.info("operation_completed", **log_data)
         else:
-            logger.error(f"ZettelForge operation failed: {log_data}")
+            logger.error("operation_failed", **log_data)
     
     def record_cache_event(self, hit: bool):
         if hit:

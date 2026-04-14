@@ -2,6 +2,10 @@ import json
 from pathlib import Path
 from typing import Dict, Optional
 
+from zettelforge.log import get_logger
+
+_logger = get_logger("zettelforge.alias_resolver")
+
 # TypeDB entity type mapping (same as typedb_client.py)
 _TYPEDB_TYPE_MAP = {
     "actor": "threat-actor",
@@ -47,7 +51,7 @@ class AliasResolver:
                             self.aliases[k] = {}
                         self.aliases[k].update(v)
             except Exception:
-                pass
+                _logger.debug("typedb_alias_lookup_failed", exc_info=True)
 
     def _try_typedb_resolve(self, entity_type: str, entity_lower: str) -> Optional[str]:
         """Query TypeDB for alias-of relation. Returns canonical name or None."""
@@ -86,6 +90,7 @@ class AliasResolver:
             self._typedb_available = True
             return None
         except Exception:
+            _logger.warning("typedb_unavailable", exc_info=True)
             self._typedb_available = False
             return None
 

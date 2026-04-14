@@ -23,6 +23,10 @@ from datetime import datetime
 from pathlib import Path
 from typing import List, Dict, Optional
 
+from zettelforge.log import get_logger
+
+_logger = get_logger("zettelforge.vector_memory")
+
 # ── Configuration ─────────────────────────────────────────────────────────────
 
 DEFAULT_EMBEDDING_MODEL = "nomic-ai/nomic-embed-text-v1.5-Q"
@@ -74,7 +78,7 @@ def get_embedding(text: str, model: Optional[str] = None) -> List[float]:
             results = list(m.embed([text]))
             return results[0].tolist()
         except Exception:
-            pass  # Fall through to HTTP fallback
+            _logger.debug("fastembed_unavailable_trying_http", exc_info=True)
 
     # HTTP fallback (Ollama or llama.cpp)
     try:
@@ -92,7 +96,7 @@ def get_embedding(text: str, model: Optional[str] = None) -> List[float]:
         if embedding and len(embedding) > 0:
             return embedding
     except Exception:
-        pass
+        _logger.warning("http_embedding_failed", exc_info=True)
 
     # Last resort: deterministic mock embedding
     h = int(hashlib.md5(text.encode()).hexdigest(), 16)
@@ -111,7 +115,7 @@ def get_embedding_batch(texts: List[str], model: Optional[str] = None) -> List[L
             results = list(m.embed(texts))
             return [r.tolist() for r in results]
         except Exception:
-            pass
+            _logger.error("embedding_init_failed", exc_info=True)
 
     return [get_embedding(text, model) for text in texts]
 

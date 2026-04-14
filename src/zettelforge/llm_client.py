@@ -12,6 +12,10 @@ import os
 import threading
 from typing import Optional
 
+from zettelforge.log import get_logger
+
+_logger = get_logger("zettelforge.llm_client")
+
 
 # ── Configuration ────────────────────────────────────────────────────────────
 
@@ -83,12 +87,13 @@ def generate(
         try:
             return _generate_local(prompt, max_tokens, temperature, system)
         except Exception:
-            pass  # Fall through to Ollama
+            _logger.debug("llamacpp_unavailable_trying_ollama", exc_info=True)
 
     # Ollama fallback
     try:
         return _generate_ollama(prompt, max_tokens, temperature)
     except Exception:
+        _logger.error("all_llm_backends_failed", exc_info=True)
         return ""
 
 

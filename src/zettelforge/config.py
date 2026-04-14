@@ -20,6 +20,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List, Optional
 
+from zettelforge.log import get_logger
+
 
 @dataclass
 class StorageConfig:
@@ -89,6 +91,12 @@ class LoggingConfig:
     level: str = "INFO"
     log_intents: bool = True
     log_causal: bool = True
+    log_file: str = ""  # Default set at runtime from data_dir
+    audit_log_file: str = ""  # Default set at runtime from data_dir
+    log_to_stdout: bool = True
+    max_bytes: int = 10 * 1024 * 1024  # 10 MB
+    backup_count: int = 9
+    audit_backup_count: int = 52  # ~1 year at 10MB per file
 
 
 @dataclass
@@ -142,6 +150,7 @@ def _load_yaml(path: Path) -> dict:
         # Fall back to basic parsing if PyYAML not installed
         return _parse_simple_yaml(path)
     except Exception:
+        get_logger("zettelforge.config").warning("yaml_config_parse_failed", exc_info=True)
         return {}
 
 

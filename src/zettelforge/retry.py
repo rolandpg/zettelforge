@@ -6,11 +6,10 @@ import time
 import random
 from functools import wraps
 from typing import Callable, TypeVar, Any
-import logging
-
+from zettelforge.log import get_logger
 from zettelforge.observability import Observability
 
-logger = logging.getLogger("zettelforge")
+logger = get_logger("zettelforge.retry")
 
 
 T = TypeVar("T")
@@ -70,7 +69,7 @@ def with_retry(config: RetryConfig = None, observability: Observability = None):
                     )
                     
                     if attempt == config.max_attempts:
-                        logger.error(f"All retry attempts failed for {func.__name__}")
+                        logger.error("all_retry_attempts_failed", func_name=func.__name__)
                         break
                         
                     time.sleep(sleep_time)
