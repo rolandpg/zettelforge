@@ -99,7 +99,7 @@ class VectorRetriever:
         Falls back to in-memory search if LanceDB unavailable.
         """
         # Try LanceDB first (IVF_FLAT index, no double-quantization)
-        if use_lancedb and self.store.lancedb:
+        if use_lancedb and self.store.lancedb is not None:
             try:
                 results = self._retrieve_via_lancedb(query, domain, k, include_links)
                 if results:
