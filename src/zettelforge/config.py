@@ -92,9 +92,11 @@ class LoggingConfig:
     log_intents: bool = True
     log_causal: bool = True
     log_file: str = ""  # Default set at runtime from data_dir
+    audit_log_file: str = ""  # Default set at runtime from data_dir
     log_to_stdout: bool = True
     max_bytes: int = 10 * 1024 * 1024  # 10 MB
     backup_count: int = 9
+    audit_backup_count: int = 52  # ~1 year at 10MB per file
 
 
 @dataclass

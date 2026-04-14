@@ -5,7 +5,6 @@ Implements GOV-012 (Observability & Logging Standards)
 import time
 from functools import wraps
 from typing import Callable, Any, Dict
-from datetime import datetime
 
 from zettelforge.log import get_logger
 
@@ -35,7 +34,6 @@ class Observability:
         self.metrics["total_latency_ms"] += duration_ms
         
         log_data = {
-            "timestamp": datetime.now().isoformat(),
             "operation": operation,
             "duration_ms": round(duration_ms, 2),
             "success": success,
