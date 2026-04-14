@@ -13,6 +13,10 @@ import re
 from pathlib import Path
 from typing import Dict, List, Optional, Set
 
+from zettelforge.log import get_logger
+
+_logger = get_logger("zettelforge.entity_indexer")
+
 
 class EntityExtractor:
     """Extract entities from text using regex (CTI) and LLM (conversational) patterns."""
@@ -129,6 +133,7 @@ class EntityExtractor:
             return self._parse_ner_output(output, conversational_types)
 
         except Exception:
+            _logger.warning("llm_entity_extraction_failed", exc_info=True)
             return empty
 
     def _parse_ner_output(
@@ -238,6 +243,7 @@ class EntityIndexer:
                         }
             return True
         except Exception:
+            _logger.warning("entity_index_save_failed", exc_info=True)
             return False
 
     def save(self) -> None:

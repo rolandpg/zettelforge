@@ -109,7 +109,7 @@ class VectorRetriever:
                 if results:
                     return results
             except Exception:
-                pass  # Fall through to in-memory
+                _logger.warning("lancedb_retrieval_failed_fallback_memory", exc_info=True)
 
         # Fallback: In-memory cosine similarity (always works)
         return self._retrieve_via_memory(query, domain, k, include_links)

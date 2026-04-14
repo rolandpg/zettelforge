@@ -9,6 +9,10 @@ import re
 from dataclasses import dataclass, field
 from typing import List, Optional
 
+from zettelforge.log import get_logger
+
+_logger = get_logger("zettelforge.fact_extractor")
+
 
 @dataclass
 class ExtractedFact:
@@ -40,6 +44,7 @@ class FactExtractor:
             raw_output = generate(prompt, max_tokens=400, temperature=0.1)
             return self._parse_extraction_response(raw_output)
         except Exception:
+            _logger.warning("llm_fact_extraction_failed", exc_info=True)
             return [ExtractedFact(text=content[:500], importance=5)]
 
     def _build_prompt(self, content: str, context: str) -> str:

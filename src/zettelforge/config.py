@@ -20,6 +20,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List, Optional
 
+from zettelforge.log import get_logger
+
 
 @dataclass
 class StorageConfig:
@@ -146,6 +148,7 @@ def _load_yaml(path: Path) -> dict:
         # Fall back to basic parsing if PyYAML not installed
         return _parse_simple_yaml(path)
     except Exception:
+        get_logger("zettelforge.config").warning("yaml_config_parse_failed", exc_info=True)
         return {}
 
 

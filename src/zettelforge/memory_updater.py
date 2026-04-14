@@ -9,7 +9,10 @@ import re
 from enum import Enum
 from typing import List, Optional, Tuple
 
+from zettelforge.log import get_logger
 from zettelforge.note_schema import MemoryNote
+
+_logger = get_logger("zettelforge.memory_updater")
 
 
 class UpdateOperation(Enum):
@@ -41,6 +44,7 @@ class MemoryUpdater:
             raw = generate(prompt, max_tokens=150, temperature=0.1)
             return self._parse_operation_response(raw)
         except Exception:
+            _logger.warning("llm_update_decision_failed_defaulting_add", exc_info=True)
             return UpdateOperation.ADD
 
     def apply(

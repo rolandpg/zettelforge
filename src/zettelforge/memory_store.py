@@ -91,7 +91,7 @@ class MemoryStore:
                         note = MemoryNote(**data)
                         self._note_cache[note.id] = note
                     except Exception:
-                        pass
+                        _logger.debug("note_cache_warmup_skipped", exc_info=True)
 
     def write_note(self, note: MemoryNote) -> None:
         """Append a note to the JSONL store"""

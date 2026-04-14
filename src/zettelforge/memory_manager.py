@@ -383,7 +383,7 @@ class MemoryManager:
                     paired = sorted(zip(scores, results), key=lambda x: x[0], reverse=True)
                     results = [note for _, note in paired]
             except Exception:
-                pass  # Reranking is optional — fall back to original order
+                self._logger.warning("reranking_failed_using_original_order", exc_info=True)
 
         # Filter superseded notes
         if exclude_superseded:
@@ -609,7 +609,7 @@ class MemoryManager:
                 if age_diff_hours > 0:
                     score += min(age_diff_hours / 24, 1.0)
             except Exception:
-                pass
+                self._logger.debug("supersession_timestamp_parse_failed", exc_info=True)
                 
             if score > best_score:
                 best_score = score
