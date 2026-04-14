@@ -6,16 +6,11 @@ Implements LLM-based answer synthesis using retrieved notes.
 Supports multiple response formats: direct_answer, synthesized_brief, timeline_analysis, relationship_map.
 """
 
+import hashlib
 import json
 import threading
 import time
-import hashlib
-from datetime import datetime
-from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Any
-
-from zettelforge.vector_retriever import VectorRetriever
-from zettelforge.memory_store import MemoryStore
+from typing import Dict, List, Optional
 
 
 class SynthesisGenerator:
@@ -28,7 +23,7 @@ class SynthesisGenerator:
         self,
         llm_model: str = "qwen2.5:3b",
         max_context_tokens: int = 3000,
-        confidence_threshold: float = 0.4
+        confidence_threshold: float = 0.4,
     ):
         self.llm_model = llm_model
         self.max_context_tokens = max_context_tokens
@@ -46,7 +41,7 @@ class SynthesisGenerator:
         memory_manager=None,
         format: str = "direct_answer",
         k: int = 10,
-        tier_filter: List[str] = None
+        tier_filter: List[str] = None,
     ) -> Dict:
         """
         Synthesize an answer from retrieved notes.
@@ -88,33 +83,34 @@ class SynthesisGenerator:
                 "latency_ms": latency_ms,
                 "confidence_threshold": self.confidence_threshold,
                 "sources_count": len(notes),
-                "tier_filter": tier_filter
+                "tier_filter": tier_filter,
             },
-            "sources": [self._note_to_source(n) for n in notes[:10]]
+            "sources": [self._note_to_source(n) for n in notes[:10]],
         }
 
     def _retrieve_notes(self, query: str, memory_manager, k: int, tier_filter: List[str]):
         """Retrieve notes via hybrid search (entity + vector)."""
         if memory_manager is None:
             return []
-        
+
         notes = []
-        
+
         # First: Try entity-based recall (this path WORKS)
         from zettelforge.entity_indexer import EntityExtractor
+
         extractor = EntityExtractor()
         entities = extractor.extract_all(query)
-        
+
         for etype, elist in entities.items():
             for evalue in elist:
                 entity_notes = memory_manager.recall_entity(etype, evalue, k=5)
                 notes.extend(entity_notes)
-        
+
         # Second: Fall back to vector recall for semantic similarity
         if len(notes) < k:
             vector_results = memory_manager.recall(query, k=k * 2)
             notes.extend(vector_results)
-        
+
         # Deduplicate and filter by tier
         seen_ids = set()
         unique_notes = []
@@ -122,7 +118,7 @@ class SynthesisGenerator:
             if n.id not in seen_ids and n.metadata.tier in tier_filter:
                 seen_ids.add(n.id)
                 unique_notes.append(n)
-        
+
         return unique_notes[:k]
 
     def _build_context(self, notes: List) -> str:
@@ -143,11 +139,12 @@ class SynthesisGenerator:
 
         try:
             from zettelforge.llm_client import generate
+
             raw = generate(full_prompt, max_tokens=800, temperature=0.1, system=system_prompt)
             return json.loads(raw)
         except (json.JSONDecodeError, Exception):
             return self._fallback_synthesis(query, format)
-        
+
         return self._fallback_synthesis(query, format)
 
     def _get_system_prompt(self, format: str) -> str:
@@ -155,7 +152,7 @@ class SynthesisGenerator:
             "direct_answer": "Provide a concise, factual answer based on context. Include confidence and cite sources.",
             "synthesized_brief": "Create a comprehensive brief summarizing key themes and evidence.",
             "timeline_analysis": "Build a chronological timeline of events from context.",
-            "relationship_map": "Map relationships between entities from context."
+            "relationship_map": "Map relationships between entities from context.",
         }
         return prompts.get(format, prompts["direct_answer"])
 
@@ -166,40 +163,71 @@ class SynthesisGenerator:
                 "properties": {
                     "answer": {"type": "string"},
                     "confidence": {"type": "number"},
-                    "sources": {"type": "array", "items": {"type": "string"}}
+                    "sources": {"type": "array", "items": {"type": "string"}},
                 },
-                "required": ["answer", "confidence", "sources"]
+                "required": ["answer", "confidence", "sources"],
             },
             "synthesized_brief": {
                 "type": "object",
                 "properties": {
                     "summary": {"type": "string"},
-                    "themes": {"type": "array", "items": {"type": "object", "properties": {"name": {"type": "string"}, "evidence": {"type": "string"}}}},
-                    "confidence": {"type": "number"}
+                    "themes": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "name": {"type": "string"},
+                                "evidence": {"type": "string"},
+                            },
+                        },
+                    },
+                    "confidence": {"type": "number"},
                 },
-                "required": ["summary", "themes", "confidence"]
+                "required": ["summary", "themes", "confidence"],
             },
             "timeline_analysis": {
                 "type": "object",
                 "properties": {
-                    "timeline": {"type": "array", "items": {"type": "object", "properties": {"date": {"type": "string"}, "event": {"type": "string"}}}},
-                    "confidence": {"type": "number"}
+                    "timeline": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {"date": {"type": "string"}, "event": {"type": "string"}},
+                        },
+                    },
+                    "confidence": {"type": "number"},
                 },
-                "required": ["timeline", "confidence"]
+                "required": ["timeline", "confidence"],
             },
             "relationship_map": {
                 "type": "object",
                 "properties": {
-                    "entities": {"type": "array", "items": {"type": "object", "properties": {"name": {"type": "string"}, "type": {"type": "string"}}}},
-                    "relationships": {"type": "array", "items": {"type": "object", "properties": {"from": {"type": "string"}, "to": {"type": "string"}, "type": {"type": "string"}}}}
+                    "entities": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {"name": {"type": "string"}, "type": {"type": "string"}},
+                        },
+                    },
+                    "relationships": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "from": {"type": "string"},
+                                "to": {"type": "string"},
+                                "type": {"type": "string"},
+                            },
+                        },
+                    },
                 },
-                "required": ["entities", "relationships"]
-            }
+                "required": ["entities", "relationships"],
+            },
         }
         return formats.get(format, formats["direct_answer"])
 
     def _build_prompt(self, query: str, context: str, format: str) -> str:
-        return f"""Analyze the following context and provide a {format.replace('_', ' ')}.
+        return f"""Analyze the following context and provide a {format.replace("_", " ")}.
 
 QUERY:
 {query}
@@ -211,9 +239,17 @@ Format as valid JSON matching the specified schema."""
 
     def _fallback_synthesis(self, query: str, format: str) -> Dict:
         if format == "direct_answer":
-            return {"answer": f"No specific answer found for: {query[:50]}...", "confidence": 0.0, "sources": []}
+            return {
+                "answer": f"No specific answer found for: {query[:50]}...",
+                "confidence": 0.0,
+                "sources": [],
+            }
         elif format == "synthesized_brief":
-            return {"summary": f"No brief available for: {query[:50]}...", "themes": [], "confidence": 0.0}
+            return {
+                "summary": f"No brief available for: {query[:50]}...",
+                "themes": [],
+                "confidence": 0.0,
+            }
         else:
             return {"error": "No data available"}
 
@@ -222,7 +258,7 @@ Format as valid JSON matching the specified schema."""
             "note_id": note.id,
             "relevance_score": min(1.0, note.metadata.confidence),
             "quote": note.content.raw[:200] if note.content.raw else "",
-            "tier": note.metadata.tier
+            "tier": note.metadata.tier,
         }
 
     def _estimate_tokens(self, text: str) -> int:

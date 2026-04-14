@@ -4,7 +4,7 @@ A-MEM Agentic Memory Architecture V1.0
 """
 
 import threading
-from typing import Dict, List, Optional, Tuple, Any
+from typing import Dict, List, Optional, Tuple
 
 
 class SynthesisValidator:
@@ -16,7 +16,7 @@ class SynthesisValidator:
         min_sources: int = 1,
         max_sources: int = 20,
         max_summary_length: int = 500,
-        max_answer_length: int = 200
+        max_answer_length: int = 200,
     ):
         self.min_confidence = min_confidence
         self.min_sources = min_sources
@@ -66,9 +66,9 @@ class SynthesisValidator:
             "components": {
                 "confidence": round(confidence_score, 3),
                 "sources": round(source_score, 3),
-                "completeness": round(completeness, 3)
+                "completeness": round(completeness, 3),
             },
-            "quality": "EXCELLENT" if score >= 0.8 else "GOOD" if score >= 0.5 else "NEEDS_WORK"
+            "quality": "EXCELLENT" if score >= 0.8 else "GOOD" if score >= 0.5 else "NEEDS_WORK",
         }
 
 

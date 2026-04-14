@@ -4,10 +4,11 @@ Fact Extractor - Phase 1 of Mem0-style two-phase pipeline.
 Extracts salient facts from raw content using LLM, with importance scoring.
 Only the important facts proceed to storage, reducing redundancy and noise.
 """
+
 import json
 import re
-from dataclasses import dataclass, field
-from typing import List, Optional
+from dataclasses import dataclass
+from typing import List
 
 from zettelforge.log import get_logger
 
@@ -17,6 +18,7 @@ _logger = get_logger("zettelforge.fact_extractor")
 @dataclass
 class ExtractedFact:
     """A single extracted fact with importance score."""
+
     text: str
     importance: int = 5  # 1-10 scale
 
@@ -41,6 +43,7 @@ class FactExtractor:
 
         try:
             from zettelforge.llm_client import generate
+
             raw_output = generate(prompt, max_tokens=400, temperature=0.1)
             return self._parse_extraction_response(raw_output)
         except Exception:

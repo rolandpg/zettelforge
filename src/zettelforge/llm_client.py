@@ -8,6 +8,7 @@ Usage:
     from zettelforge.llm_client import generate
     text = generate("Extract facts from: APT28 uses Cobalt Strike", max_tokens=400)
 """
+
 import os
 import threading
 from typing import Optional
@@ -51,6 +52,7 @@ def _get_local_llm():
         with _llm_lock:
             if _llm is None:
                 from llama_cpp import Llama
+
                 _llm = Llama.from_pretrained(
                     repo_id=get_llm_model(),
                     filename=os.environ.get("ZETTELFORGE_LLM_FILENAME", DEFAULT_LLM_FILENAME),
@@ -62,6 +64,7 @@ def _get_local_llm():
 
 
 # ── Public API ───────────────────────────────────────────────────────────────
+
 
 def generate(
     prompt: str,
@@ -116,6 +119,7 @@ def _generate_local(prompt: str, max_tokens: int, temperature: float, system: Op
 def _generate_ollama(prompt: str, max_tokens: int, temperature: float) -> str:
     """Generate via Ollama HTTP API."""
     import ollama
+
     model = os.environ.get("ZETTELFORGE_OLLAMA_MODEL", DEFAULT_OLLAMA_MODEL)
     response = ollama.generate(
         model=model,

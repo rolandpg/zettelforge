@@ -25,35 +25,34 @@ Enterprise edition (ThreatRecall by Threatengram) adds:
     See https://threatengram.com/enterprise
 """
 
+from zettelforge.blended_retriever import BlendedRetriever
 from zettelforge.edition import (
     Edition,
-    get_edition,
-    is_enterprise,
-    is_community,
-    edition_name,
     EditionError,
+    edition_name,
+    get_edition,
+    is_community,
+    is_enterprise,
 )
-from zettelforge.memory_manager import MemoryManager, get_memory_manager
-from zettelforge.note_schema import MemoryNote
-from zettelforge.vector_retriever import VectorRetriever
-from zettelforge.synthesis_generator import SynthesisGenerator, get_synthesis_generator
-from zettelforge.synthesis_validator import SynthesisValidator, get_synthesis_validator
-
+from zettelforge.fact_extractor import ExtractedFact, FactExtractor
+from zettelforge.graph_retriever import GraphRetriever, ScoredResult
+from zettelforge.intent_classifier import IntentClassifier, QueryIntent, get_intent_classifier
 from zettelforge.knowledge_graph import KnowledgeGraph, get_knowledge_graph
+from zettelforge.memory_manager import MemoryManager, get_memory_manager
+from zettelforge.memory_updater import MemoryUpdater, UpdateOperation
+from zettelforge.note_constructor import NoteConstructor
+from zettelforge.note_schema import MemoryNote
 from zettelforge.ontology import (
-    TypedEntityStore,
+    ENTITY_TYPES,
+    RELATION_TYPES,
     OntologyValidator,
+    TypedEntityStore,
     get_ontology_store,
     get_ontology_validator,
-    ENTITY_TYPES,
-    RELATION_TYPES
 )
-from zettelforge.intent_classifier import IntentClassifier, get_intent_classifier, QueryIntent
-from zettelforge.note_constructor import NoteConstructor
-from zettelforge.fact_extractor import FactExtractor, ExtractedFact
-from zettelforge.memory_updater import MemoryUpdater, UpdateOperation
-from zettelforge.graph_retriever import GraphRetriever, ScoredResult
-from zettelforge.blended_retriever import BlendedRetriever
+from zettelforge.synthesis_generator import SynthesisGenerator, get_synthesis_generator
+from zettelforge.synthesis_validator import SynthesisValidator, get_synthesis_validator
+from zettelforge.vector_retriever import VectorRetriever
 
 __version__ = "2.1.0"
 __all__ = [
@@ -107,11 +106,18 @@ __all__ = [
 if is_enterprise():
     try:
         from zettelforge_enterprise import (
-            get_typedb_client,
-            get_sigma_generator as _get_sigma_gen,
-            get_cti_connector as _get_cti_conn,
             get_context_injector as _get_ctx_inj,
         )
+        from zettelforge_enterprise import (
+            get_cti_connector as _get_cti_conn,
+        )
+        from zettelforge_enterprise import (
+            get_sigma_generator as _get_sigma_gen,
+        )
+        from zettelforge_enterprise import (
+            get_typedb_client,
+        )
+
         __all__ += [
             "get_typedb_client",
         ]

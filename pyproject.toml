@@ -56,9 +56,8 @@ dev = [
     "pytest>=7.0.0",
     "pytest-asyncio>=0.21.0",
     "pytest-cov>=4.0.0",
-    "black>=23.0.0",
     "mypy>=1.0.0",
-    "ruff>=0.1.0",
+    "ruff>=0.4.0",
 ]
 
 [project.urls]
@@ -70,17 +69,28 @@ Issues = "https://github.com/rolandpg/zettelforge/issues"
 [tool.hatch.build.targets.wheel]
 packages = ["src/zettelforge"]
 
-[tool.black]
-line-length = 100
-target-version = ['py310']
-
 [tool.mypy]
 python_version = "3.10"
 warn_return_any = true
 warn_unused_configs = true
-disallow_untyped_defs = true
+ignore_missing_imports = true
 
 [tool.ruff]
 line-length = 100
-select = ["E", "F", "I", "N", "W"]
-ignore = ["E501"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "N"]
+ignore = [
+    "E501",   # line too long — handled by formatter
+    "E402",   # module-level import not at top — needed for conditional imports
+]
+
+[tool.ruff.lint.per-file-ignores]
+"src/zettelforge/__init__.py" = ["F401", "E402"]  # re-exports and conditional imports
+"tests/**/*.py" = ["S101"]  # allow assert in tests
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

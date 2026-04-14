@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Optional
 
 from zettelforge.log import get_logger
 
@@ -20,8 +20,10 @@ class AliasResolver:
     Tries TypeDB alias-of relations first (if available),
     falls back to local JSON/hardcoded aliases.
     """
+
     def __init__(self, alias_file: Optional[str] = None):
         from zettelforge.memory_store import get_default_data_dir
+
         if alias_file is None:
             alias_file = get_default_data_dir() / "entity_aliases.json"
         self.alias_file = Path(alias_file)
@@ -36,7 +38,7 @@ class AliasResolver:
                 "cozy bear": "apt29",
                 "cozy-bear": "apt29",
             },
-            "tool": {}
+            "tool": {},
         }
         self._typedb_available = None
         self.load()
@@ -64,20 +66,24 @@ class AliasResolver:
 
         try:
             from zettelforge.knowledge_graph import get_knowledge_graph
+
             kg = get_knowledge_graph()
 
             # Only use TypeDB if it's the TypeDB client
-            if not hasattr(kg, '_driver') or kg._driver is None:
+            if not hasattr(kg, "_driver") or kg._driver is None:
                 self._typedb_available = False
                 return None
 
             from typedb.driver import TransactionType
+
             tx = kg._driver.transaction(kg.database, TransactionType.READ)
-            rows = list(tx.query(
-                f'match $a isa {typedb_type}, has name "{entity_lower}"; '
-                f'(canonical: $c, aliased: $a) isa alias-of; '
-                f'$c has name $n; select $n;'
-            ).resolve())
+            rows = list(
+                tx.query(
+                    f'match $a isa {typedb_type}, has name "{entity_lower}"; '
+                    f"(canonical: $c, aliased: $a) isa alias-of; "
+                    f"$c has name $n; select $n;"
+                ).resolve()
+            )
             tx.close()
 
             if rows:
@@ -95,7 +101,7 @@ class AliasResolver:
             return None
 
     def resolve(self, entity_type: str, entity: str) -> str:
-        entity_lower = entity.lower().replace('-', ' ')
+        entity_lower = entity.lower().replace("-", " ")
 
         # Try TypeDB first
         canonical = self._try_typedb_resolve(entity_type, entity_lower)

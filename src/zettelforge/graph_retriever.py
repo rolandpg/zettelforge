@@ -5,8 +5,9 @@ Traverses the KG starting from query entities, collects note IDs
 reachable within max_depth hops, and scores them by proximity.
 Score formula: 1 / (1 + hop_distance)
 """
+
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Set
+from typing import Dict, List, Set
 
 from zettelforge.knowledge_graph import KnowledgeGraph
 
@@ -14,6 +15,7 @@ from zettelforge.knowledge_graph import KnowledgeGraph
 @dataclass
 class ScoredResult:
     """A note found via graph traversal with its score and path."""
+
     note_id: str
     score: float
     hops: int
@@ -74,7 +76,10 @@ class GraphRetriever:
                 score = 1.0 / (1.0 + depth)
                 if note_id not in best or score > best[note_id].score:
                     best[note_id] = ScoredResult(
-                        note_id=note_id, score=score, hops=depth, path=path,
+                        note_id=note_id,
+                        score=score,
+                        hops=depth,
+                        path=path,
                     )
 
             if depth >= max_depth:

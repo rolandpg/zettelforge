@@ -4,11 +4,9 @@ Governance Validator for ZettelForge
 Automatically validates operations against our governance documentation
 (GOV-003, GOV-007, GOV-011, etc.).
 """
-from pathlib import Path
-from typing import Dict, Any, List, Tuple
-import json
 
-from zettelforge.note_schema import MemoryNote
+from pathlib import Path
+from typing import Any, Dict, List, Tuple
 
 
 class GovernanceValidator:
@@ -18,8 +16,10 @@ class GovernanceValidator:
 
     def __init__(self, governance_dir: Path = None):
         if governance_dir is None:
-            governance_dir = Path("~/.openclaw/workspace/governance-documentation-package/governance").expanduser()
-        
+            governance_dir = Path(
+                "~/.openclaw/workspace/governance-documentation-package/governance"
+            ).expanduser()
+
         self.governance_dir = governance_dir
         self.rules = self._load_governance_rules()
 
@@ -29,22 +29,22 @@ class GovernanceValidator:
             "GOV-003": {"python_standards": True, "type_hints": True, "naming": True},
             "GOV-007": {"testing": True, "coverage": 0.8},
             "GOV-011": {"security": True, "input_validation": True, "no_hardcoded_secrets": True},
-            "GOV-012": {"observability": True, "structured_logging": True}
+            "GOV-012": {"observability": True, "structured_logging": True},
         }
         return rules
 
     def validate_operation(self, operation: str, data: Any = None) -> Tuple[bool, List[str]]:
         """
         Validate an operation against governance rules.
-        
+
         Returns: (is_valid, list_of_violations)
         """
         violations = []
-        
+
         if operation == "remember":
-            if not isinstance(data, str) and not hasattr(data, 'content'):
+            if not isinstance(data, str) and not hasattr(data, "content"):
                 violations.append("GOV-011: Input validation required for memory storage")
-            
+
         if operation in ("remember", "synthesize"):
             if "GOV-012" in self.rules:
                 # Should log operation
@@ -62,4 +62,5 @@ class GovernanceValidator:
 
 class GovernanceViolationError(Exception):
     """Raised when a governance rule is violated."""
+
     pass
