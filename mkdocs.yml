@@ -1,0 +1,66 @@
+site_name: ThreatRecall Documentation
+site_url: https://docs.threatrecall.ai
+site_description: "Documentation for ThreatRecall — agentic memory for cyber threat intelligence"
+repo_url: https://github.com/rolandpg/zettelforge
+repo_name: rolandpg/zettelforge
+
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: custom
+    accent: custom
+  font:
+    text: Inter
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - search.highlight
+    - content.code.copy
+  logo: assets/logo.svg
+  favicon: assets/favicon.svg
+
+extra_css:
+  - stylesheets/extra.css
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Quickstart: tutorials/01-quickstart.md
+    - First CTI Report: tutorials/02-first-cti-report.md
+  - How-To Guides:
+    - Store Threat Actor: how-to/store-threat-actor.md
+    - Configure LanceDB: how-to/configure-lancedb.md
+    - Configure TypeDB: how-to/configure-typedb.md
+    - Configure OpenCTI: how-to/configure-opencti.md
+    - Resolve Aliases: how-to/resolve-aliases.md
+    - Ingest News Report: how-to/ingest-news-report.md
+    - Run Temporal Query: how-to/run-temporal-query.md
+    - Query APT Tools: how-to/query-apt-tools.md
+    - Integrate Nexus Agent: how-to/integrate-nexus-agent.md
+  - Concepts:
+    - Architecture: explanation/architecture.md
+    - Two-Phase Pipeline: explanation/two-phase-pipeline.md
+    - STIX in ZettelForge: explanation/stix-in-zettelforge.md
+    - Epistemic Tiers: explanation/epistemic-tiers.md
+    - Zettelkasten Philosophy: explanation/zettelkasten-philosophy.md
+  - Reference:
+    - Memory Manager API: reference/memory-manager-api.md
+    - Configuration: reference/configuration.md
+    - Retrieval Policies: reference/retrieval-policies.md
+    - STIX Schema: reference/stix-schema.md
+    - Governance Controls: reference/governance-controls.md
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - admonition
+  - pymdownx.details
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true

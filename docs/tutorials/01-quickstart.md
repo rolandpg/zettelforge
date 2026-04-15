@@ -209,9 +209,9 @@ You now have a working ThreatRecall instance with:
 
 ## Next Steps
 
-- [How-To: Ingest a Threat Report](../how-to/) -- Use `remember_report()` to chunk and store long-form CTI documents.
-- [Reference: Python API](../reference/) -- Full documentation for `MemoryManager`, `BlendedRetriever`, and all public classes.
-- [Explanation: Two-Phase Extraction Pipeline](../explanation/) -- Understand why FactExtractor + MemoryUpdater prevents duplicate and stale notes.
+- [How-To: Ingest a Threat Report](../how-to/ingest-news-report.md) -- Use `remember_report()` to chunk and store long-form CTI documents.
+- [Reference: Python API](../reference/memory-manager-api.md) -- Full documentation for `MemoryManager`, `BlendedRetriever`, and all public classes.
+- [Explanation: Two-Phase Extraction Pipeline](../explanation/two-phase-pipeline.md) -- Understand why FactExtractor + MemoryUpdater prevents duplicate and stale notes.
 
 ---
 
