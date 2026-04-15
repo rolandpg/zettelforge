@@ -111,7 +111,7 @@ class EmbeddingConfig:
 | `embedding.provider` | `str` | `fastembed` | `ZETTELFORGE_EMBEDDING_PROVIDER` | Embedding provider. Values: `fastembed` (in-process ONNX, default), `ollama` (requires Ollama running at `embedding.url`). |
 | `embedding.url` | `str` | `http://127.0.0.1:11434` | `AMEM_EMBEDDING_URL` | Embedding server URL. Only used when `embedding.provider` is `ollama`. |
 | `embedding.model` | `str` | `nomic-embed-text-v1.5-Q` | `AMEM_EMBEDDING_MODEL` | Embedding model name. Default for fastembed: `nomic-embed-text-v1.5-Q` (768-dim, ~130 MB, ~7ms/embed). |
-| `embedding.dimensions` | `int` | `768` | -- | Vector dimensionality. Must match the model output. |
+| `embedding.dimensions` | `int` | `768` | `ZETTELFORGE_EMBEDDING_DIM` | Vector dimensionality. **Must match the model output.** If you change the embedding model, update this value and run `rebuild_index.py` to re-embed all notes. Common values: 768 (nomic), 1024 (mxbai), 1536 (OpenAI), 4096 (qwen3). |
 
 ---
 

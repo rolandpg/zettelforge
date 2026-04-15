@@ -116,7 +116,10 @@ def get_embedding(text: str, model: Optional[str] = None) -> List[float]:
     import random
 
     random.seed(h)
-    return [random.random() for _ in range(768)]
+    from zettelforge.config import get_config
+
+    dim = get_config().embedding.dimensions
+    return [random.random() for _ in range(dim)]
 
 
 def get_embedding_batch(texts: List[str], model: Optional[str] = None) -> List[List[float]]:
@@ -140,11 +143,13 @@ def get_embedding_batch(texts: List[str], model: Optional[str] = None) -> List[L
 def _build_schema():
     import pyarrow as pa
 
+    from zettelforge.config import get_config
+
     return pa.schema(
         [
             ("id", pa.string()),
             ("text", pa.string()),
-            ("embedding", pa.list_(pa.float32(), 768)),
+            ("embedding", pa.list_(pa.float32(), get_config().embedding.dimensions)),
             ("content_hash", pa.string()),
             ("timestamp", pa.string()),
             ("source", pa.string()),

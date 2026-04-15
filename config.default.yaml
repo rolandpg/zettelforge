@@ -98,20 +98,42 @@ backend: typedb
 #   # fastembed (default — zero server dependencies)
 #   provider: fastembed
 #   model: nomic-ai/nomic-embed-text-v1.5-Q     # 768-dim, quantized, 130MB
+#   dimensions: 768
 #
 #   # fastembed full-precision (better quality, 520MB)
 #   provider: fastembed
 #   model: nomic-ai/nomic-embed-text-v1.5        # 768-dim, full, 520MB
+#   dimensions: 768
 #
-#   # Ollama (legacy — requires running server)
+#   # Ollama nomic-v2-moe (MoE architecture, better quality)
 #   provider: ollama
 #   url: http://127.0.0.1:11434
-#   model: nomic-embed-text
+#   model: nomic-embed-text-v2-moe               # 768-dim, 1GB
+#   dimensions: 768
+#
+#   # Ollama qwen3-embedding (highest quality, large)
+#   provider: ollama
+#   url: http://127.0.0.1:11434
+#   model: qwen3-embedding                        # 4096-dim, 4.7GB
+#   dimensions: 4096
+#
+# IMPORTANT: The `dimensions` field MUST match your embedding model's output.
+# If you change the model, update dimensions and run rebuild_index.py to
+# re-embed all existing notes. Mismatched dimensions will cause indexing
+# errors and empty search results.
+#
+# Common model dimensions:
+#   nomic-embed-text-v1.5-Q       → 768
+#   nomic-embed-text-v2-moe       → 768
+#   qwen3-embedding               → 4096
+#   text-embedding-3-small (OpenAI) → 1536
+#   mxbai-embed-large             → 1024
 #
 # Env overrides:
 #   ZETTELFORGE_EMBEDDING_PROVIDER=ollama
+#   ZETTELFORGE_EMBEDDING_DIM=4096
 #   AMEM_EMBEDDING_URL=http://gpu-box:11434
-#   AMEM_EMBEDDING_MODEL=nomic-embed-text
+#   AMEM_EMBEDDING_MODEL=nomic-embed-text-v2-moe
 #
 embedding:
   provider: fastembed

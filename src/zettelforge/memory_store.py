@@ -39,11 +39,28 @@ def get_default_data_dir() -> Path:
 class MemoryStore:
     """JSONL-based memory note storage with LanceDB vector indexing"""
 
-    def __init__(self, jsonl_path: Optional[str] = None, lance_path: Optional[str] = None):
+    def __init__(
+        self,
+        jsonl_path: Optional[str] = None,
+        lance_path: Optional[str] = None,
+        embedding_dim: Optional[int] = None,
+    ):
         data_dir = get_default_data_dir()
 
         self.jsonl_path = Path(jsonl_path) if jsonl_path else data_dir / "notes.jsonl"
         self.lance_path = Path(lance_path) if lance_path else data_dir / "vectordb"
+
+        # Resolve embedding dimensions from parameter, config, or env
+        if embedding_dim:
+            self.embedding_dim = embedding_dim
+        else:
+            dim_env = os.environ.get("ZETTELFORGE_EMBEDDING_DIM")
+            if dim_env:
+                self.embedding_dim = int(dim_env)
+            else:
+                from zettelforge.config import get_config
+
+                self.embedding_dim = get_config().embedding.dimensions
 
         self.jsonl_path.parent.mkdir(parents=True, exist_ok=True)
         self.lance_path.mkdir(parents=True, exist_ok=True)
@@ -141,9 +158,23 @@ class MemoryStore:
         try:
             import pyarrow as pa
 
+            # Validate embedding dimensions match config
+            vec = note.embedding.vector
+            if vec and len(vec) != self.embedding_dim:
+                _logger.error(
+                    "embedding_dimension_mismatch",
+                    note_id=note.id,
+                    expected=self.embedding_dim,
+                    actual=len(vec),
+                    hint="Set embedding.dimensions in config.yaml to match your model, then run rebuild_index.py",
+                )
+                return
+
             note_data = {
                 "id": note.id,
-                "vector": note.embedding.vector if note.embedding.vector else [0.0] * 768,
+                "vector": note.embedding.vector
+                if note.embedding.vector
+                else [0.0] * self.embedding_dim,
                 "content": note.content.raw[:500],
                 "context": note.semantic.context,
                 "keywords": ",".join(note.semantic.keywords),
@@ -162,7 +193,7 @@ class MemoryStore:
                 schema = pa.schema(
                     [
                         ("id", pa.string()),
-                        ("vector", pa.list_(pa.float32(), 768)),
+                        ("vector", pa.list_(pa.float32(), self.embedding_dim)),
                         ("content", pa.string()),
                         ("context", pa.string()),
                         ("keywords", pa.string()),
