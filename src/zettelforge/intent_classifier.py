@@ -36,19 +36,12 @@ INTENT_KEYWORDS = {
         "cve ",
         "vulnerability",
         "exploit",
-        "malware",
-        "tool",
-        "actor",
-        "apt",
         "threat",
         "what is",
         "what was",
-        "which",
         "who is",
-        "what are",
         "name",
         "identify",
-        "list",
     ],
     QueryIntent.TEMPORAL: [
         "when",
@@ -67,6 +60,12 @@ INTENT_KEYWORDS = {
         "who uses",
         "who targets",
         "who conducts",
+        "what tools does",
+        "what malware does",
+        "what technique",
+        "what cve does",
+        "used by",
+        "attributed to",
         "related to",
         "connected to",
         "associated with",
@@ -76,6 +75,10 @@ INTENT_KEYWORDS = {
         "relationship",
         "connection",
         "link",
+        "which actor",
+        "which group",
+        "which apt",
+        "what does",
     ],
     QueryIntent.CAUSAL: [
         "why",
@@ -131,10 +134,20 @@ class IntentClassifier:
         best_intent = max(scores, key=scores.get)
         best_score = scores[best_intent]
 
-        # Confidence threshold
+        # Confidence threshold: score >= 2 is high confidence.
+        # score == 1 is accepted when the best intent is unambiguous
+        # (no other intent also scored 1+), preventing EXPLORATORY fallback
+        # for clear single-keyword matches like "what tools does APT28 use?".
+        competing = sum(1 for intent, s in scores.items() if s > 0 and intent != best_intent)
         if best_score >= 2:
             confidence = min(1.0, best_score / 4)
             return best_intent, {"confidence": confidence, "method": "keyword", "scores": scores}
+        if best_score == 1 and competing == 0:
+            return best_intent, {
+                "confidence": 0.6,
+                "method": "keyword_unambiguous",
+                "scores": scores,
+            }
 
         # Low confidence - use LLM fallback
         if self.use_llm_fallback:
@@ -177,7 +190,7 @@ Respond with just the intent name (factual, temporal, relational, exploratory, o
             QueryIntent.FACTUAL: {
                 "vector": 0.3,
                 "entity_index": 0.7,
-                "graph": 0.0,
+                "graph": 0.2,
                 "temporal": 0.0,
                 "top_k": 3,
             },
