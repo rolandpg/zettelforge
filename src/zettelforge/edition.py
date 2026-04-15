@@ -4,7 +4,7 @@ Edition detection for ZettelForge.
 Checks whether extensions (like zettelforge-enterprise) are available.
 """
 import enum
-from typing import Optional
+
 from zettelforge.extensions import has_extension, reset_extensions
 
 

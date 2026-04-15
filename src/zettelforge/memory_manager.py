@@ -18,8 +18,8 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
 
 from zettelforge.alias_resolver import AliasResolver
-from zettelforge.extensions import has_extension
 from zettelforge.entity_indexer import EntityIndexer
+from zettelforge.extensions import has_extension
 from zettelforge.fact_extractor import FactExtractor
 from zettelforge.governance_validator import GovernanceValidator, GovernanceViolationError
 from zettelforge.knowledge_graph import get_knowledge_graph
