@@ -173,7 +173,7 @@ embedding:
 #   ZETTELFORGE_LLM_URL=http://gpu-box:11434
 #
 llm:
-  model: qwen2.5:3b
+  model: qwen3.5:9b
   url: http://localhost:11434
   temperature: 0.1
 

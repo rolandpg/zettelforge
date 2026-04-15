@@ -48,10 +48,8 @@ class EmbeddingConfig:
 
 @dataclass
 class LLMConfig:
-    provider: str = "local"  # "local" (llama-cpp-python, in-process) or "ollama" (HTTP server)
-    model: str = (
-        "Qwen/Qwen2.5-3B-Instruct-GGUF"  # HuggingFace repo for local, model name for ollama
-    )
+    provider: str = "ollama"  # "local" (llama-cpp-python, in-process) or "ollama" (HTTP server)
+    model: str = "qwen3.5:9b"  # Ollama model name, or HuggingFace repo for local provider
     url: str = "http://localhost:11434"  # only used when provider=ollama
     temperature: float = 0.1
 
