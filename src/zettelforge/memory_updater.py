@@ -43,7 +43,14 @@ class MemoryUpdater:
             from zettelforge.llm_client import generate
 
             raw = generate(prompt, max_tokens=150, temperature=0.1)
-            return self._parse_operation_response(raw)
+            parsed = extract_json(raw, expect="object")
+            if parsed is None and raw and raw.strip():
+                # Retry once with format hint and higher temperature
+                _logger.info("retry_parse", site="memory_updater", attempt=2)
+                retry_prompt = prompt + "\n\nRespond with valid JSON only."
+                raw = generate(retry_prompt, max_tokens=150, temperature=0.3, json_mode=True)
+                parsed = extract_json(raw, expect="object")
+            return self._parse_operation_from_parsed(parsed, raw)
         except Exception:
             _logger.warning("llm_update_decision_failed_defaulting_add", exc_info=True)
             return UpdateOperation.ADD
@@ -113,8 +120,11 @@ JSON:"""
             return UpdateOperation.ADD
 
         parsed = extract_json(raw, expect="object")
+        return self._parse_operation_from_parsed(parsed, raw)
+
+    def _parse_operation_from_parsed(self, parsed, raw: str) -> UpdateOperation:
         if parsed is None:
-            _logger.warning("parse_failed", schema="update_operation", raw=raw[:200])
+            _logger.warning("parse_failed", schema="update_operation", raw=(raw or "")[:200])
             return UpdateOperation.ADD
 
         try:

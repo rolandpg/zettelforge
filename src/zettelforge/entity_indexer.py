@@ -275,7 +275,13 @@ class EntityExtractor:
                 system=self.NER_SYSTEM_PROMPT,
             )
 
-            return self._parse_ner_output(output, conversational_types)
+            parsed = extract_json(output, expect="object")
+            if parsed is None and output and output.strip():
+                _logger.info("retry_parse", site="entity_indexer_ner", attempt=2)
+                retry_prompt = prompt + "\n\nRespond with valid JSON only."
+                output = generate(retry_prompt, max_tokens=300, temperature=0.3, json_mode=True)
+                parsed = extract_json(output, expect="object")
+            return self._parse_ner_output_from_parsed(parsed, output, conversational_types)
 
         except Exception:
             _logger.warning("llm_entity_extraction_failed", exc_info=True)
@@ -283,9 +289,15 @@ class EntityExtractor:
 
     def _parse_ner_output(self, output: str, expected_types: List[str]) -> Dict[str, List[str]]:
         """Parse LLM NER output into normalized entity dict."""
+        parsed = extract_json(output, expect="object")
+        return self._parse_ner_output_from_parsed(parsed, output, expected_types)
+
+    def _parse_ner_output_from_parsed(
+        self, parsed, output: str, expected_types: List[str]
+    ) -> Dict[str, List[str]]:
+        """Build normalized entity dict from a pre-parsed JSON object."""
         empty = {t: [] for t in expected_types}
 
-        parsed = extract_json(output, expect="object")
         if parsed is None:
             _logger.warning("parse_failed", schema="ner_output", raw=(output or "")[:200])
             return empty
