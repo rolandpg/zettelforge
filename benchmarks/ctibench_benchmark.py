@@ -22,6 +22,7 @@ Usage:
 Source: https://huggingface.co/datasets/AI4Sec/cti-bench
 Paper: https://arxiv.org/abs/2406.07599 (NeurIPS 2024)
 """
+
 import argparse
 import json
 import re
@@ -36,47 +37,73 @@ from zettelforge import MemoryManager, __version__
 
 # -- ATT&CK Technique Loader --------------------------------------------------
 
-_ATTACK_JSON = Path(__file__).parent / "enterprise-attack.json"
+_ATTACK_DIR = Path(__file__).parent
+
+# All three ATT&CK matrices — enterprise, mobile, ICS
+_ATTACK_FILES = [
+    _ATTACK_DIR / "enterprise-attack.json",
+    _ATTACK_DIR / "mobile-attack.json",
+    _ATTACK_DIR / "ics-attack.json",
+]
+
+
+def _download_attack_files() -> None:
+    """Download any missing ATT&CK matrix JSON files from MITRE."""
+    import urllib.request
+
+    base = "https://raw.githubusercontent.com/mitre/cti/master"
+    for path in _ATTACK_FILES:
+        if path.exists():
+            continue
+        matrix = path.stem  # e.g. "enterprise-attack"
+        url = f"{base}/{matrix}/{matrix}.json"
+        print(f"  Downloading {matrix}.json ...")
+        urllib.request.urlretrieve(url, str(path))
 
 
 def load_attack_techniques() -> List[Dict]:
     """
-    Load MITRE ATT&CK enterprise techniques from local JSON.
+    Load MITRE ATT&CK techniques from all matrices (enterprise + mobile + ICS).
 
     Returns a list of dicts with keys: external_id, name, description.
     Sub-techniques (IDs containing a dot, e.g. T1071.001) are excluded
     per CTIBench scoring which normalises sub-techniques to their parent.
     """
-    if not _ATTACK_JSON.exists():
-        raise FileNotFoundError(
-            f"enterprise-attack.json not found at {_ATTACK_JSON}. "
-            "Run: curl -L https://raw.githubusercontent.com/mitre/cti/master/"
-            "enterprise-attack/enterprise-attack.json -o benchmarks/enterprise-attack.json"
-        )
-    with open(_ATTACK_JSON) as f:
-        data = json.load(f)
+    _download_attack_files()
 
     techniques = []
-    for obj in data.get("objects", []):
-        if obj.get("type") != "attack-pattern":
+    seen_ids: set = set()
+    for attack_json in _ATTACK_FILES:
+        if not attack_json.exists():
             continue
-        if obj.get("x_mitre_deprecated", False) or obj.get("revoked", False):
-            continue
-        ext_id = None
-        for ref in obj.get("external_references", []):
-            if ref.get("source_name") == "mitre-attack":
-                ext_id = ref.get("external_id", "")
-                break
-        if not ext_id or "." in ext_id:
-            # Skip sub-techniques
-            continue
-        techniques.append(
-            {
-                "external_id": ext_id,
-                "name": obj.get("name", ""),
-                "description": obj.get("description", ""),
-            }
-        )
+        with open(attack_json) as f:
+            data = json.load(f)
+        for obj in data.get("objects", []):
+            if obj.get("type") != "attack-pattern":
+                continue
+            if obj.get("x_mitre_deprecated", False) or obj.get("revoked", False):
+                continue
+            ext_id = None
+            for ref in obj.get("external_references", []):
+                if ref.get("source_name") in (
+                    "mitre-attack",
+                    "mitre-mobile-attack",
+                    "mitre-ics-attack",
+                ):
+                    ext_id = ref.get("external_id", "")
+                    break
+            if not ext_id or "." in ext_id:
+                continue
+            if ext_id in seen_ids:
+                continue
+            seen_ids.add(ext_id)
+            techniques.append(
+                {
+                    "external_id": ext_id,
+                    "name": obj.get("name", ""),
+                    "description": obj.get("description", ""),
+                }
+            )
     return techniques
 
 
@@ -103,7 +130,7 @@ def populate_attack_techniques(mm: MemoryManager, techniques: List[Dict]) -> int
                 content=content,
                 source_type="mitre_attack",
                 source_ref=f"https://attack.mitre.org/techniques/{ext_id}/",
-                domain="cti",
+                domain="attack_techniques",
             )
             ingested += 1
         except Exception:
@@ -113,12 +140,17 @@ def populate_attack_techniques(mm: MemoryManager, techniques: List[Dict]) -> int
 
 # -- Data Loading -------------------------------------------------------------
 
+
 def load_ctibench_ate(max_samples: Optional[int] = None) -> List[Dict]:
     """Load CTI-ATE dataset from HuggingFace."""
     from datasets import load_dataset
+
     ds = load_dataset(
-        "AI4Sec/cti-bench", data_files="cti-ate.tsv", split="train",
-        delimiter="\t", quoting=3,  # QUOTE_NONE to handle embedded quotes
+        "AI4Sec/cti-bench",
+        data_files="cti-ate.tsv",
+        split="train",
+        delimiter="\t",
+        quoting=3,  # QUOTE_NONE to handle embedded quotes
     )
     rows = []
     for i, row in enumerate(ds):
@@ -129,21 +161,27 @@ def load_ctibench_ate(max_samples: Optional[int] = None) -> List[Dict]:
         gt_ids = set(t.strip() for t in gt_raw.split(",") if t.strip())
         if not gt_ids:
             continue
-        rows.append({
-            "description": row.get("Description", ""),
-            "platform": row.get("Platform", "Enterprise"),
-            "ground_truth": gt_ids,
-            "url": row.get("URL", ""),
-        })
+        rows.append(
+            {
+                "description": row.get("Description", ""),
+                "platform": row.get("Platform", "Enterprise"),
+                "ground_truth": gt_ids,
+                "url": row.get("URL", ""),
+            }
+        )
     return rows
 
 
 def load_ctibench_taa(max_samples: Optional[int] = None) -> List[Dict]:
     """Load CTI-TAA dataset from HuggingFace."""
     from datasets import load_dataset
+
     ds = load_dataset(
-        "AI4Sec/cti-bench", data_files="cti-taa.tsv", split="train",
-        delimiter="\t", quoting=3,
+        "AI4Sec/cti-bench",
+        data_files="cti-taa.tsv",
+        split="train",
+        delimiter="\t",
+        quoting=3,
     )
     rows = []
     for i, row in enumerate(ds):
@@ -152,11 +190,13 @@ def load_ctibench_taa(max_samples: Optional[int] = None) -> List[Dict]:
         text = row.get("Text", "")
         if not text or "[PLACEHOLDER]" not in text:
             continue
-        rows.append({
-            "text": text,
-            "prompt": row.get("Prompt", ""),
-            "url": row.get("URL", ""),
-        })
+        rows.append(
+            {
+                "text": text,
+                "prompt": row.get("Prompt", ""),
+                "url": row.get("URL", ""),
+            }
+        )
     return rows
 
 
@@ -168,9 +208,13 @@ def load_taa_ground_truth() -> Dict[int, str]:
     """
     try:
         from datasets import load_dataset
+
         ds = load_dataset(
-            "AI4Sec/cti-bench", data_files="cti-taa.tsv", split="train",
-            delimiter="\t", quoting=3,
+            "AI4Sec/cti-bench",
+            data_files="cti-taa.tsv",
+            split="train",
+            delimiter="\t",
+            quoting=3,
         )
         # TAA ground truth is in a separate responses file in the GitHub repo
         # Since we may not have it, extract actor names from URLs as fallback
@@ -186,6 +230,7 @@ def load_taa_ground_truth() -> Dict[int, str]:
 
 
 # -- Scoring -------------------------------------------------------------------
+
 
 def score_ate(predicted_ids: Set[str], ground_truth: Set[str]) -> Dict:
     """Score ATT&CK Technique Extraction using set-based P/R/F1."""
@@ -227,15 +272,16 @@ def score_taa(predicted: str, ground_truth: str) -> Dict:
 
 # -- Extraction from Retrieved Context ----------------------------------------
 
+
 def extract_technique_ids(text: str) -> Set[str]:
     """Extract MITRE ATT&CK technique IDs from retrieved context."""
-    pattern = r'T\d{4}(?:\.\d{3})?'
+    pattern = r"T\d{4}(?:\.\d{3})?"
     matches = re.findall(pattern, text)
     # Only keep main technique IDs (no sub-techniques) per CTIBench spec
     main_ids = set()
     for m in matches:
-        if '.' in m:
-            main_ids.add(m.split('.')[0])
+        if "." in m:
+            main_ids.add(m.split(".")[0])
         else:
             main_ids.add(m)
     return main_ids
@@ -245,20 +291,20 @@ def extract_actor_name(text: str) -> str:
     """Extract most likely threat actor name from retrieved context."""
     # Look for common actor patterns
     patterns = [
-        r'\b(APT\s*\d+)\b',
-        r'\b(Lazarus(?:\s+Group)?)\b',
-        r'\b(Sandworm)\b',
-        r'\b(Fancy\s+Bear)\b',
-        r'\b(Cozy\s+Bear)\b',
-        r'\b(Volt\s+Typhoon)\b',
-        r'\b(Turla)\b',
-        r'\b(Kimsuky)\b',
-        r'\b(Charming\s+Kitten)\b',
-        r'\b(MuddyWater)\b',
-        r'\b(OceanLotus)\b',
-        r'\b(DarkHotel)\b',
-        r'\b(Equation\s+Group)\b',
-        r'\b(UNC\d+)\b',
+        r"\b(APT\s*\d+)\b",
+        r"\b(Lazarus(?:\s+Group)?)\b",
+        r"\b(Sandworm)\b",
+        r"\b(Fancy\s+Bear)\b",
+        r"\b(Cozy\s+Bear)\b",
+        r"\b(Volt\s+Typhoon)\b",
+        r"\b(Turla)\b",
+        r"\b(Kimsuky)\b",
+        r"\b(Charming\s+Kitten)\b",
+        r"\b(MuddyWater)\b",
+        r"\b(OceanLotus)\b",
+        r"\b(DarkHotel)\b",
+        r"\b(Equation\s+Group)\b",
+        r"\b(UNC\d+)\b",
     ]
     for pattern in patterns:
         match = re.search(pattern, text, re.IGNORECASE)
@@ -266,7 +312,7 @@ def extract_actor_name(text: str) -> str:
             return match.group(1)
 
     # Fallback: return first capitalized multi-word phrase
-    phrases = re.findall(r'[A-Z][a-z]+(?:\s+[A-Z][a-z]+)+', text)
+    phrases = re.findall(r"[A-Z][a-z]+(?:\s+[A-Z][a-z]+)+", text)
     if phrases:
         return phrases[0]
 
@@ -275,7 +321,8 @@ def extract_actor_name(text: str) -> str:
 
 # -- Benchmark Runner ----------------------------------------------------------
 
-def run_ate_benchmark(max_samples: Optional[int] = None, k: int = 10) -> Dict:
+
+def run_ate_benchmark(max_samples: Optional[int] = None, k: int = 25) -> Dict:
     """Run CTI-ATE benchmark: ingest descriptions, retrieve, extract techniques."""
     print("\n" + "=" * 70)
     print("  CTI-ATE: ATT&CK Technique Extraction Benchmark")
@@ -296,7 +343,9 @@ def run_ate_benchmark(max_samples: Optional[int] = None, k: int = 10) -> Dict:
     # Pre-populate with ATT&CK technique entries so T-codes are retrievable
     print("\n[2/4] Pre-populating ATT&CK techniques into ZettelForge...")
     attack_techniques = load_attack_techniques()
-    print(f"  Loaded {len(attack_techniques)} main techniques from enterprise-attack.json")
+    print(
+        f"  Loaded {len(attack_techniques)} main techniques from ATT&CK matrices (enterprise + mobile + ICS)"
+    )
     atk_start = time.perf_counter()
     atk_ingested = populate_attack_techniques(mm, attack_techniques)
     print(f"  Ingested {atk_ingested} technique entries in {time.perf_counter() - atk_start:.1f}s")
@@ -320,13 +369,15 @@ def run_ate_benchmark(max_samples: Optional[int] = None, k: int = 10) -> Dict:
     ingest_duration = time.perf_counter() - start
     print(f"  Ingested {ingested} descriptions in {ingest_duration:.1f}s")
 
-    # Evaluate
+    # Evaluate — search attack_techniques domain only (not CTI descriptions)
     print(f"\n[4/4] Evaluating {len(samples)} samples...")
     results = []
     for i, sample in enumerate(samples):
-        query = f"What MITRE ATT&CK techniques are described in: {sample['description'][:200]}"
+        # Use raw description as query (not meta-question wrapper)
+        # to stay in the same embedding space as technique descriptions
+        query = sample["description"][:500]
         start_q = time.perf_counter()
-        retrieved = mm.recall(query, k=k, domain="cti")
+        retrieved = mm.recall(query, k=k, domain="attack_techniques")
         latency = time.perf_counter() - start_q
 
         # Extract technique IDs from retrieved context
@@ -334,15 +385,17 @@ def run_ate_benchmark(max_samples: Optional[int] = None, k: int = 10) -> Dict:
         predicted_ids = extract_technique_ids(context)
 
         scores = score_ate(predicted_ids, sample["ground_truth"])
-        results.append({
-            "precision": scores["precision"],
-            "recall": scores["recall"],
-            "f1": scores["f1"],
-            "latency_s": latency,
-            "predicted": sorted(predicted_ids),
-            "ground_truth": sorted(sample["ground_truth"]),
-            "retrieved_count": len(retrieved),
-        })
+        results.append(
+            {
+                "precision": scores["precision"],
+                "recall": scores["recall"],
+                "f1": scores["f1"],
+                "latency_s": latency,
+                "predicted": sorted(predicted_ids),
+                "ground_truth": sorted(sample["ground_truth"]),
+                "retrieved_count": len(retrieved),
+            }
+        )
 
         if (i + 1) % 25 == 0:
             print(f"  Evaluated {i + 1}/{len(samples)}...")
@@ -357,7 +410,7 @@ def run_ate_benchmark(max_samples: Optional[int] = None, k: int = 10) -> Dict:
     print(f"    Precision: {avg_precision:.3f}")
     print(f"    Recall:    {avg_recall:.3f}")
     print(f"    F1:        {avg_f1:.3f}")
-    print(f"    p50 Lat:   {p50_lat*1000:.0f}ms")
+    print(f"    p50 Lat:   {p50_lat * 1000:.0f}ms")
 
     return {
         "task": "CTI-ATE",
@@ -423,11 +476,13 @@ def run_taa_benchmark(max_samples: Optional[int] = None, k: int = 10) -> Dict:
         context = " ".join(n.content.raw for n in retrieved)
         predicted_actor = extract_actor_name(context)
 
-        results.append({
-            "predicted": predicted_actor,
-            "latency_s": latency,
-            "retrieved_count": len(retrieved),
-        })
+        results.append(
+            {
+                "predicted": predicted_actor,
+                "latency_s": latency,
+                "retrieved_count": len(retrieved),
+            }
+        )
 
         if (i + 1) % 25 == 0:
             print(f"  Evaluated {i + 1}/{len(samples)}...")
@@ -436,7 +491,7 @@ def run_taa_benchmark(max_samples: Optional[int] = None, k: int = 10) -> Dict:
 
     print("\n  Results:")
     print(f"    Samples:  {len(results)}")
-    print(f"    p50 Lat:  {p50_lat*1000:.0f}ms")
+    print(f"    p50 Lat:  {p50_lat * 1000:.0f}ms")
     print("    NOTE: TAA ground truth requires GitHub alias/related dicts for proper scoring.")
     print("          Predictions saved for manual review or future scoring.")
 
