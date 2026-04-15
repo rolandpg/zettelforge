@@ -51,7 +51,13 @@ def _get_local_llm():
     if _llm is None:
         with _llm_lock:
             if _llm is None:
-                from llama_cpp import Llama
+                try:
+                    from llama_cpp import Llama
+                except ImportError:
+                    raise ImportError(
+                        "Local LLM requires llama-cpp-python. Install with: "
+                        "pip install zettelforge[local]"
+                    ) from None
 
                 _llm = Llama.from_pretrained(
                     repo_id=get_llm_model(),
