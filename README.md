@@ -1,70 +1,101 @@
 # ZettelForge
 
-**Give your AI agents memory that persists, connects, and reasons.**
+**The only agentic memory system built for cyber threat intelligence.**
 
-[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+Give your AI agents persistent memory with entity extraction, knowledge graphs, and STIX ontology -- no cloud, no API keys, works offline.
+
+[![PyPI](https://img.shields.io/pypi/v/zettelforge)](https://pypi.org/project/zettelforge/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](https://opensource.org/licenses/MIT)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/downloads/)
 [![CI](https://github.com/rolandpg/zettelforge/actions/workflows/ci.yml/badge.svg)](https://github.com/rolandpg/zettelforge/actions)
 [![Version](https://img.shields.io/badge/version-2.1.1-green.svg)](https://github.com/rolandpg/zettelforge/releases)
 
-## The Problem
+<!-- Demo GIF goes here -->
+<!-- <img src="docs/assets/demo.gif" width="800" alt="ZettelForge demo"> -->
 
-Your AI agent starts from zero every session. Context from yesterday's threat hunt, last week's incident, or the report you read an hour ago -- gone. The agent has no memory, no entity relationships, no sense of what changed since the last time it ran.
+## Why ZettelForge?
 
-You've tried RAG over documents. You get semantic search but no structure -- no "APT28 uses Cobalt Strike which exploits CVE-2024-1111" chain of reasoning. No deduplication. No contradiction detection. No way to ask "what changed since Tuesday?"
+| Feature | ZettelForge | Mem0 | Graphiti | Cognee |
+|---------|------------|------|----------|--------|
+| CTI entity extraction (CVEs, actors, IOCs) | Yes | No | No | No |
+| STIX 2.1 ontology | Yes | No | No | No |
+| Threat actor alias resolution | Yes (APT28 = Fancy Bear) | No | No | No |
+| Knowledge graph with causal triples | Yes | No | Yes | Yes |
+| Intent-classified retrieval (5 types) | Yes | No | No | No |
+| Offline / local-first (no API keys) | Yes | No | No | No |
+| OCSF audit logging | Yes | No | No | No |
+| MCP server (Claude Code) | Yes | No | No | No |
 
-ZettelForge fixes this.
+## Features
 
-## What It Does
+**Entity Extraction** -- Automatically identifies CVEs, threat actors, IOCs (IPs, domains, hashes, URLs, emails), MITRE ATT&CK techniques, campaigns, intrusion sets, tools, people, locations, and organizations. Regex + LLM NER with STIX 2.1 types throughout.
 
-ZettelForge is an **agentic memory system** -- a structured, persistent knowledge store that AI agents can write to, read from, and reason over. Purpose-built for cyber threat intelligence, but works for any domain.
+**Knowledge Graph** -- Entities become nodes, co-occurrence becomes edges. LLM infers causal triples ("APT28 *uses* Cobalt Strike"). Temporal edges and supersession track how intelligence evolves.
+
+**Alias Resolution** -- APT28, Fancy Bear, Sofacy, STRONTIUM all resolve to the same actor node. Works automatically on store and recall.
+
+**Blended Retrieval** -- Vector similarity (768-dim fastembed, ONNX) + graph traversal (BFS over knowledge graph edges), weighted by intent classification. Five intent types: factual, temporal, relational, exploratory, causal.
+
+**Memory Evolution** -- With `evolve=True`, new intel is compared to existing memory. LLM decides ADD, UPDATE, DELETE, or NOOP. Stale intel gets superseded. Contradictions get resolved. Duplicates get skipped.
+
+**RAG Synthesis** -- Synthesize answers across all stored memories with direct_answer format.
+
+**Offline-First** -- fastembed (ONNX) for embeddings, llama-cpp-python for LLM features. No API keys, no cloud dependencies.
+
+**OCSF Audit Logging** -- Every operation is logged in OCSF format (FedRAMP AU controls).
+
+## Quick Start
+
+```bash
+pip install zettelforge
+```
 
 ```python
 from zettelforge import MemoryManager
 
 mm = MemoryManager()
 
-# Store intelligence -- entities are auto-extracted, graph edges are built
-mm.remember("APT28 uses Cobalt Strike for lateral movement via CVE-2024-1111", domain="cti")
+# Store threat intel -- entities extracted automatically
+mm.remember("APT28 uses Cobalt Strike for lateral movement via T1021")
 
+# Recall with alias resolution
+results = mm.recall("What tools does Fancy Bear use?")
+# Returns the APT28 note (APT28 = Fancy Bear, resolved automatically)
+
+# Synthesize across all memories
+answer = mm.synthesize("Summarize known APT28 TTPs")
+```
+
+No TypeDB, no Ollama, no Docker -- just `pip install`. Embeddings run in-process via fastembed. LLM features (extraction, synthesis) activate when Ollama is available.
+
+### With Ollama (enables LLM features)
+
+```bash
+ollama pull qwen2.5:3b && ollama serve
+# ZettelForge auto-detects Ollama for extraction and synthesis
+```
+
+### Memory Evolution
+
+```python
 # New intel arrives -- evolve=True enables memory evolution:
 # LLM extracts facts, compares to existing notes, decides ADD/UPDATE/DELETE/NOOP
 mm.remember(
     "APT28 has shifted tactics. They dropped DROPBEAR and now exploit edge devices.",
     domain="cti",
     evolve=True,   # existing APT28 note gets superseded, not duplicated
-    # sync=True,   # block until background causal enrichment completes (default: False)
 )
-
-# Retrieve -- blends vector similarity + knowledge graph traversal
-results = mm.recall("What tools does APT28 use?")
-# Returns Cobalt Strike note (high confidence), DROPBEAR note (superseded)
-
-# Alias resolution works automatically
-mm.recall_actor("Fancy Bear")  # resolves to APT28
-
-# Synthesize answers from memory
-mm.synthesize("Summarize APT28 activity")
 ```
-
-No cloud. No API keys. Runs entirely on your laptop.
 
 ## How It Works
 
 Every `remember()` call triggers a pipeline:
 
 1. **Entity Extraction** -- regex + LLM NER identifies CVEs, actors, tools, campaigns, people, locations, orgs (10 types)
-2. **Knowledge Graph Update** -- entities become nodes, co-occurrence becomes edges, LLM infers causal triples ("APT28 *uses* Cobalt Strike")
+2. **Knowledge Graph Update** -- entities become nodes, co-occurrence becomes edges, LLM infers causal triples
 3. **Vector Embedding** -- 768-dim fastembed (ONNX, in-process, 7ms/embed) stored in LanceDB
 4. **Supersession Check** -- entity overlap detection marks stale notes as superseded
 5. **Dual-Stream Write** -- fast path returns in ~45ms; causal enrichment is deferred to a background worker
-
-With `evolve=True`, the **memory evolution** pipeline adds two LLM-driven steps:
-
-- **Phase 1 (Extraction)**: LLM extracts salient facts with importance scores
-- **Phase 2 (Update Decision)**: Each fact is compared to existing memory -- LLM decides ADD, UPDATE, DELETE, or NOOP
-
-This means your agent's memory self-corrects. Stale intel gets superseded. Contradictions get resolved. Duplicates get skipped. The MCP server and web API default to `evolve=True`.
 
 Every `recall()` call blends two retrieval strategies:
 
@@ -85,49 +116,24 @@ Evaluated against published academic benchmarks:
 
 See the [full benchmark report](benchmarks/BENCHMARK_REPORT.md) for methodology and analysis.
 
-## Quick Start
+## MCP Server (Claude Code)
 
-```bash
-git clone https://github.com/rolandpg/zettelforge.git
-cd zettelforge
-pip install -e .
-```
+Add ZettelForge as a memory backend for Claude Code:
 
-```python
-from zettelforge import MemoryManager
-mm = MemoryManager()
-note, _ = mm.remember("APT28 uses Cobalt Strike for lateral movement", domain="cti")
-results = mm.recall("What tools does APT28 use?")
-print(results[0].content.raw)
-```
-
-No TypeDB, no Ollama, no Docker -- just `pip install`. Embeddings run in-process via fastembed. LLM features (extraction, synthesis) activate when Ollama is available.
-
-### With Ollama (enables LLM features)
-
-```bash
-ollama pull qwen2.5:3b && ollama serve
-# ZettelForge auto-detects Ollama for extraction and synthesis
-```
-
-### MCP Server (Claude Code / AI agent integration)
-
-```bash
-python web/mcp_server.py
-# Exposes: remember, recall, synthesize, entity, graph, stats
-```
-
-Add to `.claude.json`:
 ```json
 {
   "mcpServers": {
     "zettelforge": {
       "command": "python3",
-      "args": ["web/mcp_server.py"]
+      "args": ["-m", "zettelforge.mcp"]
     }
   }
 }
 ```
+
+Your Claude Code agent can now remember and recall threat intelligence across sessions.
+
+Exposed tools: `remember`, `recall`, `synthesize`, `entity`, `graph`, `stats`.
 
 ## Integrations
 
@@ -205,7 +211,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup.
 
 ## License
 
-MIT — See [LICENSE](LICENSE).
+MIT -- See [LICENSE](LICENSE).
 
 **Made by Patrick Roland**.
 
