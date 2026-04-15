@@ -87,6 +87,10 @@ The pipeline's filtering and deduplication directly improve retrieval quality:
 
 The token savings cascade: fewer, more relevant notes in the retrieval context means the synthesis LLM produces more focused answers.
 
+## Write Latency: Fast Path and Background Enrichment
+
+`remember()` uses a dual-stream write path: the fast path persists the note and returns in ~45ms, while causal enrichment (triple extraction, graph edge updates) is deferred to a background worker. Pass `sync=True` if you need enrichment to be visible before your next `recall()`.
+
 ## Configuration Knobs
 
 Two parameters control the pipeline's selectivity:

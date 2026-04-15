@@ -5,7 +5,7 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![CI](https://github.com/rolandpg/zettelforge/actions/workflows/ci.yml/badge.svg)](https://github.com/rolandpg/zettelforge/actions)
-[![Version](https://img.shields.io/badge/version-2.1.0-green.svg)](https://github.com/rolandpg/zettelforge/releases)
+[![Version](https://img.shields.io/badge/version-2.1.1-green.svg)](https://github.com/rolandpg/zettelforge/releases)
 
 ## The Problem
 
@@ -33,6 +33,7 @@ mm.remember(
     "APT28 has shifted tactics. They dropped DROPBEAR and now exploit edge devices.",
     domain="cti",
     evolve=True,   # existing APT28 note gets superseded, not duplicated
+    # sync=True,   # block until background causal enrichment completes (default: False)
 )
 
 # Retrieve -- blends vector similarity + knowledge graph traversal
@@ -56,6 +57,7 @@ Every `remember()` call triggers a pipeline:
 2. **Knowledge Graph Update** -- entities become nodes, co-occurrence becomes edges, LLM infers causal triples ("APT28 *uses* Cobalt Strike")
 3. **Vector Embedding** -- 768-dim fastembed (ONNX, in-process, 7ms/embed) stored in LanceDB
 4. **Supersession Check** -- entity overlap detection marks stale notes as superseded
+5. **Dual-Stream Write** -- fast path returns in ~45ms; causal enrichment is deferred to a background worker
 
 With `evolve=True`, the **memory evolution** pipeline adds two LLM-driven steps:
 
@@ -79,7 +81,7 @@ Evaluated against published academic benchmarks:
 |-----------|-----------------|-------|
 | **CTI Retrieval** | Attribution, CVE linkage, multi-hop | **75.0%** |
 | **RAGAS** | Retrieval quality (keyword presence) | **78.1%** |
-| **LOCOMO** (ACL 2024) | Conversational memory recall | **18.0%** |
+| **LOCOMO** (ACL 2024) | Conversational memory recall | **22.0%** *(with Ollama cloud models)* |
 
 See the [full benchmark report](benchmarks/BENCHMARK_REPORT.md) for methodology and analysis.
 

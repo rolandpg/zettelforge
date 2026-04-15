@@ -10,7 +10,20 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 Production hardening release targeting P0 blockers identified in the
 2026-04-14 architecture review (5 P0 issues, conducted by 3 independent
-agent reviewers across 7,193-note production system).
+agent reviewers across 7,193-note production system). Also includes the
+Sprint 3 dual-stream write path and updated benchmark results.
+
+### Added
+
+- **Dual-stream write path** — `remember()` now returns in ~45ms (fast
+  path) by deferring causal enrichment to a background worker. Callers
+  that need enrichment to complete before the next read can pass
+  `sync=True` to block until the worker finishes.
+- **`sync` parameter on `remember()`** — `bool`, default `False`. When
+  `True`, the call blocks until background causal enrichment completes.
+  Useful in tests and batch pipelines.
+- **LOCOMO benchmark updated to 22.0%** (up from 18.0%) — measured with
+  Ollama cloud models via the LLM judge evaluation path.
 
 ### Fixed
 

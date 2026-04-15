@@ -52,7 +52,8 @@ def remember(
     source_type: str = "conversation",
     source_ref: str = "",
     domain: str = "general",
-    evolve: bool = False
+    evolve: bool = False,
+    sync: bool = False
 ) -> Tuple[MemoryNote, str]
 ```
 
@@ -63,6 +64,7 @@ def remember(
 | `source_ref` | `str` | `""` | Source identifier (e.g., `subagent:task_id`, `conversation:session_id`). |
 | `domain` | `str` | `"general"` | Memory domain. Values: `general`, `cti`, `incident`, `threat_intel`, `project`, `personal`, `research`. |
 | `evolve` | `bool` | `False` | Enable memory evolution. When `True`, uses the two-phase Mem0-style pipeline: LLM extracts facts, compares each against existing notes, and decides ADD/UPDATE/DELETE/NOOP. Slower but prevents duplicate/stale knowledge. The MCP server and web API default to `evolve=True`. |
+| `sync` | `bool` | `False` | When `False` (default), causal enrichment is deferred to a background worker and the call returns in ~45ms (fast path). When `True`, the call blocks until background enrichment completes. Use `sync=True` in tests or batch pipelines where you need enrichment to be visible before the next read. |
 
 **Returns:** `Tuple[MemoryNote, str]` -- the note and status. Status is one of: `"created"` (direct store or ADD), `"updated"` (existing note superseded by refinement), `"corrected"` (existing note superseded by contradiction), `"noop"` (content already captured).
 
@@ -537,7 +539,7 @@ class Metadata(BaseModel):
 
 MemoryManager is the primary agent interface for ZettelForge's agentic memory system. It provides three categories of operations: write, read, and synthesis.
 
-**Write path:** `remember()` is the unified entry point. With `evolve=False` (default in Python), it stores a note with entity extraction, alias resolution, supersession checking, and knowledge graph update. With `evolve=True` (default in MCP/web API), it additionally runs the two-phase Mem0-style pipeline: LLM extraction of salient facts followed by per-fact ADD/UPDATE/DELETE/NOOP decisions against existing memory. `remember_with_extraction()` is the underlying method for programmatic use. `remember_report()` extends this to long-form content by chunking on sentence boundaries before extraction.
+**Write path:** `remember()` is the unified entry point. With `evolve=False` (default in Python), it stores a note with entity extraction, alias resolution, supersession checking, and knowledge graph update. With `evolve=True` (default in MCP/web API), it additionally runs the two-phase Mem0-style pipeline: LLM extraction of salient facts followed by per-fact ADD/UPDATE/DELETE/NOOP decisions against existing memory. By default (`sync=False`), causal enrichment is deferred to a background worker and the call returns in ~45ms; pass `sync=True` to block until enrichment completes. `remember_with_extraction()` is the underlying method for programmatic use. `remember_report()` extends this to long-form content by chunking on sentence boundaries before extraction.
 
 **Read path:** `recall()` is the primary retrieval method. It classifies query intent (FACTUAL, TEMPORAL, RELATIONAL, CAUSAL, EXPLORATORY), then blends vector similarity and graph traversal results using intent-specific policy weights. Superseded notes are filtered by default. `recall_entity()`, `recall_cve()`, `recall_actor()`, and `recall_tool()` provide fast entity-indexed lookups that bypass vector search. `get_context()` formats retrieved notes as Markdown for prompt injection with a configurable token budget.
 
