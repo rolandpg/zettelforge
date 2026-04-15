@@ -44,6 +44,21 @@ class Links(BaseModel):
     causal_chain: List[str] = Field(default_factory=list)
 
 
+class VulnerabilityMeta(BaseModel):
+    """Structured CVE scoring fields — populated during OpenCTI sync, not text extraction.
+
+    Mirrors the subset of OpenCTI's 32 CVSS fields that ZettelForge needs for
+    prioritisation workflows: base score, vector string, EPSS exploitation
+    probability, and CISA KEV membership.
+    """
+
+    cvss_v3_score: Optional[float] = None  # 0.0–10.0; None if not yet scored
+    cvss_v3_vector: Optional[str] = None  # e.g. "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    epss_score: Optional[float] = None  # 0.0–1.0, daily exploitation probability
+    epss_percentile: Optional[float] = None  # 0.0–1.0, relative to all scored CVEs
+    cisa_kev: bool = False  # True if in CISA Known Exploited Vulnerabilities catalog
+
+
 class Metadata(BaseModel):
     """Note lifecycle and access metadata"""
 
@@ -55,6 +70,9 @@ class Metadata(BaseModel):
     domain: str = "general"  # security_ops | project | personal | research
     tier: str = "B"  # Epistemic tier: A (authoritative) | B (operational) | C (support)
     importance: int = 5  # 1-10 scale, used by extraction phase for prioritization
+    tlp: str = ""  # TLP marking: WHITE, GREEN, AMBER, RED, or empty (unclassified)
+    stix_confidence: int = -1  # STIX confidence 0-100, -1 = unset
+    vuln: Optional[VulnerabilityMeta] = None  # Populated for CVE notes during OpenCTI sync
 
 
 class MemoryNote(BaseModel):

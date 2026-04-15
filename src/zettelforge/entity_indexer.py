@@ -28,8 +28,12 @@ class EntityExtractor:
     # Regex fast-path for CTI entities — deterministic, zero-latency
     REGEX_PATTERNS: Dict[str, re.Pattern] = {
         "cve": re.compile(r"(CVE-\d{4}-\d{4,})", re.IGNORECASE),
+        "intrusion_set": re.compile(
+            r"\b((?:apt|unc|ta|fin|temp)\s*-?\s*\d+)\b",
+            re.IGNORECASE,
+        ),
         "actor": re.compile(
-            r"\b(apt\d+|apt\s+\d+|lazarus|sandworm|volt\s+typhoon|unc\d+)\b",
+            r"\b(lazarus|sandworm|volt\s+typhoon)\b",
             re.IGNORECASE,
         ),
         "tool": re.compile(
@@ -40,15 +44,43 @@ class EntityExtractor:
             r"\b(operation\s+\w+)\b",
             re.IGNORECASE,
         ),
+        "attack_pattern": re.compile(r"\bT\d{4}(?:\.\d{3})?\b"),
+        # IOC patterns (STIX Cyber Observables)
+        "ipv4": re.compile(
+            r"\b(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\b",
+        ),
+        "domain": re.compile(
+            r"\b(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)"
+            r"+(?:com|net|org|io|co|info|biz|gov|mil|edu|int|ru|cn|de|uk|fr|jp|br|in|au|us|ca"
+            r"|nl|se|ch|es|it|pl|za|kr|tw|mx|ar|cl|no|fi|dk|cz|at|be|pt|ie|nz|il|sg|hk|my"
+            r"|th|ph|vn|id|ua|tr|ro|bg|hr|sk|si|ee|lv|lt|lu|xyz|top|club|online|site|tech"
+            r"|store|app|dev|cloud|pro|cc|me|tv|ws|name|mobi|asia|tel|travel|aero|coop"
+            r"|museum|jobs|cat|post)\b",
+        ),
+        "url": re.compile(r"https?://[^\s<>\"')\]]+"),
+        "md5": re.compile(r"\b[a-fA-F0-9]{32}\b"),
+        "sha1": re.compile(r"\b[a-fA-F0-9]{40}\b"),
+        "sha256": re.compile(r"\b[a-fA-F0-9]{64}\b"),
+        "email": re.compile(r"\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b"),
     }
 
     # All entity types the system recognizes
     ENTITY_TYPES: List[str] = [
         # CTI (regex)
         "cve",
+        "intrusion_set",
         "actor",
         "tool",
         "campaign",
+        "attack_pattern",
+        # IOC / STIX Cyber Observables (regex)
+        "ipv4",
+        "domain",
+        "url",
+        "md5",
+        "sha1",
+        "sha256",
+        "email",
         # Conversational (LLM)
         "person",
         "location",
@@ -57,6 +89,26 @@ class EntityExtractor:
         "activity",
         "temporal",
     ]
+
+    # Signals that a hex string appears inside a code or VCS context, not as an IOC.
+    # Any line that matches one of these patterns causes all hex strings on that line
+    # to be excluded from hash results.
+    _CODE_CONTEXT_PATTERN = re.compile(
+        r"""
+        (?:
+            [a-zA-Z_]\w*\s*=\s*["']?[a-fA-F0-9]{32,64}   # var = hash (assignment)
+          | \bcommit\s+[a-fA-F0-9]{7,40}\b                # git commit entry
+          | \bmerge\s+[a-fA-F0-9]{7,40}\b                 # git merge line
+          | \btree\s+[a-fA-F0-9]{7,40}\b                  # git tree line
+          | \bparent\s+[a-fA-F0-9]{7,40}\b                # git parent line
+          | \bAuthor:\s                                    # git log header
+          | ```                                            # code fence marker
+          | \bdef\s+\w                                     # function definition
+          | [a-zA-Z_]\w*\([^)]*[a-fA-F0-9]{32,64}        # function call with hash arg
+        )
+        """,
+        re.VERBOSE | re.IGNORECASE,
+    )
 
     # NER prompt for conversational entity extraction
     NER_SYSTEM_PROMPT = (
@@ -136,14 +188,47 @@ class EntityExtractor:
         re.IGNORECASE,
     )
 
+    def _filter_false_positive_hashes(self, candidates: List[str], text: str) -> List[str]:
+        """Remove hash candidates that appear in code or VCS contexts.
+
+        Strategy: build the set of hex strings that sit on a line whose content
+        matches _CODE_CONTEXT_PATTERN, then exclude those from the final results.
+        This catches git log output, variable assignments, and fenced code blocks
+        without requiring per-match lookahead assertions in the regex itself.
+
+        Args:
+            candidates: Raw hex strings extracted by a hash pattern.
+            text: Full source text (used to derive per-line context).
+
+        Returns:
+            Filtered list with code-context false positives removed.
+        """
+        if not candidates:
+            return candidates
+
+        # Build set of hex strings that live on a code-context line
+        fp_hashes: Set[str] = set()
+        for line in text.splitlines():
+            if self._CODE_CONTEXT_PATTERN.search(line):
+                # Mark every hex string on this line as a false positive
+                for m in re.finditer(r"\b[a-fA-F0-9]{32,64}\b", line):
+                    fp_hashes.add(m.group(0).lower())
+
+        return [c for c in candidates if c.lower() not in fp_hashes]
+
     def extract_regex(self, text: str) -> Dict[str, List[str]]:
-        """Extract CTI + conversational entities using regex. Fast, no LLM."""
+        """Extract CTI + IOC + conversational entities using regex. Fast, no LLM."""
         results: Dict[str, List[str]] = {}
 
-        # CTI entities
+        # Hash IOC types that need false-positive filtering
+        hash_types = {"md5", "sha1", "sha256"}
+
         for entity_type, pattern in self.REGEX_PATTERNS.items():
             matches = pattern.findall(text)
-            results[entity_type] = list(set(m.lower().replace(" ", "-") for m in matches))
+            normalized = list(set(m.lower().replace(" ", "-") for m in matches))
+            if entity_type in hash_types:
+                normalized = self._filter_false_positive_hashes(normalized, text)
+            results[entity_type] = normalized
 
         # Person names from dialogue format
         person_matches = self._PERSON_PATTERN.findall(text)
@@ -263,7 +348,7 @@ class EntityExtractor:
             llm_results = self.extract_llm(text)
             results.update(llm_results)
         else:
-            # Ensure all conversational types present with empty lists
+            # Ensure all non-regex types are present with empty lists
             for etype in ["person", "location", "organization", "event", "activity", "temporal"]:
                 if etype not in results:
                     results[etype] = []

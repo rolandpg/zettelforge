@@ -588,6 +588,15 @@ class MemoryManager:
             for c in cves:
                 kg.add_edge("tool", t, "cve", c, "EXPLOITS_CVE", edge_props)
 
+        attack_patterns = resolved_entities.get("attack_pattern", [])
+        for a in actors:
+            for ap in attack_patterns:
+                kg.add_edge("actor", a, "attack_pattern", ap, "USES_TECHNIQUE", edge_props)
+        malwares = resolved_entities.get("malware", [])
+        for m in malwares:
+            for ap in attack_patterns:
+                kg.add_edge("malware", m, "attack_pattern", ap, "IMPLEMENTS", edge_props)
+
         # --- Conversational relationships (RFC-001) ---
         persons = resolved_entities.get("person", [])
         locations = resolved_entities.get("location", [])
