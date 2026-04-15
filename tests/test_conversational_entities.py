@@ -24,7 +24,8 @@ class TestRegexExtraction:
     def test_actor_extraction_returns_apt_group(self):
         ext = EntityExtractor()
         result = ext.extract_regex("APT28 conducted the attack")
-        assert "apt28" in result["actor"]
+        # APT-style designations are extracted as intrusion_set, not actor
+        assert "apt28" in result["intrusion_set"]
 
     def test_tool_extraction_returns_malware_name(self):
         ext = EntityExtractor()
@@ -124,8 +125,10 @@ class TestNoteConstructorDelegation:
 
     def test_constructor_uses_extractor(self):
         nc = NoteConstructor()
-        assert hasattr(nc, "_extractor")
-        assert isinstance(nc._extractor, EntityExtractor)
+        assert hasattr(nc, "extract_entities")
+        # extract_entities delegates to EntityExtractor internally
+        result = nc.extract_entities("CVE-2024-1234")
+        assert "cve" in result
 
     def test_constructor_extract_entities_delegates(self):
         nc = NoteConstructor()

@@ -521,8 +521,17 @@ class MemoryManager:
         return self.recall_entity("cve", cve_id.upper(), k)
 
     def recall_actor(self, actor_name: str, k: int = 5) -> List[MemoryNote]:
-        """Fast lookup by threat actor name"""
-        return self.recall_entity("actor", actor_name.lower(), k)
+        """Fast lookup by threat actor name.
+
+        Searches both 'actor' and 'intrusion_set' entity types because
+        APT/UNC/FIN-style designations are extracted as intrusion_set.
+        """
+        results = self.recall_entity("actor", actor_name.lower(), k)
+        if len(results) < k:
+            is_results = self.recall_entity("intrusion_set", actor_name.lower(), k - len(results))
+            seen = {n.id for n in results}
+            results.extend(n for n in is_results if n.id not in seen)
+        return results
 
     def recall_tool(self, tool_name: str, k: int = 5) -> List[MemoryNote]:
         """Fast lookup by tool name"""

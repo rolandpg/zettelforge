@@ -156,18 +156,17 @@ class TestEntityIndexIntegrity:
         """Entity index count should match note entities."""
         jsonl_path = f"{temp_memory}/notes.jsonl"
         mm = MemoryManager(jsonl_path=jsonl_path)
-        
+
         # Add notes
         mm.remember("APT28 is Russian", domain="security_ops")
         mm.remember("APT29 is also Russian", domain="security_ops")
-        
-        # Rebuild index
-        indexer = EntityIndexer(index_path=f"{temp_memory}/entity_index.json")
-        stats = indexer.stats()
-        
-        # Should have apt28 and apt29 in actor index
-        assert 'actor' in stats
-        assert stats['actor']['unique_entities'] >= 2
+
+        # Use the MemoryManager's in-memory indexer (disk flush is deferred)
+        stats = mm.indexer.stats()
+
+        # APT-style names are extracted as intrusion_set, not actor
+        assert 'intrusion_set' in stats
+        assert stats['intrusion_set']['unique_entities'] >= 2
 
 
 class TestLanceDBIntegration:
