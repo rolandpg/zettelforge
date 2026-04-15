@@ -6,6 +6,26 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **Graph traversal blackout on CTI relational queries** — The intent
+  classifier was assigning `FACTUAL` intent to CTI relational queries
+  (e.g., "what infrastructure does APT28 use?") because FACTUAL keywords
+  (`apt`, `threat`, `malware`) matched before any RELATIONAL keyword
+  could score. With `FACTUAL` policy setting `graph=0.0`, the
+  `BlendedRetriever` silently multiplied all graph results by zero.
+  Two changes fix this:
+  - `FACTUAL` policy `graph` weight raised from `0.0` to `0.2`, so
+    graph results contribute to factual queries that span a graph hop.
+  - `RELATIONAL` keyword list expanded to cover CTI query patterns:
+    `what infrastructure`, `which campaigns`, `show relationships`,
+    `associated indicators`, `relationships between`, `targets`,
+    `attributed to`, `linked with`, `campaigns by`, `infrastructure
+    used`. These patterns now correctly score as RELATIONAL before
+    FACTUAL keywords can dominate.
+  See `tasks/graph-traversal-optimization.md` for root cause analysis
+  and the four-strategy roadmap for further improvements.
+
 ## [2.1.1] - Upcoming
 
 Production hardening release targeting P0 blockers identified in the

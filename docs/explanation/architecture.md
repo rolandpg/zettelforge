@@ -105,6 +105,32 @@ The hybrid architecture adds operational complexity:
 
 ThreatRecall mitigates this with automatic fallback — if TypeDB is unreachable, `get_knowledge_graph()` returns the JSONL backend transparently. The system degrades to vector-only retrieval rather than failing.
 
+## Intent-Guided Graph Traversal
+
+The `BlendedRetriever` does not run the graph retriever at a fixed weight. It consults the `IntentClassifier` first, then applies an intent-specific traversal policy that controls how much each retrieval source contributes to the final blended score.
+
+### The Five Query Intents and Their Traversal Policies
+
+| Intent | Graph weight | Primary source | Typical CTI query |
+|:-------|:------------|:---------------|:------------------|
+| `FACTUAL` | 0.2 | entity index (0.7) | "What CVE was used in the SolarWinds attack?" |
+| `TEMPORAL` | 0.2 | temporal (0.5) | "What changed since the last incident?" |
+| `RELATIONAL` | 0.5 | graph (0.5) | "What infrastructure does APT28 use?" |
+| `CAUSAL` | 0.6 | graph (0.6) | "Why did the attacker pivot to the domain controller?" |
+| `EXPLORATORY` | 0.2 | vector (0.5) | "Tell me about APT28" |
+
+A `graph` weight of `0.0` means the graph retriever runs but its results are multiplied by zero before accumulating into the blended score — effectively silencing it. This is why intent classification accuracy directly determines whether graph traversal contributes to retrieval at all.
+
+### Why FACTUAL Queries Carry a Non-Zero Graph Weight
+
+FACTUAL queries are entity lookups, and a zero graph weight seems intuitive: if you want to know a specific fact, why traverse the graph? In practice, CTI factual queries frequently span a graph hop. "What CVE does APT28 exploit?" is factual in intent but requires an `(APT28) -[targets]-> (CVE)` traversal to answer correctly. Setting `graph=0.2` for FACTUAL allows graph results to contribute without dominating — the entity index (0.7) still provides the primary answer, and the graph supplements it.
+
+### Classification Accuracy as a Retrieval Quality Gate
+
+The classifier uses two-tier classification: keyword matching (primary) and LLM fallback (when keyword score < 2). A misclassification does not produce a wrong answer — it produces a degraded answer, because the wrong retrieval policy routes the query to the wrong combination of retrievers. A CTI relational query misclassified as FACTUAL will return entity index results rather than graph traversal results. The answer may be plausible but incomplete.
+
+For details on keyword lists, policy weights, and the merge algorithm, see the [Retrieval Policies Reference](../reference/retrieval-policies.md).
+
 ## LLM Quick Reference
 
 ThreatRecall v2.0.0 uses a hybrid two-database architecture. TypeDB (Apache-2.0, STIX 2.1 schema) serves as the ontology layer owning structured threat intelligence: 9 entity types (threat-actor, malware, tool, attack-pattern, vulnerability, campaign, indicator, infrastructure, zettel-note), 8 relation types (uses, targets, attributed-to, indicates, mitigates, mentioned-in, supersedes, alias-of), inference functions for transitive alias resolution and campaign tool attribution, confidence scoring on every relation, and temporal validity via valid-from/valid-until attributes. LanceDB serves as the conversational layer owning unstructured context: Zettelkasten-style atomic notes with 768-dimensional vector embeddings (fastembed nomic-embed-text-v1.5-Q by default, IVF_PQ index with 256 partitions and 16 sub-vectors), raw text, metadata, and links. Embeddings and LLM inference run in-process by default via fastembed (ONNX) and llama-cpp-python (Qwen2.5-3B-Instruct Q4_K_M GGUF). Ollama is available as an optional fallback provider. The bridge between the two layers is the mentioned-in relation in TypeDB which stores (entity → note-id) mappings. During recall(), the BlendedRetriever queries both layers — VectorRetriever computes cosine similarity with entity boost, GraphRetriever runs BFS from query entities with hop-distance scoring — and merges results using intent-based policy weights (factual queries weight entity index 0.7, relational queries weight graph 0.5, exploratory queries weight vector 0.5). The fallback mechanism returns JSONL KnowledgeGraph if TypeDB is unreachable, degrading to vector-only retrieval. This architecture was chosen because CTI analysis requires both typed structured relationships (which TypeDB handles with schema enforcement and inference) and semantic unstructured text retrieval (which LanceDB handles with vector similarity). Neither database alone covers both needs.
