@@ -71,6 +71,7 @@ def generate(
     max_tokens: int = 400,
     temperature: float = 0.1,
     system: Optional[str] = None,
+    json_mode: bool = False,
 ) -> str:
     """
     Generate text from a prompt. Uses local GGUF model by default, Ollama as fallback.
@@ -80,6 +81,7 @@ def generate(
         max_tokens: Maximum tokens to generate.
         temperature: Sampling temperature (0.0 = deterministic).
         system: Optional system prompt.
+        json_mode: If True, instruct the backend to return JSON output where supported.
 
     Returns:
         Generated text string.
@@ -88,19 +90,21 @@ def generate(
 
     if provider == "local":
         try:
-            return _generate_local(prompt, max_tokens, temperature, system)
+            return _generate_local(prompt, max_tokens, temperature, system, json_mode=json_mode)
         except Exception:
             _logger.debug("llamacpp_unavailable_trying_ollama", exc_info=True)
 
     # Ollama fallback
     try:
-        return _generate_ollama(prompt, max_tokens, temperature)
+        return _generate_ollama(prompt, max_tokens, temperature, system=system, json_mode=json_mode)
     except Exception:
         _logger.error("all_llm_backends_failed", exc_info=True)
         return ""
 
 
-def _generate_local(prompt: str, max_tokens: int, temperature: float, system: Optional[str]) -> str:
+def _generate_local(
+    prompt: str, max_tokens: int, temperature: float, system: Optional[str], json_mode: bool = False
+) -> str:
     """Generate via in-process llama-cpp-python."""
     llm = _get_local_llm()
     messages = []
@@ -116,14 +120,25 @@ def _generate_local(prompt: str, max_tokens: int, temperature: float, system: Op
     return output["choices"][0]["message"]["content"].strip()
 
 
-def _generate_ollama(prompt: str, max_tokens: int, temperature: float) -> str:
+def _generate_ollama(
+    prompt: str,
+    max_tokens: int,
+    temperature: float,
+    system: Optional[str] = None,
+    json_mode: bool = False,
+) -> str:
     """Generate via Ollama HTTP API."""
     import ollama
 
     model = os.environ.get("ZETTELFORGE_OLLAMA_MODEL", DEFAULT_OLLAMA_MODEL)
-    response = ollama.generate(
-        model=model,
-        prompt=prompt,
-        options={"temperature": temperature, "num_predict": max_tokens},
-    )
+    kwargs: dict = {
+        "model": model,
+        "prompt": prompt,
+        "options": {"temperature": temperature, "num_predict": max_tokens},
+    }
+    if system:
+        kwargs["system"] = system
+    if json_mode:
+        kwargs["format"] = "json"
+    response = ollama.generate(**kwargs)
     return response.get("response", "").strip()
