@@ -150,6 +150,21 @@ JSON:"""
                 elif isinstance(item, dict):
                     triples.append(item)
 
+            # Validate relations against allowlist
+            valid_relations = set(self.CAUSAL_RELATIONS)
+            validated = []
+            for triple in triples:
+                relation = triple.get("relation", "").strip().lower()
+                if relation not in valid_relations:
+                    _logger.warning(
+                        "invalid_causal_relation",
+                        relation=relation,
+                        triple=str(triple)[:100],
+                    )
+                    continue
+                validated.append(triple)
+            triples = validated
+
             # Add note_id to each triple
             for t in triples:
                 t["note_id"] = note_id
