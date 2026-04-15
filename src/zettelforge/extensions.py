@@ -7,6 +7,7 @@ Extensions provide alternative backends (TypeDB), integrations
 
 If no extensions are installed, all features use built-in backends.
 """
+
 import logging
 import os
 from typing import Any, Optional
@@ -25,6 +26,7 @@ def load_extensions() -> None:
     # Check 1: Try importing the enterprise package
     try:
         import zettelforge_enterprise
+
         _extensions["enterprise"] = zettelforge_enterprise
         _logger.info("Loaded zettelforge-enterprise extensions")
     except ImportError:
@@ -57,6 +59,7 @@ def get_extension(name: str) -> Optional[Any]:
 def reset_extensions() -> None:
     """Reset extension state (for testing)."""
     import sys
+
     global _loaded
     _extensions.clear()
     _loaded = False

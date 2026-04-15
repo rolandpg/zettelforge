@@ -3,6 +3,7 @@ Edition detection for ZettelForge.
 
 Checks whether extensions (like zettelforge-enterprise) are available.
 """
+
 import enum
 
 from zettelforge.extensions import has_extension, reset_extensions
@@ -15,6 +16,7 @@ class Edition(enum.Enum):
 
 class EditionError(Exception):
     """Raised when a feature requires an extension that is not installed."""
+
     pass
 
 

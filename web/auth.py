@@ -6,6 +6,7 @@ For multi-tenant OAuth/JWT, install zettelforge-enterprise.
 
 This stub provides the same interface so web/app.py works without changes.
 """
+
 from typing import Optional, Dict
 
 _default_mm = None
@@ -21,6 +22,7 @@ def get_mm_for_request(request):
     global _default_mm
     if _default_mm is None:
         from zettelforge import MemoryManager
+
         _default_mm = MemoryManager()
     return _default_mm
 
@@ -42,6 +44,7 @@ def register_auth_routes(app):
     @app.get("/auth/login/{provider}")
     async def login(provider: str):
         from fastapi.responses import JSONResponse
+
         return JSONResponse(
             status_code=501,
             content={"error": "Multi-tenant auth available via zettelforge-enterprise."},

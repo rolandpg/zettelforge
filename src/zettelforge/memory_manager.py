@@ -868,9 +868,7 @@ class MemoryManager:
         """
         _extended_formats = {"synthesized_brief", "timeline_analysis", "relationship_map"}
         if format in _extended_formats and not has_extension("enterprise"):
-            self._logger.info(
-                "synthesis_format_fallback", requested=format, using="direct_answer"
-            )
+            self._logger.info("synthesis_format_fallback", requested=format, using="direct_answer")
             format = "direct_answer"
 
         request_id = uuid.uuid4().hex

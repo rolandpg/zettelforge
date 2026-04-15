@@ -16,6 +16,7 @@ Endpoints:
     GET  /api/stats           → Memory system stats
     POST /api/sync            → Trigger OpenCTI sync
 """
+
 import os
 import sys
 import time
@@ -54,10 +55,12 @@ mm = MemoryManager()
 
 # ── Pydantic models ──────────────────────────────────────────────────────────
 
+
 class RecallRequest(BaseModel):
     query: str
     k: int = 10
     domain: Optional[str] = None
+
 
 class RememberRequest(BaseModel):
     content: str
@@ -66,10 +69,12 @@ class RememberRequest(BaseModel):
     source_ref: str = ""
     evolve: bool = True
 
+
 class SynthesizeRequest(BaseModel):
     query: str
     format: str = "direct_answer"
     k: int = 10
+
 
 class SyncRequest(BaseModel):
     limit: int = 20
@@ -77,6 +82,7 @@ class SyncRequest(BaseModel):
 
 
 # ── API endpoints ────────────────────────────────────────────────────────────
+
 
 @app.post("/api/recall")
 async def recall(request: Request, req: RecallRequest):
@@ -203,6 +209,7 @@ async def sync(request: Request, req: SyncRequest):
         )
     try:
         from zettelforge_enterprise.opencti_sync import sync_opencti
+
         tenant_mm = get_mm_for_request(request)
         result = sync_opencti(
             tenant_mm,
@@ -217,6 +224,7 @@ async def sync(request: Request, req: SyncRequest):
 
 
 # ── HTML Frontend ────────────────────────────────────────────────────────────
+
 
 @app.get("/", response_class=HTMLResponse)
 async def index():
@@ -400,11 +408,13 @@ HTML_PAGE = """<!DOCTYPE html>
 
 if __name__ == "__main__":
     import argparse
+
     parser = argparse.ArgumentParser(description="ZettelForge Web UI")
     parser.add_argument("--port", type=int, default=8088)
     parser.add_argument("--host", default="0.0.0.0")
     args = parser.parse_args()
 
     import uvicorn
+
     print(f"ZettelForge v{__version__} — http://{args.host}:{args.port}")
     uvicorn.run(app, host=args.host, port=args.port)

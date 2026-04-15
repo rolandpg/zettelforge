@@ -26,6 +26,7 @@ Usage:
         }
     }
 """
+
 import os
 import sys
 import json
@@ -115,7 +116,10 @@ def handle_tool_call(name: str, arguments: dict) -> dict:
         paths = mm.traverse_graph(entity_type, value, max_depth=max_depth)
         return {
             "paths": [
-                [{"from": s["from_value"], "rel": s["relationship"], "to": s["to_value"]} for s in path]
+                [
+                    {"from": s["from_value"], "rel": s["relationship"], "to": s["to_value"]}
+                    for s in path
+                ]
                 for path in paths[:20]
             ],
             "count": len(paths),
@@ -132,10 +136,12 @@ def handle_tool_call(name: str, arguments: dict) -> dict:
 
     elif name == "zettelforge_sync":
         from zettelforge.edition import is_enterprise
+
         if not is_enterprise():
             return {"error": "OpenCTI sync requires the zettelforge-enterprise package."}
         try:
             from zettelforge_enterprise.opencti_sync import sync_opencti
+
             limit = arguments.get("limit", 20)
             return sync_opencti(mm, limit=limit, use_extraction=False)
         except Exception as e:
@@ -154,10 +160,21 @@ TOOLS = [
         "inputSchema": {
             "type": "object",
             "properties": {
-                "content": {"type": "string", "description": "The threat intelligence text to store"},
-                "domain": {"type": "string", "description": "Domain: cti, incident, general", "default": "cti"},
+                "content": {
+                    "type": "string",
+                    "description": "The threat intelligence text to store",
+                },
+                "domain": {
+                    "type": "string",
+                    "description": "Domain: cti, incident, general",
+                    "default": "cti",
+                },
                 "source": {"type": "string", "description": "Source reference", "default": "mcp"},
-                "evolve": {"type": "boolean", "description": "Enable memory evolution: LLM compares against existing notes and decides ADD/UPDATE/DELETE/NOOP. Slower but prevents duplicate/stale knowledge.", "default": True},
+                "evolve": {
+                    "type": "boolean",
+                    "description": "Enable memory evolution: LLM compares against existing notes and decides ADD/UPDATE/DELETE/NOOP. Slower but prevents duplicate/stale knowledge.",
+                    "default": True,
+                },
             },
             "required": ["content"],
         },
@@ -168,7 +185,10 @@ TOOLS = [
         "inputSchema": {
             "type": "object",
             "properties": {
-                "query": {"type": "string", "description": "Natural language search query (e.g., 'What tools does APT28 use?')"},
+                "query": {
+                    "type": "string",
+                    "description": "Natural language search query (e.g., 'What tools does APT28 use?')",
+                },
                 "k": {"type": "integer", "description": "Max results to return", "default": 10},
                 "domain": {"type": "string", "description": "Filter by domain (optional)"},
             },
@@ -182,7 +202,17 @@ TOOLS = [
             "type": "object",
             "properties": {
                 "query": {"type": "string", "description": "Question to answer from memory"},
-                "format": {"type": "string", "description": "Output format", "default": "direct_answer", "enum": ["direct_answer", "synthesized_brief", "timeline_analysis", "relationship_map"]},
+                "format": {
+                    "type": "string",
+                    "description": "Output format",
+                    "default": "direct_answer",
+                    "enum": [
+                        "direct_answer",
+                        "synthesized_brief",
+                        "timeline_analysis",
+                        "relationship_map",
+                    ],
+                },
             },
             "required": ["query"],
         },
@@ -193,8 +223,15 @@ TOOLS = [
         "inputSchema": {
             "type": "object",
             "properties": {
-                "type": {"type": "string", "description": "Entity type", "enum": ["actor", "cve", "tool", "campaign", "person", "location"]},
-                "value": {"type": "string", "description": "Entity value (e.g., 'apt28', 'CVE-2024-3094')"},
+                "type": {
+                    "type": "string",
+                    "description": "Entity type",
+                    "enum": ["actor", "cve", "tool", "campaign", "person", "location"],
+                },
+                "value": {
+                    "type": "string",
+                    "description": "Entity value (e.g., 'apt28', 'CVE-2024-3094')",
+                },
                 "k": {"type": "integer", "description": "Max results", "default": 5},
             },
             "required": ["type", "value"],
@@ -208,7 +245,11 @@ TOOLS = [
             "properties": {
                 "type": {"type": "string", "description": "Starting entity type"},
                 "value": {"type": "string", "description": "Starting entity value"},
-                "max_depth": {"type": "integer", "description": "Max traversal depth", "default": 2},
+                "max_depth": {
+                    "type": "integer",
+                    "description": "Max traversal depth",
+                    "default": 2,
+                },
             },
             "required": ["type", "value"],
         },
@@ -274,7 +315,9 @@ def run_stdio():
                     "jsonrpc": "2.0",
                     "id": msg_id,
                     "result": {
-                        "content": [{"type": "text", "text": json.dumps(result, indent=2, default=str)}],
+                        "content": [
+                            {"type": "text", "text": json.dumps(result, indent=2, default=str)}
+                        ],
                     },
                 }
             except Exception as e:
