@@ -177,7 +177,7 @@ See [examples/athf_bridge.py](examples/athf_bridge.py).
 | Multi-hop graph traversal | `traverse_graph()` with BFS across relationship chains |
 | Advanced synthesis | `synthesized_brief`, `timeline_analysis`, `relationship_map` |
 | Report ingestion | `remember_report()` with auto-chunking for long threat reports |
-| OpenCTI integration | Bi-directional sync with OpenCTI platform |
+| OpenCTI integration | Bi-directional sync with OpenCTI via pycti — pull attack patterns, intrusion sets, malware, indicators, vulnerabilities, and reports; push notes back as STIX reports. Preserves TLP markings, STIX confidence, CVSS v3/EPSS scores. Deduplicates on re-sync. |
 | Sigma rule generation | Sigma YAML detection rules from IOCs |
 | Multi-tenant auth | OAuth/JWT with per-tenant data isolation |
 | Context injection | Auto-load relevant context before agent tasks |

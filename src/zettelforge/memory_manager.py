@@ -794,6 +794,33 @@ class MemoryManager:
 
     # === Phase 6: Knowledge Graph Retrieval ===
 
+    def ingest_relationship(
+        self,
+        from_type: str,
+        from_value: str,
+        to_type: str,
+        to_value: str,
+        relationship: str,
+        properties: Optional[Dict] = None,
+    ) -> None:
+        """Ingest a STIX relationship into the knowledge graph.
+
+        Intended for use by sync clients (e.g. OpenCTI) to write relationships
+        directly into the graph without creating memory notes.  The edge is
+        deduplicated by (from_type, from_value, to_type, to_value, relationship)
+        — add_edge() is idempotent for existing triples.
+
+        Args:
+            from_type: Entity type of the source node (e.g. "actor", "malware").
+            from_value: Canonical value of the source node.
+            to_type: Entity type of the target node.
+            to_value: Canonical value of the target node.
+            relationship: Relationship label (e.g. "USES_TOOL", "TARGETS_ASSET").
+            properties: Optional dict of edge properties (confidence, timestamps, …).
+        """
+        kg = get_knowledge_graph()
+        kg.add_edge(from_type, from_value, to_type, to_value, relationship, properties or {})
+
     def get_entity_relationships(self, entity_type: str, entity_value: str) -> List[Dict]:
         """Get direct relationships for an entity from the knowledge graph."""
         kg = get_knowledge_graph()

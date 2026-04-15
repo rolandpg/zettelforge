@@ -279,6 +279,14 @@ class MemoryStore:
         self._ensure_cache()
         return self._note_cache.get(note_id)
 
+    def get_note_by_source_ref(self, source_ref: str) -> Optional[MemoryNote]:
+        """Find a note by its source_ref field. Returns None if not found."""
+        self._ensure_cache()
+        for note in self._note_cache.values():
+            if note.content.source_ref == source_ref:
+                return note
+        return None
+
     def get_notes_by_domain(self, domain: str) -> List[MemoryNote]:
         """Retrieve all notes for a specific domain"""
         return [n for n in self.iterate_notes() if n.metadata.domain == domain]
