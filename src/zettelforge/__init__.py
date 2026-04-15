@@ -8,21 +8,18 @@ A production-grade memory system for AI agents with:
 - RAG-as-answer synthesis
 - Intent-based query routing
 
-Community edition (MIT):
+Usage:
     >>> from zettelforge import MemoryManager
     >>> mm = MemoryManager()
     >>> mm.remember("Important information")
     >>> results = mm.recall("query")
     >>> synthesis = mm.synthesize("What do we know?")
 
-Enterprise edition (ThreatRecall by Threatengram) adds:
+Optional extensions (e.g. zettelforge-enterprise) add:
     - STIX 2.1 TypeDB ontology
-    - Blended retrieval (vector + graph)
+    - Deeper graph traversal
+    - Extended synthesis formats
     - OpenCTI integration
-    - Sigma rule generation
-    - Advanced synthesis formats
-    - Multi-tenant auth
-    See https://threatengram.com/enterprise
 """
 
 from zettelforge.blended_retriever import BlendedRetriever

@@ -183,14 +183,7 @@ class KnowledgeGraph:
         return edge_id
 
     def get_entity_timeline(self, entity_type: str, entity_value: str) -> List[Dict]:
-        """Get timeline of states for an entity.  [Enterprise]"""
-        from zettelforge.edition import EditionError, is_enterprise
-
-        if not is_enterprise():
-            raise EditionError(
-                "'get_entity_timeline' (temporal knowledge graph queries) requires "
-                "ThreatRecall Enterprise. https://threatengram.com/enterprise"
-            )
+        """Get timeline of states for an entity."""
         entity_key = f"{entity_type}:{entity_value}"
         timeline = self._entity_timeline.get(entity_key, [])
 
@@ -199,14 +192,7 @@ class KnowledgeGraph:
         return timeline
 
     def get_changes_since(self, timestamp: str) -> List[Dict]:
-        """Get all entity changes since a given timestamp.  [Enterprise]"""
-        from zettelforge.edition import EditionError, is_enterprise
-
-        if not is_enterprise():
-            raise EditionError(
-                "'get_changes_since' (temporal knowledge graph queries) requires "
-                "ThreatRecall Enterprise. https://threatengram.com/enterprise"
-            )
+        """Get all entity changes since a given timestamp."""
         changes = []
 
         for ts, edges in self._temporal_index.items():
@@ -389,8 +375,8 @@ class KnowledgeGraph:
         return results
 
     def get_latest_state(self, entity_type: str, entity_value: str) -> Optional[Dict]:
-        """Get the latest known state of an entity.  [Enterprise]"""
-        timeline = self.get_entity_timeline(entity_type, entity_value)  # gate enforced there
+        """Get the latest known state of an entity."""
+        timeline = self.get_entity_timeline(entity_type, entity_value)
         if timeline:
             return timeline[-1]
         return None
@@ -411,10 +397,10 @@ def get_knowledge_graph() -> KnowledgeGraph:
     if _kg_instance is None:
         with _kg_lock:
             if _kg_instance is None:
-                from zettelforge.edition import is_enterprise
+                from zettelforge.extensions import has_extension
 
                 backend = os.environ.get("ZETTELFORGE_BACKEND", "typedb")
-                if backend == "typedb" and is_enterprise():
+                if backend == "typedb" and has_extension("enterprise"):
                     try:
                         from zettelforge_enterprise.typedb_client import TypeDBKnowledgeGraph
 
@@ -427,12 +413,12 @@ def get_knowledge_graph() -> KnowledgeGraph:
                         )
                         _kg_instance = KnowledgeGraph()
                 else:
-                    if backend == "typedb" and not is_enterprise():
+                    if backend == "typedb" and not has_extension("enterprise"):
                         from zettelforge.log import get_logger as _get_logger
 
-                        _get_logger("zettelforge.edition").info(
+                        _get_logger("zettelforge.extensions").info(
                             "community_edition_jsonl_graph",
-                            detail="TypeDB STIX ontology requires Enterprise edition",
+                            detail="TypeDB available via zettelforge-enterprise extension",
                         )
                     _kg_instance = KnowledgeGraph()
     return _kg_instance

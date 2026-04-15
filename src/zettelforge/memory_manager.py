@@ -4,8 +4,8 @@ A-MEM Agentic Memory Architecture V1.0
 
 Main interface for agent memory operations.
 
-Community edition: vector search, JSONL graph, basic entity extraction.
-Enterprise edition: blended retrieval, cross-encoder reranking, report ingestion.
+Core: vector search, JSONL graph, entity extraction, blended retrieval.
+With zettelforge-enterprise: TypeDB backend, deeper traversal, extended synthesis.
 """
 
 import atexit
@@ -18,7 +18,7 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
 
 from zettelforge.alias_resolver import AliasResolver
-from zettelforge.edition import is_enterprise
+from zettelforge.extensions import has_extension
 from zettelforge.entity_indexer import EntityIndexer
 from zettelforge.fact_extractor import FactExtractor
 from zettelforge.governance_validator import GovernanceValidator, GovernanceViolationError
@@ -300,7 +300,7 @@ class MemoryManager:
         chunk_size: int = 3000,
     ) -> List[Tuple[Optional[MemoryNote], str]]:
         """
-        Ingest a news report or threat report.  [Enterprise]
+        Ingest a news report or threat report.
 
         Chunks long content, runs two-phase extraction on each chunk,
         and stores published_date as temporal metadata.
@@ -316,18 +316,7 @@ class MemoryManager:
 
         Returns:
             List of (MemoryNote or None, status) tuples across all chunks.
-
-        Raises:
-            EditionError: If called in Community edition.
         """
-        if not is_enterprise():
-            from zettelforge.edition import EditionError
-
-            raise EditionError(
-                "'remember_report' (report ingestion with auto-chunking) requires "
-                "ThreatRecall Enterprise. Set THREATENGRAM_LICENSE_KEY or visit "
-                "https://threatengram.com/enterprise"
-            )
         source_ref = source_url or "report"
 
         # Chunk long content on sentence boundaries
@@ -840,18 +829,17 @@ class MemoryManager:
         return kg.get_neighbors(entity_type, canonical)
 
     def traverse_graph(self, start_type: str, start_value: str, max_depth: int = 2) -> List[Dict]:
-        """Traverse relationships from a starting entity.  [Enterprise]
+        """Traverse relationships from a starting entity.
 
-        Multi-hop graph traversal requires Enterprise edition.
-        Community users can use get_entity_relationships() for direct neighbors.
+        Depth is capped at 2 without the enterprise extension.
+        Install zettelforge-enterprise for deeper TypeDB traversal.
         """
-        if not is_enterprise():
-            from zettelforge.edition import EditionError
-
-            raise EditionError(
-                "'traverse_graph' (multi-hop BFS traversal) requires ThreatRecall Enterprise. "
-                "Use get_entity_relationships() for direct neighbors in Community edition. "
-                "https://threatengram.com/enterprise"
+        if max_depth > 2 and not has_extension("enterprise"):
+            max_depth = 2
+            self._logger.info(
+                "traverse_depth_capped",
+                max_depth=2,
+                reason="Install zettelforge-enterprise for deeper TypeDB traversal",
             )
         kg = get_knowledge_graph()
         canonical = self.resolver.resolve(start_type, start_value)
@@ -866,9 +854,8 @@ class MemoryManager:
         """
         Synthesize an answer from retrieved memories (Phase 7 RAG-as-Answer).
 
-        Community: "direct_answer" format only.
-        Enterprise: All formats — "direct_answer", "synthesized_brief",
-                    "timeline_analysis", "relationship_map".
+        Extended formats ("synthesized_brief", "timeline_analysis", "relationship_map")
+        require the enterprise extension; without it they fall back to "direct_answer".
 
         Args:
             query: The question to answer
@@ -878,19 +865,13 @@ class MemoryManager:
 
         Returns:
             Dictionary with synthesis result, metadata, and sources
-
-        Raises:
-            EditionError: If an advanced format is used in Community edition.
         """
-        _enterprise_formats = {"synthesized_brief", "timeline_analysis", "relationship_map"}
-        if format in _enterprise_formats and not is_enterprise():
-            from zettelforge.edition import EditionError
-
-            raise EditionError(
-                f"Synthesis format '{format}' requires ThreatRecall Enterprise. "
-                f"Community edition supports 'direct_answer'. "
-                f"Set THREATENGRAM_LICENSE_KEY or visit https://threatengram.com/enterprise"
+        _extended_formats = {"synthesized_brief", "timeline_analysis", "relationship_map"}
+        if format in _extended_formats and not has_extension("enterprise"):
+            self._logger.info(
+                "synthesis_format_fallback", requested=format, using="direct_answer"
             )
+            format = "direct_answer"
 
         request_id = uuid.uuid4().hex
         start = time.perf_counter()
