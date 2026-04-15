@@ -3,12 +3,14 @@ Memory Note Storage - JSONL Read/Write Utilities
 A-MEM Agentic Memory Architecture V1.0
 """
 
+import atexit
 import fcntl
 import glob
 import hashlib
 import json
 import os
 import tempfile
+import threading
 import time
 from datetime import datetime
 from pathlib import Path
@@ -47,6 +49,11 @@ class MemoryStore:
         self.lance_path.mkdir(parents=True, exist_ok=True)
         self._lancedb = None
         self._note_cache: Optional[Dict[str, MemoryNote]] = None
+
+        self._dirty_access: set = set()  # note IDs with unsaved access updates
+        self._access_flush_timer: Optional[threading.Timer] = None
+        self._access_flush_lock = threading.Lock()
+        atexit.register(self._flush_access)
 
         # Clean orphaned temp files from crashed _rewrite_note() calls
         for tmp in glob.glob(str(self.jsonl_path.parent / "tmp*.jsonl")):
@@ -302,6 +309,29 @@ class MemoryStore:
                     raise
             finally:
                 fcntl.flock(lock_fh, fcntl.LOCK_UN)
+
+    def mark_access_dirty(self, note_id: str) -> None:
+        """Mark a note's access stats as needing persistence."""
+        self._dirty_access.add(note_id)
+        self._schedule_access_flush()
+
+    def _schedule_access_flush(self) -> None:
+        with self._access_flush_lock:
+            if self._access_flush_timer is None or not self._access_flush_timer.is_alive():
+                self._access_flush_timer = threading.Timer(60.0, self._flush_access)
+                self._access_flush_timer.daemon = True
+                self._access_flush_timer.start()
+
+    def _flush_access(self) -> None:
+        """Write dirty access counts back to JSONL."""
+        if not self._dirty_access:
+            return
+        dirty = self._dirty_access.copy()
+        self._dirty_access.clear()
+        for note_id in dirty:
+            note = self.get_note_by_id(note_id)
+            if note:
+                self._rewrite_note(note)
 
     def export_snapshot(self, output_path: str) -> None:
         """Export full memory state for cold storage"""

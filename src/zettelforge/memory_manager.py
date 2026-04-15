@@ -450,6 +450,7 @@ class MemoryManager:
         # Track access
         for note in results:
             note.increment_access()
+            self.store.mark_access_dirty(note.id)
 
         duration_ms = (time.perf_counter() - start) * 1000
         log_api_activity(

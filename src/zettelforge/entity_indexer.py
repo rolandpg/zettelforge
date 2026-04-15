@@ -9,9 +9,11 @@ Conversational Entity Extension (RFC-001):
 - EntityExtractor is now the single source of truth (NoteConstructor delegates here)
 """
 
+import atexit
 import fcntl
 import json
 import re
+import threading
 from pathlib import Path
 from typing import Dict, List, Optional, Set
 
@@ -282,6 +284,10 @@ class EntityIndexer:
             etype: {} for etype in EntityExtractor.ENTITY_TYPES
         }
         self.extractor = EntityExtractor()
+        self._dirty = False
+        self._flush_timer: Optional[threading.Timer] = None
+        self._flush_lock = threading.Lock()
+        atexit.register(self._flush_sync)
         self.load()
 
     def load(self) -> bool:
@@ -318,7 +324,8 @@ class EntityIndexer:
                 if entity_lower not in self.index[entity_type]:
                     self.index[entity_type][entity_lower] = set()
                 self.index[entity_type][entity_lower].add(note_id)
-        self.save()
+        self._dirty = True
+        self._schedule_flush()
 
     def remove_note(self, note_id: str) -> None:
         """Remove a note ID from all entity sets in the index."""
@@ -330,7 +337,22 @@ class EntityIndexer:
                     del self.index[entity_type][entity_value]
             if not self.index[entity_type]:
                 del self.index[entity_type]
-        self.save()
+        self._dirty = True
+        self._schedule_flush()
+
+    def _schedule_flush(self) -> None:
+        """Schedule a background flush in 5 seconds if not already scheduled."""
+        with self._flush_lock:
+            if self._flush_timer is None or not self._flush_timer.is_alive():
+                self._flush_timer = threading.Timer(5.0, self._flush_sync)
+                self._flush_timer.daemon = True
+                self._flush_timer.start()
+
+    def _flush_sync(self) -> None:
+        """Write index to disk if dirty."""
+        if self._dirty:
+            self.save()
+            self._dirty = False
 
     def get_note_ids(self, entity_type: str, entity_value: str) -> List[str]:
         """Get note IDs for a specific entity."""
@@ -380,5 +402,14 @@ class EntityIndexer:
             entities = self.extractor.extract_all(note.content.raw)
             self.add_note(note.id, entities)
             count += 1
+
+        # Cancel any pending background timer and flush immediately — rebuild is
+        # an authoritative rewrite that must be persisted before returning.
+        with self._flush_lock:
+            if self._flush_timer is not None and self._flush_timer.is_alive():
+                self._flush_timer.cancel()
+            self._flush_timer = None
+        self.save()
+        self._dirty = False
 
         return {"notes_indexed": count, "stats": self.stats()}

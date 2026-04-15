@@ -318,6 +318,18 @@ class KnowledgeGraph:
             return self._nodes.get(node_id)
         return None
 
+    def get_node_by_id(self, node_id: str) -> Optional[Dict]:
+        """Get node by its internal node_id."""
+        return self._nodes.get(node_id)
+
+    def get_outgoing_edges(self, node_id: str) -> List[Dict]:
+        """Return all outgoing edges for a node_id.
+
+        Each edge dict contains at minimum: edge_id, from_node_id, to_node_id,
+        relationship, properties, created_at, updated_at.
+        """
+        return list(self._edges_from.get(node_id, []))
+
     def get_neighbors(
         self, entity_type: str, entity_value: str, relationship: Optional[str] = None
     ) -> List[Dict]:
