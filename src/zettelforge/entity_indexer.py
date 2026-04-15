@@ -9,6 +9,7 @@ Conversational Entity Extension (RFC-001):
 - EntityExtractor is now the single source of truth (NoteConstructor delegates here)
 """
 
+import fcntl
 import json
 import re
 from pathlib import Path
@@ -302,8 +303,10 @@ class EntityIndexer:
         """Save index to disk."""
         self.index_path.parent.mkdir(parents=True, exist_ok=True)
         with open(self.index_path, "w") as f:
+            fcntl.flock(f, fcntl.LOCK_EX)
             data = {k: {kk: list(vv) for kk, vv in v.items()} for k, v in self.index.items()}
             json.dump(data, f, indent=2)
+            fcntl.flock(f, fcntl.LOCK_UN)
 
     def add_note(self, note_id: str, entities: Dict[str, List[str]]) -> None:
         """Add note to entity index."""
@@ -315,6 +318,18 @@ class EntityIndexer:
                 if entity_lower not in self.index[entity_type]:
                     self.index[entity_type][entity_lower] = set()
                 self.index[entity_type][entity_lower].add(note_id)
+        self.save()
+
+    def remove_note(self, note_id: str) -> None:
+        """Remove a note ID from all entity sets in the index."""
+        for entity_type in list(self.index.keys()):
+            for entity_value in list(self.index[entity_type].keys()):
+                self.index[entity_type][entity_value].discard(note_id)
+                # Clean up empty sets
+                if not self.index[entity_type][entity_value]:
+                    del self.index[entity_type][entity_value]
+            if not self.index[entity_type]:
+                del self.index[entity_type]
         self.save()
 
     def get_note_ids(self, entity_type: str, entity_value: str) -> List[str]:

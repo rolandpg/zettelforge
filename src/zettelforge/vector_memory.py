@@ -27,6 +27,16 @@ from zettelforge.log import get_logger
 
 _logger = get_logger("zettelforge.vector_memory")
 
+
+def _sanitize_filter_value(value: str) -> str:
+    """Sanitize a value for use in LanceDB WHERE clauses.
+    Only allows alphanumeric, hyphen, underscore, dot, colon, and forward slash.
+    """
+    if not re.match(r"^[a-zA-Z0-9_\-\.:/]+$", value):
+        raise ValueError(f"Invalid filter value: {value!r}")
+    return value
+
+
 # ── Configuration ─────────────────────────────────────────────────────────────
 
 DEFAULT_EMBEDDING_MODEL = "nomic-ai/nomic-embed-text-v1.5-Q"
@@ -281,9 +291,9 @@ class VectorMemory:
         # Build where clause filters
         where_clauses = []
         if source_filter:
-            where_clauses.append(f"source = '{source_filter}'")
+            where_clauses.append(f"source = '{_sanitize_filter_value(source_filter)}'")
         if session_filter:
-            where_clauses.append(f"session_key = '{session_filter}'")
+            where_clauses.append(f"session_key = '{_sanitize_filter_value(session_filter)}'")
 
         search = self.table.search(query_emb, vector_column_name="embedding")
         if where_clauses:
@@ -311,7 +321,7 @@ class VectorMemory:
 
         q = self.table.search().order_by("timestamp", descending=True).limit(limit)
         if session_key:
-            q = q.where(f"session_key = '{session_key}'")
+            q = q.where(f"session_key = '{_sanitize_filter_value(session_key)}'")
 
         return q.to_list()
 
@@ -321,9 +331,9 @@ class VectorMemory:
             self.init()
 
         if content_hash:
-            self.table.delete(f"content_hash = '{content_hash}'")
+            self.table.delete(f"content_hash = '{_sanitize_filter_value(content_hash)}'")
         elif entry_id:
-            self.table.delete(f"id = '{entry_id}'")
+            self.table.delete(f"id = '{_sanitize_filter_value(entry_id)}'")
 
     def count(self) -> int:
         """Total entry count."""

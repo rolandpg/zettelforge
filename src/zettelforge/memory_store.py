@@ -3,6 +3,8 @@ Memory Note Storage - JSONL Read/Write Utilities
 A-MEM Agentic Memory Architecture V1.0
 """
 
+import fcntl
+import glob
 import hashlib
 import json
 import os
@@ -45,6 +47,14 @@ class MemoryStore:
         self.lance_path.mkdir(parents=True, exist_ok=True)
         self._lancedb = None
         self._note_cache: Optional[Dict[str, MemoryNote]] = None
+
+        # Clean orphaned temp files from crashed _rewrite_note() calls
+        for tmp in glob.glob(str(self.jsonl_path.parent / "tmp*.jsonl")):
+            try:
+                if Path(tmp).stat().st_mtime < time.time() - 3600:  # older than 1 hour
+                    os.unlink(tmp)
+            except OSError:
+                pass
 
     @property
     def lancedb(self):
@@ -105,7 +115,9 @@ class MemoryStore:
 
         # Write to JSONL
         with open(self.jsonl_path, "a") as f:
+            fcntl.flock(f, fcntl.LOCK_EX)
             f.write(note.model_dump_json() + "\n")
+            fcntl.flock(f, fcntl.LOCK_UN)
 
         # Update in-memory cache
         if self._note_cache is not None:
@@ -155,6 +167,11 @@ class MemoryStore:
                 activity = "Create"
             else:
                 tbl = self.lancedb.open_table(table_name)
+                # Remove existing row if present (prevents ghost duplicates)
+                try:
+                    tbl.delete(f"id = '{note.id}'")
+                except Exception:
+                    pass  # Table may be empty or ID may not exist
                 tbl.add([note_data])
                 activity = "Update"
 
@@ -246,40 +263,45 @@ class MemoryStore:
         if not self.jsonl_path.exists():
             return
 
-        # Read all notes
-        notes = []
-        updated = False
-        with open(self.jsonl_path, "r") as f:
-            for line in f:
-                if line.strip():
-                    try:
-                        data = json.loads(line)
-                        if data.get("id") == note.id:
-                            notes.append(note.model_dump())
-                            updated = True
-                        else:
-                            notes.append(data)
-                    except Exception:
-                        pass
+        # Hold an exclusive lock on the canonical file for the entire read-write-replace cycle
+        with open(self.jsonl_path, "r") as lock_fh:
+            fcntl.flock(lock_fh, fcntl.LOCK_EX)
+            try:
+                # Read all notes under the lock
+                notes = []
+                updated = False
+                for line in lock_fh:
+                    if line.strip():
+                        try:
+                            data = json.loads(line)
+                            if data.get("id") == note.id:
+                                notes.append(note.model_dump())
+                                updated = True
+                            else:
+                                notes.append(data)
+                        except Exception:
+                            pass
 
-        if not updated:
-            notes.append(note.model_dump())
+                if not updated:
+                    notes.append(note.model_dump())
 
-        # Write to temp file in same directory, then atomically replace
-        dir_path = self.jsonl_path.parent
-        fd, tmp_path = tempfile.mkstemp(suffix=".jsonl", dir=str(dir_path))
-        try:
-            with os.fdopen(fd, "w") as f:
-                for n in notes:
-                    f.write(json.dumps(n) + "\n")
-            os.replace(tmp_path, self.jsonl_path)  # atomic on POSIX
-            # Update cache
-            if self._note_cache is not None:
-                self._note_cache[note.id] = note
-        except:
-            if os.path.exists(tmp_path):
-                os.unlink(tmp_path)
-            raise
+                # Write to temp file in same directory, then atomically replace
+                dir_path = self.jsonl_path.parent
+                fd, tmp_path = tempfile.mkstemp(suffix=".jsonl", dir=str(dir_path))
+                try:
+                    with os.fdopen(fd, "w") as f:
+                        for n in notes:
+                            f.write(json.dumps(n) + "\n")
+                    os.replace(tmp_path, self.jsonl_path)  # atomic on POSIX
+                    # Update cache
+                    if self._note_cache is not None:
+                        self._note_cache[note.id] = note
+                except:
+                    if os.path.exists(tmp_path):
+                        os.unlink(tmp_path)
+                    raise
+            finally:
+                fcntl.flock(lock_fh, fcntl.LOCK_UN)
 
     def export_snapshot(self, output_path: str) -> None:
         """Export full memory state for cold storage"""

@@ -609,6 +609,9 @@ class MemoryManager:
         self.store._rewrite_note(old_note)
         self.store._rewrite_note(new_note)
 
+        # Remove superseded note from entity index so recall_entity() won't return it
+        self.indexer.remove_note(note_id)
+
         # Add temporal edge to knowledge graph (Task 2)
         kg = get_knowledge_graph()
         kg.add_temporal_edge(
@@ -628,57 +631,48 @@ class MemoryManager:
     ) -> Optional[MemoryNote]:
         from datetime import datetime
 
-        candidates = [n for n in self.store.iterate_notes() if n.id != new_note.id]
-        if not candidates:
+        _entity_keys = [
+            "cve",
+            "actor",
+            "tool",
+            "campaign",
+            "asset",
+            "person",
+            "location",
+            "organization",
+            "event",
+            "activity",
+            "temporal",
+        ]
+
+        # Build the new note's normalised entity sets once.
+        new_entities: Dict[str, set] = {
+            k: set(e.lower() for e in resolved_entities.get(k, [])) for k in _entity_keys
+        }
+
+        # Use the entity index to collect only candidate note IDs that share at
+        # least one entity value with the new note — O(E) instead of O(N).
+        # Also pre-compute per-candidate overlap counts while traversing the index
+        # so we never need to re-extract entities from raw content.
+        candidate_overlap: Dict[str, int] = {}
+        for key in _entity_keys:
+            for evalue in new_entities[key]:
+                for nid in self.indexer.get_note_ids(key, evalue):
+                    if nid == new_note.id:
+                        continue
+                    candidate_overlap[nid] = candidate_overlap.get(nid, 0) + 1
+
+        if not candidate_overlap:
             return None
 
-        new_entities = {
-            k: resolved_entities.get(k, [])
-            for k in [
-                "cve",
-                "actor",
-                "tool",
-                "campaign",
-                "asset",
-                "person",
-                "location",
-                "organization",
-                "event",
-                "activity",
-                "temporal",
-            ]
-        }
         best_match = None
         best_score = 0.0
 
-        for candidate in candidates:
-            if candidate.links.superseded_by:
+        for nid, overlap in candidate_overlap.items():
+            candidate = self.store.get_note_by_id(nid)
+            if candidate is None:
                 continue
-
-            cand_entities = self.indexer.extractor.extract_all(candidate.content.raw, use_llm=False)
-            cand_resolved = {}
-            for k, v in cand_entities.items():
-                cand_resolved[k] = [self.resolver.resolve(k, e) for e in v]
-
-            overlap = 0
-            for key in [
-                "cve",
-                "actor",
-                "tool",
-                "campaign",
-                "asset",
-                "person",
-                "location",
-                "organization",
-                "event",
-                "activity",
-                "temporal",
-            ]:
-                new_set = set(e.lower() for e in new_entities.get(key, []))
-                cand_set = set(e.lower() for e in cand_resolved.get(key, []))
-                overlap += len(new_set & cand_set)
-
-            if overlap == 0:
+            if candidate.links.superseded_by:
                 continue
 
             score = float(overlap)
