@@ -1,0 +1,38 @@
+{
+  "meta": {
+    "date": "2026-04-14T20:36:55.737352",
+    "version": "zettelforge-2.1.1",
+    "dataset": "mrmoor/cyber-threat-intelligence",
+    "notes_ingested": 300,
+    "queries": 46,
+    "k": 10,
+    "ingest_time_s": 77.2
+  },
+  "by_category": {
+    "entity_retrieval": {
+      "avg_score": 1.0,
+      "p50_latency_ms": 569.1,
+      "n": 20
+    },
+    "tool_attribution": {
+      "avg_score": 1.0,
+      "p50_latency_ms": 551.2,
+      "n": 6
+    },
+    "negative_knowledge": {
+      "avg_score": 1.0,
+      "p50_latency_ms": 512.4,
+      "n": 5
+    },
+    "entity_extraction": {
+      "avg_score": 0.0,
+      "p50_latency_ms": 0.1,
+      "n": 15
+    }
+  },
+  "overall": {
+    "avg_score": 0.6739,
+    "p50_latency_ms": 510.9,
+    "total_queries": 46
+  }
+}
