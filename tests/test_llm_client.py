@@ -1,6 +1,14 @@
 """Tests for LLM client (local llama-cpp-python + ollama fallback)."""
+import os
 import pytest
 from zettelforge.llm_client import generate, _get_local_llm
+
+# These tests require a real LLM backend (local GGUF model or Ollama).
+# Skip in CI where neither is available.
+pytestmark = pytest.mark.skipif(
+    os.environ.get("CI") == "true",
+    reason="LLM integration tests require local model or Ollama",
+)
 
 
 class TestLocalLLM:

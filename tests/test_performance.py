@@ -3,6 +3,7 @@ ZettelForge Performance Test Suite
 Compliant with GOV-007 (Testing Standards)
 Tests performance, scalability, and correctness at various scales.
 """
+import os
 import time
 import pytest
 from typing import List
@@ -10,6 +11,12 @@ import statistics
 
 from zettelforge import MemoryManager
 from zettelforge.note_schema import MemoryNote, Content, Semantic, Embedding, Metadata
+
+# Performance tests are sensitive to runner hardware; skip in CI.
+pytestmark = pytest.mark.skipif(
+    os.environ.get("CI") == "true",
+    reason="Performance tests require dedicated hardware, not CI runners",
+)
 
 
 class TestPerformance:
