@@ -1,0 +1,26 @@
+{
+  "benchmark": "scale_benchmark",
+  "backend": "jsonl",
+  "timestamp": "2026-04-15T01:11:23Z",
+  "counts": [
+    100
+  ],
+  "results": [
+    {
+      "note_count": 100,
+      "write_p50_ms": 77.94635051686782,
+      "write_p95_ms": 135.29537605791117,
+      "write_p99_ms": 194.47719724530052,
+      "recall_p50_ms": 136.98946649674326,
+      "recall_p95_ms": 197.36152760597184,
+      "recall_p99_ms": 251.99600630701744,
+      "ingestion_rate_notes_per_sec": 9.2,
+      "rss_mb": 2923.5,
+      "lancedb_rows": 100,
+      "entity_index_size": -1,
+      "write_mean_ms": 108.69,
+      "recall_mean_ms": 146.71,
+      "total_ingest_s": 10.87
+    }
+  ]
+}

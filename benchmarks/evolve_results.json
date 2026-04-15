@@ -1,0 +1,101 @@
+{
+  "meta": {
+    "date": "2026-04-14T20:12:46.769810",
+    "version": "zettelforge-2.1.1",
+    "llm_backend": "ollama",
+    "model": "qwen2.5:3b",
+    "mode": "quick",
+    "n_cases": 5
+  },
+  "overall": {
+    "exact_accuracy_pct": 40.0,
+    "avg_score": 0.6,
+    "p50_latency_ms": 3744.2,
+    "p95_latency_ms": 4111.9,
+    "n": 5
+  },
+  "by_category": {
+    "UPDATE": {
+      "exact_accuracy_pct": 100.0,
+      "avg_score": 1.0,
+      "n": 2
+    },
+    "ADD": {
+      "exact_accuracy_pct": 0.0,
+      "avg_score": 0.0,
+      "n": 1
+    },
+    "NOOP": {
+      "exact_accuracy_pct": 0.0,
+      "avg_score": 0.5,
+      "n": 1
+    },
+    "DELETE": {
+      "exact_accuracy_pct": 0.0,
+      "avg_score": 0.5,
+      "n": 1
+    }
+  },
+  "cases": [
+    {
+      "index": 0,
+      "category": "UPDATE",
+      "description": "TTP change: C2 tool replacement",
+      "note_a": "APT28 uses Cobalt Strike for command-and-control infrastructure.",
+      "note_b": "APT28 has shifted from Cobalt Strike to the HeadLace backdoor for command-and-control operations as of late 2023.",
+      "expected": "updated",
+      "actual": "updated",
+      "score": 1.0,
+      "latency_ms": 5244.7,
+      "error": null
+    },
+    {
+      "index": 1,
+      "category": "ADD",
+      "description": "Unrelated new fact: vendor patch release",
+      "note_a": "APT28 uses Cobalt Strike for command-and-control infrastructure.",
+      "note_b": "Fortinet released a critical patch for CVE-2024-1111 on March 15, 2024. All FortiGate administrators should apply the up",
+      "expected": "added",
+      "actual": "noop",
+      "score": 0.0,
+      "latency_ms": 4111.9,
+      "error": null
+    },
+    {
+      "index": 2,
+      "category": "NOOP",
+      "description": "Same fact with alias added: Fancy Bear == APT28",
+      "note_a": "APT28 is a Russian state-sponsored threat actor attributed to the GRU.",
+      "note_b": "APT28, also known as Fancy Bear, is a Russian cyber espionage group attributed to Russian military intelligence (GRU).",
+      "expected": "noop",
+      "actual": "updated",
+      "score": 0.5,
+      "latency_ms": 3744.2,
+      "error": null
+    },
+    {
+      "index": 3,
+      "category": "DELETE",
+      "description": "Attribution correction: wrong actor replaced",
+      "note_a": "The 2023 MOVEit data breach was attributed to APT28.",
+      "note_b": "Updated attribution analysis: the MOVEit data breach was conducted by the Cl0p ransomware group (TA505), not APT28. Earl",
+      "expected": "corrected",
+      "actual": "updated",
+      "score": 0.5,
+      "latency_ms": 3374.9,
+      "error": null
+    },
+    {
+      "index": 4,
+      "category": "UPDATE",
+      "description": "Scope expansion of targeting",
+      "note_a": "Lazarus Group primarily targets South Korean financial institutions.",
+      "note_b": "Lazarus Group has expanded its targeting beyond South Korea to include cryptocurrency exchanges globally, as seen in 202",
+      "expected": "updated",
+      "actual": "updated",
+      "score": 1.0,
+      "latency_ms": 3081.6,
+      "error": null
+    }
+  ]
+}

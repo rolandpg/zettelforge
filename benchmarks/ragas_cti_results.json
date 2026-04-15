@@ -1,0 +1,52 @@
+{
+  "meta": {
+    "date": "2026-04-14T20:10:35.596740",
+    "version": "zettelforge-2.1.1",
+    "dataset": "cti_corpus",
+    "reports": 8,
+    "queries": 20,
+    "k": 10,
+    "scoring_method": "manual_fallback+context_precision"
+  },
+  "ingest": {
+    "ingested": 8,
+    "duration_s": 6.13
+  },
+  "scores": {
+    "context_precision": 0.3563,
+    "string_similarity": 0.3086,
+    "keyword_presence": 0.9062
+  },
+  "latency": {
+    "p50_ms": 369.7,
+    "p95_ms": 479.8
+  },
+  "by_category": {
+    "tool-attribution": {
+      "n": 5,
+      "context_precision": 0.225,
+      "avg_retrieved": 8
+    },
+    "cve-linkage": {
+      "n": 4,
+      "context_precision": 0.5625,
+      "avg_retrieved": 8
+    },
+    "attribution": {
+      "n": 5,
+      "context_precision": 0.25,
+      "avg_retrieved": 8
+    },
+    "temporal": {
+      "n": 3,
+      "context_precision": 0.7083,
+      "avg_retrieved": 8
+    },
+    "multi-hop": {
+      "n": 3,
+      "context_precision": 0.125,
+      "avg_retrieved": 8
+    }
+  },
+  "total_samples": 20
+}

@@ -1,41 +1,58 @@
 {
   "meta": {
-    "date": "2026-04-10T07:33:40.306251",
-    "version": "zettelforge-2.0.0",
+    "date": "2026-04-14T20:10:14.582410",
+    "version": "zettelforge-2.1.1",
     "source": "AI4Sec/cti-bench (NeurIPS 2024)",
     "k": 10,
-    "max_samples": 50
+    "max_samples": 20
   },
   "tasks": {
     "CTI-ATE": {
       "task": "CTI-ATE",
-      "n": 50,
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1": 0.0,
-      "p50_latency_ms": 1170.2,
-      "ingest_duration_s": 745.1,
+      "n": 20,
+      "precision": 0.0276,
+      "recall": 0.0548,
+      "f1": 0.0356,
+      "p50_latency_ms": 440.7,
+      "ingest_duration_s": 3.2,
       "details": [
         {
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 2.2317490680143237,
-          "predicted": [],
+          "latency_s": 0.5551785829884466,
+          "predicted": [
+            "T1057",
+            "T1059",
+            "T1104",
+            "T1119",
+            "T1219",
+            "T1592",
+            "T1595"
+          ],
           "ground_truth": [
             "T1070",
             "T1071",
             "T1083",
             "T1573"
           ],
-          "retrieved_count": 9
+          "retrieved_count": 10
         },
         {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 1.1822127269988414,
-          "predicted": [],
+          "precision": 0.125,
+          "recall": 0.16666666666666666,
+          "f1": 0.14285714285714288,
+          "latency_s": 0.43919611599994823,
+          "predicted": [
+            "T1057",
+            "T1104",
+            "T1189",
+            "T1525",
+            "T1592",
+            "T1595",
+            "T1608",
+            "T1659"
+          ],
           "ground_truth": [
             "T1057",
             "T1059",
@@ -47,11 +64,20 @@
           "retrieved_count": 10
         },
         {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 1.4720443990081549,
-          "predicted": [],
+          "precision": 0.125,
+          "recall": 0.14285714285714285,
+          "f1": 0.13333333333333333,
+          "latency_s": 0.41778418101603165,
+          "predicted": [
+            "T1020",
+            "T1041",
+            "T1048",
+            "T1059",
+            "T1104",
+            "T1119",
+            "T1219",
+            "T1587"
+          ],
           "ground_truth": [
             "T1027",
             "T1055",
@@ -61,14 +87,22 @@
             "T1140",
             "T1518"
           ],
-          "retrieved_count": 9
+          "retrieved_count": 10
         },
         {
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 0.03948473499622196,
-          "predicted": [],
+          "latency_s": 0.4564977709960658,
+          "predicted": [
+            "T1057",
+            "T1176",
+            "T1204",
+            "T1497",
+            "T1518",
+            "T1566",
+            "T1652"
+          ],
           "ground_truth": [
             "T1404",
             "T1406",
@@ -96,8 +130,16 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 0.04030560201499611,
-          "predicted": [],
+          "latency_s": 0.48516390001168475,
+          "predicted": [
+            "T1057",
+            "T1104",
+            "T1189",
+            "T1592",
+            "T1595",
+            "T1608",
+            "T1659"
+          ],
           "ground_truth": [
             "T1005",
             "T1059",
@@ -109,24 +151,44 @@
           "retrieved_count": 10
         },
         {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 1.1139522869780194,
-          "predicted": [],
+          "precision": 0.125,
+          "recall": 0.3333333333333333,
+          "f1": 0.18181818181818182,
+          "latency_s": 0.38857566798105836,
+          "predicted": [
+            "T1003",
+            "T1020",
+            "T1041",
+            "T1048",
+            "T1057",
+            "T1104",
+            "T1202",
+            "T1573"
+          ],
           "ground_truth": [
             "T1059",
             "T1546",
             "T1573"
           ],
-          "retrieved_count": 9
+          "retrieved_count": 10
         },
         {
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 1.1179098860011436,
-          "predicted": [],
+          "latency_s": 0.4325504699954763,
+          "predicted": [
+            "T1005",
+            "T1057",
+            "T1059",
+            "T1074",
+            "T1083",
+            "T1119",
+            "T1213",
+            "T1217",
+            "T1560",
+            "T1596"
+          ],
           "ground_truth": [
             "T1016",
             "T1018",
@@ -137,11 +199,29 @@
           "retrieved_count": 10
         },
         {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 18.372882983007003,
-          "predicted": [],
+          "precision": 0.11764705882352941,
+          "recall": 0.2857142857142857,
+          "f1": 0.16666666666666666,
+          "latency_s": 0.44221708399709314,
+          "predicted": [
+            "T1003",
+            "T1020",
+            "T1040",
+            "T1041",
+            "T1048",
+            "T1057",
+            "T1074",
+            "T1083",
+            "T1189",
+            "T1212",
+            "T1518",
+            "T1557",
+            "T1560",
+            "T1565",
+            "T1587",
+            "T1608",
+            "T1659"
+          ],
           "ground_truth": [
             "T1059",
             "T1071",
@@ -157,8 +237,16 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 1.5647500299965031,
-          "predicted": [],
+          "latency_s": 0.3258727920183446,
+          "predicted": [
+            "T1176",
+            "T1189",
+            "T1204",
+            "T1566",
+            "T1608",
+            "T1650",
+            "T1659"
+          ],
           "ground_truth": [
             "T1404",
             "T1406",
@@ -174,8 +262,23 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 0.9972773050249089,
-          "predicted": [],
+          "latency_s": 0.3814222599903587,
+          "predicted": [
+            "T1040",
+            "T1057",
+            "T1189",
+            "T1212",
+            "T1497",
+            "T1518",
+            "T1557",
+            "T1565",
+            "T1589",
+            "T1592",
+            "T1595",
+            "T1608",
+            "T1652",
+            "T1659"
+          ],
           "ground_truth": [
             "T1071",
             "T1087",
@@ -189,11 +292,29 @@
           "retrieved_count": 10
         },
         {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 1.0904561059724074,
-          "predicted": [],
+          "precision": 0.058823529411764705,
+          "recall": 0.16666666666666666,
+          "f1": 0.08695652173913045,
+          "latency_s": 0.4359205899818335,
+          "predicted": [
+            "T1040",
+            "T1057",
+            "T1082",
+            "T1105",
+            "T1189",
+            "T1197",
+            "T1212",
+            "T1518",
+            "T1557",
+            "T1559",
+            "T1565",
+            "T1592",
+            "T1595",
+            "T1608",
+            "T1650",
+            "T1659",
+            "T1680"
+          ],
           "ground_truth": [
             "T1016",
             "T1033",
@@ -208,8 +329,14 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 1.09763526901952,
-          "predicted": [],
+          "latency_s": 0.5139605879958253,
+          "predicted": [
+            "T1059",
+            "T1104",
+            "T1119",
+            "T1123",
+            "T1219"
+          ],
           "ground_truth": [
             "T1398",
             "T1420",
@@ -227,8 +354,19 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 1.020423835987458,
-          "predicted": [],
+          "latency_s": 0.486587135004811,
+          "predicted": [
+            "T1040",
+            "T1057",
+            "T1123",
+            "T1212",
+            "T1497",
+            "T1518",
+            "T1557",
+            "T1565",
+            "T1650",
+            "T1652"
+          ],
           "ground_truth": [
             "T1474"
           ],
@@ -238,8 +376,17 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 1.3206395310116932,
-          "predicted": [],
+          "latency_s": 0.535517340991646,
+          "predicted": [
+            "T1040",
+            "T1057",
+            "T1189",
+            "T1212",
+            "T1557",
+            "T1565",
+            "T1608",
+            "T1659"
+          ],
           "ground_truth": [
             "T1005",
             "T1027",
@@ -259,8 +406,22 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 1.3854994300054386,
-          "predicted": [],
+          "latency_s": 0.48348216799786314,
+          "predicted": [
+            "T1020",
+            "T1040",
+            "T1041",
+            "T1048",
+            "T1189",
+            "T1212",
+            "T1557",
+            "T1565",
+            "T1592",
+            "T1595",
+            "T1608",
+            "T1650",
+            "T1659"
+          ],
           "ground_truth": [
             "T1008",
             "T1059",
@@ -277,8 +438,11 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 1.432810256985249,
-          "predicted": [],
+          "latency_s": 0.43624993500998244,
+          "predicted": [
+            "T1176",
+            "T1518"
+          ],
           "ground_truth": [
             "T1406",
             "T1418",
@@ -296,8 +460,13 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 1.2375796790001914,
-          "predicted": [],
+          "latency_s": 0.4586149929964449,
+          "predicted": [
+            "T1189",
+            "T1566",
+            "T1608",
+            "T1659"
+          ],
           "ground_truth": [
             "T1426",
             "T1430",
@@ -311,8 +480,17 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 1.4404001080256421,
-          "predicted": [],
+          "latency_s": 0.4588453290052712,
+          "predicted": [
+            "T1006",
+            "T1059",
+            "T1123",
+            "T1497",
+            "T1518",
+            "T1652",
+            "T1668",
+            "T1680"
+          ],
           "ground_truth": [
             "T1406",
             "T1624",
@@ -325,8 +503,15 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 1.4009058059891686,
-          "predicted": [],
+          "latency_s": 0.4100563410029281,
+          "predicted": [
+            "T1014",
+            "T1123",
+            "T1189",
+            "T1525",
+            "T1608",
+            "T1659"
+          ],
           "ground_truth": [
             "T1422",
             "T1426",
@@ -338,8 +523,21 @@
           "precision": 0.0,
           "recall": 0.0,
           "f1": 0.0,
-          "latency_s": 0.0424796890001744,
-          "predicted": [],
+          "latency_s": 0.3912086019990966,
+          "predicted": [
+            "T1020",
+            "T1041",
+            "T1048",
+            "T1057",
+            "T1123",
+            "T1189",
+            "T1518",
+            "T1525",
+            "T1592",
+            "T1595",
+            "T1608",
+            "T1659"
+          ],
           "ground_truth": [
             "T1036",
             "T1055",
@@ -347,499 +545,6 @@
             "T1091",
             "T1105",
             "T1547"
-          ],
-          "retrieved_count": 10
-        },
-        {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 1.1240953000087757,
-          "predicted": [],
-          "ground_truth": [
-            "T1422",
-            "T1429",
-            "T1430",
-            "T1512",
-            "T1582",
-            "T1616",
-            "T1636",
-            "T1655"
-          ],
-          "retrieved_count": 10
-        },
-        {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 1.1389743780018762,
-          "predicted": [],
-          "ground_truth": [
-            "T1407",
-            "T1417",
-            "T1429",
-            "T1430",
-            "T1471",
-            "T1532",
-            "T1533",
-            "T1616",
-            "T1629",
-            "T1655"
-          ],
-          "retrieved_count": 10
-        },
-        {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 7.3975621609715745,
-          "predicted": [],
-          "ground_truth": [
-            "T1041",
-            "T1059",
-            "T1071",
-            "T1140",
-            "T1543",
-            "T1546",
-            "T1548"
-          ],
-          "retrieved_count": 10
-        },
-        {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 1.239269221026916,
-          "predicted": [],
-          "ground_truth": [
-            "T1005",
-            "T1025",
-            "T1059",
-            "T1071",
-            "T1119",
-            "T1134",
-            "T1547",
-            "T1560"
-          ],
-          "retrieved_count": 10
-        },
-        {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 1.232238778989995,
-          "predicted": [],
-          "ground_truth": [
-            "T1406",
-            "T1422",
-            "T1426",
-            "T1437",
-            "T1532",
-            "T1575",
-            "T1582",
-            "T1626",
-            "T1636",
-            "T1655"
-          ],
-          "retrieved_count": 10
-        },
-        {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 0.04413257600390352,
-          "predicted": [],
-          "ground_truth": [
-            "T1505"
-          ],
-          "retrieved_count": 9
-        },
-        {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 0.8494644660095219,
-          "predicted": [],
-          "ground_truth": [
-            "T1053"
-          ],
-          "retrieved_count": 10
-        },
-        {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 1.0958473089849576,
-          "predicted": [],
-          "ground_truth": [
-            "T1005",
-            "T1041",
-            "T1059",
-            "T1071",
-            "T1074",
-            "T1095",
-            "T1518",
-            "T1547"
-          ],
-          "retrieved_count": 10
-        },
-        {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 0.044773314002668485,
-          "predicted": [],
-          "ground_truth": [
-            "T1059",
-            "T1083",
-            "T1132",
-            "T1548"
-          ],
-          "retrieved_count": 10
-        },
-        {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 6.3524134189938195,
-          "predicted": [],
-          "ground_truth": [
-            "T1005",
-            "T1016",
-            "T1033",
-            "T1095",
-            "T1105",
-            "T1140",
-            "T1560",
-            "T1571",
-            "T1573"
-          ],
-          "retrieved_count": 9
-        },
-        {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 1.2631606189825106,
-          "predicted": [],
-          "ground_truth": [
-            "T1059",
-            "T1140",
-            "T1205",
-            "T1559",
-            "T1573"
-          ],
-          "retrieved_count": 9
-        },
-        {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 1.1691218150081113,
-          "predicted": [],
-          "ground_truth": [
-            "T1010",
-            "T1071",
-            "T1098",
-            "T1119",
-            "T1134",
-            "T1548",
-            "T1583"
-          ],
-          "retrieved_count": 10
-        },
-        {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 1.3242930640117265,
-          "predicted": [],
-          "ground_truth": [
-            "T1016",
-            "T1033",
-            "T1071",
-            "T1090",
-            "T1573"
-          ],
-          "retrieved_count": 10
-        },
-        {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 0.9217065350094344,
-          "predicted": [],
-          "ground_truth": [
-            "T1027",
-            "T1036",
-            "T1048",
-            "T1059",
-            "T1074",
-            "T1105",
-            "T1189",
-            "T1482",
-            "T1566"
-          ],
-          "retrieved_count": 10
-        },
-        {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 1.0814129060017876,
-          "predicted": [],
-          "ground_truth": [
-            "T1409",
-            "T1429",
-            "T1430",
-            "T1512",
-            "T1636"
-          ],
-          "retrieved_count": 10
-        },
-        {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 1.2368354669888504,
-          "predicted": [],
-          "ground_truth": [
-            "T1005",
-            "T1083",
-            "T1567",
-            "T1574"
-          ],
-          "retrieved_count": 10
-        },
-        {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 2.494741347996751,
-          "predicted": [],
-          "ground_truth": [
-            "T1005",
-            "T1059",
-            "T1071",
-            "T1074",
-            "T1132",
-            "T1140",
-            "T1573"
-          ],
-          "retrieved_count": 9
-        },
-        {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 1.0698609910032246,
-          "predicted": [],
-          "ground_truth": [
-            "T1071",
-            "T1105",
-            "T1132",
-            "T1140",
-            "T1505"
-          ],
-          "retrieved_count": 9
-        },
-        {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 1.4242649619991425,
-          "predicted": [],
-          "ground_truth": [
-            "T1001",
-            "T1059",
-            "T1071",
-            "T1140",
-            "T1505",
-            "T1554"
-          ],
-          "retrieved_count": 9
-        },
-        {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 1.133503142016707,
-          "predicted": [],
-          "ground_truth": [
-            "T1059",
-            "T1071",
-            "T1083",
-            "T1140",
-            "T1190",
-            "T1222",
-            "T1543",
-            "T1564",
-            "T1573",
-            "T1574"
-          ],
-          "retrieved_count": 10
-        },
-        {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 1.0850718939909711,
-          "predicted": [],
-          "ground_truth": [
-            "T1048",
-            "T1056",
-            "T1059",
-            "T1132",
-            "T1554"
-          ],
-          "retrieved_count": 10
-        },
-        {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 1.049476902000606,
-          "predicted": [],
-          "ground_truth": [
-            "T1083",
-            "T1485",
-            "T1529",
-            "T1561"
-          ],
-          "retrieved_count": 10
-        },
-        {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 1.1314723980030976,
-          "predicted": [],
-          "ground_truth": [
-            "T1005",
-            "T1074",
-            "T1083",
-            "T1119",
-            "T1560",
-            "T1574"
-          ],
-          "retrieved_count": 10
-        },
-        {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 1.3616399989987258,
-          "predicted": [],
-          "ground_truth": [
-            "T1071",
-            "T1140",
-            "T1505",
-            "T1554",
-            "T1573"
-          ],
-          "retrieved_count": 9
-        },
-        {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 1.1712843989953399,
-          "predicted": [],
-          "ground_truth": [
-            "T1041",
-            "T1059",
-            "T1115",
-            "T1140",
-            "T1176",
-            "T1217",
-            "T1547",
-            "T1555",
-            "T1573"
-          ],
-          "retrieved_count": 10
-        },
-        {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 1.1267633569950704,
-          "predicted": [],
-          "ground_truth": [
-            "T1071",
-            "T1105",
-            "T1132",
-            "T1140",
-            "T1505",
-            "T1554",
-            "T1573"
-          ],
-          "retrieved_count": 9
-        },
-        {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 1.198635873006424,
-          "predicted": [],
-          "ground_truth": [
-            "T1082",
-            "T1083",
-            "T1090",
-            "T1095",
-            "T1543",
-            "T1554",
-            "T1573"
-          ],
-          "retrieved_count": 9
-        },
-        {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 1.3921962379827164,
-          "predicted": [],
-          "ground_truth": [
-            "T1409",
-            "T1417",
-            "T1517",
-            "T1624",
-            "T1628",
-            "T1643"
-          ],
-          "retrieved_count": 10
-        },
-        {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 2.735355177981546,
-          "predicted": [],
-          "ground_truth": [
-            "T1003",
-            "T1055",
-            "T1059",
-            "T1074",
-            "T1083",
-            "T1119"
-          ],
-          "retrieved_count": 9
-        },
-        {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "latency_s": 1.0714972369896714,
-          "predicted": [],
-          "ground_truth": [
-            "T1057",
-            "T1059",
-            "T1083",
-            "T1090",
-            "T1095",
-            "T1105",
-            "T1205",
-            "T1562",
-            "T1573"
           ],
           "retrieved_count": 10
         }

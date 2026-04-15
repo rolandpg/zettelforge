@@ -22,19 +22,93 @@ Usage:
 Source: https://huggingface.co/datasets/AI4Sec/cti-bench
 Paper: https://arxiv.org/abs/2406.07599 (NeurIPS 2024)
 """
-import json
-import os
-import re
-import sys
-import time
-import tempfile
 import argparse
+import json
+import re
 import statistics
-from pathlib import Path
+import tempfile
+import time
 from datetime import datetime
-from typing import List, Dict, Set, Tuple, Optional
+from pathlib import Path
+from typing import Dict, List, Optional, Set
 
 from zettelforge import MemoryManager, __version__
+
+# -- ATT&CK Technique Loader --------------------------------------------------
+
+_ATTACK_JSON = Path(__file__).parent / "enterprise-attack.json"
+
+
+def load_attack_techniques() -> List[Dict]:
+    """
+    Load MITRE ATT&CK enterprise techniques from local JSON.
+
+    Returns a list of dicts with keys: external_id, name, description.
+    Sub-techniques (IDs containing a dot, e.g. T1071.001) are excluded
+    per CTIBench scoring which normalises sub-techniques to their parent.
+    """
+    if not _ATTACK_JSON.exists():
+        raise FileNotFoundError(
+            f"enterprise-attack.json not found at {_ATTACK_JSON}. "
+            "Run: curl -L https://raw.githubusercontent.com/mitre/cti/master/"
+            "enterprise-attack/enterprise-attack.json -o benchmarks/enterprise-attack.json"
+        )
+    with open(_ATTACK_JSON) as f:
+        data = json.load(f)
+
+    techniques = []
+    for obj in data.get("objects", []):
+        if obj.get("type") != "attack-pattern":
+            continue
+        if obj.get("x_mitre_deprecated", False) or obj.get("revoked", False):
+            continue
+        ext_id = None
+        for ref in obj.get("external_references", []):
+            if ref.get("source_name") == "mitre-attack":
+                ext_id = ref.get("external_id", "")
+                break
+        if not ext_id or "." in ext_id:
+            # Skip sub-techniques
+            continue
+        techniques.append(
+            {
+                "external_id": ext_id,
+                "name": obj.get("name", ""),
+                "description": obj.get("description", ""),
+            }
+        )
+    return techniques
+
+
+def populate_attack_techniques(mm: MemoryManager, techniques: List[Dict]) -> int:
+    """
+    Ingest ATT&CK technique entries into a ZettelForge instance.
+
+    Each note is formatted as:
+        "<T-code> <name>: <description[:500]>"
+
+    The T-code is embedded in the content so the existing
+    extract_technique_ids() regex will find matches in retrieved results.
+
+    Returns the number of techniques successfully ingested.
+    """
+    ingested = 0
+    for tech in techniques:
+        ext_id = tech["external_id"]
+        name = tech["name"]
+        desc = tech["description"][:500]
+        content = f"{ext_id} {name}: {desc}"
+        try:
+            mm.remember(
+                content=content,
+                source_type="mitre_attack",
+                source_ref=f"https://attack.mitre.org/techniques/{ext_id}/",
+                domain="cti",
+            )
+            ingested += 1
+        except Exception:
+            pass
+    return ingested
 
 
 # -- Data Loading -------------------------------------------------------------
@@ -208,18 +282,27 @@ def run_ate_benchmark(max_samples: Optional[int] = None, k: int = 10) -> Dict:
     print("=" * 70)
 
     # Load data
-    print("\n[1/3] Loading CTI-ATE dataset...")
+    print("\n[1/4] Loading CTI-ATE dataset...")
     samples = load_ctibench_ate(max_samples)
     print(f"  Loaded {len(samples)} samples")
 
-    # Ingest descriptions into ZettelForge
-    print("\n[2/3] Ingesting technique descriptions...")
+    # Build ZettelForge instance
     tmpdir = tempfile.mkdtemp(prefix="ctibench_ate_")
     mm = MemoryManager(
         jsonl_path=f"{tmpdir}/notes.jsonl",
         lance_path=f"{tmpdir}/vectordb",
     )
 
+    # Pre-populate with ATT&CK technique entries so T-codes are retrievable
+    print("\n[2/4] Pre-populating ATT&CK techniques into ZettelForge...")
+    attack_techniques = load_attack_techniques()
+    print(f"  Loaded {len(attack_techniques)} main techniques from enterprise-attack.json")
+    atk_start = time.perf_counter()
+    atk_ingested = populate_attack_techniques(mm, attack_techniques)
+    print(f"  Ingested {atk_ingested} technique entries in {time.perf_counter() - atk_start:.1f}s")
+
+    # Ingest CTI descriptions into ZettelForge (provides retrieval context)
+    print("\n[3/4] Ingesting CTI threat descriptions...")
     start = time.perf_counter()
     ingested = 0
     for sample in samples:
@@ -231,14 +314,14 @@ def run_ate_benchmark(max_samples: Optional[int] = None, k: int = 10) -> Dict:
                 domain="cti",
             )
             ingested += 1
-        except Exception as e:
+        except Exception:
             if ingested == 0:
                 raise
     ingest_duration = time.perf_counter() - start
     print(f"  Ingested {ingested} descriptions in {ingest_duration:.1f}s")
 
     # Evaluate
-    print(f"\n[3/3] Evaluating {len(samples)} samples...")
+    print(f"\n[4/4] Evaluating {len(samples)} samples...")
     results = []
     for i, sample in enumerate(samples):
         query = f"What MITRE ATT&CK techniques are described in: {sample['description'][:200]}"
@@ -270,7 +353,7 @@ def run_ate_benchmark(max_samples: Optional[int] = None, k: int = 10) -> Dict:
     avg_f1 = statistics.mean(r["f1"] for r in results)
     p50_lat = statistics.median(r["latency_s"] for r in results)
 
-    print(f"\n  Results:")
+    print("\n  Results:")
     print(f"    Precision: {avg_precision:.3f}")
     print(f"    Recall:    {avg_recall:.3f}")
     print(f"    F1:        {avg_f1:.3f}")
@@ -322,7 +405,7 @@ def run_taa_benchmark(max_samples: Optional[int] = None, k: int = 10) -> Dict:
                 domain="cti",
             )
             ingested += 1
-        except Exception as e:
+        except Exception:
             if ingested == 0:
                 raise
     ingest_duration = time.perf_counter() - start
@@ -351,11 +434,11 @@ def run_taa_benchmark(max_samples: Optional[int] = None, k: int = 10) -> Dict:
 
     p50_lat = statistics.median(r["latency_s"] for r in results) if results else 0
 
-    print(f"\n  Results:")
+    print("\n  Results:")
     print(f"    Samples:  {len(results)}")
     print(f"    p50 Lat:  {p50_lat*1000:.0f}ms")
-    print(f"    NOTE: TAA ground truth requires GitHub alias/related dicts for proper scoring.")
-    print(f"          Predictions saved for manual review or future scoring.")
+    print("    NOTE: TAA ground truth requires GitHub alias/related dicts for proper scoring.")
+    print("          Predictions saved for manual review or future scoring.")
 
     return {
         "task": "CTI-TAA",
@@ -373,7 +456,7 @@ def run_benchmark(task: str = "both", max_samples: Optional[int] = None, k: int 
     print("  CTIBench Benchmark for ZettelForge")
     print(f"  Date: {datetime.now().isoformat()}")
     print(f"  Version: ZettelForge {__version__}")
-    print(f"  Source: AI4Sec/cti-bench (NeurIPS 2024)")
+    print("  Source: AI4Sec/cti-bench (NeurIPS 2024)")
     print(f"  Tasks: {task}")
     print(f"  Max samples: {max_samples or 'all'}")
     print("=" * 70)
