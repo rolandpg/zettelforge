@@ -40,13 +40,13 @@ dependencies = [
 
 [project.optional-dependencies]
 
-# Enterprise: install the separate zettelforge-enterprise package
+# Extensions: install the separate zettelforge-enterprise package
 # pip install zettelforge-enterprise
-enterprise = [
+extensions = [
     "zettelforge-enterprise>=2.1.0",
 ]
 
-# Web UI (ThreatRecall)
+# Web UI (ZettelForge)
 web = [
     "fastapi>=0.100.0",
     "uvicorn>=0.20.0",

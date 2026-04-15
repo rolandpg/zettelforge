@@ -22,14 +22,14 @@ No external services (Ollama, TypeDB) are required for development. Embeddings r
 6. Commit with clear messages
 7. Push and create a pull request
 
-## Community vs Enterprise
+## Where to contribute
 
-ZettelForge uses an open-core model:
+All of `src/zettelforge/` is MIT-licensed and open to contributions.
+Feature ideas, bug fixes, documentation, benchmarks — all welcome.
 
-- **Community (MIT)** -- everything in `src/zettelforge/` except `enterprise/`. Contributions here are welcome and encouraged.
-- **Enterprise (BSL-1.1)** -- code in `src/zettelforge/enterprise/` and features gated behind `is_enterprise()`. These are maintained by Threatengram.
-
-If you're unsure whether a feature belongs in Community or Enterprise, open an issue to discuss before starting work.
+If your contribution needs TypeDB or OpenCTI, open an issue to discuss.
+We keep the extension boundary clear so contributors know their work
+will always remain open source.
 
 ## Code Style
 
@@ -43,7 +43,7 @@ If you're unsure whether a feature belongs in Community or Enterprise, open an i
 
 - Write tests for new features
 - Ensure all tests pass before submitting PR
-- Tests that require Enterprise features should use the `enable_enterprise` fixture from `tests/conftest.py`
+- Tests that require extension features should use the `enable_extensions` fixture from `tests/conftest.py`
 - Use meaningful test names that describe behavior
 
 ## Commit Messages

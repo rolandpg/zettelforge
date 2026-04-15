@@ -1,4 +1,4 @@
-# ThreatRecall (ZettelForge)
+# ZettelForge
 
 > Production-grade agentic memory system for cyber threat intelligence, combining a TypeDB STIX 2.1 ontology layer with LanceDB vector search for persistent, structured agent memory across sessions.
 
@@ -36,13 +36,12 @@
 
 ## Key Concepts
 
-- **ZettelForge**: Internal codename for the agentic memory system codebase
-- **ThreatRecall**: Product name for external-facing documentation and branding
+- **ZettelForge**: Agentic memory system for cyber threat intelligence
 - **TypeDB ontology layer**: STIX 2.1 knowledge graph storing typed entities (threat-actor, malware, vulnerability, etc.) and relationships (uses, targets, attributed-to, etc.) with confidence scores and temporal validity
 - **LanceDB conversational layer**: Vector database storing Zettelkasten-style atomic notes with 768-dimensional embeddings (fastembed nomic-embed-text-v1.5-Q in-process by default), IVF_PQ index (256 partitions, 16 sub-vectors, cosine metric)
 - **BlendedRetriever**: Merges VectorRetriever (cosine similarity + entity boost) and GraphRetriever (BFS from query entities, hop-distance scoring) results using intent-based policy weights
 - **Epistemic tier**: Quality classification on every note — A (authoritative: CISA, MITRE), B (operational: threat reports, default), C (support: LLM-extracted, speculative)
-- **STIX 2.1**: Structured Threat Information Expression v2.1 — ThreatRecall implements 8 SDOs and 5+3 SROs in TypeDB
+- **STIX 2.1**: Structured Threat Information Expression v2.1 — ZettelForge implements 8 SDOs and 5+3 SROs in TypeDB (via extension)
 - **GOV-003**: Data classification governance control
 - **GOV-007**: Retention policy governance control
 - **GOV-011**: Access control governance control

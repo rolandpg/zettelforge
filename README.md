@@ -121,7 +121,7 @@ Add to `.claude.json`:
 ```json
 {
   "mcpServers": {
-    "threatrecall": {
+    "zettelforge": {
       "command": "python3",
       "args": ["web/mcp_server.py"]
     }
@@ -160,54 +160,54 @@ See [examples/athf_bridge.py](examples/athf_bridge.py).
 │   Knowledge Graph (JSONL)           │  LanceDB (Vectors)             │
 │   Entity nodes + edges              │  768-dim fastembed (ONNX)      │
 │   Causal triple inference           │  Zettelkasten notes            │
-│   [Enterprise: TypeDB STIX 2.1]    │  IVF_PQ index                  │
+│   JSONL (TypeDB via extension)      │  IVF_PQ index                  │
 └─────────────────────────────────────┴────────────────────────────────┘
 ```
 
-## Community vs Enterprise
+## Extensions
 
-**ZettelForge Community** (MIT) is everything above -- a complete, production-ready agentic memory system. Free, open-source, local-first.
+ZettelForge is a complete, production-ready agentic memory system.
+Everything documented above works out of the box.
 
-**[ThreatRecall Enterprise](https://threatengram.com/enterprise)** (BSL-1.1) adds what teams need in production:
+For teams that need TypeDB-scale graph storage, OpenCTI integration,
+or multi-tenant deployment, optional extensions are available:
 
-| Feature | What it adds |
-|---------|-------------|
-| TypeDB STIX 2.1 ontology | Replaces JSONL graph at scale -- inference rules, 9 entity types, 8 relation types, 36 CTI aliases |
-| Temporal KG queries | "What changed since Tuesday?" -- `get_changes_since()`, `get_entity_timeline()` |
-| Multi-hop graph traversal | `traverse_graph()` with BFS across relationship chains |
-| Advanced synthesis | `synthesized_brief`, `timeline_analysis`, `relationship_map` |
-| Report ingestion | `remember_report()` with auto-chunking for long threat reports |
-| OpenCTI integration | Bi-directional sync with OpenCTI via pycti — pull attack patterns, intrusion sets, malware, indicators, vulnerabilities, and reports; push notes back as STIX reports. Preserves TLP markings, STIX confidence, CVSS v3/EPSS scores. Deduplicates on re-sync. |
-| Sigma rule generation | Sigma YAML detection rules from IOCs |
-| Multi-tenant auth | OAuth/JWT with per-tenant data isolation |
-| Context injection | Auto-load relevant context before agent tasks |
+| Extension | What it adds |
+|-----------|-------------|
+| TypeDB STIX 2.1 backend | Schema-enforced ontology with inference rules |
+| OpenCTI sync | Bi-directional sync with OpenCTI instances |
+| Multi-tenant auth | OAuth/JWT with per-tenant isolation |
+| Sigma rule generation | Detection rules from extracted IOCs |
+
+Extensions are installed separately:
 
 ```bash
 pip install zettelforge-enterprise
-export THREATENGRAM_LICENSE_KEY="TG-xxxx-xxxx-xxxx-xxxx"
 ```
+
+**Hosted option:** [ThreatRecall](https://threatrecall.ai) provides
+managed ZettelForge with all extensions, so you don't have to run
+infrastructure yourself.
 
 ## Configuration
 
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `AMEM_DATA_DIR` | `~/.amem` | Data directory |
-| `ZETTELFORGE_BACKEND` | `jsonl` | `jsonl` or `typedb` [Enterprise] |
+| `ZETTELFORGE_BACKEND` | `jsonl` | `jsonl` or `typedb` (via extension) |
 | `ZETTELFORGE_LLM_PROVIDER` | `local` | `local` (llama-cpp) or `ollama` |
-| `THREATENGRAM_LICENSE_KEY` | | Enterprise license key |
 
 See [config.default.yaml](config.default.yaml) for all options.
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and the Community/Enterprise boundary.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup.
 
 ## License
 
-- **Community**: [MIT](LICENSE)
-- **Enterprise**: [BSL-1.1](LICENSE-ENTERPRISE) (converts to Apache-2.0 after 4 years)
+MIT — See [LICENSE](LICENSE).
 
-Built by [Threatengram](https://threatengram.com).
+**Made by Patrick Roland**.
 
 ## Acknowledgments
 

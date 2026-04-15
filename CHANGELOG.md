@@ -104,12 +104,9 @@ evolution support.
   knowledge graph updates rather than treating the note as additive
 - **CI/CD pipeline** — Lint, test, and governance jobs added; `ruff
   format` compliance enforced on all Python source files
-- **Open-core edition system** — Community (MIT) + Enterprise (BSL-1.1)
-  with `EditionError` for clear upgrade messaging and `/api/edition`
-  endpoint
-- **Edition detection** — via `THREATENGRAM_LICENSE_KEY` or enterprise
-  package presence
-- `LICENSE-ENTERPRISE` (BSL-1.1) for enterprise feature set
+- **Extension detection** — detects optional `zettelforge-enterprise`
+  package presence and enables extension features when available;
+  `/api/edition` endpoint reports installed extensions
 - GitHub issue/PR templates and CODE_OF_CONDUCT.md
 
 ### Fixed
@@ -126,11 +123,10 @@ evolution support.
   instances (`get_logger("zettelforge.*")`)
 - Silent `except Exception: pass` blocks replaced with logged,
   re-raised, or explicitly handled exceptions
-- Dependencies split: core (MIT) vs `pip install zettelforge[enterprise]`
-- Enterprise-only features: TypeDB STIX ontology, temporal KG queries,
-  advanced synthesis formats, report ingestion, multi-hop traversal,
-  OpenCTI integration, Sigma generation, multi-tenant auth
-- Community gets full memory pipeline: blended retrieval, two-phase
+- Dependencies split: core vs `pip install zettelforge[extensions]`
+- Extension features: TypeDB STIX ontology, OpenCTI integration,
+  Sigma generation, multi-tenant auth
+- Core includes full memory pipeline: blended retrieval, two-phase
   extraction, intent routing, causal triples, cross-encoder reranking
 
 ---

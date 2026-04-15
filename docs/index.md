@@ -1,5 +1,5 @@
 ---
-title: ThreatRecall Documentation
+title: ZettelForge Documentation
 description: Production-grade agentic memory system for cyber threat intelligence, powered by hybrid graph + vector retrieval over STIX 2.1 ontology.
 diataxis_type: "navigation"
 audience: "all"
@@ -8,9 +8,9 @@ last_updated: "2026-04-09"
 version: "2.0.0"
 ---
 
-# ThreatRecall Documentation
+# ZettelForge Documentation
 
-ThreatRecall is a production-grade agentic memory system for cyber threat intelligence (CTI). It combines a STIX 2.1 knowledge graph in TypeDB with vector-indexed Zettelkasten notes in LanceDB so that AI agents and SOC analysts can store, recall, and synthesize threat intelligence using natural language.
+ZettelForge is a production-grade agentic memory system for cyber threat intelligence (CTI). It combines a STIX 2.1 knowledge graph in TypeDB with vector-indexed Zettelkasten notes in LanceDB so that AI agents and SOC analysts can store, recall, and synthesize threat intelligence using natural language.
 
 ## Architecture Overview
 
@@ -83,7 +83,7 @@ Practical recipes for specific tasks you need to accomplish.
 | [Configure TypeDB](how-to/configure-typedb.md) | Docker setup, schema deployment, and troubleshooting. |
 | [Configure LanceDB](how-to/configure-lancedb.md) | Tune IVF_PQ index, similarity threshold, and entity boost. |
 | [Integrate with Your LLM Agent](how-to/integrate-llm-agent.md) | Use `get_context()` and `ProactiveAgentMixin` in agent loops. |
-| [Configure OpenCTI Integration](how-to/configure-opencti.md) | Bi-directional sync with OpenCTI via pycti — pull threat intelligence, push notes as STIX reports. [Enterprise] |
+| [Configure OpenCTI Integration](how-to/configure-opencti.md) | Bi-directional sync with OpenCTI via pycti — pull threat intelligence, push notes as STIX reports. (requires zettelforge-enterprise) |
 
 ### Reference (Information-Oriented)
 
@@ -104,7 +104,7 @@ Background context and design rationale for the system's architecture.
 | Topic | Description |
 |-------|-------------|
 | [Why TypeDB + LanceDB](explanation/architecture.md) | Architectural rationale for the hybrid two-database design. |
-| [Zettelkasten Philosophy](explanation/zettelkasten-philosophy.md) | How Luhmann's note-taking method shapes ThreatRecall's memory. |
+| [Zettelkasten Philosophy](explanation/zettelkasten-philosophy.md) | How Luhmann's note-taking method shapes ZettelForge's memory. |
 | [Two-Phase Pipeline](explanation/two-phase-pipeline.md) | FactExtractor + MemoryUpdater design and deduplication logic. |
 | [STIX in ZettelForge](explanation/stix-in-zettelforge.md) | How STIX 2.1 maps to TypeDB entities and relations. |
 | [Epistemic Tiers](explanation/epistemic-tiers.md) | Confidence model, tier classification, and decay mechanics. |
@@ -126,6 +126,6 @@ Background context and design rationale for the system's architecture.
 
 ## LLM Quick Reference
 
-ThreatRecall (codebase: ZettelForge, v2.0.0, MIT license) is an agentic memory system for cyber threat intelligence. It requires Python 3.10+ and TypeDB 3.x via Docker on port 1729. Embeddings run in-process via fastembed (nomic-embed-text-v1.5-Q, 768-dim, ONNX) and LLM inference runs in-process via llama-cpp-python (Qwen2.5-3B-Instruct Q4_K_M GGUF). Models download automatically on first use. Ollama is optional as a fallback provider. Storage is dual: TypeDB holds a STIX 2.1 knowledge graph with 9 entity types (threat-actor, malware, tool, attack-pattern, vulnerability, campaign, indicator, infrastructure, zettel-note) and 8 relation types (uses, targets, attributed-to, indicates, mitigates, mentioned-in, supersedes, alias-of); LanceDB holds vector-indexed notes with IVF_PQ indexing. TypeDB inference functions include get_aliases, get_tools_used, and get_entity_notes. The system seeds 36 CTI aliases at startup (APT28/Fancy Bear/Strontium, APT29/Cozy Bear/Midnight Blizzard, Lazarus/Hidden Cobra/Diamond Sleet, Sandworm/Seashell Blizzard, Volt Typhoon/Bronze Silhouette, Kimsuky/Emerald Sleet, Turla/Secret Blizzard, MuddyWater/Mango Sandstorm, plus tool aliases for Cobalt Strike and Mimikatz).
+ZettelForge (v2.0.0, MIT license) is an agentic memory system for cyber threat intelligence. It requires Python 3.10+ and TypeDB 3.x via Docker on port 1729. Embeddings run in-process via fastembed (nomic-embed-text-v1.5-Q, 768-dim, ONNX) and LLM inference runs in-process via llama-cpp-python (Qwen2.5-3B-Instruct Q4_K_M GGUF). Models download automatically on first use. Ollama is optional as a fallback provider. Storage is dual: TypeDB holds a STIX 2.1 knowledge graph with 9 entity types (threat-actor, malware, tool, attack-pattern, vulnerability, campaign, indicator, infrastructure, zettel-note) and 8 relation types (uses, targets, attributed-to, indicates, mitigates, mentioned-in, supersedes, alias-of); LanceDB holds vector-indexed notes with IVF_PQ indexing. TypeDB inference functions include get_aliases, get_tools_used, and get_entity_notes. The system seeds 36 CTI aliases at startup (APT28/Fancy Bear/Strontium, APT29/Cozy Bear/Midnight Blizzard, Lazarus/Hidden Cobra/Diamond Sleet, Sandworm/Seashell Blizzard, Volt Typhoon/Bronze Silhouette, Kimsuky/Emerald Sleet, Turla/Secret Blizzard, MuddyWater/Mango Sandstorm, plus tool aliases for Cobalt Strike and Mimikatz).
 
 The primary interface is `MemoryManager`. `remember(content)` stores a note with entity extraction, alias resolution, knowledge graph update, supersession check, and causal triple extraction. `remember_with_extraction(content)` runs the two-phase pipeline: FactExtractor distills scored facts, MemoryUpdater compares each against existing notes and applies ADD/UPDATE/DELETE/NOOP. `remember_report(content)` chunks long text and runs two-phase extraction per chunk. `recall(query)` classifies intent (factual/temporal/relational/causal/exploratory), runs BlendedRetriever with policy-weighted vector + graph scores, and returns ranked MemoryNote objects. `recall_actor(name)`, `recall_cve(id)`, `recall_tool(name)` perform fast entity-indexed lookups. `synthesize(query, format)` retrieves notes and produces an LLM-synthesized answer in one of four formats: direct_answer, synthesized_brief, timeline_analysis, or relationship_map. `get_entity_relationships(type, value)` and `traverse_graph(type, value, depth)` expose raw graph queries. Governance policies GOV-003 (data classification), GOV-007 (retention), GOV-011 (access control), and GOV-012 (audit) are enforced automatically on every operation via GovernanceValidator. Configuration lives in config.yaml with sections for storage, typedb, embedding, llm, extraction, retrieval, synthesis, cache, governance, and logging. The BlendedRetriever weights vector vs. graph results using the IntentClassifier's traversal policy: factual queries favor entity lookup, relational queries favor graph BFS, exploratory queries balance both. Notes support supersession (old note marked superseded_by, excluded from recall) and temporal edges for timeline queries.
