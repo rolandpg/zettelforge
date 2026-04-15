@@ -302,10 +302,11 @@ See [Configure OpenCTI Integration](../how-to/configure-opencti.md) for setup st
 | `ZETTELFORGE_LLM_PROVIDER` | `llm.provider` | `ollama` |
 | `ZETTELFORGE_LLM_MODEL` | `llm.model` | `qwen2.5:7b` |
 | `ZETTELFORGE_LLM_URL` | `llm.url` | `http://gpu-box:11434` |
-| `OPENCTI_URL` | `opencti.url` | `https://opencti.corp.internal` |
-| `OPENCTI_TOKEN` | `opencti.token` | `abc123...` |
-| `OPENCTI_SYNC_INTERVAL` | `opencti.sync_interval` | `3600` |
+| `OPENCTI_URL` | `Enterprise only: opencti.url` | `https://opencti.corp.internal` |
+| `OPENCTI_TOKEN` | `Enterprise only: opencti.token` | `abc123...` |
+| `OPENCTI_SYNC_INTERVAL` | `Enterprise only: opencti.sync_interval` | `3600` |
 
+**Note:** The `opencti` configuration section and `OPENCTI_*` environment-variable mapping are implemented in the Enterprise package. In Community builds, these values are ignored by `src/zettelforge/config.py`.
 ---
 
 ## Minimal config.yaml
