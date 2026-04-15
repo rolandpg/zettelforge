@@ -73,6 +73,11 @@ ENTITY_TYPES = {
         "properties": {},
     },
     # CTI types (extending for security domain)
+    "IntrusionSet": {
+        "required": ["name"],
+        "optional": ["aliases", "first_seen", "last_seen", "goals", "resource_level", "ttps"],
+        "properties": {},
+    },
     "ThreatActor": {
         "required": ["name"],
         "optional": ["aliases", "country", "motivation", "ttps", "targets"],
@@ -80,7 +85,18 @@ ENTITY_TYPES = {
     },
     "Vulnerability": {
         "required": ["cve_id"],
-        "optional": ["cvss", "description", "affected_products", "references"],
+        "optional": [
+            # Structured scoring fields (populated during OpenCTI sync, not text extraction)
+            "cvss_v3_score",  # float 0.0–10.0
+            "cvss_v3_vector",  # e.g. "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+            "epss_score",  # float 0.0–1.0, probability of exploitation in the wild
+            "epss_percentile",  # float 0.0–1.0
+            "cisa_kev",  # bool — present in CISA Known Exploited Vulnerabilities catalog
+            # Descriptive fields
+            "description",
+            "affected_products",
+            "references",
+        ],
         "properties": {},
     },
     "Malware": {
@@ -96,6 +112,37 @@ ENTITY_TYPES = {
     "Incident": {
         "required": ["title", "status"],
         "optional": ["severity", "timeline", "affected_assets", "root_cause"],
+        "properties": {},
+    },
+    "AttackPattern": {
+        "required": ["technique_id"],
+        "optional": ["name", "tactic", "platform", "description", "references"],
+        "properties": {},
+    },
+    # IOC / STIX Cyber Observables
+    "IPv4Address": {
+        "required": ["value"],
+        "optional": ["belongs_to_ref", "resolves_to_refs"],
+        "properties": {},
+    },
+    "DomainName": {
+        "required": ["value"],
+        "optional": ["resolves_to_refs"],
+        "properties": {},
+    },
+    "URL": {
+        "required": ["value"],
+        "optional": ["belongs_to_ref"],
+        "properties": {},
+    },
+    "FileHash": {
+        "required": ["value", "hash_type"],
+        "optional": ["file_name", "size", "parent_directory_ref"],
+        "properties": {},
+    },
+    "EmailAddress": {
+        "required": ["value"],
+        "optional": ["display_name", "belongs_to_ref"],
         "properties": {},
     },
     # Meta
@@ -142,9 +189,19 @@ RELATION_TYPES = {
         "cardinality": "many_to_one",
     },
     "attributed_to": {
-        "from_types": ["Incident", "Campaign", "Malware"],
+        "from_types": ["Incident", "Campaign", "Malware", "IntrusionSet"],
         "to_types": ["ThreatActor"],
         "cardinality": "many_to_one",
+    },
+    "uses": {
+        "from_types": ["IntrusionSet"],
+        "to_types": ["Malware"],
+        "cardinality": "many_to_many",
+    },
+    "uses_technique": {
+        "from_types": ["ThreatActor", "Campaign", "IntrusionSet"],
+        "to_types": ["AttackPattern"],
+        "cardinality": "many_to_many",
     },
     "uses_tool": {
         "from_types": ["ThreatActor", "Campaign"],
@@ -154,6 +211,11 @@ RELATION_TYPES = {
     "exploits": {
         "from_types": ["ThreatActor", "Campaign", "Malware"],
         "to_types": ["Vulnerability"],
+        "cardinality": "many_to_many",
+    },
+    "implements": {
+        "from_types": ["Malware"],
+        "to_types": ["AttackPattern"],
         "cardinality": "many_to_many",
     },
     "targets": {
