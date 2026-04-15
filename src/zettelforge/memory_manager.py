@@ -8,9 +8,12 @@ Community edition: vector search, JSONL graph, basic entity extraction.
 Enterprise edition: blended retrieval, cross-encoder reranking, report ingestion.
 """
 
+import atexit
+import queue
 import threading
 import time
 import uuid
+from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -53,6 +56,16 @@ def _get_reranker():
     return _reranker
 
 
+@dataclass
+class _EnrichmentJob:
+    """Work item for the slow-path enrichment worker."""
+
+    note_id: str
+    domain: str
+    content_len: int
+    resolved_entities: dict = field(default_factory=dict)
+
+
 class MemoryManager:
     """
     Main interface for agent memory operations.
@@ -69,6 +82,17 @@ class MemoryManager:
         self._logger = get_logger("zettelforge.memory")
         self.stats = {"notes_created": 0, "retrievals": 0, "entity_index_hits": 0}
 
+        # Dual-stream enrichment: background worker for LLM causal extraction
+        self._enrichment_queue: queue.Queue = queue.Queue(maxsize=500)
+        self._pending_enrichment: set = set()
+        self._enrichment_worker = threading.Thread(
+            target=self._enrichment_loop,
+            name="zettelforge-enrichment",
+            daemon=True,
+        )
+        self._enrichment_worker.start()
+        atexit.register(self._drain_enrichment_queue)
+
     def remember(
         self,
         content: str,
@@ -76,19 +100,18 @@ class MemoryManager:
         source_ref: str = "",
         domain: str = "general",
         evolve: bool = False,
+        sync: bool = False,
     ) -> Tuple[MemoryNote, str]:
         """
         Create a new memory note from content.
 
-        When evolve=True, uses the Mem0-style two-phase pipeline: extracts
-        salient facts via LLM, compares each against existing notes, and
-        decides ADD/UPDATE/DELETE/NOOP per fact. This enables memory evolution
-        — new information can refine, correct, or supersede existing notes
-        instead of just accumulating.
+        Uses a dual-stream write path (MAGMA-inspired):
+        - Fast path: embedding, JSONL, LanceDB, entity index, supersession,
+          heuristic KG edges. Returns in ~45ms (fastembed).
+        - Slow path: LLM causal triple extraction deferred to background worker.
 
-        When evolve=False (default), stores the note directly with basic
-        entity-overlap supersession checking. Faster but no LLM reasoning
-        about whether this information updates existing knowledge.
+        With evolve=True, uses the Mem0-style two-phase pipeline: LLM extracts
+        facts, compares to existing notes, decides ADD/UPDATE/DELETE/NOOP.
 
         Args:
             content: Raw text to store.
@@ -96,12 +119,10 @@ class MemoryManager:
             source_ref: Source identifier.
             domain: Memory domain (cti, general, etc.).
             evolve: If True, run LLM fact extraction and update pipeline.
+            sync: If True, run causal extraction inline (blocking).
 
         Returns: (note, status) where status is one of:
-            "created" — new note stored (evolve=False or evolve=True with ADD)
-            "updated" — existing note superseded by refined version
-            "corrected" — existing note superseded by contradiction
-            "noop" — content already captured, no action taken
+            "created", "updated", "corrected", or "noop"
         """
         request_id = uuid.uuid4().hex
         start = time.perf_counter()
@@ -179,8 +200,24 @@ class MemoryManager:
         # Phase 3: Check supersession
         self._check_supersession(note, resolved_entities)
 
-        # Phase 6: Knowledge Graph Update
+        # Phase 6: Knowledge Graph Update (heuristic edges — fast path)
         self._update_knowledge_graph(note, resolved_entities)
+
+        # Phase 6b: LLM causal enrichment (slow path — background worker)
+        job = _EnrichmentJob(
+            note_id=note.id,
+            domain=domain,
+            content_len=len(content),
+            resolved_entities=resolved_entities,
+        )
+        if sync:
+            self._run_enrichment(job)
+        else:
+            try:
+                self._enrichment_queue.put_nowait(job)
+                self._pending_enrichment.add(note.id)
+            except queue.Full:
+                self._logger.warning("enrichment_queue_full", note_id=note.id)
 
         duration_ms = (time.perf_counter() - start) * 1000
         log_api_activity(
@@ -450,6 +487,7 @@ class MemoryManager:
         # Track access
         for note in results:
             note.increment_access()
+            self.store.mark_access_dirty(note.id)
 
         duration_ms = (time.perf_counter() - start) * 1000
         log_api_activity(
@@ -580,21 +618,58 @@ class MemoryManager:
             for loc in locations:
                 kg.add_edge("organization", org, "location", loc, "BASED_IN", edge_props)
 
-        # 4. LLM-based Causal Triple Extraction (MAGMA-style)
-        # This is the slow path - only run for important CTI notes
-        if (
-            note.metadata.domain in ["cti", "incident", "threat_intel"]
-            or len(note.content.raw) > 200
-        ):
+        # NOTE: LLM causal triple extraction moved to _run_enrichment() (slow path)
+
+    # ── Dual-stream: slow path enrichment worker ──────────────────────────
+
+    def _enrichment_loop(self) -> None:
+        """Background worker: process causal enrichment jobs until process exits."""
+        while True:
             try:
-                triples = self.constructor.extract_causal_triples(note.content.raw, note.id)
-                if triples:
-                    edges = self.constructor.store_causal_edges(triples, note.id)
-                    self._logger.info(
-                        "causal_triples_stored", note_id=note.id, triples=len(triples), edges=edges
-                    )
-            except Exception as e:
-                self._logger.warning("causal_extraction_failed", note_id=note.id, error=str(e))
+                job = self._enrichment_queue.get(timeout=1.0)
+                self._run_enrichment(job)
+                self._enrichment_queue.task_done()
+            except queue.Empty:
+                continue
+            except Exception:
+                self._logger.error("enrichment_worker_error", exc_info=True)
+
+    def _run_enrichment(self, job: _EnrichmentJob) -> None:
+        """Execute slow-path LLM causal triple extraction for one note."""
+        should_enrich = job.domain in ["cti", "incident", "threat_intel"] or job.content_len > 200
+        if not should_enrich:
+            self._pending_enrichment.discard(job.note_id)
+            return
+
+        note = self.store.get_note_by_id(job.note_id)
+        if note is None:
+            self._pending_enrichment.discard(job.note_id)
+            return
+
+        try:
+            triples = self.constructor.extract_causal_triples(note.content.raw, note.id)
+            if triples:
+                edges = self.constructor.store_causal_edges(triples, note.id)
+                self._logger.info(
+                    "causal_triples_stored", note_id=note.id, triples=len(triples), edges=edges
+                )
+        except Exception:
+            self._logger.warning("enrichment_failed", note_id=note.id, exc_info=True)
+        finally:
+            self._pending_enrichment.discard(job.note_id)
+
+    def _drain_enrichment_queue(self) -> None:
+        """atexit: process remaining enrichment jobs within a 10-second window."""
+        deadline = time.monotonic() + 10.0
+        while not self._enrichment_queue.empty() and time.monotonic() < deadline:
+            try:
+                job = self._enrichment_queue.get_nowait()
+                self._run_enrichment(job)
+                self._enrichment_queue.task_done()
+            except queue.Empty:
+                break
+            except Exception:
+                self._logger.warning("enrichment_drain_failed", exc_info=True)
 
     def mark_note_superseded(self, note_id: str, superseded_by_id: str) -> bool:
         old_note = self.store.get_note_by_id(note_id)
@@ -608,6 +683,9 @@ class MemoryManager:
 
         self.store._rewrite_note(old_note)
         self.store._rewrite_note(new_note)
+
+        # Remove superseded note from entity index so recall_entity() won't return it
+        self.indexer.remove_note(note_id)
 
         # Add temporal edge to knowledge graph (Task 2)
         kg = get_knowledge_graph()
@@ -628,57 +706,48 @@ class MemoryManager:
     ) -> Optional[MemoryNote]:
         from datetime import datetime
 
-        candidates = [n for n in self.store.iterate_notes() if n.id != new_note.id]
-        if not candidates:
+        _entity_keys = [
+            "cve",
+            "actor",
+            "tool",
+            "campaign",
+            "asset",
+            "person",
+            "location",
+            "organization",
+            "event",
+            "activity",
+            "temporal",
+        ]
+
+        # Build the new note's normalised entity sets once.
+        new_entities: Dict[str, set] = {
+            k: set(e.lower() for e in resolved_entities.get(k, [])) for k in _entity_keys
+        }
+
+        # Use the entity index to collect only candidate note IDs that share at
+        # least one entity value with the new note — O(E) instead of O(N).
+        # Also pre-compute per-candidate overlap counts while traversing the index
+        # so we never need to re-extract entities from raw content.
+        candidate_overlap: Dict[str, int] = {}
+        for key in _entity_keys:
+            for evalue in new_entities[key]:
+                for nid in self.indexer.get_note_ids(key, evalue):
+                    if nid == new_note.id:
+                        continue
+                    candidate_overlap[nid] = candidate_overlap.get(nid, 0) + 1
+
+        if not candidate_overlap:
             return None
 
-        new_entities = {
-            k: resolved_entities.get(k, [])
-            for k in [
-                "cve",
-                "actor",
-                "tool",
-                "campaign",
-                "asset",
-                "person",
-                "location",
-                "organization",
-                "event",
-                "activity",
-                "temporal",
-            ]
-        }
         best_match = None
         best_score = 0.0
 
-        for candidate in candidates:
-            if candidate.links.superseded_by:
+        for nid, overlap in candidate_overlap.items():
+            candidate = self.store.get_note_by_id(nid)
+            if candidate is None:
                 continue
-
-            cand_entities = self.indexer.extractor.extract_all(candidate.content.raw, use_llm=False)
-            cand_resolved = {}
-            for k, v in cand_entities.items():
-                cand_resolved[k] = [self.resolver.resolve(k, e) for e in v]
-
-            overlap = 0
-            for key in [
-                "cve",
-                "actor",
-                "tool",
-                "campaign",
-                "asset",
-                "person",
-                "location",
-                "organization",
-                "event",
-                "activity",
-                "temporal",
-            ]:
-                new_set = set(e.lower() for e in new_entities.get(key, []))
-                cand_set = set(e.lower() for e in cand_resolved.get(key, []))
-                overlap += len(new_set & cand_set)
-
-            if overlap == 0:
+            if candidate.links.superseded_by:
                 continue
 
             score = float(overlap)

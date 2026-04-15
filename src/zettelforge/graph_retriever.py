@@ -53,10 +53,11 @@ class GraphRetriever:
         max_depth: int,
         best: Dict[str, ScoredResult],
     ):
-        start_node_id = self.kg._node_index.get(start_type, {}).get(start_value)
-        if not start_node_id:
+        start_node = self.kg.get_node(start_type, start_value)
+        if not start_node:
             return
 
+        start_node_id = start_node["node_id"]
         visited: Set[str] = set()
         queue = [(start_node_id, 0, [f"{start_type}:{start_value}"])]
 
@@ -67,7 +68,7 @@ class GraphRetriever:
                 continue
             visited.add(current_id)
 
-            node = self.kg._nodes.get(current_id)
+            node = self.kg.get_node_by_id(current_id)
             if not node:
                 continue
 
@@ -85,9 +86,9 @@ class GraphRetriever:
             if depth >= max_depth:
                 continue
 
-            for edge in self.kg._edges_from.get(current_id, []):
+            for edge in self.kg.get_outgoing_edges(current_id):
                 to_id = edge["to_node_id"]
-                to_node = self.kg._nodes.get(to_id)
+                to_node = self.kg.get_node_by_id(to_id)
                 if to_node and to_id not in visited:
                     step_label = f"{to_node['entity_type']}:{to_node['entity_value']}"
                     queue.append((to_id, depth + 1, path + [step_label]))
