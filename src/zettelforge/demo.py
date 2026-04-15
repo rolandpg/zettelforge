@@ -1,4 +1,5 @@
 """ZettelForge interactive demo — see CTI memory in action."""
+import logging
 import os
 import sys
 import tempfile
@@ -65,6 +66,10 @@ SAMPLE_REPORTS = [
 
 def run_demo():
     """Run the ZettelForge interactive CTI demo."""
+    # Suppress noisy warnings from embedding/TypeDB fallbacks during demo
+    logging.getLogger("zettelforge").setLevel(logging.ERROR)
+    logging.getLogger("typedb").setLevel(logging.ERROR)
+
     print("=" * 60)
     print("  ZettelForge Demo — CTI Agentic Memory")
     print("=" * 60)
