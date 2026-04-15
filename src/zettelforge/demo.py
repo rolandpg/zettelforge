@@ -1,10 +1,9 @@
 """ZettelForge interactive demo — see CTI memory in action."""
+
 import logging
 import os
-import sys
 import tempfile
 import time
-
 
 # Sample CTI reports (real-world style, diverse entity types)
 SAMPLE_REPORTS = [
@@ -121,9 +120,7 @@ def run_demo():
             note_obj = mm.store.get_note_by_id(apt28_notes[0])
             if note_obj:
                 print(f'  Top hit: "{note_obj.content.raw[:80]}..."')
-    print(
-        "  Note: APT28 = Fancy Bear — aliases stored in entity_aliases.json"
-    )
+    print("  Note: APT28 = Fancy Bear — aliases stored in entity_aliases.json")
     print()
 
     # Phase 3: Semantic recall
@@ -159,7 +156,7 @@ def run_demo():
     print()
     print("  Next steps:")
     print("    from zettelforge import MemoryManager")
-    print('    mm = MemoryManager()  # persists to ~/.amem/')
+    print("    mm = MemoryManager()  # persists to ~/.amem/")
     print('    mm.remember("your threat intel here")')
     print()
     print("  Docs: https://docs.threatrecall.ai")
