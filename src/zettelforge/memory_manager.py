@@ -18,6 +18,7 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
 
 from zettelforge.alias_resolver import AliasResolver
+from zettelforge.consolidation import ConsolidationMiddleware
 from zettelforge.entity_indexer import EntityIndexer
 from zettelforge.extensions import has_extension
 from zettelforge.fact_extractor import FactExtractor
@@ -78,9 +79,15 @@ class MemoryManager:
         self.retriever = VectorRetriever(memory_store=self.store)
         self.governance = GovernanceValidator()
         self.resolver = AliasResolver()
+        self.consolidation = ConsolidationMiddleware(self)
 
         self._logger = get_logger("zettelforge.memory")
-        self.stats = {"notes_created": 0, "retrievals": 0, "entity_index_hits": 0}
+        self.stats = {
+            "notes_created": 0,
+            "retrievals": 0,
+            "entity_index_hits": 0,
+            "consolidations_triggered": 0,
+        }
 
         # Dual-stream enrichment: background worker for LLM causal extraction
         self._enrichment_queue: queue.Queue = queue.Queue(maxsize=500)
@@ -196,6 +203,23 @@ class MemoryManager:
             resolved_entities[etype] = [self.resolver.resolve(etype, e) for e in elist]
 
         self.indexer.add_note(note.id, resolved_entities)
+
+        # GAM consolidation: observe note for semantic shift detection
+        try:
+            is_shift, shift_meta = self.consolidation.before_write(
+                note_entities=resolved_entities,
+                note_domain=domain,
+            )
+            if is_shift:
+                self.stats["consolidations_triggered"] += 1
+                self._logger.info(
+                    "semantic_shift_detected",
+                    note_id=note.id,
+                    signals=shift_meta.get("shift_signals", []),
+                    epg_count=shift_meta.get("epg_count", 0),
+                )
+        except Exception as e:
+            self._logger.warning("consolidation_observe_failed", error=str(e))
 
         # Phase 3: Check supersession
         self._check_supersession(note, resolved_entities)
