@@ -5,11 +5,10 @@ Compares new facts against existing notes and decides:
 ADD (new), UPDATE (refine), DELETE (contradict), or NOOP (duplicate).
 """
 
-import json
-import re
 from enum import Enum
 from typing import List, Optional, Tuple
 
+from zettelforge.json_parse import extract_json
 from zettelforge.log import get_logger
 from zettelforge.note_schema import MemoryNote
 
@@ -113,23 +112,13 @@ JSON:"""
         if not raw:
             return UpdateOperation.ADD
 
-        if raw.startswith("```"):
-            parts = raw.split("```")
-            for part in parts:
-                stripped = part.strip()
-                if stripped.startswith("json"):
-                    stripped = stripped[4:].strip()
-                if stripped.startswith("{"):
-                    raw = stripped
-                    break
-
-        match = re.search(r"\{.*\}", raw, re.DOTALL)
-        if not match:
+        parsed = extract_json(raw, expect="object")
+        if parsed is None:
+            _logger.warning("parse_failed", schema="update_operation", raw=raw[:200])
             return UpdateOperation.ADD
 
         try:
-            parsed = json.loads(match.group(0))
             op_str = parsed.get("operation", "ADD").upper()
             return UpdateOperation(op_str)
-        except (json.JSONDecodeError, ValueError):
+        except (ValueError, AttributeError):
             return UpdateOperation.ADD

@@ -17,6 +17,7 @@ import threading
 from pathlib import Path
 from typing import Dict, List, Optional, Set
 
+from zettelforge.json_parse import extract_json
 from zettelforge.log import get_logger
 
 _logger = get_logger("zettelforge.entity_indexer")
@@ -284,29 +285,9 @@ class EntityExtractor:
         """Parse LLM NER output into normalized entity dict."""
         empty = {t: [] for t in expected_types}
 
-        if not output or not output.strip():
-            return empty
-
-        # Strip markdown code fences if present
-        cleaned = output.strip()
-        if cleaned.startswith("```"):
-            parts = cleaned.split("```")
-            for part in parts:
-                if part.strip().startswith("{"):
-                    cleaned = part.strip()
-                    break
-
-        # Find JSON object in output
-        json_match = re.search(r"\{[^}]+\}", cleaned, re.DOTALL)
-        if not json_match:
-            return empty
-
-        try:
-            parsed = json.loads(json_match.group(0))
-        except json.JSONDecodeError:
-            return empty
-
-        if not isinstance(parsed, dict):
+        parsed = extract_json(output, expect="object")
+        if parsed is None:
+            _logger.warning("parse_failed", schema="ner_output", raw=(output or "")[:200])
             return empty
 
         # Normalize values

@@ -7,10 +7,14 @@ Supports multiple response formats: direct_answer, synthesized_brief, timeline_a
 """
 
 import hashlib
-import json
 import threading
 import time
 from typing import Dict, List, Optional
+
+from zettelforge.json_parse import extract_json
+from zettelforge.log import get_logger
+
+_logger = get_logger("zettelforge.synthesis_generator")
 
 
 class SynthesisGenerator:
@@ -135,17 +139,19 @@ class SynthesisGenerator:
         """Generate synthesis using LLM."""
         system_prompt = self._get_system_prompt(format)
         user_prompt = self._build_prompt(query, context, format)
-        full_prompt = f"{system_prompt}\n\n{user_prompt}\n\nRespond with valid JSON only."
+        full_prompt = f"{user_prompt}\n\nRespond with valid JSON only."
 
         try:
             from zettelforge.llm_client import generate
 
             raw = generate(full_prompt, max_tokens=800, temperature=0.1, system=system_prompt)
-            return json.loads(raw)
-        except (json.JSONDecodeError, Exception):
+            result = extract_json(raw, expect="object")
+            if result is None:
+                _logger.warning("parse_failed", schema="synthesis", raw=(raw or "")[:200])
+                return self._fallback_synthesis(query, format)
+            return result
+        except Exception:
             return self._fallback_synthesis(query, format)
-
-        return self._fallback_synthesis(query, format)
 
     def _get_system_prompt(self, format: str) -> str:
         prompts = {

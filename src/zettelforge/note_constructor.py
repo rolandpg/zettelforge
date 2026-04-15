@@ -8,11 +8,11 @@ Causal Triple Extension (2026-04-06):
 - Relations: causes, enables, targets, uses, exploits, attributed_to
 """
 
-import json
 import re
 from datetime import datetime
 from typing import Dict, List
 
+from zettelforge.json_parse import extract_json
 from zettelforge.log import get_logger
 
 _logger = get_logger("zettelforge.constructor")
@@ -123,23 +123,10 @@ JSON:"""
 
             output = generate(prompt, max_tokens=300, temperature=0.1)
 
-            # Handle various response formats
-            # 1. Markdown code blocks
-            if output.startswith("```"):
-                parts = output.split("```")
-                for part in parts:
-                    if part.strip().startswith("[") or part.strip().startswith("{"):
-                        output = part.strip()
-                        break
-
-            # 2. Find JSON array in output
-            import re
-
-            json_match = re.search(r"\[.*\]", output, re.DOTALL)
-            if json_match:
-                output = json_match.group(0)
-
-            parsed = json.loads(output)
+            parsed = extract_json(output, expect="array")
+            if parsed is None:
+                _logger.warning("parse_failed", schema="causal_triples", raw=(output or "")[:200])
+                return []
 
             # Normalize to list of dicts (handle array-of-arrays or array-of-objects)
             triples = []

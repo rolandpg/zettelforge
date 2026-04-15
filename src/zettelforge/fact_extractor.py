@@ -5,11 +5,10 @@ Extracts salient facts from raw content using LLM, with importance scoring.
 Only the important facts proceed to storage, reducing redundancy and noise.
 """
 
-import json
-import re
 from dataclasses import dataclass
 from typing import List
 
+from zettelforge.json_parse import extract_json
 from zettelforge.log import get_logger
 
 _logger = get_logger("zettelforge.fact_extractor")
@@ -66,24 +65,9 @@ class FactExtractor:
         if not raw:
             return []
 
-        # Strip markdown code fences
-        if raw.startswith("```"):
-            parts = raw.split("```")
-            for part in parts:
-                stripped = part.strip()
-                if stripped.startswith("json"):
-                    stripped = stripped[4:].strip()
-                if stripped.startswith("["):
-                    raw = stripped
-                    break
-
-        match = re.search(r"\[.*\]", raw, re.DOTALL)
-        if not match:
-            return []
-
-        try:
-            parsed = json.loads(match.group(0))
-        except json.JSONDecodeError:
+        parsed = extract_json(raw, expect="array")
+        if parsed is None:
+            _logger.warning("parse_failed", schema="fact_extraction", raw=raw[:200])
             return []
 
         facts = []
