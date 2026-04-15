@@ -73,7 +73,7 @@ def _base_fields(
             "version": "1.3.0",
             "product": {
                 "name": "zettelforge",
-                "vendor_name": "threatengram",
+                "vendor_name": "zettelforge",
                 "version": _PRODUCT_VERSION,
             },
             "log_name": "application",

@@ -101,8 +101,8 @@ class LoggingConfig:
 
 
 @dataclass
-class EnterpriseConfig:
-    """Enterprise edition settings (ignored in Community)."""
+class ExtensionsConfig:
+    """Extensions settings (used by zettelforge-enterprise and similar packages)."""
 
     license_key: str = ""
     blended_retrieval: bool = True
@@ -133,7 +133,7 @@ class ZettelForgeConfig:
     governance: GovernanceConfig = field(default_factory=GovernanceConfig)
     cache: CacheConfig = field(default_factory=CacheConfig)
     logging: LoggingConfig = field(default_factory=LoggingConfig)
-    enterprise: EnterpriseConfig = field(default_factory=EnterpriseConfig)
+    enterprise: ExtensionsConfig = field(default_factory=ExtensionsConfig)
     opencti: OpenCTIConfig = field(default_factory=OpenCTIConfig)
 
 
@@ -263,7 +263,7 @@ def _apply_yaml(cfg: ZettelForgeConfig, data: dict):
     if "enterprise" in data and isinstance(data["enterprise"], dict):
         for k, v in data["enterprise"].items():
             if hasattr(cfg.enterprise, k):
-                setattr(cfg.enterprise, k, v)
+                setattr(cfg.enterprise, k, v)  # "enterprise" key kept for config-file compat
 
     if "opencti" in data and isinstance(data["opencti"], dict):
         for k, v in data["opencti"].items():
@@ -309,7 +309,7 @@ def _apply_env(cfg: ZettelForgeConfig):
     if v := os.environ.get("ZETTELFORGE_LLM_URL"):
         cfg.llm.url = v
 
-    # Enterprise
+    # Extensions license key (used by zettelforge-enterprise fallback path)
     if v := os.environ.get("THREATENGRAM_LICENSE_KEY"):
         cfg.enterprise.license_key = v
 
