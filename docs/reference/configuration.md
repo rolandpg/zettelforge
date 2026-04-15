@@ -239,6 +239,52 @@ class LoggingConfig:
 
 ---
 
+### opencti
+
+> [!NOTE]
+> This section is only active in **ZettelForge Enterprise**. It has no effect in the Community edition.
+
+```python
+@dataclass
+class OpenCTIConfig:
+    url: str = "http://localhost:8080"
+    token: str = ""
+    sync_interval: int = 0
+```
+
+| Key | Type | Default | Env Override | Description |
+|:----|:-----|:--------|:-------------|:------------|
+| `opencti.url` | `str` | `http://localhost:8080` | `OPENCTI_URL` | Base URL of the OpenCTI platform. Use `https://` for cloud deployments. |
+| `opencti.token` | `str` | `""` | `OPENCTI_TOKEN` | OpenCTI API token. **Always set via `OPENCTI_TOKEN` — never commit a token to `config.yaml`.** |
+| `opencti.sync_interval` | `int` | `0` | `OPENCTI_SYNC_INTERVAL` | Seconds between automatic pulls from OpenCTI. Set `0` to disable auto-sync and pull manually. |
+
+**Minimal opencti config.yaml block:**
+
+```yaml
+opencti:
+  url: http://localhost:8080
+  token: ""            # Set via OPENCTI_TOKEN env var
+  sync_interval: 3600  # Pull every hour; 0 = manual only
+```
+
+**Supported entity types for pull/push:**
+
+| Entity Type | Pull | Push | Structured Fields |
+|:------------|:----:|:----:|:------------------|
+| `attack_pattern` | yes | -- | MITRE ATT&CK ID, tactic |
+| `intrusion_set` | yes | -- | Aliases, motivation, resource level |
+| `threat_actor` | yes | -- | Aliases, sophistication |
+| `malware` | yes | -- | Types, implementation languages, is_family |
+| `indicator` | yes | -- | STIX pattern, valid_from, valid_until |
+| `vulnerability` | yes | -- | CVSS v3 score/vector, EPSS score/percentile, CISA KEV |
+| `report` | yes | yes | Publication date, confidence, object_refs |
+
+All entities preserve `tlp` (TLP marking label: `WHITE`, `GREEN`, `AMBER`, or `RED`) and `stix_confidence` (STIX integer 0–100; `-1` when unset in OpenCTI).
+
+See [Configure OpenCTI Integration](../how-to/configure-opencti.md) for setup steps, pull/push examples, and troubleshooting.
+
+---
+
 ## Environment Variables Summary
 
 | Variable | Maps To | Example |
@@ -256,7 +302,11 @@ class LoggingConfig:
 | `ZETTELFORGE_LLM_PROVIDER` | `llm.provider` | `ollama` |
 | `ZETTELFORGE_LLM_MODEL` | `llm.model` | `qwen2.5:7b` |
 | `ZETTELFORGE_LLM_URL` | `llm.url` | `http://gpu-box:11434` |
+| `OPENCTI_URL` | `Enterprise only: opencti.url` | `https://opencti.corp.internal` |
+| `OPENCTI_TOKEN` | `Enterprise only: opencti.token` | `abc123...` |
+| `OPENCTI_SYNC_INTERVAL` | `Enterprise only: opencti.sync_interval` | `3600` |
 
+**Note:** The `opencti` configuration section and `OPENCTI_*` environment-variable mapping are implemented in the Enterprise package. In Community builds, these values are ignored by `src/zettelforge/config.py`.
 ---
 
 ## Minimal config.yaml
@@ -282,9 +332,9 @@ llm:
 
 ZettelForge configuration uses a layered resolution system: environment variables override config.yaml, which overrides config.default.yaml, which overrides hardcoded dataclass defaults. Access configuration via `get_config()` which returns a cached `ZettelForgeConfig` singleton. Call `reload_config()` to force a re-read.
 
-**13 environment variables** are supported, covering storage (`AMEM_DATA_DIR`), TypeDB connection (`TYPEDB_HOST`, `TYPEDB_PORT`, `TYPEDB_DATABASE`, `TYPEDB_USERNAME`, `TYPEDB_PASSWORD`), backend selection (`ZETTELFORGE_BACKEND`), embedding provider (`ZETTELFORGE_EMBEDDING_PROVIDER`, `AMEM_EMBEDDING_URL`, `AMEM_EMBEDDING_MODEL`), and LLM provider (`ZETTELFORGE_LLM_PROVIDER`, `ZETTELFORGE_LLM_MODEL`, `ZETTELFORGE_LLM_URL`).
+**16 environment variables** are supported, covering storage (`AMEM_DATA_DIR`), TypeDB connection (`TYPEDB_HOST`, `TYPEDB_PORT`, `TYPEDB_DATABASE`, `TYPEDB_USERNAME`, `TYPEDB_PASSWORD`), backend selection (`ZETTELFORGE_BACKEND`), embedding provider (`ZETTELFORGE_EMBEDDING_PROVIDER`, `AMEM_EMBEDDING_URL`, `AMEM_EMBEDDING_MODEL`), LLM provider (`ZETTELFORGE_LLM_PROVIDER`, `ZETTELFORGE_LLM_MODEL`, `ZETTELFORGE_LLM_URL`), and OpenCTI integration (`OPENCTI_URL`, `OPENCTI_TOKEN`, `OPENCTI_SYNC_INTERVAL`).
 
-**10 config sections** exist: `storage` (data directory), `typedb` (connection parameters), `backend` (typedb or jsonl), `embedding` (vector model and server), `llm` (language model for extraction/synthesis), `extraction` (two-phase pipeline settings), `retrieval` (vector search tuning), `synthesis` (RAG output control), `governance` (validation toggle), `cache` (TypeDB query cache), and `logging` (verbosity control).
+**12 config sections** exist: `storage` (data directory), `typedb` (connection parameters), `backend` (typedb or jsonl), `embedding` (vector model and server), `llm` (language model for extraction/synthesis), `extraction` (two-phase pipeline settings), `retrieval` (vector search tuning), `synthesis` (RAG output control), `governance` (validation toggle), `cache` (TypeDB query cache), `logging` (verbosity control), and `opencti` (Enterprise only — OpenCTI platform URL, token, and sync interval).
 
 **Key defaults:** Data stored in `~/.amem`. TypeDB on `localhost:1729`. Embedding via fastembed in-process with `nomic-embed-text-v1.5-Q` (768 dims, ONNX). LLM via llama-cpp-python in-process with `Qwen2.5-3B-Instruct-Q4_K_M.gguf` at temperature 0.1. Models download automatically on first use. Extraction produces up to 5 facts with importance >= 3. Retrieval returns 10 results with 0.25 similarity threshold and 2.5x entity boost. Synthesis uses `direct_answer` format with A+B tier notes and 3000 token context. Cache TTL is 300 seconds with 1024 max entries. Logging at INFO level.
 

@@ -112,6 +112,15 @@ class EnterpriseConfig:
 
 
 @dataclass
+class OpenCTIConfig:
+    """OpenCTI integration settings (Enterprise edition only)."""
+
+    url: str = "http://localhost:8080"
+    token: str = ""
+    sync_interval: int = 0  # seconds, 0 = disabled
+
+
+@dataclass
 class ZettelForgeConfig:
     storage: StorageConfig = field(default_factory=StorageConfig)
     typedb: TypeDBConfig = field(default_factory=TypeDBConfig)
@@ -125,6 +134,7 @@ class ZettelForgeConfig:
     cache: CacheConfig = field(default_factory=CacheConfig)
     logging: LoggingConfig = field(default_factory=LoggingConfig)
     enterprise: EnterpriseConfig = field(default_factory=EnterpriseConfig)
+    opencti: OpenCTIConfig = field(default_factory=OpenCTIConfig)
 
 
 def _find_config_file() -> Optional[Path]:
@@ -255,6 +265,11 @@ def _apply_yaml(cfg: ZettelForgeConfig, data: dict):
             if hasattr(cfg.enterprise, k):
                 setattr(cfg.enterprise, k, v)
 
+    if "opencti" in data and isinstance(data["opencti"], dict):
+        for k, v in data["opencti"].items():
+            if hasattr(cfg.opencti, k):
+                setattr(cfg.opencti, k, v)
+
 
 def _apply_env(cfg: ZettelForgeConfig):
     """Apply environment variable overrides (highest priority)."""
@@ -297,6 +312,14 @@ def _apply_env(cfg: ZettelForgeConfig):
     # Enterprise
     if v := os.environ.get("THREATENGRAM_LICENSE_KEY"):
         cfg.enterprise.license_key = v
+
+    # OpenCTI
+    if os.environ.get("OPENCTI_URL"):
+        cfg.opencti.url = os.environ["OPENCTI_URL"]
+    if os.environ.get("OPENCTI_TOKEN"):
+        cfg.opencti.token = os.environ["OPENCTI_TOKEN"]
+    if os.environ.get("OPENCTI_SYNC_INTERVAL"):
+        cfg.opencti.sync_interval = int(os.environ["OPENCTI_SYNC_INTERVAL"])
 
 
 # ── Singleton ──────────────────────────────────────────────

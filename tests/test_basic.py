@@ -121,6 +121,30 @@ class TestMemoryStore:
             assert retrieved is not None
             assert retrieved.content.raw == "Test content"
 
+    def test_get_note_by_source_ref(self):
+        """Test lookup by source_ref for OpenCTI dedup."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            store = MemoryStore(jsonl_path=f"{tmpdir}/notes.jsonl", lance_path=f"{tmpdir}/vectordb")
+            note = MemoryNote(
+                id="test_ref",
+                created_at=NOW,
+                updated_at=NOW,
+                content=Content(
+                    raw="Test", source_type="opencti_sync", source_ref="opencti:abc123"
+                ),
+                semantic=Semantic(context="ctx", keywords=[], tags=[], entities=[]),
+                embedding=Embedding(vector=[0.0] * 768),
+                metadata=Metadata(domain="cti"),
+            )
+            store.write_note(note)
+
+            found = store.get_note_by_source_ref("opencti:abc123")
+            assert found is not None
+            assert found.id == "test_ref"
+
+            not_found = store.get_note_by_source_ref("opencti:nonexistent")
+            assert not_found is None
+
 
 class TestLanceDBIndexing:
     """Test LanceDB vector index population (issue #26)"""
@@ -331,6 +355,32 @@ class TestMemoryManager:
             )
             assert note is not None
             assert status in ("created", "added", "updated", "corrected", "noop")
+
+    def test_ingest_relationship(self):
+        """Test direct KG edge ingestion for OpenCTI sync."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            mm = MemoryManager(jsonl_path=f"{tmpdir}/notes.jsonl", lance_path=f"{tmpdir}/vectordb")
+            mm.ingest_relationship(
+                from_type="actor",
+                from_value="apt28",
+                to_type="tool",
+                to_value="cobalt-strike",
+                relationship="USES_TOOL",
+            )
+            # Calling twice should not duplicate
+            mm.ingest_relationship(
+                from_type="actor",
+                from_value="apt28",
+                to_type="tool",
+                to_value="cobalt-strike",
+                relationship="USES_TOOL",
+            )
+            # Verify edge exists via KG
+            from zettelforge.knowledge_graph import get_knowledge_graph
+
+            kg = get_knowledge_graph()
+            neighbors = kg.get_neighbors("actor", "apt28")
+            assert any(n["node"].get("entity_value") == "cobalt-strike" for n in neighbors)
 
 
 if __name__ == "__main__":

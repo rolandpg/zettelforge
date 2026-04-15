@@ -4,7 +4,11 @@ Tests for RFC-001: Conversational Entity Extractor
 Validates hybrid regex+LLM entity extraction, knowledge graph edge inference,
 and supersession for conversational entity types.
 """
+
+import os
+
 import pytest
+
 from zettelforge.entity_indexer import EntityExtractor, EntityIndexer
 from zettelforge.note_constructor import NoteConstructor
 
@@ -39,6 +43,10 @@ class TestRegexExtraction:
             assert result.get(etype, []) == []
 
 
+@pytest.mark.skipif(
+    os.environ.get("CI") == "true",
+    reason="LLM tests crash in CI due to llama-cpp native library segfault",
+)
 class TestLLMExtraction:
     """LLM NER extraction for conversational types."""
 
@@ -60,6 +68,10 @@ class TestLLMExtraction:
             assert result.get(etype, []) == []
 
 
+@pytest.mark.skipif(
+    os.environ.get("CI") == "true",
+    reason="LLM tests crash in CI due to llama-cpp native library segfault",
+)
 class TestHybridExtraction:
     """Combined regex + LLM extraction via extract_all."""
 
@@ -87,14 +99,18 @@ class TestNERParsing:
     def test_parse_valid_json_returns_entities(self):
         ext = EntityExtractor()
         output = '{"person": ["Alice"], "location": ["Paris"], "organization": [], "event": [], "activity": [], "temporal": []}'
-        result = ext._parse_ner_output(output, ["person", "location", "organization", "event", "activity", "temporal"])
+        result = ext._parse_ner_output(
+            output, ["person", "location", "organization", "event", "activity", "temporal"]
+        )
         assert "alice" in result["person"]
         assert "paris" in result["location"]
 
     def test_parse_markdown_fenced_json_returns_entities(self):
         ext = EntityExtractor()
         output = '```json\n{"person": ["Bob"], "location": [], "organization": [], "event": [], "activity": [], "temporal": []}\n```'
-        result = ext._parse_ner_output(output, ["person", "location", "organization", "event", "activity", "temporal"])
+        result = ext._parse_ner_output(
+            output, ["person", "location", "organization", "event", "activity", "temporal"]
+        )
         assert "bob" in result["person"]
 
     def test_parse_empty_output_returns_empty(self):
@@ -108,7 +124,7 @@ class TestNoteConstructorDelegation:
 
     def test_constructor_uses_extractor(self):
         nc = NoteConstructor()
-        assert hasattr(nc, '_extractor')
+        assert hasattr(nc, "_extractor")
         assert isinstance(nc._extractor, EntityExtractor)
 
     def test_constructor_extract_entities_delegates(self):

@@ -66,6 +66,7 @@ class MemoryStore:
         self.lance_path.mkdir(parents=True, exist_ok=True)
         self._lancedb = None
         self._note_cache: Optional[Dict[str, MemoryNote]] = None
+        self._source_ref_index: Optional[Dict[str, str]] = None  # source_ref -> note_id
 
         self._dirty_access: set = set()  # note IDs with unsaved access updates
         self._access_flush_timer: Optional[threading.Timer] = None
@@ -116,6 +117,7 @@ class MemoryStore:
         if self._note_cache is not None:
             return
         self._note_cache = {}
+        self._source_ref_index = {}
         if not self.jsonl_path.exists():
             return
         with open(self.jsonl_path, "r") as f:
@@ -125,6 +127,8 @@ class MemoryStore:
                         data = json.loads(line)
                         note = MemoryNote(**data)
                         self._note_cache[note.id] = note
+                        if note.content.source_ref:
+                            self._source_ref_index[note.content.source_ref] = note.id
                     except Exception:
                         _logger.debug("note_cache_warmup_skipped", exc_info=True)
 
@@ -143,9 +147,11 @@ class MemoryStore:
             f.write(note.model_dump_json() + "\n")
             fcntl.flock(f, fcntl.LOCK_UN)
 
-        # Update in-memory cache
+        # Update in-memory cache and source_ref index
         if self._note_cache is not None:
             self._note_cache[note.id] = note
+        if self._source_ref_index is not None and note.content.source_ref:
+            self._source_ref_index[note.content.source_ref] = note.id
 
         # Index in LanceDB if available
         if self.lancedb is not None:
@@ -277,6 +283,14 @@ class MemoryStore:
     def get_note_by_id(self, note_id: str) -> Optional[MemoryNote]:
         """Retrieve a specific note by ID. O(1) via cache."""
         self._ensure_cache()
+        return self._note_cache.get(note_id)
+
+    def get_note_by_source_ref(self, source_ref: str) -> Optional[MemoryNote]:
+        """Find a note by its source_ref field. O(1) via index. Returns None if not found."""
+        self._ensure_cache()
+        note_id = self._source_ref_index.get(source_ref)
+        if note_id is None:
+            return None
         return self._note_cache.get(note_id)
 
     def get_notes_by_domain(self, domain: str) -> List[MemoryNote]:

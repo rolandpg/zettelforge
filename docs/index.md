@@ -83,6 +83,7 @@ Practical recipes for specific tasks you need to accomplish.
 | [Configure TypeDB](how-to/configure-typedb.md) | Docker setup, schema deployment, and troubleshooting. |
 | [Configure LanceDB](how-to/configure-lancedb.md) | Tune IVF_PQ index, similarity threshold, and entity boost. |
 | [Integrate with Nexus Agent](how-to/integrate-nexus-agent.md) | Use `get_context()` and `ProactiveAgentMixin` in agent loops. |
+| [Configure OpenCTI Integration](how-to/configure-opencti.md) | Bi-directional sync with OpenCTI via pycti — pull threat intelligence, push notes as STIX reports. [Enterprise] |
 
 ### Reference (Information-Oriented)
 
