@@ -412,7 +412,7 @@ You ingested a raw threat intelligence report and turned it into structured, que
 
 - [How to ingest STIX 2.1 bundles from TAXII feeds](../how-to/ingest-news-report.md)
 - [How to generate Sigma detection rules from ingested intel](../how-to/store-threat-actor.md)
-- [How to set up proactive context injection for your SOC agent](../how-to/integrate-nexus-agent.md)
+- [How to set up proactive context injection for your SOC agent](../how-to/integrate-llm-agent.md)
 - [API Reference: MemoryManager](../reference/memory-manager-api.md)
 
 ---

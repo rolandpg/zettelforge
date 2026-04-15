@@ -38,7 +38,7 @@ nav:
     - Ingest News Report: how-to/ingest-news-report.md
     - Run Temporal Query: how-to/run-temporal-query.md
     - Query APT Tools: how-to/query-apt-tools.md
-    - Integrate Nexus Agent: how-to/integrate-nexus-agent.md
+    - Integrate LLM Agent: how-to/integrate-llm-agent.md
   - Concepts:
     - Architecture: explanation/architecture.md
     - Two-Phase Pipeline: explanation/two-phase-pipeline.md

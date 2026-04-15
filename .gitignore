@@ -3,6 +3,14 @@ config.yaml
 config.yml
 .env
 
+# Local planning & task tracking (not committed)
+TODO.md
+tasks/
+docs/.ralph/
+
+# MkDocs build output (regenerated from docs/)
+site/
+
 # Python
 __pycache__/
 *.py[cod]

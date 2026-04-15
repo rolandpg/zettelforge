@@ -19,7 +19,7 @@
 - [Run Temporal Queries](how-to/run-temporal-query.md): valid-from/valid-until edge queries
 - [Configure TypeDB](how-to/configure-typedb.md): Docker setup + schema deployment
 - [Configure LanceDB](how-to/configure-lancedb.md): IVF_PQ index tuning
-- [Integrate with Nexus Agent](how-to/integrate-nexus-agent.md): OpenClaw / Nexus agent integration
+- [Integrate with Your LLM Agent](how-to/integrate-llm-agent.md): Agent integration via get_context() and ProactiveAgentMixin
 
 ## Tutorials
 
