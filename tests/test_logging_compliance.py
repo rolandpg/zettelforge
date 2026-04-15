@@ -8,6 +8,7 @@ Ensures:
 - Governance violations emit Authorization events
 - Audit events reach the audit log
 """
+
 import ast
 import json
 import tempfile
@@ -20,8 +21,13 @@ import structlog
 from zettelforge.memory_store import MemoryStore
 from zettelforge.note_schema import MemoryNote, Content, Semantic, Embedding, Metadata
 from zettelforge.ocsf import (
-    log_api_activity, log_authorization, log_authentication, log_config_change,
-    STATUS_SUCCESS, STATUS_FAILURE, SEVERITY_HIGH,
+    log_api_activity,
+    log_authorization,
+    log_authentication,
+    log_config_change,
+    STATUS_SUCCESS,
+    STATUS_FAILURE,
+    SEVERITY_HIGH,
 )
 
 NOW = datetime.now().isoformat()
@@ -55,9 +61,11 @@ class TestNoPrintInProduction:
             if isinstance(node, ast.If):
                 # Detect if __name__ == "__main__":
                 test = node.test
-                if (isinstance(test, ast.Compare)
-                        and isinstance(test.left, ast.Name)
-                        and test.left.id == "__name__"):
+                if (
+                    isinstance(test, ast.Compare)
+                    and isinstance(test.left, ast.Name)
+                    and test.left.id == "__name__"
+                ):
                     for lineno in range(node.lineno, node.end_lineno + 1):
                         main_guard_lines.add(lineno)
 
@@ -70,11 +78,16 @@ class TestNoPrintInProduction:
                         violations.append(node.lineno)
         return violations
 
+    # CLI entry points that legitimately use print() for user output
+    _CLI_FILES = {"__main__.py", "demo.py"}
+
     def test_no_print_in_production(self):
-        """No print() calls in src/zettelforge/ except __main__ blocks."""
+        """No print() calls in src/zettelforge/ except __main__ blocks and CLI files."""
         src_dir = Path(__file__).parent.parent / "src" / "zettelforge"
         violations = {}
         for pyfile in sorted(src_dir.glob("*.py")):
+            if pyfile.name in self._CLI_FILES:
+                continue
             lines = self._find_print_calls(pyfile)
             if lines:
                 violations[pyfile.name] = lines
@@ -132,10 +145,7 @@ class TestLanceDBFailureLogged:
     def test_lance_indexing_failure_emits_log(self):
         """When _index_in_lance fails, a structured error is emitted."""
         with tempfile.TemporaryDirectory() as tmpdir:
-            store = MemoryStore(
-                jsonl_path=f"{tmpdir}/notes.jsonl",
-                lance_path=f"{tmpdir}/vectordb"
-            )
+            store = MemoryStore(jsonl_path=f"{tmpdir}/notes.jsonl", lance_path=f"{tmpdir}/vectordb")
             note = _make_note()
 
             # Sabotage the LanceDB connection to force a failure

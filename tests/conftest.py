@@ -1,4 +1,5 @@
 """Shared test fixtures for ZettelForge test suite."""
+
 import os
 import pytest
 from zettelforge.edition import reset_edition

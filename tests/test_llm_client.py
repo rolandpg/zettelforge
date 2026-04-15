@@ -1,4 +1,5 @@
 """Tests for LLM client (local llama-cpp-python + ollama fallback)."""
+
 import os
 import pytest
 from unittest.mock import patch
@@ -23,13 +24,17 @@ class TestLocalLLM:
             max_tokens=20,
             temperature=0.1,
         )
-        assert any(word in result.lower() for word in ["factual", "temporal", "relational", "exploratory", "causal"])
+        assert any(
+            word in result.lower()
+            for word in ["factual", "temporal", "relational", "exploratory", "causal"]
+        )
 
     def test_generate_json_extraction(self):
         import json
+
         result = generate(
             'Extract facts as JSON array: [{"fact": "text", "importance": 1-10}]\n'
-            'Text: APT28 uses Cobalt Strike.',
+            "Text: APT28 uses Cobalt Strike.",
             max_tokens=200,
             temperature=0.1,
         )

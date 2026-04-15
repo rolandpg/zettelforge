@@ -1,4 +1,5 @@
 """Tests for FactExtractor - Phase 1 of Mem0-style pipeline."""
+
 import pytest
 from unittest.mock import patch, MagicMock
 
@@ -72,8 +73,7 @@ class TestFactExtractorWithMockedLLM:
         mock_generate.return_value = '[{"fact": "new tactic", "importance": 7}]'
         extractor = FactExtractor()
         facts = extractor.extract(
-            "They now use compromised credentials",
-            context="Previous: APT28 used DROPBEAR malware"
+            "They now use compromised credentials", context="Previous: APT28 used DROPBEAR malware"
         )
         assert len(facts) == 1
         # Verify context was in the prompt

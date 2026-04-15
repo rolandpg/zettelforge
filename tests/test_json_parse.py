@@ -1,4 +1,5 @@
 """Tests for shared JSON parsing utility."""
+
 import pytest
 from zettelforge.json_parse import extract_json, get_parse_stats, reset_parse_stats
 
@@ -11,7 +12,7 @@ class TestExtractJson:
         assert extract_json('{"key": "value"}') == {"key": "value"}
 
     def test_simple_array(self):
-        assert extract_json('[1, 2, 3]', expect="array") == [1, 2, 3]
+        assert extract_json("[1, 2, 3]", expect="array") == [1, 2, 3]
 
     def test_code_fence_json(self):
         raw = '```json\n{"key": "value"}\n```'
@@ -49,7 +50,7 @@ class TestExtractJson:
         assert extract_json('{"key": "value"}', expect="array") is None
 
     def test_wrong_type_array_when_object_expected(self):
-        assert extract_json('[1, 2, 3]', expect="object") is None
+        assert extract_json("[1, 2, 3]", expect="object") is None
 
     def test_stats_increment_on_success(self):
         extract_json('{"key": "value"}')
@@ -64,6 +65,6 @@ class TestExtractJson:
         assert stats["failure"] == 1
 
     def test_markdown_with_prose_before_and_after(self):
-        raw = "Here is the JSON:\n```json\n[{\"a\": 1}]\n```\nDone."
+        raw = 'Here is the JSON:\n```json\n[{"a": 1}]\n```\nDone.'
         result = extract_json(raw, expect="array")
         assert result == [{"a": 1}]

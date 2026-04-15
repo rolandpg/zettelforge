@@ -1,4 +1,5 @@
 """Tests for ZettelForge configuration loader."""
+
 import os
 import pytest
 import tempfile

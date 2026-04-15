@@ -1,4 +1,5 @@
 """Tests for extension loader."""
+
 import os
 import sys
 from unittest.mock import patch

@@ -1,4 +1,5 @@
 """Tests for embedding backends (fastembed + fallback)."""
+
 import pytest
 from zettelforge.vector_memory import get_embedding, get_embedding_batch, _get_embed_model
 
