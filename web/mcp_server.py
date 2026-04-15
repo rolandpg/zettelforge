@@ -49,11 +49,14 @@ def handle_tool_call(name: str, arguments: dict) -> dict:
         content = arguments.get("content", "")
         domain = arguments.get("domain", "cti")
         source = arguments.get("source", "mcp")
-        note, status = mm.remember(content, source_type="mcp", source_ref=source, domain=domain)
+        evolve = arguments.get("evolve", True)
+        note, status = mm.remember(
+            content, source_type="mcp", source_ref=source, domain=domain, evolve=evolve
+        )
         return {
-            "note_id": note.id,
+            "note_id": note.id if note else None,
             "status": status,
-            "entities": note.semantic.entities[:10],
+            "entities": note.semantic.entities[:10] if note else [],
         }
 
     elif name == "threatrecall_recall":
@@ -143,13 +146,14 @@ def handle_tool_call(name: str, arguments: dict) -> dict:
 TOOLS = [
     {
         "name": "threatrecall_remember",
-        "description": "Store threat intelligence in ThreatRecall memory. Extracts entities (CVEs, actors, tools) and adds to knowledge graph.",
+        "description": "Store threat intelligence in ThreatRecall memory. Extracts entities (CVEs, actors, tools) and adds to knowledge graph. With evolve=true (default), uses LLM to compare against existing notes and decide whether to add, update, or supersede.",
         "inputSchema": {
             "type": "object",
             "properties": {
                 "content": {"type": "string", "description": "The threat intelligence text to store"},
                 "domain": {"type": "string", "description": "Domain: cti, incident, general", "default": "cti"},
                 "source": {"type": "string", "description": "Source reference", "default": "mcp"},
+                "evolve": {"type": "boolean", "description": "Enable memory evolution: LLM compares against existing notes and decides ADD/UPDATE/DELETE/NOOP. Slower but prevents duplicate/stale knowledge.", "default": True},
             },
             "required": ["content"],
         },

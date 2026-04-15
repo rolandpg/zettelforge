@@ -64,6 +64,7 @@ class RememberRequest(BaseModel):
     domain: str = "cti"
     source_type: str = "manual"
     source_ref: str = ""
+    evolve: bool = True
 
 class SynthesizeRequest(BaseModel):
     query: str
@@ -113,6 +114,7 @@ async def remember(request: Request, req: RememberRequest):
         source_type=req.source_type,
         source_ref=req.source_ref,
         domain=req.domain,
+        evolve=req.evolve,
     )
     latency = time.perf_counter() - start
 

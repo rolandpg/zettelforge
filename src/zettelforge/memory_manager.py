@@ -75,11 +75,33 @@ class MemoryManager:
         source_type: str = "conversation",
         source_ref: str = "",
         domain: str = "general",
+        evolve: bool = False,
     ) -> Tuple[MemoryNote, str]:
         """
         Create a new memory note from content.
 
-        Returns: (note, status)
+        When evolve=True, uses the Mem0-style two-phase pipeline: extracts
+        salient facts via LLM, compares each against existing notes, and
+        decides ADD/UPDATE/DELETE/NOOP per fact. This enables memory evolution
+        — new information can refine, correct, or supersede existing notes
+        instead of just accumulating.
+
+        When evolve=False (default), stores the note directly with basic
+        entity-overlap supersession checking. Faster but no LLM reasoning
+        about whether this information updates existing knowledge.
+
+        Args:
+            content: Raw text to store.
+            source_type: Origin type (conversation, mcp, report, etc.).
+            source_ref: Source identifier.
+            domain: Memory domain (cti, general, etc.).
+            evolve: If True, run LLM fact extraction and update pipeline.
+
+        Returns: (note, status) where status is one of:
+            "created" — new note stored (evolve=False or evolve=True with ADD)
+            "updated" — existing note superseded by refined version
+            "corrected" — existing note superseded by contradiction
+            "noop" — content already captured, no action taken
         """
         request_id = uuid.uuid4().hex
         start = time.perf_counter()
@@ -105,12 +127,43 @@ class MemoryManager:
             )
             raise
 
-        # Construct note
+        # Evolution path: LLM extracts facts and decides ADD/UPDATE/DELETE/NOOP
+        if evolve:
+            results = self.remember_with_extraction(
+                content=content,
+                source_type=source_type,
+                source_ref=source_ref,
+                domain=domain,
+            )
+            duration_ms = (time.perf_counter() - start) * 1000
+
+            if results:
+                note, status = results[0]
+                log_api_activity(
+                    operation="remember",
+                    status_id=STATUS_SUCCESS,
+                    note_id=note.id if note else None,
+                    domain=domain,
+                    duration_ms=duration_ms,
+                    request_id=request_id,
+                    evolve=True,
+                    status_detail=status,
+                    facts_processed=len(results),
+                )
+                return note, status
+
+            # Extraction found no facts above threshold — fall through to direct store
+            self._logger.info(
+                "evolve_no_facts_extracted",
+                request_id=request_id,
+                content_length=len(content),
+            )
+
+        # Direct store path
         note = self.constructor.construct(
             raw_content=content, source_type=source_type, source_ref=source_ref, domain=domain
         )
 
-        # Write to store
         self.store.write_note(note)
         self.stats["notes_created"] += 1
 
@@ -137,6 +190,7 @@ class MemoryManager:
             domain=domain,
             duration_ms=duration_ms,
             request_id=request_id,
+            evolve=False,
         )
         return note, "created"
 

@@ -10,7 +10,7 @@ version: "2.0.0"
 
 # The Two-Phase Extraction Pipeline
 
-ThreatRecall's `remember_with_extraction()` method implements a Mem0-inspired two-phase pipeline that solves the fundamental problem of append-only memory systems: redundancy, contradiction, and noise.
+ThreatRecall's memory evolution pipeline — activated via `remember(..., evolve=True)` — implements a Mem0-inspired two-phase process that solves the fundamental problem of append-only memory systems: redundancy, contradiction, and noise. The MCP server and web API enable evolution by default. The underlying `remember_with_extraction()` method can also be called directly for programmatic use.
 
 ## The Problem: Append-Only Memory
 

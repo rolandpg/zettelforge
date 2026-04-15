@@ -121,25 +121,22 @@ for entry in graph:
 > [!WARNING]
 > If TypeDB is not running, graph traversal uses the JSONL fallback. Relationship data is identical, but query performance degrades above ~50,000 edges.
 
-### 6. Store multiple facts with extraction pipeline
+### 6. Store with memory evolution
 
-For richer storage that deduplicates against existing notes, use `remember_with_extraction()`:
+Use `evolve=True` to deduplicate against existing notes — LLM extracts facts, compares to existing memory, and decides ADD/UPDATE/DELETE/NOOP per fact:
 
 ```python
-results = mm.remember_with_extraction(
+note, status = mm.remember(
     content=(
         "Lazarus Group used Cobalt Strike and a custom loader called "
         "DTrack to target cryptocurrency exchanges in March 2026. "
         "CISA advisory AA26-078A links the campaign to CVE-2024-3094."
     ),
     domain="cti",
-    min_importance=3,
-    max_facts=5
+    evolve=True,
 )
-
-for note, status in results:
-    if note:
-        print(f"  [{status}] {note.id}: {note.content.raw[:80]}")
+print(f"[{status}] {note.id}: {note.content.raw[:80]}")
+# status: "created", "updated", "corrected", or "noop"
 ```
 
 ## LLM Quick Reference
@@ -154,7 +151,7 @@ for note, status in results:
 
 **Causal triples**: For `domain="cti"` notes or content >200 chars, LLM-based causal triple extraction runs, adding richer semantic edges to the graph.
 
-**Two-phase alternative**: `mm.remember_with_extraction(content, domain="cti", min_importance=3, max_facts=5)` extracts discrete facts, compares each against existing notes, and returns ADD/UPDATE/DELETE/NOOP decisions per fact.
+**Memory evolution**: `mm.remember(content, domain="cti", evolve=True)` extracts facts, compares each against existing notes, and returns ADD/UPDATE/DELETE/NOOP decisions. The MCP server and web API enable this by default. For programmatic batch use, `remember_with_extraction()` is also available.
 
 **Alias resolution**: "Fancy Bear", "Pawn Storm", "Sofacy", "Forest Blizzard" all resolve to "apt28". Works via TypeDB `alias-of` relations with JSONL fallback.
 
