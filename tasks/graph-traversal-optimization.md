@@ -42,21 +42,19 @@ The combined effect: any CTI query that mentions an actor, malware family, or in
    FACTUAL queries are entity lookups, and a graph weight of zero was too aggressive. Many factual CTI queries have a relational component (e.g., "what CVE does APT28 exploit" is factual *and* requires a graph hop). Setting `graph=0.2` allows graph results to contribute to FACTUAL blending without dominating it. Entity index weight (0.7) and vector weight (0.3) are unchanged.
 
 2. **RELATIONAL keyword list expanded to cover CTI query patterns.**
-   The following tokens were added to the RELATIONAL keyword intent list:
+   The implementation broadens RELATIONAL matching for common CTI relationship-style questions, especially queries about infrastructure usage, campaign ownership, attribution, targeting, indicator association, and explicit relationships between actors, malware, tools, and campaigns.
 
-   | Added keyword | Example CTI query that now matches |
-   |:--------------|:----------------------------------|
-   | `what infrastructure` | "what infrastructure does APT28 use?" |
-   | `which campaigns` | "which campaigns target financial sector?" |
-   | `show relationships` | "show relationships between Cobalt Strike and APT29" |
-   | `associated indicators` | "what indicators are associated with LockBit?" |
-   | `relationships between` | "relationships between actor and malware" |
-   | `targets` | "what does APT28 target?" |
-   | `attributed to` | "what is this campaign attributed to?" |
-   | `linked with` | "tools linked with FIN7" |
-   | `campaigns by` | "campaigns by Sandworm" |
-   | `infrastructure used` | "infrastructure used in Operation Aurora" |
+   Representative query forms now covered include:
 
+   | CTI query pattern now better recognized as relational | Example query |
+   |:------------------------------------------------------|:--------------|
+   | infrastructure usage | "what infrastructure does APT28 use?" |
+   | campaign lookup | "which campaigns target financial sector?" |
+   | explicit relationship requests | "show relationships between Cobalt Strike and APT29" |
+   | indicator association | "what indicators are associated with LockBit?" |
+   | targeting / attribution / linkage phrasing | "what does APT28 target?" / "what is this campaign attributed to?" / "tools linked with FIN7" |
+
+   **Note:** `src/zettelforge/intent_classifier.py` is the source of truth for the exact RELATIONAL keyword strings. This document intentionally describes the implemented matching strategy and covered query shapes rather than maintaining a second literal keyword list that can drift from the code.
 **Why this is sufficient as a standalone fix:**
 The RELATIONAL keyword expansion corrects the classification for the most common CTI relational query forms. Combined with the `graph=0.2` floor on FACTUAL, queries that still slip through to a FACTUAL classification will no longer have their graph results zeroed out entirely. The fix is conservative: it does not change the fundamental architecture, does not require retraining, and takes effect immediately on the next restart.
 
