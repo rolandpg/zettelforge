@@ -1,5 +1,5 @@
 """
-ThreatRecall Web UI — FastAPI backend + minimal HTML frontend.
+ZettelForge Web UI — FastAPI backend + minimal HTML frontend.
 
 A search-and-recall interface for ZettelForge's CTI memory system.
 
@@ -34,13 +34,13 @@ from pydantic import BaseModel
 from typing import Optional, List
 
 from zettelforge import MemoryManager, __version__
-from zettelforge.edition import is_enterprise, edition_name, EditionError
+from zettelforge.edition import is_enterprise, edition_name
 from web.auth import register_auth_routes, get_mm_for_request, get_current_user
 
 logger = logging.getLogger(__name__)
 
 app = FastAPI(
-    title="ThreatRecall" if is_enterprise() else "ZettelForge",
+    title="ZettelForge",
     description=edition_name(),
     version=__version__,
 )
@@ -161,7 +161,7 @@ async def stats(request: Request):
 async def edition_info():
     """Return current edition and available features."""
     features = {
-        # Community — full-featured agentic memory system
+        # Core — full-featured agentic memory system
         "vector_search": True,
         "blended_retrieval": True,
         "cross_encoder_reranking": True,
@@ -172,12 +172,12 @@ async def edition_info():
         "knowledge_graph_jsonl": True,
         "direct_answer_synthesis": True,
         "mcp_server": True,
-        # Enterprise — scale, analyst workflows, integrations, ops
+        # Ungated features
         "typedb_stix_ontology": is_enterprise(),
-        "temporal_graph_queries": is_enterprise(),
-        "graph_traversal_multihop": is_enterprise(),
-        "advanced_synthesis_formats": is_enterprise(),
-        "report_ingestion": is_enterprise(),
+        "temporal_graph_queries": True,
+        "graph_traversal_multihop": True,
+        "advanced_synthesis_formats": True,
+        "report_ingestion": True,
         "alias_resolution_typedb": is_enterprise(),
         "opencti_integration": is_enterprise(),
         "sigma_generation": is_enterprise(),
@@ -189,7 +189,6 @@ async def edition_info():
         "edition_name": edition_name(),
         "version": __version__,
         "features": features,
-        "upgrade_url": "https://threatengram.com/enterprise" if not is_enterprise() else None,
     }
 
 
@@ -197,10 +196,9 @@ async def edition_info():
 async def sync(request: Request, req: SyncRequest):
     if not is_enterprise():
         return JSONResponse(
-            status_code=402,
+            status_code=501,
             content={
-                "error": "OpenCTI sync requires ThreatRecall Enterprise",
-                "upgrade_url": "https://threatengram.com/enterprise",
+                "error": "OpenCTI sync requires the zettelforge-enterprise package.",
             },
         )
     try:
@@ -230,7 +228,7 @@ HTML_PAGE = """<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ThreatRecall</title>
+    <title>ZettelForge</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: #0a0e17; color: #c9d1d9; min-height: 100vh; }
@@ -271,7 +269,7 @@ HTML_PAGE = """<!DOCTYPE html>
 </head>
 <body>
     <div class="header">
-        <h1>ThreatRecall</h1>
+        <h1>ZettelForge</h1>
         <span class="version" id="version"></span>
         <span class="stats" id="stats"></span>
         <span id="user-info" style="margin-left:auto;display:flex;align-items:center;gap:8px;"></span>
@@ -294,7 +292,7 @@ HTML_PAGE = """<!DOCTYPE html>
             </div>
         </div>
         <div id="sync-section" class="input-section" style="display:none;">
-            <p style="color:#8b949e;margin-bottom:12px;">Pull latest from OpenCTI into ThreatRecall memory.</p>
+            <p style="color:#8b949e;margin-bottom:12px;">Pull latest from OpenCTI into ZettelForge memory.</p>
             <div class="actions">
                 <button onclick="doSync()">Sync Now (20 per type)</button>
             </div>
@@ -304,7 +302,7 @@ HTML_PAGE = """<!DOCTYPE html>
         <div id="synthesis"></div>
         <div class="results" id="results">
             <div class="empty">
-                <h2>ThreatRecall CTI Memory</h2>
+                <h2>ZettelForge CTI Memory</h2>
                 <p>Search across threat actors, CVEs, tools, campaigns, and reports.</p>
             </div>
         </div>
@@ -402,11 +400,11 @@ HTML_PAGE = """<!DOCTYPE html>
 
 if __name__ == "__main__":
     import argparse
-    parser = argparse.ArgumentParser(description="ThreatRecall Web UI")
+    parser = argparse.ArgumentParser(description="ZettelForge Web UI")
     parser.add_argument("--port", type=int, default=8088)
     parser.add_argument("--host", default="0.0.0.0")
     args = parser.parse_args()
 
     import uvicorn
-    print(f"ThreatRecall v{__version__} — http://{args.host}:{args.port}")
+    print(f"ZettelForge v{__version__} — http://{args.host}:{args.port}")
     uvicorn.run(app, host=args.host, port=args.port)

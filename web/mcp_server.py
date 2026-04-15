@@ -1,25 +1,25 @@
 #!/usr/bin/env python3
 """
-ThreatRecall MCP Server — Model Context Protocol interface for ZettelForge.
+ZettelForge MCP Server — Model Context Protocol interface for ZettelForge.
 
 Exposes ZettelForge's memory system as MCP tools that any AI agent
 (Claude Code, OpenClaw, etc.) can call via stdio transport.
 
 Tools:
-    threatrecall_remember    — Store threat intelligence
-    threatrecall_recall      — Search and retrieve memories
-    threatrecall_synthesize  — RAG synthesis over memories
-    threatrecall_entity      — Fast entity lookup (actor, CVE, tool)
-    threatrecall_graph       — Knowledge graph traversal
-    threatrecall_stats       — Memory system statistics
-    threatrecall_sync        — Trigger OpenCTI sync
+    zettelforge_remember    — Store threat intelligence
+    zettelforge_recall      — Search and retrieve memories
+    zettelforge_synthesize  — RAG synthesis over memories
+    zettelforge_entity      — Fast entity lookup (actor, CVE, tool)
+    zettelforge_graph       — Knowledge graph traversal
+    zettelforge_stats       — Memory system statistics
+    zettelforge_sync        — Trigger OpenCTI sync
 
 Usage:
     python web/mcp_server.py                    # stdio transport (for Claude Code)
     Add to .claude.json or .mcp.json:
     {
         "mcpServers": {
-            "threatrecall": {
+            "zettelforge": {
                 "command": "python3",
                 "args": ["web/mcp_server.py"]
             }
@@ -45,7 +45,11 @@ mm = MemoryManager()
 def handle_tool_call(name: str, arguments: dict) -> dict:
     """Route MCP tool calls to ZettelForge methods."""
 
-    if name == "threatrecall_remember":
+    # Backward compat: accept old threatrecall_* names with deprecation
+    if name.startswith("threatrecall_"):
+        name = name.replace("threatrecall_", "zettelforge_", 1)
+
+    if name == "zettelforge_remember":
         content = arguments.get("content", "")
         domain = arguments.get("domain", "cti")
         source = arguments.get("source", "mcp")
@@ -59,7 +63,7 @@ def handle_tool_call(name: str, arguments: dict) -> dict:
             "entities": note.semantic.entities[:10] if note else [],
         }
 
-    elif name == "threatrecall_recall":
+    elif name == "zettelforge_recall":
         query = arguments.get("query", "")
         k = arguments.get("k", 10)
         domain = arguments.get("domain", None)
@@ -82,7 +86,7 @@ def handle_tool_call(name: str, arguments: dict) -> dict:
             "latency_ms": round(latency * 1000),
         }
 
-    elif name == "threatrecall_synthesize":
+    elif name == "zettelforge_synthesize":
         query = arguments.get("query", "")
         fmt = arguments.get("format", "direct_answer")
         result = mm.synthesize(query, format=fmt, k=10)
@@ -91,7 +95,7 @@ def handle_tool_call(name: str, arguments: dict) -> dict:
             "sources_count": result.get("metadata", {}).get("sources_count", 0),
         }
 
-    elif name == "threatrecall_entity":
+    elif name == "zettelforge_entity":
         entity_type = arguments.get("type", "actor")
         value = arguments.get("value", "")
         k = arguments.get("k", 5)
@@ -104,7 +108,7 @@ def handle_tool_call(name: str, arguments: dict) -> dict:
             "count": len(results),
         }
 
-    elif name == "threatrecall_graph":
+    elif name == "zettelforge_graph":
         entity_type = arguments.get("type", "actor")
         value = arguments.get("value", "")
         max_depth = arguments.get("max_depth", 2)
@@ -117,7 +121,7 @@ def handle_tool_call(name: str, arguments: dict) -> dict:
             "count": len(paths),
         }
 
-    elif name == "threatrecall_stats":
+    elif name == "zettelforge_stats":
         s = mm.get_stats()
         return {
             "version": __version__,
@@ -126,10 +130,10 @@ def handle_tool_call(name: str, arguments: dict) -> dict:
             "entity_index": s.get("entity_index", {}),
         }
 
-    elif name == "threatrecall_sync":
+    elif name == "zettelforge_sync":
         from zettelforge.edition import is_enterprise
         if not is_enterprise():
-            return {"error": "OpenCTI sync requires ThreatRecall Enterprise. https://threatengram.com/enterprise"}
+            return {"error": "OpenCTI sync requires the zettelforge-enterprise package."}
         try:
             from zettelforge_enterprise.opencti_sync import sync_opencti
             limit = arguments.get("limit", 20)
@@ -145,8 +149,8 @@ def handle_tool_call(name: str, arguments: dict) -> dict:
 
 TOOLS = [
     {
-        "name": "threatrecall_remember",
-        "description": "Store threat intelligence in ThreatRecall memory. Extracts entities (CVEs, actors, tools) and adds to knowledge graph. With evolve=true (default), uses LLM to compare against existing notes and decide whether to add, update, or supersede.",
+        "name": "zettelforge_remember",
+        "description": "Store threat intelligence in ZettelForge memory. Extracts entities (CVEs, actors, tools) and adds to knowledge graph. With evolve=true (default), uses LLM to compare against existing notes and decide whether to add, update, or supersede.",
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -159,8 +163,8 @@ TOOLS = [
         },
     },
     {
-        "name": "threatrecall_recall",
-        "description": "Search ThreatRecall memory using blended vector + graph retrieval. Returns ranked results with entities, confidence, and tier.",
+        "name": "zettelforge_recall",
+        "description": "Search ZettelForge memory using blended vector + graph retrieval. Returns ranked results with entities, confidence, and tier.",
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -172,8 +176,8 @@ TOOLS = [
         },
     },
     {
-        "name": "threatrecall_synthesize",
-        "description": "Generate a synthesized answer from ThreatRecall memories using RAG. Formats: direct_answer, synthesized_brief, timeline_analysis, relationship_map.",
+        "name": "zettelforge_synthesize",
+        "description": "Generate a synthesized answer from ZettelForge memories using RAG. Formats: direct_answer, synthesized_brief, timeline_analysis, relationship_map.",
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -184,7 +188,7 @@ TOOLS = [
         },
     },
     {
-        "name": "threatrecall_entity",
+        "name": "zettelforge_entity",
         "description": "Fast entity lookup by type (actor, cve, tool, campaign, person, location). O(1) index lookup.",
         "inputSchema": {
             "type": "object",
@@ -197,7 +201,7 @@ TOOLS = [
         },
     },
     {
-        "name": "threatrecall_graph",
+        "name": "zettelforge_graph",
         "description": "Traverse the STIX 2.1 knowledge graph from an entity. Shows relationships: uses, targets, attributed-to, etc.",
         "inputSchema": {
             "type": "object",
@@ -210,12 +214,12 @@ TOOLS = [
         },
     },
     {
-        "name": "threatrecall_stats",
-        "description": "Get ThreatRecall memory system statistics: total notes, entity counts, retrieval count.",
+        "name": "zettelforge_stats",
+        "description": "Get ZettelForge memory system statistics: total notes, entity counts, retrieval count.",
         "inputSchema": {"type": "object", "properties": {}},
     },
     {
-        "name": "threatrecall_sync",
+        "name": "zettelforge_sync",
         "description": "Trigger sync from OpenCTI — pulls latest reports, indicators, threat actors, malware, and vulnerabilities.",
         "inputSchema": {
             "type": "object",
@@ -250,7 +254,7 @@ def run_stdio():
                 "result": {
                     "protocolVersion": "2024-11-05",
                     "capabilities": {"tools": {"listChanged": False}},
-                    "serverInfo": {"name": "threatrecall", "version": __version__},
+                    "serverInfo": {"name": "zettelforge", "version": __version__},
                 },
             }
 
