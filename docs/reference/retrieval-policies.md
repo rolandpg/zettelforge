@@ -293,7 +293,7 @@ List[MemoryNote]
 
 ZettelForge's retrieval pipeline classifies query intent, then routes through parallel vector and graph retrievers before blending results with intent-specific policy weights.
 
-**Intent classification** uses a two-tier approach: keyword matching first (counting hits against predefined keyword lists per intent), with LLM fallback for ambiguous queries (score < 2). Six intent types exist: FACTUAL (entity lookup), TEMPORAL (time-based), RELATIONAL (graph traversal), CAUSAL (cause-effect), EXPLORATORY (broad context), and UNKNOWN (fallback).
+**Intent classification** uses a two-tier approach: keyword matching first (counting hits against predefined keyword lists per intent). Queries with a clear keyword winner can be classified directly, including the `keyword_unambiguous` case where `best_score == 1` and no competing intent is present. LLM fallback is used for ambiguous or otherwise unresolved low-signal queries rather than for all score-1 queries. Six intent types exist: FACTUAL (entity lookup), TEMPORAL (time-based), RELATIONAL (graph traversal), CAUSAL (cause-effect), EXPLORATORY (broad context), and UNKNOWN (fallback).
 
 **Policy weights** control retriever contribution per intent. FACTUAL queries weight entity_index at 0.7, vector at 0.3, and graph at 0.2 with top_k=3 for precise lookups. Graph weight is non-zero for FACTUAL because many CTI factual queries require a single graph hop to answer (e.g., "What CVE does APT28 exploit?" traverses a `targets` edge). RELATIONAL and CAUSAL queries weight graph at 0.5--0.6 for relationship traversal with top_k=10. EXPLORATORY queries weight vector at 0.5 for broad semantic search. TEMPORAL queries weight the temporal channel at 0.5.
 
