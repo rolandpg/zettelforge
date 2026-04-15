@@ -1,6 +1,6 @@
 ---
 title: "Why TypeDB + LanceDB"
-description: "Architectural rationale for ThreatRecall's hybrid two-database design"
+description: "Architectural rationale for ZettelForge's hybrid two-database design"
 diataxis_type: explanation
 audience: "Senior CTI Practitioner"
 tags: [architecture, typedb, lancedb, design-decisions]
@@ -10,7 +10,7 @@ version: "2.0.0"
 
 # Why TypeDB + LanceDB (Not One or the Other)
 
-ThreatRecall v2.0.0 uses two databases where most systems use one. This is a deliberate architectural choice, not accidental complexity.
+ZettelForge v2.0.0 uses two databases where most systems use one. This is a deliberate architectural choice, not accidental complexity.
 
 ## The Problem with One Database
 
@@ -87,7 +87,7 @@ LanceDB was chosen for the vector layer because:
 
 ## In-Process AI: fastembed + llama-cpp-python
 
-ThreatRecall v2.0.0 runs all AI inference in-process by default, with no external service dependencies:
+ZettelForge v2.0.0 runs all AI inference in-process by default, with no external service dependencies:
 
 - **Embeddings**: fastembed runs nomic-embed-text-v1.5-Q as an in-process ONNX model (768-dim, ~130 MB, ~7ms/embed). This eliminates the latency and operational overhead of an embedding server.
 - **LLM**: llama-cpp-python loads Qwen2.5-3B-Instruct (Q4_K_M GGUF, ~2.0 GB) directly into the Python process (~15.6 tok/s on CPU). This handles fact extraction, intent classification, causal triple extraction, and synthesis.
@@ -103,7 +103,7 @@ The hybrid architecture adds operational complexity:
 - The `mentioned-in` bridge can become inconsistent if one database is modified without the other
 - Cache invalidation spans both systems
 
-ThreatRecall mitigates this with automatic fallback — if TypeDB is unreachable, `get_knowledge_graph()` returns the JSONL backend transparently. The system degrades to vector-only retrieval rather than failing.
+ZettelForge mitigates this with automatic fallback — if TypeDB is unreachable, `get_knowledge_graph()` returns the JSONL backend transparently. The system degrades to vector-only retrieval rather than failing.
 
 ## Intent-Guided Graph Traversal
 
@@ -133,4 +133,4 @@ For details on keyword lists, policy weights, and the merge algorithm, see the [
 
 ## LLM Quick Reference
 
-ThreatRecall v2.0.0 uses a hybrid two-database architecture. TypeDB (Apache-2.0, STIX 2.1 schema) serves as the ontology layer owning structured threat intelligence: 9 entity types (threat-actor, malware, tool, attack-pattern, vulnerability, campaign, indicator, infrastructure, zettel-note), 8 relation types (uses, targets, attributed-to, indicates, mitigates, mentioned-in, supersedes, alias-of), inference functions for transitive alias resolution and campaign tool attribution, confidence scoring on every relation, and temporal validity via valid-from/valid-until attributes. LanceDB serves as the conversational layer owning unstructured context: Zettelkasten-style atomic notes with 768-dimensional vector embeddings (fastembed nomic-embed-text-v1.5-Q by default, IVF_PQ index with 256 partitions and 16 sub-vectors), raw text, metadata, and links. Embeddings and LLM inference run in-process by default via fastembed (ONNX) and llama-cpp-python (Qwen2.5-3B-Instruct Q4_K_M GGUF). Ollama is available as an optional fallback provider. The bridge between the two layers is the mentioned-in relation in TypeDB which stores (entity → note-id) mappings. During recall(), the BlendedRetriever queries both layers — VectorRetriever computes cosine similarity with entity boost, GraphRetriever runs BFS from query entities with hop-distance scoring — and merges results using intent-based policy weights (factual queries weight entity index 0.7, relational queries weight graph 0.5, exploratory queries weight vector 0.5). The fallback mechanism returns JSONL KnowledgeGraph if TypeDB is unreachable, degrading to vector-only retrieval. This architecture was chosen because CTI analysis requires both typed structured relationships (which TypeDB handles with schema enforcement and inference) and semantic unstructured text retrieval (which LanceDB handles with vector similarity). Neither database alone covers both needs.
+ZettelForge v2.0.0 uses a hybrid two-database architecture. TypeDB (Apache-2.0, STIX 2.1 schema) serves as the ontology layer owning structured threat intelligence: 9 entity types (threat-actor, malware, tool, attack-pattern, vulnerability, campaign, indicator, infrastructure, zettel-note), 8 relation types (uses, targets, attributed-to, indicates, mitigates, mentioned-in, supersedes, alias-of), inference functions for transitive alias resolution and campaign tool attribution, confidence scoring on every relation, and temporal validity via valid-from/valid-until attributes. LanceDB serves as the conversational layer owning unstructured context: Zettelkasten-style atomic notes with 768-dimensional vector embeddings (fastembed nomic-embed-text-v1.5-Q by default, IVF_PQ index with 256 partitions and 16 sub-vectors), raw text, metadata, and links. Embeddings and LLM inference run in-process by default via fastembed (ONNX) and llama-cpp-python (Qwen2.5-3B-Instruct Q4_K_M GGUF). Ollama is available as an optional fallback provider. The bridge between the two layers is the mentioned-in relation in TypeDB which stores (entity → note-id) mappings. During recall(), the BlendedRetriever queries both layers — VectorRetriever computes cosine similarity with entity boost, GraphRetriever runs BFS from query entities with hop-distance scoring — and merges results using intent-based policy weights (factual queries weight entity index 0.7, relational queries weight graph 0.5, exploratory queries weight vector 0.5). The fallback mechanism returns JSONL KnowledgeGraph if TypeDB is unreachable, degrading to vector-only retrieval. This architecture was chosen because CTI analysis requires both typed structured relationships (which TypeDB handles with schema enforcement and inference) and semantic unstructured text retrieval (which LanceDB handles with vector similarity). Neither database alone covers both needs.

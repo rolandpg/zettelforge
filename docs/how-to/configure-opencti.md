@@ -1,8 +1,8 @@
 ---
 title: "Configure OpenCTI Integration"
-description: "Connect ZettelForge Enterprise to an OpenCTI instance for bi-directional threat intelligence sync using pycti. Pull attack patterns, intrusion sets, malware, indicators, vulnerabilities, and reports; push notes and annotations back to OpenCTI."
+description: "Connect ZettelForge (with zettelforge-enterprise extension) to an OpenCTI instance for bi-directional threat intelligence sync using pycti. Pull attack patterns, intrusion sets, malware, indicators, vulnerabilities, and reports; push notes and annotations back to OpenCTI."
 diataxis_type: "how-to"
-audience: "CTI platform engineers connecting ZettelForge Enterprise to an OpenCTI deployment"
+audience: "CTI platform engineers connecting ZettelForge (with zettelforge-enterprise extension) to an OpenCTI deployment"
 tags: [opencti, pycti, stix, integration, sync, threat-intelligence, enterprise]
 last_updated: "2026-04-14"
 version: "2.1.1"
@@ -10,20 +10,20 @@ version: "2.1.1"
 
 # Configure OpenCTI Integration
 
-Connect ZettelForge Enterprise to an OpenCTI instance for bi-directional STIX 2.1 sync. Pull threat intelligence from OpenCTI into ZettelForge memory; push ZettelForge notes and analyst annotations back to OpenCTI as reports.
+Connect ZettelForge (with zettelforge-enterprise extension) to an OpenCTI instance for bi-directional STIX 2.1 sync. Pull threat intelligence from OpenCTI into ZettelForge memory; push ZettelForge notes and analyst annotations back to OpenCTI as reports.
 
 The sync client uses [pycti](https://github.com/OpenCTI-Platform/client-python) and supports all six STIX Domain Object (SDO) types, preserves structured fields (TLP markings, STIX confidence, CVSS v3/v4, EPSS), and deduplicates on re-sync so re-running the same pull is always safe.
 
 ## Prerequisites
 
-- **ZettelForge Enterprise** installed (`pip install zettelforge-enterprise`)
-- **Enterprise license** set via `THREATENGRAM_LICENSE_KEY`
+- **ZettelForge (with zettelforge-enterprise extension)** installed (`pip install zettelforge-enterprise`)
+- **Extension license** set via `THREATENGRAM_LICENSE_KEY`
 - **OpenCTI** running and reachable (self-hosted or cloud, v6.x+)
 - **pycti** installed: `pip install pycti`
 - An OpenCTI API token with read access for pull operations; write access for push
 
 > [!NOTE]
-> OpenCTI integration is an Enterprise feature. It is not available in ZettelForge Community. To check your edition, run `python -c "from zettelforge.edition import get_edition; print(get_edition())"`.
+> OpenCTI integration is an feature that requires the zettelforge-enterprise extension. It is not available in ZettelForge Community. To check your edition, run `python -c "from zettelforge.edition import get_edition; print(get_edition())"`.
 
 ## Steps
 
@@ -271,7 +271,7 @@ export OPENCTI_SYNC_INTERVAL=0
 
 ## Troubleshooting
 
-### `OpenCTIEnterpriseError: license not active`
+### `OpenCTIExtensionError: license not active`
 
 ```bash
 # Verify your license key is set
@@ -321,9 +321,9 @@ classified = [n for n in results if n.metadata.tlp in ("GREEN", "AMBER", "RED")]
 
 ## LLM Quick Reference
 
-**Task**: Connect ZettelForge Enterprise to OpenCTI for bi-directional threat intelligence sync.
+**Task**: Connect ZettelForge (with zettelforge-enterprise extension) to OpenCTI for bi-directional threat intelligence sync.
 
-**Prerequisites**: `pip install zettelforge-enterprise pycti`. Enterprise license via `THREATENGRAM_LICENSE_KEY`. OpenCTI v6.x+ running and reachable.
+**Prerequisites**: `pip install zettelforge-enterprise pycti`. Extension license via `THREATENGRAM_LICENSE_KEY`. OpenCTI v6.x+ running and reachable.
 
 **Config**: `OPENCTI_URL` (default `http://localhost:8080`), `OPENCTI_TOKEN` (required, no default). `config.yaml` key: `opencti.sync_interval` (seconds, `0` = disabled).
 

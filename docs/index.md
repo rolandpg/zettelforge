@@ -14,7 +14,7 @@ ZettelForge is a production-grade agentic memory system for cyber threat intelli
 
 ## Architecture Overview
 
-ThreatRecall uses a hybrid storage architecture with in-process AI. TypeDB stores structured CTI entities and their relationships using the STIX 2.1 ontology. LanceDB stores unstructured notes as 768-dimensional vectors with IVF_PQ indexing. Embeddings are generated in-process by fastembed (nomic-embed-text-v1.5-Q, ONNX runtime, ~7ms/embed) and LLM inference runs in-process via llama-cpp-python (Qwen2.5-3B-Instruct Q4_K_M GGUF). No external AI services are required by default. The BlendedRetriever fuses results from both stores at query time, weighting vector similarity against graph traversal based on the classified intent of the query.
+ZettelForge uses a hybrid storage architecture with in-process AI. TypeDB stores structured CTI entities and their relationships using the STIX 2.1 ontology. LanceDB stores unstructured notes as 768-dimensional vectors with IVF_PQ indexing. Embeddings are generated in-process by fastembed (nomic-embed-text-v1.5-Q, ONNX runtime, ~7ms/embed) and LLM inference runs in-process via llama-cpp-python (Qwen2.5-3B-Instruct Q4_K_M GGUF). No external AI services are required by default. The BlendedRetriever fuses results from both stores at query time, weighting vector similarity against graph traversal based on the classified intent of the query.
 
 Ingestion follows a two-phase pipeline. The **FactExtractor** distills raw text into scored candidate facts using an LLM. The **MemoryUpdater** compares each fact against existing notes and decides whether to ADD, UPDATE, DELETE, or NOOP -- preventing duplicates and keeping the knowledge base current.
 

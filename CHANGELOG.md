@@ -143,7 +143,7 @@ evolution support.
 - Local LLM via llama-cpp-python (Qwen 2.5 3B)
 - Conversational entity extraction (person, location, org, event, activity, temporal)
 - Multi-tenant OAuth/JWT authentication
-- ThreatRecall web UI (FastAPI)
+- ZettelForge web UI (FastAPI)
 - MCP server for Claude Code integration
 - OpenCTI continuous sync
 - MemoryAgentBench (ICLR 2026) benchmark

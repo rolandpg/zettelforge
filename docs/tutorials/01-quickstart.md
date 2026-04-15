@@ -1,6 +1,6 @@
 ---
 title: "Quickstart: Your First Memory"
-description: Store, recall, and synthesize threat intelligence with ThreatRecall in under 5 minutes.
+description: Store, recall, and synthesize threat intelligence with ZettelForge in under 5 minutes.
 diataxis_type: "tutorial"
 audience: "L1/L2 SOC Analyst"
 tags: [tutorial, quickstart, getting-started]
@@ -10,7 +10,7 @@ version: "2.0.0"
 
 # Quickstart: Your First Memory
 
-**What you will build**: A working ThreatRecall instance that stores threat intelligence about APT28 and Lazarus Group, recalls it by name, and synthesizes a brief from memory.
+**What you will build**: A working ZettelForge instance that stores threat intelligence about APT28 and Lazarus Group, recalls it by name, and synthesizes a brief from memory.
 
 **What you will learn**:
 
@@ -200,7 +200,7 @@ The SynthesisGenerator retrieved relevant notes, built a context window, and pro
 
 ## What You Built
 
-You now have a working ThreatRecall instance with:
+You now have a working ZettelForge instance with:
 
 - **3 stored notes** about APT28 and Lazarus Group activity
 - **Entity index entries** for actors (APT28, Lazarus), tools (X-Agent, Cobalt Strike), CVEs (CVE-2025-21298), and campaigns (Operation DreamJob)
@@ -217,4 +217,4 @@ You now have a working ThreatRecall instance with:
 
 ## LLM Quick Reference
 
-This tutorial demonstrated the core ThreatRecall (ZettelForge v2.0.0) workflow: `remember()` stores text as a MemoryNote, runs entity extraction (actors, tools, CVEs, campaigns), resolves aliases (e.g. "Fancy Bear" to canonical "apt28" using 36 seeded alias mappings), writes to LanceDB (768-dim nomic-embed-text-v2-moe vectors, IVF_PQ index) and TypeDB (STIX 2.1 entities and relations), checks for note supersession, and extracts causal triples for graph edges. `recall(query)` classifies intent (factual/temporal/relational/causal/exploratory) via IntentClassifier, then BlendedRetriever merges vector similarity from LanceDB with graph BFS from TypeDB using policy-weighted scores. `recall_actor(name)` (also `recall_cve(id)`, `recall_tool(name)`) performs direct entity-index lookup bypassing vector search. `synthesize(query, format)` retrieves notes and produces an LLM answer in one of four formats: direct_answer, synthesized_brief, timeline_analysis, relationship_map. Prerequisites are Python 3.10+ and Docker (for TypeDB 3.x on port 1729). Embeddings run in-process via fastembed (nomic-embed-text-v1.5-Q, 768-dim) and LLM runs in-process via llama-cpp-python (Qwen2.5-3B-Instruct Q4_K_M). Models download automatically on first use. Ollama is optional as a fallback provider. Install with `pip install -e .` from the repo root. TypeDB starts via `docker compose -f docker/docker-compose.yml up -d`. The MemoryManager constructor accepts optional `jsonl_path` and `lance_path` arguments; defaults store data in `~/.amem`. Governance policies (GOV-003, GOV-007, GOV-011, GOV-012) are enforced automatically on every `remember()` and `synthesize()` call.
+This tutorial demonstrated the core ZettelForge (ZettelForge v2.0.0) workflow: `remember()` stores text as a MemoryNote, runs entity extraction (actors, tools, CVEs, campaigns), resolves aliases (e.g. "Fancy Bear" to canonical "apt28" using 36 seeded alias mappings), writes to LanceDB (768-dim nomic-embed-text-v2-moe vectors, IVF_PQ index) and TypeDB (STIX 2.1 entities and relations), checks for note supersession, and extracts causal triples for graph edges. `recall(query)` classifies intent (factual/temporal/relational/causal/exploratory) via IntentClassifier, then BlendedRetriever merges vector similarity from LanceDB with graph BFS from TypeDB using policy-weighted scores. `recall_actor(name)` (also `recall_cve(id)`, `recall_tool(name)`) performs direct entity-index lookup bypassing vector search. `synthesize(query, format)` retrieves notes and produces an LLM answer in one of four formats: direct_answer, synthesized_brief, timeline_analysis, relationship_map. Prerequisites are Python 3.10+ and Docker (for TypeDB 3.x on port 1729). Embeddings run in-process via fastembed (nomic-embed-text-v1.5-Q, 768-dim) and LLM runs in-process via llama-cpp-python (Qwen2.5-3B-Instruct Q4_K_M). Models download automatically on first use. Ollama is optional as a fallback provider. Install with `pip install -e .` from the repo root. TypeDB starts via `docker compose -f docker/docker-compose.yml up -d`. The MemoryManager constructor accepts optional `jsonl_path` and `lance_path` arguments; defaults store data in `~/.amem`. Governance policies (GOV-003, GOV-007, GOV-011, GOV-012) are enforced automatically on every `remember()` and `synthesize()` call.
