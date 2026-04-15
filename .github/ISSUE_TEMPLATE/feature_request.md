@@ -15,5 +15,7 @@ Describe the feature you'd like.
 **Alternatives considered**
 Any alternative approaches you've thought about.
 
-**Edition**
-Should this be a Community or Enterprise feature? (See [edition guide](../../src/zettelforge/edition.py) for the boundary.)
+## Scope
+Does this feature need external infrastructure (TypeDB, OpenCTI)?
+- [ ] No — works with built-in backends
+- [ ] Yes — describe what infrastructure is needed

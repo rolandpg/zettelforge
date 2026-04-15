@@ -22,7 +22,7 @@ What you expected to happen.
 - Python version: (e.g., 3.11)
 - OS: (e.g., Ubuntu 22.04)
 - Backend: (jsonl / typedb)
-- Edition: (community / enterprise)
+- Extensions installed: (none / zettelforge-enterprise)
 
 **Logs / traceback**
 ```
