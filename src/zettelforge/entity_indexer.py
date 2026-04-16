@@ -45,7 +45,7 @@ class EntityExtractor:
             r"\b(operation\s+\w+)\b",
             re.IGNORECASE,
         ),
-        "attack_pattern": re.compile(r"\bT\d{4}(?:\.\d{3})?\b"),
+        "attack_pattern": re.compile(r"\b(T\d{4}(?:\.\d{3})?)\b"),
         # IOC patterns (STIX Cyber Observables)
         "ipv4": re.compile(
             r"\b(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\b",
@@ -380,7 +380,7 @@ class EntityIndexer:
                         self.index[entity_type] = {k: set(v) for k, v in data[entity_type].items()}
             return True
         except Exception:
-            _logger.warning("entity_index_save_failed", exc_info=True)
+            _logger.warning("entity_index_load_failed", exc_info=True)
             return False
 
     def save(self) -> None:
