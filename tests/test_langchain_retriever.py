@@ -14,7 +14,7 @@ from zettelforge.integrations.langchain_retriever import ZettelForgeRetriever
 @pytest.fixture
 def memory_manager(tmp_path):
     """Create a MemoryManager with a temp directory for testing."""
-    mm = MemoryManager(persist_directory=str(tmp_path / "zf_test_db"))
+    mm = MemoryManager(jsonl_path=str(tmp_path / "zf_test_db" / "notes.jsonl"))
     # Seed with CTI-relevant memories
     mm.remember(
         "APT28 (Fancy Bear) uses spear-phishing emails with credential-harvesting links. "
