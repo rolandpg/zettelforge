@@ -21,7 +21,6 @@ version: "2.0.0"
 **Prerequisites**:
 
 - [ ] [Python 3.10+](https://www.python.org/downloads/) installed
-- [ ] [Docker](https://docs.docker.com/get-docker/) installed and running
 
 ---
 
@@ -53,33 +52,7 @@ Successfully installed zettelforge-2.0.0
 > [!NOTE]
 > If you see permission errors, use `pip install --user -e .` or activate a virtual environment first with `python -m venv venv && source venv/bin/activate`.
 
-## Step 3: Start TypeDB
-
-```bash
-docker compose -f docker/docker-compose.yml up -d
-```
-
-Expected output:
-
-```
-[+] Running 1/1
- ✔ Container docker-typedb-1  Started
-```
-
-Wait a few seconds for TypeDB to finish its health check. Verify it is running:
-
-```bash
-docker compose -f docker/docker-compose.yml ps
-```
-
-Expected output:
-
-```
-NAME                STATUS
-docker-typedb-1     running (healthy)
-```
-
-## Step 4: Store Your First Memories
+## Step 3: Store Your First Memories
 
 > [!NOTE]
 > ZettelForge runs embeddings and LLM inference in-process by default. The embedding model (~130 MB) and LLM (~2.0 GB) download automatically on first use. No Ollama setup is required. If you prefer to use Ollama as an optional fallback, see [Configuration Reference](../reference/configuration.md).

@@ -172,10 +172,10 @@ See [examples/athf_bridge.py](examples/athf_bridge.py).
 │       Entity Indexer + Alias        │  Intent Classifier             │
 │       Resolver                      │  (factual/temporal/causal)     │
 ├─────────────────────────────────────┼────────────────────────────────┤
-│   Knowledge Graph (JSONL)           │  LanceDB (Vectors)             │
+│   Knowledge Graph (SQLite)          │  LanceDB (Vectors)             │
 │   Entity nodes + edges              │  768-dim fastembed (ONNX)      │
 │   Causal triple inference           │  Zettelkasten notes            │
-│   JSONL (TypeDB via extension)      │  IVF_PQ index                  │
+│   SQLite WAL (TypeDB via extension) │  IVF_PQ index                  │
 └─────────────────────────────────────┴────────────────────────────────┘
 ```
 

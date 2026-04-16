@@ -1,16 +1,18 @@
 ---
-title: "Why TypeDB + LanceDB"
+title: "Why SQLite + LanceDB"
 description: "Architectural rationale for ZettelForge's hybrid two-database design"
 diataxis_type: explanation
 audience: "Senior CTI Practitioner"
-tags: [architecture, typedb, lancedb, design-decisions]
-last_updated: "2026-04-09"
-version: "2.0.0"
+tags: [architecture, sqlite, lancedb, design-decisions]
+last_updated: "2026-04-16"
+version: "2.1.1"
 ---
 
-# Why TypeDB + LanceDB (Not One or the Other)
+# Why SQLite + LanceDB (Not One or the Other)
 
-ZettelForge v2.0.0 uses two databases where most systems use one. This is a deliberate architectural choice, not accidental complexity.
+ZettelForge uses two storage engines where most systems use one. SQLite handles structured data (notes, knowledge graph, entity index) with ACID guarantees. LanceDB handles vector search. This is a deliberate architectural choice, not accidental complexity.
+
+> **Note:** The optional `zettelforge-enterprise` extension replaces SQLite with TypeDB for teams needing STIX 2.1 schema enforcement and inference rules. The architecture rationale below applies to both backends — only the ontology layer implementation differs.
 
 ## The Problem with One Database
 

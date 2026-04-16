@@ -8,9 +8,9 @@ Thank you for your interest in contributing to ZettelForge! This document provid
 2. Create a virtual environment: `python -m venv venv`
 3. Activate it: `source venv/bin/activate` (or `venv\Scripts\activate` on Windows)
 4. Install in development mode: `pip install -e ".[dev]"`
-5. Run tests to verify your setup: `ZETTELFORGE_BACKEND=jsonl pytest tests/ -v --ignore=tests/test_typedb_client.py`
+5. Run tests to verify your setup: `pytest tests/ -v`
 
-No external services (Ollama, TypeDB) are required for development. Embeddings run in-process via fastembed, and the knowledge graph defaults to JSONL.
+No external services (Ollama, TypeDB, Docker) are required for development. ZettelForge defaults to SQLite for storage and fastembed for in-process embeddings.
 
 ## Development Workflow
 

@@ -14,7 +14,7 @@ version: "2.0.0"
 
 **Time estimate**: 15 minutes
 
-**Prerequisites**: You have completed the [Quickstart (Tutorial 01)](01-quickstart.md). TypeDB is running on `localhost:1729` and ZettelForge v2.0.0 is installed. Embedding and LLM models download automatically on first use -- no separate setup is required.
+**Prerequisites**: You have completed the [Quickstart (Tutorial 01)](01-quickstart.md) and ZettelForge is installed. ZettelForge uses SQLite by default -- no external services required. Embedding and LLM models download automatically on first use.
 
 ```mermaid
 flowchart LR
