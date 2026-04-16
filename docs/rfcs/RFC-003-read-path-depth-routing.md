@@ -3,7 +3,7 @@
 ## Metadata
 
 - **Author**: Patrick Roland
-- **Status**: Draft
+- **Status**: Draft (adversarial review completed — changes requested)
 - **Created**: 2026-04-16
 - **Last Updated**: 2026-04-16
 - **Reviewers**: TBD
@@ -41,7 +41,7 @@ D-Mem observed that a Quality Gate routing queries to fast-vector (System 1) vs.
 
 - **CTI analysts** asking multi-hop attribution questions (System 2 finds the full chain instead of truncating at top-10).
 - **Incident responders** asking temporal-correlation questions spanning weeks (System 2's chunk scoring beats top-k vector on long time horizons).
-- **Fast-path users** running entity lookups and FAQ-style queries — they stay on the existing System 1 / current `recall()` path, preserving today's fast-path latency by avoiding unnecessary escalation to System 2.
+- **Fast-path users** running entity lookups and FAQ-style queries — they stay on System 1 (the current `recall()` implementation), preserving today's fast-path latency by avoiding unnecessary escalation to System 2.
 - **Benchmark reviewers**: closes the gap between CTI (75%) and the theoretical ceiling by eliminating truncation-driven misses.
 
 ## Proposed Design
@@ -930,7 +930,7 @@ Each phase is independently shippable. If Phase 3 shows that System 2 doesn't me
 
 ## Decision
 
-- **Status**: Draft — awaiting adversarial review
+- **Status**: Draft — adversarial review completed (changes requested)
 - **Date**: 2026-04-16
 - **Decision Maker**: Patrick Roland
 - **Rationale**: Current uniform-depth `recall()` sacrifices latency on the 97% of queries that don't need it and caps accuracy on the 3% that do. D-Mem's Quality Gate pattern is directly applicable and the required primitives (intent classification, entity extraction, vector top-N, KG traversal, cross-encoder rerank) all already exist in ZettelForge. The deterministic, LLM-free gate satisfies the Qwen2.5-3B/DGX Spark default-provider constraint. System 1 being a verbatim lift of the current pipeline makes rollback a one-line config change.
