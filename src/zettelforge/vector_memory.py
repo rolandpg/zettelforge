@@ -90,7 +90,7 @@ def get_embedding(text: str, model: Optional[str] = None) -> List[float]:
             results = list(m.embed([text]))
             return results[0].tolist()
         except Exception:
-            _logger.debug("fastembed_unavailable_trying_http", exc_info=True)
+            _logger.warning("fastembed_embedding_failed", exc_info=True)
 
     # HTTP fallback (Ollama or llama.cpp)
     try:
