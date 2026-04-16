@@ -41,7 +41,7 @@ D-Mem observed that a Quality Gate routing queries to fast-vector (System 1) vs.
 
 - **CTI analysts** asking multi-hop attribution questions (System 2 finds the full chain instead of truncating at top-10).
 - **Incident responders** asking temporal-correlation questions spanning weeks (System 2's chunk scoring beats top-k vector on long time horizons).
-- **Fast-path users** running entity lookups and FAQ-style queries — they are routed to a leaner System 1 variant with lower p50 than today's uniform pipeline.
+- **Fast-path users** running entity lookups and FAQ-style queries — they stay on the existing System 1 / current `recall()` path, preserving today's fast-path latency by avoiding unnecessary escalation to System 2.
 - **Benchmark reviewers**: closes the gap between CTI (75%) and the theoretical ceiling by eliminating truncation-driven misses.
 
 ## Proposed Design
