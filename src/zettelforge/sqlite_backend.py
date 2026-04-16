@@ -11,9 +11,11 @@ WARNING-3: synchronous=NORMAL means the last transaction before an OS crash
 
 import json
 import sqlite3
+import threading
 import uuid
-from collections import defaultdict
+from collections import defaultdict, deque
 from datetime import datetime
+from pathlib import Path
 from typing import Any, Dict, Iterator, List, Optional
 
 from zettelforge.note_schema import (
@@ -23,7 +25,9 @@ from zettelforge.note_schema import (
     MemoryNote,
     Metadata,
     Semantic,
+    VulnerabilityMeta,
 )
+from zettelforge.ocsf import log_file_activity
 from zettelforge.storage_backend import StorageBackend
 
 # ---------------------------------------------------------------------------
@@ -65,7 +69,8 @@ CREATE TABLE IF NOT EXISTS notes (
     causal_chain TEXT DEFAULT '[]',
     version INTEGER DEFAULT 1,
     evolved_from TEXT,
-    evolved_by TEXT DEFAULT '[]'
+    evolved_by TEXT DEFAULT '[]',
+    vuln_meta TEXT DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS idx_notes_domain ON notes(domain);
@@ -100,6 +105,7 @@ CREATE TABLE IF NOT EXISTS kg_edges (
 CREATE INDEX IF NOT EXISTS idx_kg_edges_from ON kg_edges(from_node_id);
 CREATE INDEX IF NOT EXISTS idx_kg_edges_to ON kg_edges(to_node_id);
 CREATE INDEX IF NOT EXISTS idx_kg_edges_rel ON kg_edges(relationship);
+CREATE INDEX IF NOT EXISTS idx_kg_edges_type ON kg_edges(edge_type);
 
 CREATE TABLE IF NOT EXISTS entity_index (
     entity_type TEXT NOT NULL,
@@ -155,6 +161,7 @@ def _note_to_row(note: MemoryNote) -> dict:
         "version": note.version,
         "evolved_from": note.evolved_from,
         "evolved_by": json.dumps(note.evolved_by),
+        "vuln_meta": json.dumps(note.metadata.vuln.model_dump()) if note.metadata.vuln else None,
     }
 
 
@@ -211,6 +218,7 @@ def _row_to_note(row: sqlite3.Row) -> MemoryNote:
             stix_confidence=r.get("stix_confidence")
             if r.get("stix_confidence") is not None
             else -1,
+            vuln=VulnerabilityMeta(**json.loads(r["vuln_meta"])) if r.get("vuln_meta") else None,
         ),
     )
 
@@ -255,6 +263,7 @@ _NOTE_COLUMNS = [
     "version",
     "evolved_from",
     "evolved_by",
+    "vuln_meta",
 ]
 
 _INSERT_NOTE_SQL = (
@@ -266,11 +275,19 @@ _INSERT_NOTE_SQL = (
 class SQLiteBackend(StorageBackend):
     """SQLite-backed storage with WAL mode for ZettelForge."""
 
-    def __init__(self, db_path: str | None = None):
+    def __init__(
+        self,
+        db_path: str | None = None,
+        data_dir: str | Path | None = None,
+    ):
         from zettelforge.memory_store import get_default_data_dir
 
-        self.db_path = db_path or str(get_default_data_dir() / "zettelforge.db")
+        if data_dir is not None:
+            self.db_path = str(Path(data_dir) / "zettelforge.db")
+        else:
+            self.db_path = db_path or str(get_default_data_dir() / "zettelforge.db")
         self._conn: sqlite3.Connection | None = None
+        self._write_lock = threading.RLock()
 
     # ── Lifecycle ───────────────────────────────────────────────────────
 
@@ -318,15 +335,21 @@ class SQLiteBackend(StorageBackend):
 
         row = _note_to_row(note)
         values = [row[c] for c in _NOTE_COLUMNS]
-        self._conn.execute(_INSERT_NOTE_SQL, values)
-        self._conn.commit()
+        with self._write_lock:
+            self._conn.execute(_INSERT_NOTE_SQL, values)
+            self._conn.commit()
+        log_file_activity(self.db_path, "Create", actor="SQLiteBackend.write_note", note_id=note.id)
 
     def rewrite_note(self, note: MemoryNote) -> None:
         note.updated_at = datetime.now().isoformat()
         row = _note_to_row(note)
         values = [row[c] for c in _NOTE_COLUMNS]
-        self._conn.execute(_INSERT_NOTE_SQL, values)
-        self._conn.commit()
+        with self._write_lock:
+            self._conn.execute(_INSERT_NOTE_SQL, values)
+            self._conn.commit()
+        log_file_activity(
+            self.db_path, "Update", actor="SQLiteBackend.rewrite_note", note_id=note.id
+        )
 
     def get_note_by_id(self, note_id: str) -> Optional[MemoryNote]:
         cur = self._conn.execute("SELECT * FROM notes WHERE id = ?", (note_id,))
@@ -367,9 +390,25 @@ class SQLiteBackend(StorageBackend):
         return cur.fetchone()[0]
 
     def delete_note(self, note_id: str) -> bool:
-        cur = self._conn.execute("DELETE FROM notes WHERE id = ?", (note_id,))
-        self._conn.commit()
-        return cur.rowcount > 0
+        with self._write_lock:
+            cur = self._conn.execute("DELETE FROM notes WHERE id = ?", (note_id,))
+            self._conn.commit()
+        deleted = cur.rowcount > 0
+        if deleted:
+            log_file_activity(
+                self.db_path, "Delete", actor="SQLiteBackend.delete_note", note_id=note_id
+            )
+        return deleted
+
+    def mark_access_dirty(self, note_id: str) -> None:
+        """Targeted UPDATE for access tracking — avoids full note rewrite."""
+        now = datetime.now().isoformat()
+        with self._write_lock:
+            self._conn.execute(
+                "UPDATE notes SET access_count = access_count + 1, last_accessed = ? WHERE id = ?",
+                (now, note_id),
+            )
+            self._conn.commit()
 
     # ── Vector Index Sync ───────────────────────────────────────────────
 
@@ -392,29 +431,30 @@ class SQLiteBackend(StorageBackend):
         now = datetime.now().isoformat()
         props_json = json.dumps(properties or {})
 
-        # Try to find existing node
-        cur = self._conn.execute(
-            "SELECT node_id FROM kg_nodes WHERE entity_type = ? AND entity_value = ?",
-            (entity_type, entity_value),
-        )
-        existing = cur.fetchone()
-        if existing:
-            node_id = existing["node_id"]
-            if properties:
-                self._conn.execute(
-                    "UPDATE kg_nodes SET properties = ?, updated_at = ? WHERE node_id = ?",
-                    (props_json, now, node_id),
-                )
-                self._conn.commit()
-            return node_id
+        with self._write_lock:
+            # Try to find existing node
+            cur = self._conn.execute(
+                "SELECT node_id FROM kg_nodes WHERE entity_type = ? AND entity_value = ?",
+                (entity_type, entity_value),
+            )
+            existing = cur.fetchone()
+            if existing:
+                node_id = existing["node_id"]
+                if properties:
+                    self._conn.execute(
+                        "UPDATE kg_nodes SET properties = ?, updated_at = ? WHERE node_id = ?",
+                        (props_json, now, node_id),
+                    )
+                    self._conn.commit()
+                return node_id
 
-        node_id = f"node_{uuid.uuid4().hex[:12]}"
-        self._conn.execute(
-            "INSERT INTO kg_nodes (node_id, entity_type, entity_value, properties, created_at, updated_at) "
-            "VALUES (?, ?, ?, ?, ?, ?)",
-            (node_id, entity_type, entity_value, props_json, now, now),
-        )
-        self._conn.commit()
+            node_id = f"node_{uuid.uuid4().hex[:12]}"
+            self._conn.execute(
+                "INSERT INTO kg_nodes (node_id, entity_type, entity_value, properties, created_at, updated_at) "
+                "VALUES (?, ?, ?, ?, ?, ?)",
+                (node_id, entity_type, entity_value, props_json, now, now),
+            )
+            self._conn.commit()
         return node_id
 
     def get_kg_node(self, entity_type: str, entity_value: str) -> Optional[Dict]:
@@ -446,49 +486,50 @@ class SQLiteBackend(StorageBackend):
         note_id: Optional[str] = None,
         properties: Optional[Dict] = None,
     ) -> str:
-        from_node_id = self.add_kg_node(from_type, from_value)
-        to_node_id = self.add_kg_node(to_type, to_value)
-        now = datetime.now().isoformat()
+        with self._write_lock:
+            from_node_id = self.add_kg_node(from_type, from_value)
+            to_node_id = self.add_kg_node(to_type, to_value)
+            now = datetime.now().isoformat()
 
-        props = dict(properties or {})
-        edge_type = props.pop("edge_type", "heuristic")
-        effective_note_id = note_id or props.pop("note_id", "") or ""
-        props_json = json.dumps(props)
+            props = dict(properties or {})
+            edge_type = props.pop("edge_type", "heuristic")
+            effective_note_id = note_id or props.pop("note_id", "") or ""
+            props_json = json.dumps(props)
 
-        # Check for existing edge with same provenance
-        cur = self._conn.execute(
-            "SELECT edge_id FROM kg_edges "
-            "WHERE from_node_id = ? AND to_node_id = ? AND relationship = ? AND note_id = ?",
-            (from_node_id, to_node_id, relationship, effective_note_id),
-        )
-        existing = cur.fetchone()
-        if existing:
-            if props:
-                self._conn.execute(
-                    "UPDATE kg_edges SET properties = ?, updated_at = ? WHERE edge_id = ?",
-                    (props_json, now, existing["edge_id"]),
-                )
-                self._conn.commit()
-            return existing["edge_id"]
+            # Check for existing edge with same provenance
+            cur = self._conn.execute(
+                "SELECT edge_id FROM kg_edges "
+                "WHERE from_node_id = ? AND to_node_id = ? AND relationship = ? AND note_id = ?",
+                (from_node_id, to_node_id, relationship, effective_note_id),
+            )
+            existing = cur.fetchone()
+            if existing:
+                if props:
+                    self._conn.execute(
+                        "UPDATE kg_edges SET properties = ?, updated_at = ? WHERE edge_id = ?",
+                        (props_json, now, existing["edge_id"]),
+                    )
+                    self._conn.commit()
+                return existing["edge_id"]
 
-        edge_id = f"edge_{uuid.uuid4().hex[:12]}"
-        self._conn.execute(
-            "INSERT INTO kg_edges "
-            "(edge_id, from_node_id, to_node_id, relationship, edge_type, note_id, properties, created_at, updated_at) "
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            (
-                edge_id,
-                from_node_id,
-                to_node_id,
-                relationship,
-                edge_type,
-                effective_note_id,
-                props_json,
-                now,
-                now,
-            ),
-        )
-        self._conn.commit()
+            edge_id = f"edge_{uuid.uuid4().hex[:12]}"
+            self._conn.execute(
+                "INSERT INTO kg_edges "
+                "(edge_id, from_node_id, to_node_id, relationship, edge_type, note_id, properties, created_at, updated_at) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (
+                    edge_id,
+                    from_node_id,
+                    to_node_id,
+                    relationship,
+                    edge_type,
+                    effective_note_id,
+                    props_json,
+                    now,
+                    now,
+                ),
+            )
+            self._conn.commit()
         return edge_id
 
     def get_kg_neighbors(
@@ -649,19 +690,118 @@ class SQLiteBackend(StorageBackend):
             )
         return changes
 
+    def get_kg_node_by_id(self, node_id: str) -> Optional[Dict]:
+        """Lookup a KG node by its internal node_id."""
+        cur = self._conn.execute("SELECT * FROM kg_nodes WHERE node_id = ?", (node_id,))
+        row = cur.fetchone()
+        if row is None:
+            return None
+        return {
+            "node_id": row["node_id"],
+            "entity_type": row["entity_type"],
+            "entity_value": row["entity_value"],
+            "properties": json.loads(row["properties"] or "{}"),
+            "created_at": row["created_at"],
+            "updated_at": row["updated_at"],
+        }
+
+    def get_causal_edges(
+        self,
+        entity_type: str,
+        entity_value: str,
+        max_depth: int = 3,
+        max_visited: int = 50,
+    ) -> List[Dict]:
+        """BFS over outgoing causal edges — traces forward from cause to effects."""
+        cur = self._conn.execute(
+            "SELECT node_id FROM kg_nodes WHERE entity_type = ? AND entity_value = ?",
+            (entity_type, entity_value),
+        )
+        row = cur.fetchone()
+        if row is None:
+            return []
+
+        start_id = row["node_id"]
+        visited: set = set()
+        bfs_queue: deque = deque([(start_id, 0)])
+        causal_edges: List[Dict] = []
+
+        while bfs_queue and len(visited) < max_visited:
+            current_id, depth = bfs_queue.popleft()
+            if depth > max_depth or current_id in visited:
+                continue
+            visited.add(current_id)
+
+            edges_cur = self._conn.execute(
+                "SELECT * FROM kg_edges WHERE from_node_id = ? AND edge_type = 'causal'",
+                (current_id,),
+            )
+            for erow in edges_cur.fetchall():
+                edge = dict(erow)
+                edge["properties"] = json.loads(edge.get("properties") or "{}")
+                causal_edges.append(edge)
+                to_id = edge["to_node_id"]
+                if to_id not in visited:
+                    bfs_queue.append((to_id, depth + 1))
+
+        return causal_edges
+
+    def get_incoming_causal(
+        self,
+        entity_type: str,
+        entity_value: str,
+        max_depth: int = 3,
+        max_visited: int = 50,
+    ) -> List[Dict]:
+        """BFS over incoming causal edges — traces back to root causes."""
+        cur = self._conn.execute(
+            "SELECT node_id FROM kg_nodes WHERE entity_type = ? AND entity_value = ?",
+            (entity_type, entity_value),
+        )
+        row = cur.fetchone()
+        if row is None:
+            return []
+
+        start_id = row["node_id"]
+        visited: set = set()
+        bfs_queue: deque = deque([(start_id, 0)])
+        causal_edges: List[Dict] = []
+
+        while bfs_queue and len(visited) < max_visited:
+            current_id, depth = bfs_queue.popleft()
+            if depth > max_depth or current_id in visited:
+                continue
+            visited.add(current_id)
+
+            edges_cur = self._conn.execute(
+                "SELECT * FROM kg_edges WHERE to_node_id = ? AND edge_type = 'causal'",
+                (current_id,),
+            )
+            for erow in edges_cur.fetchall():
+                edge = dict(erow)
+                edge["properties"] = json.loads(edge.get("properties") or "{}")
+                causal_edges.append(edge)
+                from_id = edge["from_node_id"]
+                if from_id not in visited:
+                    bfs_queue.append((from_id, depth + 1))
+
+        return causal_edges
+
     # ── Entity Index ────────────────────────────────────────────────────
 
     def add_entity_mapping(self, entity_type: str, entity_value: str, note_id: str) -> None:
-        self._conn.execute(
-            "INSERT OR IGNORE INTO entity_index (entity_type, entity_value, note_id) "
-            "VALUES (?, ?, ?)",
-            (entity_type, entity_value, note_id),
-        )
-        self._conn.commit()
+        with self._write_lock:
+            self._conn.execute(
+                "INSERT OR IGNORE INTO entity_index (entity_type, entity_value, note_id) "
+                "VALUES (?, ?, ?)",
+                (entity_type, entity_value, note_id),
+            )
+            self._conn.commit()
 
     def remove_entity_mappings_for_note(self, note_id: str) -> None:
-        self._conn.execute("DELETE FROM entity_index WHERE note_id = ?", (note_id,))
-        self._conn.commit()
+        with self._write_lock:
+            self._conn.execute("DELETE FROM entity_index WHERE note_id = ?", (note_id,))
+            self._conn.commit()
 
     def get_note_ids_for_entity(self, entity_type: str, entity_value: str) -> List[str]:
         cur = self._conn.execute(

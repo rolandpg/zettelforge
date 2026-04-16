@@ -65,6 +65,19 @@ class StorageBackend(ABC):
         """Delete a note by ID.  Returns True if the note existed."""
         ...
 
+    def mark_access_dirty(self, note_id: str) -> None:
+        """Increment access count and update last_accessed timestamp.
+
+        Concrete default that fetches the note, calls increment_access(),
+        and rewrites it.  Backends can override for efficiency (e.g. a
+        targeted SQL UPDATE instead of a full rewrite).
+        """
+        note = self.get_note_by_id(note_id)
+        if note is None:
+            return
+        note.increment_access()
+        self.rewrite_note(note)
+
     # ── Vector Index Sync (BLOCKER-2 fix) ────────────────────────────────
 
     @abstractmethod
@@ -140,6 +153,57 @@ class StorageBackend(ABC):
     @abstractmethod
     def get_changes_since(self, timestamp: str) -> List[Dict]:
         """Get all entity changes since a given ISO-8601 timestamp."""
+        ...
+
+    @abstractmethod
+    def get_kg_node_by_id(self, node_id: str) -> Optional[Dict]:
+        """Lookup a KG node by its internal node_id.
+
+        Needed by provenance_chain() which accesses nodes by ID directly.
+        """
+        ...
+
+    def add_temporal_edge(
+        self,
+        from_type: str,
+        from_value: str,
+        to_type: str,
+        to_value: str,
+        relationship: str,
+        timestamp: str,
+        properties: Optional[Dict] = None,
+    ) -> str:
+        """Add a temporal edge with timestamp baked into properties.
+
+        Concrete default that delegates to add_kg_edge() with the
+        timestamp merged into the properties dict.
+        """
+        props = dict(properties or {})
+        props["timestamp"] = timestamp
+        return self.add_kg_edge(
+            from_type, from_value, to_type, to_value, relationship, properties=props
+        )
+
+    @abstractmethod
+    def get_causal_edges(
+        self,
+        entity_type: str,
+        entity_value: str,
+        max_depth: int = 3,
+        max_visited: int = 50,
+    ) -> List[Dict]:
+        """BFS over outgoing causal edges — traces forward from cause to effects."""
+        ...
+
+    @abstractmethod
+    def get_incoming_causal(
+        self,
+        entity_type: str,
+        entity_value: str,
+        max_depth: int = 3,
+        max_visited: int = 50,
+    ) -> List[Dict]:
+        """BFS over incoming causal edges — traces back to root causes."""
         ...
 
     # ── Entity Index Operations ──────────────────────────────────────────
