@@ -97,7 +97,10 @@ class MemoryManager:
         self.indexer = EntityIndexer()
 
         self.constructor = NoteConstructor()
-        self.retriever = VectorRetriever(memory_store=self._lance_store)
+        self.retriever = VectorRetriever(
+            memory_store=self._lance_store,
+            note_lookup=lambda nid: self.store.get_note_by_id(nid),
+        )
         self.governance = GovernanceValidator()
         self.resolver = AliasResolver()
         self.consolidation = ConsolidationMiddleware(self)

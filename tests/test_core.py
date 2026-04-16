@@ -190,9 +190,10 @@ class TestLanceDBIntegration:
         )
         mm.remember("Test note for LanceDB", domain="test_domain")
 
-        # Check tables exist
-        if mm.store.lancedb:
-            result = mm.store.lancedb.list_tables()
+        # Check tables exist (LanceDB lives in _lance_store, not the primary store)
+        lance = getattr(mm, '_lance_store', mm.store)
+        if hasattr(lance, 'lancedb') and lance.lancedb:
+            result = lance.lancedb.list_tables()
             if hasattr(result, "tables"):
                 tables = result.tables
             else:

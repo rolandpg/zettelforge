@@ -41,14 +41,24 @@ class VectorRetriever:
         exact_match_boost: float = 1.0,
         regenerate_invalid_embeddings: bool = True,  # NEW: Regenerate if missing/invalid
         memory_store: Optional[MemoryStore] = None,
+        note_lookup=None,  # Callable(note_id) -> MemoryNote, for cross-backend lookup
     ):
         self.similarity_threshold = similarity_threshold
         self.entity_boost = entity_boost
         self.exact_match_boost = exact_match_boost
         self.regenerate_invalid_embeddings = regenerate_invalid_embeddings
         self.store = memory_store or MemoryStore()
+        self._note_lookup = note_lookup
         self.extractor = EntityExtractor()
         self.resolver = AliasResolver()
+
+    def _get_note(self, note_id: str) -> Optional[MemoryNote]:
+        """Look up a note, preferring the cross-backend lookup if available."""
+        if self._note_lookup:
+            result = self._note_lookup(note_id)
+            if result is not None:
+                return result
+        return self.store.get_note_by_id(note_id)
 
     def _is_valid_embedding(self, vector: Optional[List[float]]) -> bool:
         """Check if embedding vector is valid (non-None, correct dims, non-zero)."""
@@ -155,7 +165,7 @@ class VectorRetriever:
                 for row in search_results:
                     note_id = row.get("id")
                     # Get full note from JSONL for complete data
-                    note = self.store.get_note_by_id(note_id)
+                    note = self._get_note(note_id)
                     if note:
                         score = row.get("_distance", 0)
                         # Convert distance to similarity (LanceDB returns distance, lower is better)
@@ -281,7 +291,7 @@ class VectorRetriever:
             for linked_id in note.links.related:
                 if len(expanded) >= max_results:
                     break
-                linked_note = self.store.get_note_by_id(linked_id)
+                linked_note = self._get_note(linked_id)
                 if linked_note and linked_note.id not in all_ids:
                     expanded.append(linked_note)
                     all_ids.add(linked_note.id)
