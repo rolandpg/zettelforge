@@ -4,7 +4,7 @@ Roland Fleet Agentic Memory Architecture V1.0
 """
 
 from datetime import datetime
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -15,6 +15,7 @@ class Content(BaseModel):
     raw: str
     source_type: str  # conversation | task_output | ingestion | observation
     source_ref: str  # subagent:task_id or conversation:session_id
+    previous_raw: Optional[str] = None  # Original content before evolution (for rollback)
 
 
 class Semantic(BaseModel):
@@ -68,6 +69,8 @@ class Metadata(BaseModel):
     confidence: float = 1.0  # Decays for inferred/evolved content
     ttl: Optional[int] = None  # Time-to-live in days
     domain: str = "general"  # security_ops | project | personal | research
+    persistence_semantics: str = "memory"  # knowledge, memory, wisdom, intelligence
+    ttl_anchor: Optional[str] = None  # ISO timestamp for TTL calculation (set on backfill)
     tier: str = "B"  # Epistemic tier: A (authoritative) | B (operational) | C (support)
     importance: int = 5  # 1-10 scale, used by extraction phase for prioritization
     tlp: str = ""  # TLP marking: WHITE, GREEN, AMBER, RED, or empty (unclassified)
@@ -96,13 +99,59 @@ class MemoryNote(BaseModel):
         self.metadata.access_count += 1
         self.metadata.last_accessed = datetime.now().isoformat()
 
-    def increment_evolution(self, evolved_by_note_id: str):
+    def increment_evolution(self, evolved_by_note_id: Optional[str] = None):
         """Record evolution event"""
         self.metadata.evolution_count += 1
-        self.evolved_by.append(evolved_by_note_id)
+        if evolved_by_note_id:
+            self.evolved_by.append(evolved_by_note_id)
+        self.updated_at = datetime.now().isoformat()
         # Confidence decay: evolved notes lose confidence
         self.metadata.confidence = min(self.metadata.confidence, 0.95)
 
     def should_flag_for_review(self) -> bool:
         """Check if note should be flagged for human review"""
         return self.metadata.confidence < 0.5 or self.metadata.evolution_count > 5
+
+    def is_expired(self, ttl_days: Optional[Dict[str, int]] = None) -> bool:
+        """Check if this note has expired based on its persistence semantics.
+
+        Args:
+            ttl_days: Override TTL per type. Defaults:
+                knowledge=None (never), memory=30, wisdom=90, intelligence=7
+        """
+        defaults: Dict[str, Optional[int]] = {
+            "knowledge": None,
+            "memory": 30,
+            "wisdom": 90,
+            "intelligence": 7,
+        }
+        ttls: Dict[str, Optional[int]] = {**defaults, **(ttl_days or {})}
+
+        ttl = ttls.get(self.metadata.persistence_semantics)
+        if ttl is None:
+            return False  # knowledge never expires
+
+        anchor = self.metadata.ttl_anchor or self.created_at
+        if not anchor:
+            return False
+
+        try:
+            anchor_dt = datetime.fromisoformat(anchor)
+            last_access = datetime.fromisoformat(self.updated_at) if self.updated_at else anchor_dt
+            # TTL resets on access
+            effective_anchor = max(anchor_dt, last_access)
+            age_days = (datetime.now() - effective_anchor).days
+            return age_days > ttl
+        except (ValueError, TypeError):
+            return False
+
+    @staticmethod
+    def infer_persistence(source_type: str, domain: str = "") -> str:
+        """Infer persistence semantics from source type and domain."""
+        if source_type in ("ingestion", "report") and domain == "cti":
+            return "knowledge"
+        if source_type == "synthesis":
+            return "wisdom"
+        if source_type == "task_output" and domain != "cti":
+            return "intelligence"
+        return "memory"  # default for conversation, mcp, unknown

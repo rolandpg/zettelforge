@@ -273,12 +273,15 @@ class KnowledgeGraph:
 
             # Create new edge
             edge_id = f"edge_{uuid.uuid4().hex[:12]}"
+            props = properties or {}
+            edge_type = props.pop("edge_type", "heuristic")
             edge = {
                 "edge_id": edge_id,
                 "from_node_id": from_id,
                 "to_node_id": to_id,
                 "relationship": relationship,
-                "properties": properties or {},
+                "edge_type": edge_type,
+                "properties": props,
                 "created_at": datetime.now().isoformat(),
                 "updated_at": datetime.now().isoformat(),
             }
@@ -373,6 +376,33 @@ class KnowledgeGraph:
 
         _dfs(start_node_id, 1, [])
         return results
+
+    def get_causal_edges(
+        self, entity_type: str, entity_value: str, max_depth: int = 3, max_visited: int = 50
+    ) -> List[Dict]:
+        """Get causal edges reachable from an entity, with BFS cap."""
+        node_id = self._node_index.get(entity_type, {}).get(entity_value.lower())
+        if not node_id:
+            return []
+
+        visited: set = set()
+        queue = [(node_id, 0)]
+        causal_edges = []
+
+        while queue and len(visited) < max_visited:
+            current_id, depth = queue.pop(0)
+            if depth > max_depth or current_id in visited:
+                continue
+            visited.add(current_id)
+
+            for edge in self._edges_from.get(current_id, []):
+                if edge.get("edge_type") == "causal":
+                    causal_edges.append(edge)
+                    to_id = edge["to_node_id"]
+                    if to_id not in visited:
+                        queue.append((to_id, depth + 1))
+
+        return causal_edges
 
     def get_latest_state(self, entity_type: str, entity_value: str) -> Optional[Dict]:
         """Get the latest known state of an entity."""
