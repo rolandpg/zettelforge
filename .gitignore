@@ -7,6 +7,7 @@ config.yml
 TODO.md
 tasks/
 docs/.ralph/
+agentsync.md
 
 # MkDocs build output (regenerated from docs/)
 site/
