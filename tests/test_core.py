@@ -87,6 +87,14 @@ class TestEntityRecall:
 
         assert len(results) >= 1
 
+    def test_recall_technique_returns_notes(self, temp_memory):
+        """ATT&CK technique recall returns matching notes."""
+        mm = MemoryManager(jsonl_path=f"{temp_memory}/notes.jsonl")
+        mm.remember("APT28 uses T1059.001 PowerShell for execution", domain="security_ops")
+
+        results = mm.recall_technique("T1059.001", k=5)
+        assert len(results) >= 1
+
     def test_recall_empty_for_unknown_entity(self, temp_memory):
         """Unknown entity returns empty list."""
         mm = MemoryManager(jsonl_path=f"{temp_memory}/notes.jsonl")

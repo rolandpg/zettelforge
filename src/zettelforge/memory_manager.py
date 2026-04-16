@@ -546,6 +546,10 @@ class MemoryManager:
             results.extend(n for n in is_results if n.id not in seen)
         return results
 
+    def recall_technique(self, technique_id: str, k: int = 25) -> List[MemoryNote]:
+        """Fast lookup by MITRE ATT&CK technique ID (e.g., T1059)."""
+        return self.recall_entity("attack_pattern", technique_id.upper(), k)
+
     def recall_tool(self, tool_name: str, k: int = 5) -> List[MemoryNote]:
         """Fast lookup by tool name"""
         return self.recall_entity("tool", tool_name.lower(), k)
