@@ -817,31 +817,40 @@ New env vars added:
 
 **Alternative 5: No fallback — fail fast.** Remove the implicit `local -> ollama` fallback entirely. Rejected because: (a) breaks backward compatibility for users who rely on the current silent fallback; (b) the fallback costs nothing when the primary succeeds; (c) explicit `fallback: ""` opt-out is available for users who want fail-fast.
 
-## Open Questions
+## Open Questions — Resolved
 
-1. **Should Azure OpenAI be a separate provider or handled via `openai_compat` with `extra` params?** Current proposal uses `openai_compat` with `extra.api_version`. This works but Azure's auth can also use Entra ID tokens (not just API keys). A dedicated `azure_openai` provider might be cleaner long-term. Decision deferred to Phase 2 implementation.
+1. **Should Azure OpenAI be a separate provider or handled via `openai_compat` with `extra` params?**
+   - **Decision: DEFERRED.** Azure requires `api-version` query params and `api-key` header (not Bearer), plus Entra ID token support. A dedicated `azure_openai` provider will be addressed in a follow-up RFC or Phase 5.
 
-2. **Should `generate()` accept a `provider` override parameter?** e.g., `generate(prompt, provider="anthropic")` to use a different provider per-call without changing global config. This would be useful for synthesis (use a powerful model) vs. classification (use a fast model). Intentionally excluded from this RFC to keep the API surface unchanged — can be proposed as a follow-up RFC if needed.
+2. **Should `generate()` accept a `provider` override parameter?**
+   - **Decision: YES — approved for Phase 5.** `generate(prompt, provider="anthropic")` enables per-call provider selection (e.g., powerful model for synthesis, fast model for classification). This is a single optional parameter addition to `generate()` — backward compatible since it defaults to `None` (use global config). Implementation: if `provider` is passed, resolve from registry directly instead of reading `cfg.llm.provider`. Callers opt in; no existing code changes.
 
-3. **Should we add streaming support?** The current `generate()` returns a complete string. Streaming would require a different return type (`Iterator[str]`), breaking the API contract. Excluded from this RFC. If needed, it should be a separate `generate_stream()` function.
+3. **Should we add streaming support?**
+   - **Decision: NO.** Excluded from this RFC. Streaming requires a different return type (`Iterator[str]`) which breaks the API contract. If needed later, it should be a separate `generate_stream()` function in its own RFC.
 
-4. **How should we handle provider-specific rate limiting?** OpenAI returns `Retry-After` headers on 429s. The current retry logic uses fixed exponential backoff. Should we respect `Retry-After`? Proposed: yes, in Phase 2, as an enhancement to `openai_compat_provider.py`.
+4. **How should we handle provider-specific rate limiting?**
+   - **Decision: YES — approved for Phase 2.** `openai_compat_provider.py` will respect `Retry-After` headers on 429 responses. Already addressed in the adversarial review fix (retry logic now reads `Retry-After` header).
 
-5. **Should `ZETTELFORGE_OLLAMA_MODEL` be formally deprecated?** It currently sets the Ollama model independently of `ZETTELFORGE_LLM_MODEL`. With the unified config, `ZETTELFORGE_LLM_MODEL` should be the canonical env var for all providers. Proposed: honor `ZETTELFORGE_OLLAMA_MODEL` with a deprecation warning in logs, remove in v3.0.
+5. **Should `ZETTELFORGE_OLLAMA_MODEL` be formally deprecated?**
+   - **Decision: YES — deprecate with documented transition plan.**
+     - **v2.3.0**: `ZETTELFORGE_OLLAMA_MODEL` continues to work. If set, it is read as fallback when `ZETTELFORGE_LLM_MODEL` is unset. A `DeprecationWarning` is emitted on startup with migration instructions.
+     - **v2.5.0**: Warning upgraded to louder structured log at WARNING level.
+     - **v3.0.0**: `ZETTELFORGE_OLLAMA_MODEL` removed. `ZETTELFORGE_LLM_MODEL` is the only model env var.
+     - **Documentation**: CHANGELOG entry in each release. Migration guide in `docs/how-to/upgrade-llm-config.md`.
 
 ## Rollout Strategy
 
-1. **Phase 1** ships as a patch release (2.3.0) — pure refactor, no new providers, all tests pass identically.
-2. **Phase 2** ships as 2.4.0 — adds `openai_compat` provider.
-3. **Phase 3** ships as 2.5.0 — adds `anthropic` provider.
-4. **Phase 4** ships alongside Phase 3 — config enhancements and documentation.
-5. Azure OpenAI support follows as a separate RFC or Phase 5.
+1. **Phase 1** (v2.3.0) — Provider infrastructure refactor. No new providers, all tests pass identically. `ZETTELFORGE_OLLAMA_MODEL` deprecation warning added.
+2. **Phase 2** (v2.4.0) — `openai_compat` provider with `Retry-After` support.
+3. **Phase 3** (v2.5.0) — `anthropic` provider. `ZETTELFORGE_OLLAMA_MODEL` warning upgraded.
+4. **Phase 4** (ships with Phase 3) — Config enhancements, env var resolution, documentation, entry point discovery.
+5. **Phase 5** (v2.6.0) — Per-call `provider` override parameter on `generate()`. Azure OpenAI provider (separate RFC or inline).
 
 Each phase is independently shippable. If Phase 2 stalls, Phase 1 still delivers value (cleaner architecture, mock provider for testing, entry point extensibility).
 
 ## Decision
 
-- **Status**: Draft
+- **Status**: Accepted
 - **Date**: 2026-04-16
 - **Decision Maker**: Patrick Roland
-- **Rationale**: Pending approval. Adversarial review completed with 3 blockers (all fixed), 7 warnings (6 addressed, Azure deferred to follow-up), 5 nits (3 fixed).
+- **Rationale**: Adversarial review completed with 3 blockers (all fixed), 7 warnings (6 addressed, Azure deferred to follow-up), 5 nits (3 fixed). Open questions resolved: Azure deferred, per-call provider override approved for Phase 5, streaming excluded, Retry-After approved for Phase 2, ZETTELFORGE_OLLAMA_MODEL deprecated with 3-version transition plan.
