@@ -91,7 +91,7 @@ class TypeDBConfig:
 
 | Key | Type | Default | Env Override | Description |
 |:----|:-----|:--------|:-------------|:------------|
-| `backend` | `str` | `typedb` | `ZETTELFORGE_BACKEND` | Knowledge graph backend. Values: `typedb`, `jsonl`. If `typedb` and server unreachable, falls back to `jsonl` with warning. |
+| `backend` | `str` | `sqlite` | `ZETTELFORGE_BACKEND` | Storage backend for notes, knowledge graph, and entity index. Community uses `sqlite`. TypeDB is extension-only. Legacy JSONL data should be migrated to SQLite. |
 
 ---
 
@@ -295,7 +295,7 @@ See [Configure OpenCTI Integration](../how-to/configure-opencti.md) for setup st
 | `TYPEDB_DATABASE` | `typedb.database` | `zettelforge` |
 | `TYPEDB_USERNAME` | `typedb.username` | `admin` |
 | `TYPEDB_PASSWORD` | `typedb.password` | `s3cret` |
-| `ZETTELFORGE_BACKEND` | `backend` | `jsonl` |
+| `ZETTELFORGE_BACKEND` | `backend` | `sqlite` |
 | `ZETTELFORGE_EMBEDDING_PROVIDER` | `embedding.provider` | `ollama` |
 | `AMEM_EMBEDDING_URL` | `embedding.url` | `http://gpu-box:11434` |
 | `AMEM_EMBEDDING_MODEL` | `embedding.model` | `nomic-embed-text-v1.5-Q` |
@@ -315,7 +315,7 @@ See [Configure OpenCTI Integration](../how-to/configure-opencti.md) for setup st
 storage:
   data_dir: ~/.amem
 
-backend: jsonl
+backend: sqlite
 
 embedding:
   provider: fastembed
@@ -334,8 +334,8 @@ ZettelForge configuration uses a layered resolution system: environment variable
 
 **16 environment variables** are supported, covering storage (`AMEM_DATA_DIR`), TypeDB connection (`TYPEDB_HOST`, `TYPEDB_PORT`, `TYPEDB_DATABASE`, `TYPEDB_USERNAME`, `TYPEDB_PASSWORD`), backend selection (`ZETTELFORGE_BACKEND`), embedding provider (`ZETTELFORGE_EMBEDDING_PROVIDER`, `AMEM_EMBEDDING_URL`, `AMEM_EMBEDDING_MODEL`), LLM provider (`ZETTELFORGE_LLM_PROVIDER`, `ZETTELFORGE_LLM_MODEL`, `ZETTELFORGE_LLM_URL`), and OpenCTI integration (`OPENCTI_URL`, `OPENCTI_TOKEN`, `OPENCTI_SYNC_INTERVAL`).
 
-**12 config sections** exist: `storage` (data directory), `typedb` (connection parameters), `backend` (typedb or jsonl), `embedding` (vector model and server), `llm` (language model for extraction/synthesis), `extraction` (two-phase pipeline settings), `retrieval` (vector search tuning), `synthesis` (RAG output control), `governance` (validation toggle), `cache` (TypeDB query cache), `logging` (verbosity control), and `opencti` (Enterprise only — OpenCTI platform URL, token, and sync interval).
+**12 config sections** exist: `storage` (data directory), `typedb` (Enterprise TypeDB connection parameters), `backend` (community default: sqlite), `embedding` (vector model and server), `llm` (language model for extraction/synthesis), `extraction` (two-phase pipeline settings), `retrieval` (vector search tuning), `synthesis` (RAG output control), `governance` (validation toggle), `cache` (query cache), `logging` (verbosity control), and `opencti` (Enterprise only — OpenCTI platform URL, token, and sync interval).
 
 **Key defaults:** Data stored in `~/.amem`. TypeDB on `localhost:1729`. Embedding via fastembed in-process with `nomic-embed-text-v1.5-Q` (768 dims, ONNX). LLM via llama-cpp-python in-process with `Qwen2.5-3B-Instruct-Q4_K_M.gguf` at temperature 0.1. Models download automatically on first use. Extraction produces up to 5 facts with importance >= 3. Retrieval returns 10 results with 0.25 similarity threshold and 2.5x entity boost. Synthesis uses `direct_answer` format with A+B tier notes and 3000 token context. Cache TTL is 300 seconds with 1024 max entries. Logging at INFO level.
 
-**For air-gapped deployments:** Set `backend: jsonl` to avoid the TypeDB dependency entirely. With the default `fastembed` and `local` providers, the JSONL backend stores the knowledge graph as local files with no external services required at all. Pre-download models before going offline.
+**For air-gapped deployments:** Keep `backend: sqlite` and pre-download embedding/LLM models before going offline. Legacy JSONL files are migration input, not the community default backend.

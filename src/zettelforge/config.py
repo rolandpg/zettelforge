@@ -124,7 +124,7 @@ class OpenCTIConfig:
 class ZettelForgeConfig:
     storage: StorageConfig = field(default_factory=StorageConfig)
     typedb: TypeDBConfig = field(default_factory=TypeDBConfig)
-    backend: str = "typedb"
+    backend: str = "sqlite"
     embedding: EmbeddingConfig = field(default_factory=EmbeddingConfig)
     llm: LLMConfig = field(default_factory=LLMConfig)
     extraction: ExtractionConfig = field(default_factory=ExtractionConfig)

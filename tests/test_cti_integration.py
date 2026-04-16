@@ -5,9 +5,15 @@ Validates bi-directional sync between memory and CTI DB.
 """
 
 import sys
-# Package installed via pip - no sys.path manipulation needed
 
-from zettelforge.cti_integration import get_cti_connector, CTIPlatformConnector
+import pytest
+
+cti_integration = pytest.importorskip(
+    "zettelforge_enterprise.cti_integration",
+    reason="zettelforge-enterprise not installed",
+)
+get_cti_connector = cti_integration.get_cti_connector
+CTIPlatformConnector = cti_integration.CTIPlatformConnector
 
 
 def test_cti_connection():

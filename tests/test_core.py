@@ -53,16 +53,12 @@ class TestStorage:
         assert len(note.semantic.entities) > 0
         assert any("apt28" in e.lower() for e in note.semantic.entities)
 
-    def test_notes_persist_to_jsonl(self, temp_memory):
-        """Notes are written to JSONL file."""
-        jsonl_path = f"{temp_memory}/notes.jsonl"
-        mm = MemoryManager(jsonl_path=jsonl_path)
-        mm.remember("Test note", domain="general")
+    def test_notes_persist(self, temp_memory):
+        """Notes survive a remember() call and are retrievable."""
+        mm = MemoryManager(jsonl_path=f"{temp_memory}/notes.jsonl")
+        mm.remember("Test note for persistence", domain="general")
 
-        assert os.path.exists(jsonl_path)
-        with open(jsonl_path) as f:
-            lines = [l for l in f.readlines() if l.strip()]
-        assert len(lines) >= 1
+        assert mm.store.count_notes() >= 1
 
 
 class TestEntityRecall:

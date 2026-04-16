@@ -1,21 +1,22 @@
 ---
-title: "Set Up TypeDB for ZettelForge"
-description: "Configure TypeDB as the knowledge graph backend using Docker Compose, load the STIX schema, seed aliases, and verify connectivity."
+title: "Set Up TypeDB for ZettelForge Enterprise"
+description: "Configure the optional Enterprise TypeDB knowledge graph backend using Docker Compose, load the STIX schema, seed aliases, and verify connectivity."
 diataxis_type: "how-to"
-audience: "Platform engineers deploying ZettelForge, CTI analysts setting up local environments"
+audience: "Platform engineers deploying ZettelForge Enterprise"
 tags: [typedb, docker, setup, configuration, knowledge-graph, schema]
 last_updated: "2026-04-09"
 version: "2.0.0"
 ---
 
-# Set Up TypeDB for ZettelForge
+# Set Up TypeDB for ZettelForge Enterprise
 
-Configure TypeDB as the knowledge graph backend. TypeDB stores STIX 2.1 entities, relationships, and alias-of mappings for structured CTI queries.
+Configure TypeDB as the optional Enterprise knowledge graph backend. ZettelForge Community defaults to SQLite; TypeDB lives in the separate `zettelforge-enterprise` extension for deployments that need a schema-enforced STIX 2.1 ontology, inference rules, and TypeQL access.
 
 ## Prerequisites
 
 - Docker and Docker Compose installed
 - ZettelForge installed (`pip install zettelforge`)
+- Enterprise extension installed (`pip install zettelforge-enterprise`)
 
 ## Steps
 
@@ -47,7 +48,7 @@ docker-typedb-1   typedb/typedb:latest ...        typedb    Up (healthy)
 ### 2. Verify connectivity
 
 ```python
-from zettelforge.typedb_client import TypeDBKnowledgeGraph
+from zettelforge_enterprise.typedb_client import TypeDBKnowledgeGraph
 
 try:
     kg = TypeDBKnowledgeGraph()
@@ -73,7 +74,7 @@ kg = get_knowledge_graph()
 print(f"Backend: {type(kg).__name__}")
 ```
 
-If TypeDB is reachable, this prints `TypeDBKnowledgeGraph`. If unreachable, it falls back to `KnowledgeGraph` (JSONL).
+With `ZETTELFORGE_BACKEND=typedb` and the Enterprise extension installed, this prints `TypeDBKnowledgeGraph`. Community builds use the SQLite-backed storage path instead.
 
 ### 4. Seed alias relations
 
@@ -144,7 +145,7 @@ note, status = mm.remember(
 print(f"Store: {status}")
 
 # Query the graph
-rels = mm.get_entity_relationships("actor", "apt28")
+rels = mm.get_entity_relationships("intrusion_set", "apt28")
 print(f"Graph relationships: {len(rels)}")
 
 # Verify alias resolution through TypeDB
@@ -177,41 +178,22 @@ docker compose restart typedb
 docker compose exec typedb curl -f http://localhost:8000/health
 ```
 
-### Fallback to JSONL backend
+### Community fallback
 
-If TypeDB is unreachable, ZettelForge logs a warning and falls back to JSONL:
-
-```
-[WARNING] TypeDB unreachable, falling back to JSONL backend
-```
-
-To force JSONL mode (skip TypeDB entirely):
-
-```yaml
-backend: jsonl
-```
-
-Or:
-
-```bash
-export ZETTELFORGE_BACKEND=jsonl
-```
-
-> [!WARNING]
-> JSONL fallback stores identical relationship data but does not support TypeQL queries or the `alias-of` relation type. Use the local JSON alias file (`~/.amem/entity_aliases.json`) for alias resolution in JSONL mode.
+If the Enterprise extension is not installed, keep `backend: sqlite`. Legacy JSONL files should be migrated to SQLite; JSONL is no longer the documented community default.
 
 ## LLM Quick Reference
 
-**Task**: Set up TypeDB as the ZettelForge knowledge graph backend.
+**Task**: Set up TypeDB as the optional ZettelForge Enterprise knowledge graph backend.
 
 **Docker**: `docker compose up -d` from the `docker/` directory. Ports: 1729 (gRPC), 8100 (HTTP health). Volume: `typedb-data`.
 
-**Schema**: Loaded automatically on first `TypeDBKnowledgeGraph()` instantiation. STIX 2.1 entity types: threat-actor, tool, malware, vulnerability, campaign, identity.
+**Schema**: Loaded automatically on first `TypeDBKnowledgeGraph()` instantiation. STIX 2.1 entity types include intrusion-set, threat-actor, tool, malware, vulnerability, campaign, and identity.
 
 **Aliases**: `python -m zettelforge.schema.seed_aliases` inserts alias-of relations. Covers APT28, APT29, APT31, Lazarus, Sandworm, Volt Typhoon, Kimsuky, Turla, MuddyWater, Cobalt Strike, Metasploit, Mimikatz.
 
-**Config keys**: `TYPEDB_HOST` (default "localhost"), `TYPEDB_PORT` (default 1729), `TYPEDB_DATABASE` (default "zettelforge"), `TYPEDB_USERNAME`, `TYPEDB_PASSWORD`, `ZETTELFORGE_BACKEND` ("typedb" or "jsonl").
+**Config keys**: `TYPEDB_HOST` (default "localhost"), `TYPEDB_PORT` (default 1729), `TYPEDB_DATABASE` (default "zettelforge"), `TYPEDB_USERNAME`, `TYPEDB_PASSWORD`, `ZETTELFORGE_BACKEND=typedb`.
 
-**Fallback**: If `backend: typedb` and TypeDB is unreachable, falls back to JSONL with a warning. Set `backend: jsonl` to skip TypeDB entirely.
+**Community default**: Use `backend: sqlite` when the Enterprise extension is not installed.
 
 **Health check**: `curl -f http://localhost:8100/health` or `docker compose ps` for container status.

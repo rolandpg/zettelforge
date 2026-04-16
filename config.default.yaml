@@ -69,20 +69,16 @@ typedb:
   password: password
 
 
-# ── Knowledge Graph Backend ─────────────────────────────────────────────────
-# Which backend to use for the knowledge graph.
+# ── Storage Backend ────────────────────────────────────────────────────────
+# Which backend to use for notes, knowledge graph, and entity index.
 #
 # Options:
-#   backend: typedb    # use TypeDB (requires running server, recommended)
-#   backend: jsonl     # use local JSONL files (no external dependencies)
+#   backend: sqlite    # SQLite + LanceDB (default, zero config, ACID)
+#   backend: typedb    # TypeDB (requires zettelforge-enterprise extension)
 #
-# If set to "typedb" and TypeDB is unreachable, automatically falls back
-# to "jsonl" with a warning. Set to "jsonl" explicitly for air-gapped
-# environments without Docker.
+# Env override: ZETTELFORGE_BACKEND=sqlite
 #
-# Env override: ZETTELFORGE_BACKEND=jsonl
-#
-backend: typedb
+backend: sqlite
 
 
 # ── Embeddings ──────────────────────────────────────────────────────────────

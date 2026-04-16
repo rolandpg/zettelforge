@@ -27,15 +27,15 @@ Usage:
     }
 """
 
+import json
 import os
 import sys
-import json
 import time
 from pathlib import Path
 
 # Ensure zettelforge is importable
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-os.environ.setdefault("ZETTELFORGE_BACKEND", "jsonl")
+os.environ.setdefault("ZETTELFORGE_BACKEND", "sqlite")
 
 from zettelforge import MemoryManager, __version__
 

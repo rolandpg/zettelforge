@@ -79,7 +79,7 @@ class TestHybridExtraction:
     def test_extract_all_regex_only_returns_cti(self):
         ext = EntityExtractor()
         result = ext.extract_all("APT28 used CVE-2024-1234", use_llm=False)
-        assert "apt28" in result["actor"]
+        assert "apt28" in result["intrusion_set"]
         assert "cve-2024-1234" in result["cve"]
         # Conversational types present but empty
         for etype in ["person", "location", "organization", "event", "activity", "temporal"]:
@@ -133,7 +133,7 @@ class TestNoteConstructorDelegation:
     def test_constructor_extract_entities_delegates(self):
         nc = NoteConstructor()
         result = nc.extract_entities("APT28 uses Cobalt Strike")
-        assert "actor" in result
+        assert "apt28" in result["intrusion_set"]
         assert "tool" in result
 
 
@@ -144,9 +144,9 @@ class TestInferEntityType:
         nc = NoteConstructor()
         assert nc._infer_entity_type("CVE-2024-1234") == "cve"
 
-    def test_actor_pattern_returns_actor(self):
+    def test_apt_pattern_returns_intrusion_set(self):
         nc = NoteConstructor()
-        assert nc._infer_entity_type("APT28") == "actor"
+        assert nc._infer_entity_type("APT28") == "intrusion_set"
 
     def test_tool_pattern_returns_tool(self):
         nc = NoteConstructor()

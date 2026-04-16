@@ -256,18 +256,32 @@ JSON:"""
         if "cve-" in entity_lower or re.match(r"cve-\d{4}-\d+", entity_lower, re.I):
             return "cve"
 
-        # Threat actor patterns
-        actor_patterns = [
-            "apt",
+        # STIX 2.1 intrusion sets: named adversary groups such as APT28,
+        # UNC/TA/FIN clusters, and common group aliases.
+        intrusion_set_patterns = [
+            r"\bapt\d+\b",
+            r"\bunc\d+\b",
+            r"\bta\d+\b",
+            r"\bfin\d+\b",
             "lazarus",
             "sandworm",
             "fancy bear",
             "cozy bear",
             "volt typhoon",
+        ]
+        if any(re.search(pat, entity_lower) for pat in intrusion_set_patterns):
+            return "intrusion_set"
+
+        # STIX 2.1 threat actors are individuals or loosely scoped actor
+        # categories, not named intrusion sets.
+        actor_patterns = [
             "north korea",
+            "russian threat actor",
+            "iranian threat actor",
+            "chinese threat actor",
         ]
         if any(pat in entity_lower for pat in actor_patterns):
-            return "actor"
+            return "threat_actor"
 
         # Tool patterns
         tool_patterns = [

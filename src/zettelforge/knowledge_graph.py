@@ -462,7 +462,7 @@ def get_knowledge_graph() -> KnowledgeGraph:
             if _kg_instance is None:
                 from zettelforge.extensions import has_extension
 
-                backend = os.environ.get("ZETTELFORGE_BACKEND", "typedb")
+                backend = os.environ.get("ZETTELFORGE_BACKEND", "sqlite")
                 if backend == "typedb" and has_extension("enterprise"):
                     try:
                         from zettelforge_enterprise.typedb_client import TypeDBKnowledgeGraph
@@ -476,12 +476,5 @@ def get_knowledge_graph() -> KnowledgeGraph:
                         )
                         _kg_instance = KnowledgeGraph()
                 else:
-                    if backend == "typedb" and not has_extension("enterprise"):
-                        from zettelforge.log import get_logger as _get_logger
-
-                        _get_logger("zettelforge.extensions").info(
-                            "community_edition_jsonl_graph",
-                            detail="TypeDB available via zettelforge-enterprise extension",
-                        )
                     _kg_instance = KnowledgeGraph()
     return _kg_instance

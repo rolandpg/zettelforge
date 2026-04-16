@@ -27,44 +27,52 @@ Priority: **P0** = do now, **P1** = this sprint, **P2** = next sprint, **P3** = 
 | 2026-04-15 | FalkorDB: PASS | SSPLv1 blocks SaaS, hybrid search unsupported, FalkorDBLite immature |
 | 2026-04-15 | OpenCTI shared TypeDB DB: parked | Rely on sync agent for now |
 | 2026-04-15 | TE-009 research validates architecture | Tool-based actions, dual-stream write, intent routing all confirmed by 12 papers. Three gaps identified. |
-| 2026-04-16 | SQLite is default backend | Backend factory, StorageBackend ABC, CI backend matrix (jsonl + sqlite). |
+| 2026-04-16 | SQLite is default backend | Runtime factory, StorageBackend ABC, and SQLiteBackend are present. Config/docs/web defaults still need alignment. |
 
 ---
 
 ## P0: Package Alignment Fixes
 
 Docs-first reassessment on 2026-04-16 found that code, tests, and older docs lag the current decision log.
+Current-state reconciliation on 2026-04-16 found SQLite wiring in place, but package defaults, extension boundaries, STIX taxonomy, and local test collection are still inconsistent.
 
 ### Backend Defaults + Extension Boundary
-- [x] SQLite + LanceDB is default (backend_factory.py, ZETTELFORGE_BACKEND=sqlite)
-- [ ] Remove TypeDB as a community default from `config.py`, `config.default.yaml`, README, and reference docs
-- [ ] Mark TypeDB docs as extension-only/hidden-menu, not baseline package architecture
-- [ ] Move or skip TypeDB-only tests using `pytest.importorskip("zettelforge_enterprise...")`
-- [ ] Move or skip CTI/OpenCTI integration tests that import extension-only modules
+- [x] Runtime backend factory defaults to SQLite (`backend_factory.py`, unset `ZETTELFORGE_BACKEND` -> `sqlite`)
+- [x] CI uses SQLite for community package tests instead of advertising a fake JSONL backend matrix
+- [x] Stop advertising `ZETTELFORGE_BACKEND=jsonl` as a supported backend; legacy JSONL is migration input
+- [x] Align defaults across `config.py`, `config.default.yaml`, README, docs, `web/mcp_server.py`, and `knowledge_graph.py`
+- [x] Remove TypeDB as a community default from `config.py`, `config.default.yaml`, README, and reference docs
+- [x] Mark TypeDB docs as extension-only/hidden-menu, not baseline package architecture
+- [x] Move or skip TypeDB-only tests using `pytest.importorskip("zettelforge_enterprise...")`
+- [x] Move or skip CTI/OpenCTI integration tests that import extension-only modules
 
 ### STIX 2.1 Entity Taxonomy
-- [ ] Treat APT/UNC/TA/FIN groups as `intrusion_set` internally, not `actor`
-- [ ] Update tests that expect `APT28` under `actor` to expect `intrusion_set`
-- [ ] Update `NoteConstructor._infer_entity_type("APT28")` to return `intrusion_set`
-- [ ] Update graph edge creation so `intrusion_set` gets CTI relationships
-- [ ] Keep `recall_actor()` as compatibility helper searching `actor`, `threat_actor`, and `intrusion_set`
+- [x] EntityExtractor regex extracts APT-style designations as `intrusion_set`
+- [x] Update remaining tests that still expect `APT28` under `actor` (`tests/test_conversational_entities.py`)
+- [x] Update `NoteConstructor._infer_entity_type("APT28")` to return `intrusion_set`
+- [x] Update graph edge creation so `intrusion_set` gets CTI relationships
+- [x] Keep `recall_actor()` as compatibility helper searching `actor`, `threat_actor`, and `intrusion_set`
+- [ ] Update docs/examples that call APT groups "actors" where STIX 2.1 requires `intrusion_set`
 
 ### Deployable Web App Hardening
-- [ ] Require authentication for `web/app.py` API endpoints (API key minimum)
-- [ ] Default web host to `127.0.0.1`; require explicit opt-in for `0.0.0.0`
-- [ ] Add request limits for `content`, `query`, `k`, synthesis format
-- [ ] Add rate limiting or backpressure guards for `remember()`, `synthesize()`
-- [ ] Fix stored XSS by removing unsafe `innerHTML` rendering or escaping
+- [x] Require authentication for exposed `web/app.py` API endpoints (API key minimum; localhost remains usable without setup)
+- [x] Default web host to `127.0.0.1`; require API key before binding to `0.0.0.0`
+- [x] Add request limits for `content`, `query`, `k`, synthesis format
+- [x] Add rate limiting or backpressure guards for `remember()`, `synthesize()`
+- [x] Fix stored XSS by escaping dynamic `innerHTML` rendering
 
 ### Runtime/Test Reliability
 - [ ] Add `MemoryManager(enable_background: bool = True)` or equivalent test switch
-- [x] `MemoryManager.close()` via `atexit.register(self.store.close)` (added in SQLite wiring)
+- [ ] Add explicit `MemoryManager.close()` / shutdown API; current code only registers `atexit` handlers and `store.close`
+- [x] Make local test collection pass; `pytest --collect-only -q` collects community tests and skips missing enterprise modules
 - [ ] Ensure `pytest -q` passes from clean checkout with no TypeDB, OpenCTI, Ollama
 - [ ] Add package smoke tests: import, `python -m zettelforge version`, temp-dir round trip
 
 ### Storage Boundary Cleanup
-- [x] Replace private store calls (`_rewrite_note`) with public backend methods (compat alias added)
-- [x] Replace graph private access (`kg._nodes`) with `store.get_kg_node_by_id()`
+- [x] Add compatibility alias from `store._rewrite_note` to public `store.rewrite_note`
+- [ ] Replace remaining private store call sites (`memory_updater.py`, `memory_evolver.py`, `consolidation.py`, and tests) with `rewrite_note()`
+- [x] Replace production causal-recall graph private access with `store.get_kg_node_by_id()`
+- [ ] Replace remaining test/debug direct graph access (`kg._nodes`) with public graph/backend APIs
 - [ ] Decouple `GraphRetriever` from JSONL internals (partially done — recall() uses backend, but GraphRetriever still accepts KnowledgeGraph)
 - [ ] Make config/runtime/docs agree on `llm.provider`, `backend`, OpenCTI, TypeDB availability
 
@@ -89,7 +97,8 @@ Docs-first reassessment on 2026-04-16 found that code, tests, and older docs lag
 - [x] Entity index routed through backend (add_entity_mapping, get_note_ids_for_entity)
 - [x] mark_access_dirty via targeted SQL UPDATE
 - [x] Migration script: JSONL → SQLite with backup + verification
-- [x] CI backend matrix: tests run on both jsonl and sqlite
+- [x] CI backend matrix configured for `jsonl` and `sqlite`
+- [x] CI/backend tests drop JSONL as a supported backend claim
 - [x] 5 integration tests (remember/recall roundtrip, entity lookup, KG edges, supersession, count)
 - [x] 30 SQLite unit tests passing
 

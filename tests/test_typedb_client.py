@@ -3,9 +3,15 @@ Tests for TypeDB Knowledge Graph client.
 Requires TypeDB running on localhost:1729.
 """
 
-import pytest
 import uuid
-from zettelforge.typedb_client import TypeDBKnowledgeGraph
+
+import pytest
+
+typedb_client = pytest.importorskip(
+    "zettelforge_enterprise.typedb_client",
+    reason="zettelforge-enterprise not installed",
+)
+TypeDBKnowledgeGraph = typedb_client.TypeDBKnowledgeGraph
 
 
 @pytest.fixture

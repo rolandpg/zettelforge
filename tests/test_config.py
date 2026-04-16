@@ -21,7 +21,7 @@ class TestDefaults:
         assert cfg.typedb.host == "localhost"
         assert cfg.typedb.port == 1729
         assert cfg.typedb.database == "zettelforge"
-        assert cfg.backend == "typedb"
+        assert cfg.backend == "sqlite"
         assert cfg.embedding.dimensions == 768
         assert cfg.retrieval.default_k == 10
         assert cfg.extraction.max_facts == 5

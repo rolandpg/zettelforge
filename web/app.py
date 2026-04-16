@@ -17,26 +17,30 @@ Endpoints:
     POST /api/sync            → Trigger OpenCTI sync
 """
 
-import os
-import sys
-import time
+# isort: skip_file
+
 import logging
+import os
+import secrets
+import sys
+import threading
+import time
+from collections import defaultdict, deque
 from pathlib import Path
+from typing import List, Optional
+
+from fastapi import Depends, FastAPI, Header, HTTPException, Request, status
+from fastapi.responses import HTMLResponse, JSONResponse
+from pydantic import BaseModel, Field
 
 # Ensure zettelforge is importable
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-os.environ.setdefault("ZETTELFORGE_BACKEND", "jsonl")
+os.environ.setdefault("ZETTELFORGE_BACKEND", "sqlite")
 
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse, JSONResponse
-from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
-from typing import Optional, List
-
-from zettelforge import MemoryManager, __version__
-from zettelforge.edition import is_enterprise, edition_name
-from web.auth import register_auth_routes, get_mm_for_request, get_current_user
+from zettelforge import MemoryManager, __version__  # noqa: E402
+from zettelforge.edition import edition_name, is_enterprise  # noqa: E402
+from web.auth import get_mm_for_request, register_auth_routes  # noqa: E402
 
 logger = logging.getLogger(__name__)
 
@@ -52,39 +56,109 @@ register_auth_routes(app)
 # Default memory manager (for unauthenticated/single-tenant mode)
 mm = MemoryManager()
 
+MAX_QUERY_CHARS = int(os.environ.get("ZETTELFORGE_WEB_MAX_QUERY_CHARS", "1000"))
+MAX_CONTENT_CHARS = int(os.environ.get("ZETTELFORGE_WEB_MAX_CONTENT_CHARS", "50000"))
+MAX_K = int(os.environ.get("ZETTELFORGE_WEB_MAX_K", "50"))
+MAX_SYNC_LIMIT = int(os.environ.get("ZETTELFORGE_WEB_MAX_SYNC_LIMIT", "200"))
+API_KEY = os.environ.get("ZETTELFORGE_WEB_API_KEY", "")
+RATE_LIMIT_PER_MINUTE = int(os.environ.get("ZETTELFORGE_WEB_RATE_LIMIT_PER_MINUTE", "60"))
+WRITE_CONCURRENCY = int(os.environ.get("ZETTELFORGE_WEB_WRITE_CONCURRENCY", "2"))
+SYNTHESIS_FORMATS = {
+    "direct_answer",
+    "synthesized_brief",
+    "timeline_analysis",
+    "relationship_map",
+}
+
+_rate_lock = threading.Lock()
+_rate_windows = defaultdict(deque)
+_write_slots = threading.BoundedSemaphore(max(1, WRITE_CONCURRENCY))
+
 
 # ── Pydantic models ──────────────────────────────────────────────────────────
 
 
 class RecallRequest(BaseModel):
-    query: str
-    k: int = 10
-    domain: Optional[str] = None
+    query: str = Field(min_length=1, max_length=MAX_QUERY_CHARS)
+    k: int = Field(default=10, ge=1, le=MAX_K)
+    domain: Optional[str] = Field(default=None, max_length=100)
 
 
 class RememberRequest(BaseModel):
-    content: str
-    domain: str = "cti"
-    source_type: str = "manual"
-    source_ref: str = ""
+    content: str = Field(min_length=1, max_length=MAX_CONTENT_CHARS)
+    domain: str = Field(default="cti", min_length=1, max_length=100)
+    source_type: str = Field(default="manual", min_length=1, max_length=100)
+    source_ref: str = Field(default="", max_length=500)
     evolve: bool = True
 
 
 class SynthesizeRequest(BaseModel):
-    query: str
-    format: str = "direct_answer"
-    k: int = 10
+    query: str = Field(min_length=1, max_length=MAX_QUERY_CHARS)
+    format: str = Field(default="direct_answer", max_length=50)
+    k: int = Field(default=10, ge=1, le=MAX_K)
 
 
 class SyncRequest(BaseModel):
-    limit: int = 20
+    limit: int = Field(default=20, ge=1, le=MAX_SYNC_LIMIT)
     entity_types: Optional[List[str]] = None
 
 
 # ── API endpoints ────────────────────────────────────────────────────────────
 
 
-@app.post("/api/recall")
+def _client_ip(request: Request) -> str:
+    if request.client and request.client.host:
+        return request.client.host
+    return "unknown"
+
+
+def _is_loopback(host: str) -> bool:
+    return host in {"127.0.0.1", "::1", "localhost", "testclient"}
+
+
+def _check_rate_limit(key: str) -> None:
+    now = time.monotonic()
+    window_start = now - 60
+    with _rate_lock:
+        hits = _rate_windows[key]
+        while hits and hits[0] < window_start:
+            hits.popleft()
+        if len(hits) >= RATE_LIMIT_PER_MINUTE:
+            raise HTTPException(
+                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                detail="Rate limit exceeded",
+            )
+        hits.append(now)
+
+
+async def require_api_guard(
+    request: Request,
+    x_api_key: Optional[str] = Header(default=None, alias="X-API-Key"),
+    authorization: Optional[str] = Header(default=None),
+) -> None:
+    client_ip = _client_ip(request)
+    supplied_key = x_api_key
+    if not supplied_key and authorization:
+        scheme, _, value = authorization.partition(" ")
+        if scheme.lower() == "bearer":
+            supplied_key = value
+
+    if API_KEY:
+        if not supplied_key or not secrets.compare_digest(supplied_key, API_KEY):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Valid API key required",
+            )
+    elif not _is_loopback(client_ip):
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Set ZETTELFORGE_WEB_API_KEY before exposing the web API",
+        )
+
+    _check_rate_limit(supplied_key or client_ip)
+
+
+@app.post("/api/recall", dependencies=[Depends(require_api_guard)])
 async def recall(request: Request, req: RecallRequest):
     tenant_mm = get_mm_for_request(request)
     start = time.perf_counter()
@@ -111,32 +185,50 @@ async def recall(request: Request, req: RecallRequest):
     }
 
 
-@app.post("/api/remember")
+@app.post("/api/remember", dependencies=[Depends(require_api_guard)])
 async def remember(request: Request, req: RememberRequest):
     tenant_mm = get_mm_for_request(request)
     start = time.perf_counter()
-    note, status = tenant_mm.remember(
-        content=req.content,
-        source_type=req.source_type,
-        source_ref=req.source_ref,
-        domain=req.domain,
-        evolve=req.evolve,
-    )
+    if not _write_slots.acquire(blocking=False):
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Write capacity exhausted; retry shortly",
+        )
+    try:
+        note, status_text = tenant_mm.remember(
+            content=req.content,
+            source_type=req.source_type,
+            source_ref=req.source_ref,
+            domain=req.domain,
+            evolve=req.evolve,
+        )
+    finally:
+        _write_slots.release()
     latency = time.perf_counter() - start
 
     return {
         "note_id": note.id,
-        "status": status,
+        "status": status_text,
         "entities": note.semantic.entities[:10],
         "latency_ms": round(latency * 1000),
     }
 
 
-@app.post("/api/synthesize")
+@app.post("/api/synthesize", dependencies=[Depends(require_api_guard)])
 async def synthesize(request: Request, req: SynthesizeRequest):
+    if req.format not in SYNTHESIS_FORMATS:
+        raise HTTPException(status_code=400, detail="Unsupported synthesis format")
     tenant_mm = get_mm_for_request(request)
     start = time.perf_counter()
-    result = tenant_mm.synthesize(req.query, format=req.format, k=req.k)
+    if not _write_slots.acquire(blocking=False):
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Synthesis capacity exhausted; retry shortly",
+        )
+    try:
+        result = tenant_mm.synthesize(req.query, format=req.format, k=req.k)
+    finally:
+        _write_slots.release()
     latency = time.perf_counter() - start
 
     return {
@@ -148,7 +240,7 @@ async def synthesize(request: Request, req: SynthesizeRequest):
     }
 
 
-@app.get("/api/stats")
+@app.get("/api/stats", dependencies=[Depends(require_api_guard)])
 async def stats(request: Request):
     tenant_mm = get_mm_for_request(request)
     s = tenant_mm.get_stats()
@@ -163,7 +255,7 @@ async def stats(request: Request):
     }
 
 
-@app.get("/api/edition")
+@app.get("/api/edition", dependencies=[Depends(require_api_guard)])
 async def edition_info():
     """Return current edition and available features."""
     features = {
@@ -198,7 +290,7 @@ async def edition_info():
     }
 
 
-@app.post("/api/sync")
+@app.post("/api/sync", dependencies=[Depends(require_api_guard)])
 async def sync(request: Request, req: SyncRequest):
     if not is_enterprise():
         return JSONResponse(
@@ -317,6 +409,12 @@ HTML_PAGE = """<!DOCTYPE html>
     </div>
     <script>
         let mode = 'recall';
+        function apiHeaders(extra = {}) {
+            const headers = {...extra};
+            const key = localStorage.getItem('zettelforgeApiKey');
+            if (key) headers['X-API-Key'] = key;
+            return headers;
+        }
         function setMode(m) {
             mode = m;
             document.querySelectorAll('.tabs button').forEach((b,i) => b.classList.toggle('active', ['recall','synthesize','remember','sync'][i] === m));
@@ -332,52 +430,61 @@ HTML_PAGE = """<!DOCTYPE html>
             document.getElementById('meta').textContent = '';
             try {
                 if (mode === 'synthesize') {
-                    const res = await fetch('/api/synthesize', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({query:q, format:'synthesized_brief'})});
+                    const res = await fetch('/api/synthesize', {method:'POST', headers:apiHeaders({'Content-Type':'application/json'}), body:JSON.stringify({query:q, format:'synthesized_brief'})});
                     const data = await res.json();
+                    if (!res.ok) throw new Error(data.detail || data.error || 'Synthesis failed');
                     const syn = data.synthesis || {};
-                    document.getElementById('synthesis').innerHTML = `<div class="synthesis"><h3>Synthesis (${data.latency_ms}ms)</h3><div class="answer">${syn.summary || syn.answer || JSON.stringify(syn)}</div></div>`;
+                    document.getElementById('synthesis').innerHTML = `<div class="synthesis"><h3>Synthesis (${escHtml(data.latency_ms)}ms)</h3><div class="answer">${escHtml(syn.summary || syn.answer || JSON.stringify(syn))}</div></div>`;
                 } else {
-                    const res = await fetch('/api/recall', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({query:q, k:10})});
+                    const res = await fetch('/api/recall', {method:'POST', headers:apiHeaders({'Content-Type':'application/json'}), body:JSON.stringify({query:q, k:10})});
                     const data = await res.json();
+                    if (!res.ok) throw new Error(data.detail || data.error || 'Recall failed');
                     document.getElementById('meta').textContent = `${data.count} results in ${data.latency_ms}ms`;
                     if (data.results.length === 0) {
                         document.getElementById('results').innerHTML = '<div class="empty"><h2>No results</h2></div>';
                     } else {
                         document.getElementById('results').innerHTML = data.results.map(r => `
                             <div class="result">
-                                <div class="title">${r.id} <span class="tag tier-${r.tier.toLowerCase()}">${r.tier}</span> <span class="tag">${r.domain}</span></div>
+                                <div class="title">${escHtml(r.id)} <span class="tag tier-${cssToken(r.tier)}">${escHtml(r.tier)}</span> <span class="tag">${escHtml(r.domain)}</span></div>
                                 <div class="content">${escHtml(r.content)}</div>
                                 <div class="footer">
-                                    <span>${r.created_at?.slice(0,10) || ''}</span>
-                                    <span>confidence: ${r.confidence}</span>
-                                    ${r.entities.map(e => `<span class="tag">${e}</span>`).join('')}
+                                    <span>${escHtml(r.created_at?.slice(0,10) || '')}</span>
+                                    <span>confidence: ${escHtml(r.confidence)}</span>
+                                    ${r.entities.map(e => `<span class="tag">${escHtml(e)}</span>`).join('')}
                                 </div>
                             </div>`).join('');
                     }
                 }
-            } catch(e) { document.getElementById('results').innerHTML = `<div class="empty"><h2>Error: ${e.message}</h2></div>`; }
+            } catch(e) { document.getElementById('results').innerHTML = `<div class="empty"><h2>Error: ${escHtml(e.message)}</h2></div>`; }
             document.getElementById('spinner').style.display = 'none';
         }
         async function doRemember() {
             const content = document.getElementById('remember-content').value.trim();
             if (!content) return;
-            const res = await fetch('/api/remember', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({content, domain:'cti'})});
+            const res = await fetch('/api/remember', {method:'POST', headers:apiHeaders({'Content-Type':'application/json'}), body:JSON.stringify({content, domain:'cti'})});
             const data = await res.json();
+            if (!res.ok) {
+                document.getElementById('meta').textContent = data.detail || data.error || 'Store failed';
+                return;
+            }
             document.getElementById('meta').textContent = `Stored: ${data.note_id} (${data.status}, ${data.latency_ms}ms, entities: ${data.entities.join(', ')})`;
             document.getElementById('remember-content').value = '';
         }
         async function doSync() {
             document.getElementById('meta').textContent = 'Syncing from OpenCTI...';
             try {
-                const res = await fetch('/api/sync', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({limit:20})});
+                const res = await fetch('/api/sync', {method:'POST', headers:apiHeaders({'Content-Type':'application/json'}), body:JSON.stringify({limit:20})});
                 const data = await res.json();
+                if (!res.ok) throw new Error(data.detail || data.error || 'Sync failed');
                 document.getElementById('meta').textContent = `Synced ${data.synced || 0} objects, ${data.skipped || 0} skipped, ${data.errors || 0} errors (${data.duration_s || 0}s)`;
             } catch(e) { document.getElementById('meta').textContent = `Sync error: ${e.message}`; }
         }
         function escHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+        function cssToken(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9_-]/g, ''); }
         document.getElementById('query').addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
         // Load stats + edition
-        fetch('/api/stats').then(r=>r.json()).then(d => {
+        fetch('/api/stats', {headers: apiHeaders()}).then(r=>r.json()).then(d => {
+            if (d.detail || d.error) throw new Error(d.detail || d.error);
             const edBadge = d.edition === 'enterprise' ? 'Enterprise' : 'Community';
             document.getElementById('version').textContent = `v${d.version} (${edBadge})`;
             document.getElementById('stats').textContent = `${d.total_notes} notes | ${d.retrievals} recalls`;
@@ -387,16 +494,16 @@ HTML_PAGE = """<!DOCTYPE html>
                     if (b.textContent === 'OpenCTI Sync') b.style.display = 'none';
                 });
             }
-        });
+        }).catch(e => { document.getElementById('stats').textContent = e.message; });
         // Load auth state
         fetch('/auth/me').then(r=>r.json()).then(d => {
             const el = document.getElementById('user-info');
             if (d.authenticated) {
-                el.innerHTML = `<img src="${d.picture||''}" style="width:24px;height:24px;border-radius:50%;" onerror="this.style.display='none'"> <span style="color:#c9d1d9;font-size:13px;">${d.name}</span> <a href="/auth/logout" style="color:#8b949e;font-size:12px;text-decoration:none;">logout</a>`;
+                el.innerHTML = `<img src="${escHtml(d.picture||'')}" style="width:24px;height:24px;border-radius:50%;" onerror="this.style.display='none'"> <span style="color:#c9d1d9;font-size:13px;">${escHtml(d.name)}</span> <a href="/auth/logout" style="color:#8b949e;font-size:12px;text-decoration:none;">logout</a>`;
             } else {
                 fetch('/auth/providers').then(r=>r.json()).then(p => {
                     if (p.providers.length > 0) {
-                        el.innerHTML = p.providers.map(pr => `<a href="/auth/login/${pr}" style="padding:4px 12px;background:#21262d;border-radius:4px;color:#58a6ff;font-size:12px;text-decoration:none;">Login with ${pr}</a>`).join(' ');
+                        el.innerHTML = p.providers.map(pr => `<a href="/auth/login/${encodeURIComponent(pr)}" style="padding:4px 12px;background:#21262d;border-radius:4px;color:#58a6ff;font-size:12px;text-decoration:none;">Login with ${escHtml(pr)}</a>`).join(' ');
                     }
                 });
             }
@@ -411,8 +518,11 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="ZettelForge Web UI")
     parser.add_argument("--port", type=int, default=8088)
-    parser.add_argument("--host", default="0.0.0.0")
+    parser.add_argument("--host", default="127.0.0.1")
     args = parser.parse_args()
+
+    if args.host in {"0.0.0.0", "::"} and not API_KEY:
+        parser.error("Set ZETTELFORGE_WEB_API_KEY before binding the web app to all interfaces")
 
     import uvicorn
 

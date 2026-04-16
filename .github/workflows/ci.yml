@@ -35,7 +35,6 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.12']
-        backend: ['jsonl', 'sqlite']
 
     steps:
     - uses: actions/checkout@v6
@@ -52,12 +51,12 @@ jobs:
 
     - name: Test with pytest
       env:
-        ZETTELFORGE_BACKEND: ${{ matrix.backend }}
+        ZETTELFORGE_BACKEND: sqlite
       run: |
-        pytest tests/ -v --cov=zettelforge --cov-report=xml --cov-report=term-missing --ignore=tests/test_cti_integration.py --ignore=tests/test_typedb_client.py
+        pytest tests/ -v --cov=zettelforge --cov-report=xml --cov-report=term-missing
 
     - name: Upload coverage
-      if: matrix.python-version == '3.12' && matrix.backend == 'jsonl'
+      if: matrix.python-version == '3.12'
       uses: codecov/codecov-action@v6
       with:
         file: ./coverage.xml
@@ -81,7 +80,7 @@ jobs:
 
     - name: GOV-012 — Logging compliance tests
       env:
-        ZETTELFORGE_BACKEND: jsonl
+        ZETTELFORGE_BACKEND: sqlite
       run: |
         pytest tests/test_logging_compliance.py -v
 

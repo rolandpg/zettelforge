@@ -611,7 +611,9 @@ class MemoryManager:
     def recall_entity(self, entity_type: str, entity_value: str, k: int = 5) -> List[MemoryNote]:
         """
         Fast lookup by entity type and value.
-        entity_type: 'cve', 'actor', 'tool', 'campaign', 'person', 'location', 'organization', 'event', 'activity', 'temporal'
+        entity_type: 'cve', 'actor', 'threat_actor', 'intrusion_set', 'tool',
+        'campaign', 'person', 'location', 'organization', 'event', 'activity',
+        'temporal'
         """
         self.stats["entity_index_hits"] += 1
         note_ids = self.store.get_note_ids_for_entity(entity_type, entity_value.lower())
@@ -632,14 +634,20 @@ class MemoryManager:
     def recall_actor(self, actor_name: str, k: int = 5) -> List[MemoryNote]:
         """Fast lookup by threat actor name.
 
-        Searches both 'actor' and 'intrusion_set' entity types because
-        APT/UNC/FIN-style designations are extracted as intrusion_set.
+        Searches legacy 'actor', STIX 'threat_actor', and STIX
+        'intrusion_set' entity types. APT/UNC/FIN-style designations are
+        extracted as intrusion_set, but older stores may still have actor.
         """
-        results = self.recall_entity("actor", actor_name.lower(), k)
-        if len(results) < k:
-            is_results = self.recall_entity("intrusion_set", actor_name.lower(), k - len(results))
-            seen = {n.id for n in results}
-            results.extend(n for n in is_results if n.id not in seen)
+        results = []
+        seen = set()
+        for entity_type in ("actor", "threat_actor", "intrusion_set"):
+            if len(results) >= k:
+                break
+            entity_results = self.recall_entity(entity_type, actor_name.lower(), k - len(results))
+            for note in entity_results:
+                if note.id not in seen:
+                    results.append(note)
+                    seen.add(note.id)
         return results
 
     def recall_technique(self, technique_id: str, k: int = 25) -> List[MemoryNote]:
@@ -689,24 +697,40 @@ class MemoryManager:
         # 3. Inferred Entity-to-Entity Relationships (Heuristic)
 
         # --- CTI relationships ---
-        actors = resolved_entities.get("actor", [])
+        actors = []
+        for actor_type in ("actor", "threat_actor", "intrusion_set"):
+            actors.extend((actor_type, value) for value in resolved_entities.get(actor_type, []))
         tools = resolved_entities.get("tool", [])
         cves = resolved_entities.get("cve", [])
         assets = resolved_entities.get("asset", [])
         campaigns = resolved_entities.get("campaign", [])
 
-        for a in actors:
+        for actor_type, actor_value in actors:
             for t in tools:
-                self.store.add_kg_edge("actor", a, "tool", t, "USES_TOOL", properties=edge_props)
+                self.store.add_kg_edge(
+                    actor_type, actor_value, "tool", t, "USES_TOOL", properties=edge_props
+                )
             for c in cves:
-                self.store.add_kg_edge("actor", a, "cve", c, "EXPLOITS_CVE", properties=edge_props)
+                self.store.add_kg_edge(
+                    actor_type, actor_value, "cve", c, "EXPLOITS_CVE", properties=edge_props
+                )
             for asset in assets:
                 self.store.add_kg_edge(
-                    "actor", a, "asset", asset, "TARGETS_ASSET", properties=edge_props
+                    actor_type,
+                    actor_value,
+                    "asset",
+                    asset,
+                    "TARGETS_ASSET",
+                    properties=edge_props,
                 )
             for camp in campaigns:
                 self.store.add_kg_edge(
-                    "actor", a, "campaign", camp, "CONDUCTS_CAMPAIGN", properties=edge_props
+                    actor_type,
+                    actor_value,
+                    "campaign",
+                    camp,
+                    "CONDUCTS_CAMPAIGN",
+                    properties=edge_props,
                 )
 
         for t in tools:
@@ -718,10 +742,15 @@ class MemoryManager:
                 self.store.add_kg_edge("tool", t, "cve", c, "EXPLOITS_CVE", properties=edge_props)
 
         attack_patterns = resolved_entities.get("attack_pattern", [])
-        for a in actors:
+        for actor_type, actor_value in actors:
             for ap in attack_patterns:
                 self.store.add_kg_edge(
-                    "actor", a, "attack_pattern", ap, "USES_TECHNIQUE", properties=edge_props
+                    actor_type,
+                    actor_value,
+                    "attack_pattern",
+                    ap,
+                    "USES_TECHNIQUE",
+                    properties=edge_props,
                 )
         malwares = resolved_entities.get("malware", [])
         for m in malwares:

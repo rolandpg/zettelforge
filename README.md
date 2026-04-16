@@ -209,7 +209,7 @@ infrastructure yourself.
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `AMEM_DATA_DIR` | `~/.amem` | Data directory |
-| `ZETTELFORGE_BACKEND` | `jsonl` | `jsonl` or `typedb` (via extension) |
+| `ZETTELFORGE_BACKEND` | `sqlite` | SQLite community backend. TypeDB is available via extension. |
 | `ZETTELFORGE_LLM_PROVIDER` | `local` | `local` (llama-cpp) or `ollama` |
 
 See [config.default.yaml](config.default.yaml) for all options.
