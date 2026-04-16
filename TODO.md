@@ -1,8 +1,8 @@
 # ZettelForge — Master TODO
 
-**Last verified:** 2026-04-15
+**Last verified:** 2026-04-16
 **Current version:** 2.1.1
-**Phase:** Community Launch + Research-Driven Features (Format Stability + Consolidation DONE)
+**Phase:** SQLite Migration Complete, Package Alignment Next
 
 ---
 
@@ -27,153 +27,96 @@ Priority: **P0** = do now, **P1** = this sprint, **P2** = next sprint, **P3** = 
 | 2026-04-15 | FalkorDB: PASS | SSPLv1 blocks SaaS, hybrid search unsupported, FalkorDBLite immature |
 | 2026-04-15 | OpenCTI shared TypeDB DB: parked | Rely on sync agent for now |
 | 2026-04-15 | TE-009 research validates architecture | Tool-based actions, dual-stream write, intent routing all confirmed by 12 papers. Three gaps identified. |
+| 2026-04-16 | SQLite is default backend | Backend factory, StorageBackend ABC, CI backend matrix (jsonl + sqlite). |
 
 ---
 
-## P0: Anti-Aversion Cleanup (COMPLETE)
+## P0: Package Alignment Fixes
 
-- [x] Created extensions.py — clean extension loader with env var fallback
-- [x] Ungated all community features (temporal queries, remember_report, traverse_graph, synthesize)
-- [x] Rewrote edition.py as thin shim over extensions.py
-- [x] Cleaned web layer — all ThreatRecall → ZettelForge, 402→501, MCP tools renamed
-- [x] Cleaned config/ocsf/__init__ branding
-- [x] Deleted LICENSE-ENTERPRISE, enterprise/ stub
-- [x] README: "Extensions" replaces "Community vs Enterprise"
-- [x] Added GOVERNANCE.md (MIT commitment) + ARCHITECTURE.md
-- [x] Cleaned issue/PR templates, CONTRIBUTING, CHANGELOG
-- [x] Cleaned docs site, MCP skill, pyproject
-- [x] CI green on all changes
+Docs-first reassessment on 2026-04-16 found that code, tests, and older docs lag the current decision log.
 
----
+### Backend Defaults + Extension Boundary
+- [x] SQLite + LanceDB is default (backend_factory.py, ZETTELFORGE_BACKEND=sqlite)
+- [ ] Remove TypeDB as a community default from `config.py`, `config.default.yaml`, README, and reference docs
+- [ ] Mark TypeDB docs as extension-only/hidden-menu, not baseline package architecture
+- [ ] Move or skip TypeDB-only tests using `pytest.importorskip("zettelforge_enterprise...")`
+- [ ] Move or skip CTI/OpenCTI integration tests that import extension-only modules
 
-## P0: Growth Week 1 (COMPLETE)
+### STIX 2.1 Entity Taxonomy
+- [ ] Treat APT/UNC/TA/FIN groups as `intrusion_set` internally, not `actor`
+- [ ] Update tests that expect `APT28` under `actor` to expect `intrusion_set`
+- [ ] Update `NoteConstructor._infer_entity_type("APT28")` to return `intrusion_set`
+- [ ] Update graph edge creation so `intrusion_set` gets CTI relationships
+- [ ] Keep `recall_actor()` as compatibility helper searching `actor`, `threat_actor`, and `intrusion_set`
 
-- [x] README overhaul — hero, comparison table, quickstart, features, badges
-- [x] pyproject.toml keywords (10 terms)
-- [x] GitHub topics (12 topics)
-- [x] `python -m zettelforge demo` command + examples/
-- [x] 12 good-first-issues created (#36-#47)
-- [x] Labels + CODEOWNERS
-- [x] 6 awesome list PRs submitted (84K+ combined reach)
-- [x] Demo recording script
-- [x] Record demo GIF (Playwright-based: scripts/record-demo-playwright.js)
-- [x] Enable GitHub Discussions (repo Settings → Features)
-- [x] MCP marketplace submission (mcpmarket.com — auto-indexed, already listed)
-- [x] awesome-mcp-servers PR submitted (punkpeye/awesome-mcp-servers#4911)
+### Deployable Web App Hardening
+- [ ] Require authentication for `web/app.py` API endpoints (API key minimum)
+- [ ] Default web host to `127.0.0.1`; require explicit opt-in for `0.0.0.0`
+- [ ] Add request limits for `content`, `query`, `k`, synthesis format
+- [ ] Add rate limiting or backpressure guards for `remember()`, `synthesize()`
+- [ ] Fix stored XSS by removing unsafe `innerHTML` rendering or escaping
 
----
+### Runtime/Test Reliability
+- [ ] Add `MemoryManager(enable_background: bool = True)` or equivalent test switch
+- [x] `MemoryManager.close()` via `atexit.register(self.store.close)` (added in SQLite wiring)
+- [ ] Ensure `pytest -q` passes from clean checkout with no TypeDB, OpenCTI, Ollama
+- [ ] Add package smoke tests: import, `python -m zettelforge version`, temp-dir round trip
 
-## P0: Format Stability Phase 1 (COMPLETE)
-
-- [x] `json_parse.py` — shared LLM output extraction with code fence handling + stats
-- [x] Fixed Ollama system prompt bug (was silently dropped)
-- [x] Added `json_mode` parameter → Ollama `format: "json"`
-- [x] Refactored all 5 parse sites to use `json_parse.py`
-- [x] Single retry on memory_updater + entity_indexer (temp bump 0.1→0.3, json_mode=True)
-- [x] Moved llama-cpp-python to optional dep (`pip install zettelforge[local]`)
-- [x] Causal relation validation against allowlist
-- [x] Parse failure logging with schema name + raw output
-
-### Format Stability Phase 2 (P2 — developer experience)
-- [ ] `zettelforge init` command (interactive provider setup)
-- [ ] `zettelforge health` command (parse rate tracking, LLM connectivity)
-- [ ] OpenAI + Anthropic provider backends
-- [ ] Config file support (config.toml)
-- [ ] Demo improvements (synthesis step, LLM availability detection)
-- [ ] Integration test: 100 memory updates with format validation
-- [ ] Test on actual DGX Spark local model
+### Storage Boundary Cleanup
+- [x] Replace private store calls (`_rewrite_note`) with public backend methods (compat alias added)
+- [x] Replace graph private access (`kg._nodes`) with `store.get_kg_node_by_id()`
+- [ ] Decouple `GraphRetriever` from JSONL internals (partially done — recall() uses backend, but GraphRetriever still accepts KnowledgeGraph)
+- [ ] Make config/runtime/docs agree on `llm.provider`, `backend`, OpenCTI, TypeDB availability
 
 ---
 
-## P1: Merge consolidation.py (COMPLETE)
+## P1: Memory Evolution — Remaining Items
 
-- [x] Copied consolidation.py + tests from dev branch
-- [x] Fixed tier persistence (Critical Bug 1) — `_rewrite_note()` after promotion
-- [x] Fixed EPG window filter (Critical Bug 2) — `_last_consolidation_time` tracking
-- [x] Fixed timezone blocker — naive timestamps throughout (matches NoteConstructor)
-- [x] Cached entity extraction (O(N) not O(N^2))
-- [x] Thread safety lock on async consolidation
-- [x] Dead imports removed
-- [x] Tests with real MemoryNote objects (14 total)
-- [x] Integrated into MemoryManager.remember() write path
-- [x] 186 tests passing
-
----
-
-## P1: Memory Evolution (A-Mem, NeurIPS 2025)
-
-Highest-value missing feature per research. When new CTI arrives, existing notes should auto-update.
-
-- [x] Implement `MemoryEvolver` — find_evolution_candidates, evaluate_evolution, apply_evolution, rollback (255 lines, 25+ tests)
-- [x] Find top-k neighbors via vector similarity (uses recall() with blended retrieval)
-- [x] LLM prompt: new note + neighbors → evolved version with confidence scoring
-- [x] Apply updates to neighbor notes (persist changes, re-embed, previous_raw rollback)
-- [x] Wire into MemoryManager enrichment queue (job_type dispatch, background worker)
-- [x] Public API: `evolve_note(note_id, sync=False)` for manual/MCP invocation
-- [x] Auto-triggers after `remember()` when >= 3 notes exist
-- [x] Tests: 25+ unit tests covering full pipeline, all passing
+- [x] MemoryEvolver implementation + wired into enrichment queue
 - [ ] Add config toggle: `memory_evolution: bool = True`
 - [ ] Integration test: store APT28 note, add new TTP, verify APT28 note updated
 
 ---
 
-## P1: SQLite + LanceDB Storage Migration
+## P1: SQLite + LanceDB Storage Migration (COMPLETE)
 
-Replace JSONL with SQLite for notes, KG, and entity index. LanceDB stays for vectors. Reduces 5 stores → 2 with ACID guarantees.
+- [x] StorageBackend ABC (27 abstract methods + 6 added in review)
+- [x] SQLiteBackend (697+ lines, WAL mode, threading.RLock, OCSF logging)
+- [x] VulnerabilityMeta column (P0 from architecture review)
+- [x] Backend factory with SQLite default + auto-detection
+- [x] MemoryManager wired to StorageBackend
+- [x] KG calls routed through backend (add_kg_node, add_kg_edge, traverse, causal BFS)
+- [x] Entity index routed through backend (add_entity_mapping, get_note_ids_for_entity)
+- [x] mark_access_dirty via targeted SQL UPDATE
+- [x] Migration script: JSONL → SQLite with backup + verification
+- [x] CI backend matrix: tests run on both jsonl and sqlite
+- [x] 5 integration tests (remember/recall roundtrip, entity lookup, KG edges, supersession, count)
+- [x] 30 SQLite unit tests passing
 
-### Prerequisites
-- [ ] Define storage adapter interface (Python ABC)
-- [ ] Decouple GraphRetriever from KG private internals
-
-### SQLite Backend
-- [ ] `notes` table replacing notes.jsonl (WAL mode)
-- [ ] `kg_nodes` + `kg_edges` tables replacing KG JSONL files
-- [ ] Entity index as SQL index (eliminates 5s deferred flush)
-- [ ] Access count via SQL UPDATE (eliminates 60s deferred flush)
-- [ ] Migration script: JSONL → SQLite
-- [ ] Reconciliation: detect notes in SQLite missing from LanceDB
-
-### LanceDB Cleanup
+### LanceDB Cleanup (P2)
 - [ ] Remove dead metadata columns (content, context, keywords, tags — never read)
 - [ ] Fix supersession: remove superseded note vectors from LanceDB
 - [ ] Fix silent indexing failures: retry or flag failed notes
 - [ ] Add `last_indexed_at` in SQLite for drift detection
 
-### Backend Routing
-- [ ] `ZETTELFORGE_BACKEND=sqlite` as new default
-- [ ] `ZETTELFORGE_BACKEND=jsonl` as legacy fallback
-- [ ] Auto-detect: SQLite exists → use it; only JSONL → use JSONL
-
 ---
 
 ## P1: Benchmarks
 
-- [x] CTIBench ATE fix — F1: 0.0 → 0.146 (retrieval pipeline was broken, now working)
-  - [x] Fixed LanceDB ingestion (was silently failing, 0 retrieval)
-  - [x] Removed ICS matrix (0 ICS T-codes in CTIBench ground truth, was polluting results)
-  - [x] Domain isolation working (attack_techniques separate from cti)
-  - [x] k sweep: optimal k=20 gives F1=0.146, precision=0.084, recall=0.376
-  - [ ] F1 ceiling ~0.15 with retrieval-only approach — semantic gap between behavioral descriptions and technique definitions. LLM-based mapping needed for 0.30+ (P2)
+- [x] CTIBench ATE: F1 0.0 → 0.146 (pipeline fixed, ICS noise removed)
+- [ ] F1 ceiling ~0.15 with retrieval-only — LLM-based mapping needed for 0.30+ (P2)
 - [ ] RAGAS re-run with `--domain cti`
 
 ---
 
-## P1: Causal Graph (MAGMA paper — CTI differentiator)
+## P1: Causal Graph (COMPLETE)
 
-Enables "why" queries. Infrastructure was already built but broken by edge_type bug.
-
-- [x] Fix edge_type bug — store_causal_edges() now passes edge_type="causal" (was defaulting to "heuristic", making all causal edges invisible)
-- [x] Alias resolution on causal triple subjects/objects before storage
-- [x] Reverse causal traversal — get_incoming_causal() for "why did X happen?" queries
-- [x] provenance_chain() supports forward + backward direction
-- [x] recall() causal boost uses both forward + backward traversal + source note_id
-- [x] Existing infrastructure verified working: extract_causal_triples(), store_causal_edges(), get_causal_edges(), intent classifier CAUSAL routing, background enrichment queue
+- [x] edge_type bug fix, alias resolution, reverse traversal, bidirectional provenance_chain
+- [x] recall() causal boost (forward + backward + source note_id)
 
 ---
 
 ## P1: Persistence Semantics (Knowledge Layer paper)
-
-Notes need different update/decay behavior by type.
 
 - [ ] Add `persistence_semantics` field to MemoryNote: `knowledge | memory | wisdom | intelligence`
 - [ ] Knowledge (IOCs, TTP defs): indefinite, strict consistency, no decay
@@ -183,10 +126,20 @@ Notes need different update/decay behavior by type.
 
 ---
 
-## P2: Sprint 3 — Architecture
+## P2: Format Stability Phase 2 (developer experience)
 
-- [ ] Decompose MemoryManager — 945 lines, 26 methods, 7+ subsystem deps
-- [ ] Move llama-cpp-python to optional deps
+- [ ] `zettelforge init` command (interactive provider setup)
+- [ ] `zettelforge health` command (parse rate tracking, LLM connectivity)
+- [ ] OpenAI + Anthropic provider backends
+- [ ] Config file support (config.toml)
+- [ ] Demo improvements (synthesis step, LLM availability detection)
+- [ ] Integration test: 100 memory updates with format validation
+
+---
+
+## P2: Architecture
+
+- [ ] Decompose MemoryManager — 1000+ lines, 26 methods, 7+ subsystem deps
 - [ ] Wire GovernanceValidator to config
 
 ---
@@ -203,20 +156,19 @@ Notes need different update/decay behavior by type.
 
 - [ ] Upgrade contradiction detection from negation heuristic to NLI-based
 - [ ] Weibull temporal decay for note scoring in recall()
-- [ ] Immutable Episodic Log (append-only JSONL for audit trail)
+- [ ] Immutable Episodic Log (append-only for audit trail)
 
 ---
 
 ## P2: Growth Weeks 2-4
 
 ### Week 2: Launch Push
+- [x] Show HN posted (2026-04-15)
+- [x] LangChain retriever wrapper (PR #48)
 - [ ] r/netsec deep-dive post draft
-- [ ] Show HN draft (ready in tasks/show-hn-draft.md)
-- [ ] Post Show HN (Tuesday 8-9 AM ET)
 - [ ] Twitter/X thread with demo GIF + comparison table
 - [ ] LinkedIn post (SaaS hosting angle, waitlist CTA)
 - [ ] Blog post: "Why Your AI Agent Needs CTI-Specific Memory"
-- [ ] LangChain retriever wrapper
 - [ ] r/cybersecurity post
 
 ### Week 3: Ecosystem
@@ -306,6 +258,7 @@ Notes need different update/decay behavior by type.
 - [x] CI segfault fix
 - [x] Entity taxonomy alignment
 - [x] Internal docs gitignored
+- [x] CI backend matrix (jsonl + sqlite)
 
 ### Entity Extraction & Schema
 - [x] IOC extractors (ipv4, domain, hash, url, email)
@@ -345,6 +298,15 @@ Notes need different update/decay behavior by type.
 - [x] Auto-triggers after remember() when >= 3 notes
 - [x] Public evolve_note() API for manual/MCP invocation
 
+### SQLite Storage Migration (2026-04-16)
+- [x] StorageBackend ABC (33 methods)
+- [x] SQLiteBackend (700+ lines, WAL, RLock, OCSF logging, VulnerabilityMeta)
+- [x] Backend factory with auto-detection
+- [x] MemoryManager wired to StorageBackend (KG, entities, notes)
+- [x] Migration script with backup + verification
+- [x] 30 unit tests + 5 integration tests
+- [x] CI backend matrix (jsonl + sqlite)
+
 ### Governance
 - [x] Spec-driven governance manifest (governance/controls.yaml)
 - [x] Spec-drift detection tests (7 tests, catches phantom controls)
@@ -362,7 +324,7 @@ Notes need different update/decay behavior by type.
 - [x] 3 Discussions seeded with substantive replies
 - [x] Show HN posted
 - [x] SafeSkill: removed one-off scripts, dynamic badge
-- [x] LangChain retriever test fix
+- [x] LangChain retriever wrapper + test fix
 
 ### Benchmarks
 - [x] CTIBench ATE: F1 0.0 → 0.146 (pipeline was broken, ICS noise removed)
@@ -377,11 +339,11 @@ Notes need different update/decay behavior by type.
 
 ## What To Do Next (in order)
 
-1. **SQLite migration** — storage reliability, eliminates 8 crash windows per remember()
+1. **Package Alignment P0** — TypeDB removal from community defaults, STIX taxonomy fix, web hardening, test reliability
 2. **Persistence semantics** — 4-tier note types (knowledge/memory/wisdom/intelligence)
-3. **Format stability Phase 2** — init/health commands, cloud providers, config file
-4. **Growth Week 2** — r/netsec, r/cybersecurity, LinkedIn, Twitter launch
-5. **CTIBench ATE Phase 2** — LLM-based technique mapping to break 0.30 F1 ceiling
+3. **Growth Week 2** — r/netsec, r/cybersecurity, LinkedIn, Twitter launch
+4. **Format stability Phase 2** — init/health commands, cloud providers
+5. **CTIBench ATE Phase 2** — LLM-based technique mapping for 0.30+ F1
 
 ---
 
@@ -390,7 +352,7 @@ Notes need different update/decay behavior by type.
 | Paper | Key Takeaway for ZettelForge | Status |
 |-------|------------------------------|--------|
 | A-Mem (NeurIPS 2025) | Memory evolution — neighbors update on new evidence | WIRED + ACTIVE |
-| MAGMA | 4-graph separation (semantic/temporal/causal/entity) + intent routing | DONE (intent classifier + causal chain fix) |
+| MAGMA | 4-graph separation (semantic/temporal/causal/entity) + intent routing | DONE |
 | GAM (April 2026) | Hierarchical consolidation (EPG/TAN) + semantic shift detection | MERGED + INTEGRATED |
 | SSGM | Governance middleware — NLI contradiction checks, Weibull decay, drift bounds | NOT IMPL |
 | Anatomy | Format stability critical for local models, LLM-as-Judge > lexical metrics | NOT IMPL |
