@@ -1,0 +1,59 @@
+# Governance Controls Manifest — Single Source of Truth
+#
+# Every CI governance step MUST reference a control_id declared here.
+# Every control declared here MUST have a ci_step or runtime enforcement.
+# The spec-drift check (tests/test_governance_spec_drift.py) validates both.
+#
+# To add a new governance check:
+#   1. Add the control here with rules and enforcement
+#   2. Add the CI step or runtime code
+#   3. Run tests — spec-drift check will verify alignment
+
+controls:
+  GOV-003:
+    name: Python Standards
+    category: Code Quality
+    enforcement: ci
+    rules:
+      - id: naming
+        description: "PEP 8 naming conventions: snake_case for functions, PascalCase for classes"
+        ci_step: "Lint with ruff"
+        tool: "ruff (N rules)"
+      - id: format
+        description: "Code formatting with ruff"
+        ci_step: "Format check with ruff"
+        tool: "ruff format"
+
+  GOV-007:
+    name: Testing Standards
+    category: Quality Assurance
+    enforcement: ci
+    rules:
+      - id: coverage
+        description: "Minimum 67% line coverage"
+        ci_step: "Test with pytest"
+        tool: "pytest-cov --cov-fail-under=67"
+
+  GOV-011:
+    name: Access Control & Input Validation
+    category: Security
+    enforcement: runtime
+    rules:
+      - id: input_validation
+        description: "Content must be str or have .content attribute"
+        runtime_method: "GovernanceValidator.validate_operation"
+      - id: no_hardcoded_secrets
+        description: "Content must not contain API keys, tokens, or credentials"
+        runtime_method: "GovernanceValidator.validate_operation"
+
+  GOV-012:
+    name: Audit Logging
+    category: Observability
+    enforcement: runtime
+    rules:
+      - id: structured_logging
+        description: "All operations emit structured OCSF log entries"
+        runtime_method: "ocsf.log_api_activity"
+      - id: operation_coverage
+        description: "remember, recall, synthesize operations are logged"
+        test: "tests/test_logging_compliance.py"

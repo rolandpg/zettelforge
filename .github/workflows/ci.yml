@@ -49,6 +49,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install -e ".[dev]" || pip install -e "." && pip install pytest pytest-cov pytest-asyncio
 
+    - name: Pre-download fastembed model
+      run: |
+        python -c "from fastembed import TextEmbedding; TextEmbedding('nomic-ai/nomic-embed-text-v1.5-Q')"
+
     - name: Test with pytest
       env:
         ZETTELFORGE_BACKEND: sqlite
@@ -84,14 +88,9 @@ jobs:
       run: |
         pytest tests/test_logging_compliance.py -v
 
-    - name: GOV-006 — CODEOWNERS exists
+    - name: Governance spec-drift check
       run: |
-        if [ -f CODEOWNERS ] || [ -f .github/CODEOWNERS ] || [ -f docs/CODEOWNERS ]; then
-          echo "GOV-006 PASS: CODEOWNERS found"
-        else
-          echo "GOV-006 FAIL: No CODEOWNERS file (required by GOV-006)"
-          exit 1
-        fi
+        pytest tests/test_governance_spec_drift.py -v
 
   build:
     runs-on: ubuntu-latest
