@@ -55,6 +55,11 @@ class LLMConfig:
 
 
 @dataclass
+class LLMNerConfig:
+    enabled: bool = True  # Always-on LLM NER via background enrichment queue
+
+
+@dataclass
 class ExtractionConfig:
     max_facts: int = 5
     min_importance: int = 3
@@ -127,6 +132,7 @@ class ZettelForgeConfig:
     backend: str = "sqlite"
     embedding: EmbeddingConfig = field(default_factory=EmbeddingConfig)
     llm: LLMConfig = field(default_factory=LLMConfig)
+    llm_ner: LLMNerConfig = field(default_factory=LLMNerConfig)
     extraction: ExtractionConfig = field(default_factory=ExtractionConfig)
     retrieval: RetrievalConfig = field(default_factory=RetrievalConfig)
     synthesis: SynthesisConfig = field(default_factory=SynthesisConfig)
@@ -230,6 +236,11 @@ def _apply_yaml(cfg: ZettelForgeConfig, data: dict):
             if hasattr(cfg.llm, k):
                 setattr(cfg.llm, k, v)
 
+    if "llm_ner" in data and isinstance(data["llm_ner"], dict):
+        for k, v in data["llm_ner"].items():
+            if hasattr(cfg.llm_ner, k):
+                setattr(cfg.llm_ner, k, v)
+
     if "extraction" in data and isinstance(data["extraction"], dict):
         for k, v in data["extraction"].items():
             if hasattr(cfg.extraction, k):
@@ -308,6 +319,10 @@ def _apply_env(cfg: ZettelForgeConfig):
         cfg.llm.model = v
     if v := os.environ.get("ZETTELFORGE_LLM_URL"):
         cfg.llm.url = v
+
+    # LLM NER
+    if v := os.environ.get("ZETTELFORGE_LLM_NER_ENABLED"):
+        cfg.llm_ner.enabled = v.lower() in ("true", "1", "yes")
 
     # Extensions license key (used by zettelforge-enterprise fallback path)
     if v := os.environ.get("THREATENGRAM_LICENSE_KEY"):

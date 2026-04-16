@@ -197,6 +197,21 @@ extraction:
   min_importance: 3
 
 
+# ── LLM NER (Conversational Entity Extraction) ─────────────────────────────
+# Always-on background LLM-based named entity recognition.
+# Runs in the enrichment queue after every remember() call.
+# Extracts person, location, organization, event, activity, temporal entities
+# using the configured LLM provider, and merges with regex-extracted entities.
+#
+# Set enabled: false to disable (e.g., for performance testing, or when no
+# LLM is available). Regex extraction always runs regardless of this setting.
+#
+# Env override: ZETTELFORGE_LLM_NER_ENABLED=false
+#
+llm_ner:
+  enabled: true
+
+
 # ── Retrieval ───────────────────────────────────────────────────────────────
 # Controls how recall() finds and ranks relevant memories.
 # Blended retrieval merges vector similarity + graph traversal results.

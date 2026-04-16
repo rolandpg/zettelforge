@@ -19,6 +19,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from zettelforge.alias_resolver import AliasResolver
 from zettelforge.backend_factory import get_storage_backend
+from zettelforge.config import get_config
 from zettelforge.consolidation import ConsolidationMiddleware
 from zettelforge.entity_indexer import EntityIndexer
 from zettelforge.extensions import has_extension
@@ -65,7 +66,8 @@ class _EnrichmentJob:
     domain: str
     content_len: int
     resolved_entities: dict = field(default_factory=dict)
-    job_type: str = "causal_extraction"  # or "neighbor_evolution"
+    job_type: str = "causal_extraction"  # or "neighbor_evolution" or "llm_ner"
+    defer: bool = False  # If True, skip processing (used for batch-defer in remember_report)
 
 
 class MemoryManager:
@@ -111,6 +113,12 @@ class MemoryManager:
             "retrievals": 0,
             "entity_index_hits": 0,
             "consolidations_triggered": 0,
+            # LLM NER observability (RFC-001 amendment)
+            "llm_ner_success": 0,
+            "llm_ner_failure": 0,
+            "llm_ner_no_new": 0,
+            "llm_ner_total_new_entities": 0,
+            "llm_ner_total_duration_ms": 0.0,
         }
 
         # Dual-stream enrichment: background worker for LLM causal extraction
@@ -280,7 +288,24 @@ class MemoryManager:
             except queue.Full:
                 self._logger.warning("enrichment_queue_full", note_id=note.id)
 
-        # Phase 6c: Neighbor evolution (A-Mem inspired — background worker)
+        # Phase 6c: LLM NER enrichment (always-on, background — RFC-001 amendment)
+        if get_config().llm_ner.enabled:
+            ner_job = _EnrichmentJob(
+                note_id=note.id,
+                domain=domain,
+                content_len=len(content),
+                resolved_entities=resolved_entities,
+                job_type="llm_ner",
+            )
+            if sync:
+                self._run_llm_ner(ner_job)
+            else:
+                try:
+                    self._enrichment_queue.put_nowait(ner_job)
+                except queue.Full:
+                    self._logger.warning("llm_ner_queue_full", note_id=note.id)
+
+        # Phase 6d: Neighbor evolution (A-Mem inspired — background worker)
         # Skip if fewer than 3 notes exist — not enough neighbors to evolve against
         if self.store.count_notes() >= 3:
             evolution_job = _EnrichmentJob(
@@ -815,8 +840,14 @@ class MemoryManager:
         while True:
             try:
                 job = self._enrichment_queue.get(timeout=1.0)
+                if job.defer:
+                    # Batch-deferred job — skip for now, will be swept later
+                    self._enrichment_queue.task_done()
+                    continue
                 if job.job_type == "neighbor_evolution":
                     self._run_evolution(job)
+                elif job.job_type == "llm_ner":
+                    self._run_llm_ner(job)
                 else:
                     self._run_enrichment(job)
                 self._enrichment_queue.task_done()
@@ -846,6 +877,71 @@ class MemoryManager:
                 )
         except Exception:
             self._logger.warning("enrichment_failed", note_id=note.id, exc_info=True)
+        finally:
+            self._pending_enrichment.discard(job.note_id)
+
+    def _run_llm_ner(self, job: _EnrichmentJob) -> None:
+        """Execute slow-path LLM NER entity extraction for one note.
+
+        Runs LLM-based NER, merges new entities with existing regex-extracted
+        entities (extend, not overwrite), and persists the amended entity index.
+        """
+        note = self.store.get_note_by_id(job.note_id)
+        if note is None:
+            self._pending_enrichment.discard(job.note_id)
+            return
+
+        start = time.perf_counter()
+        try:
+            from zettelforge.entity_indexer import EntityExtractor
+
+            extractor = EntityExtractor()
+            llm_entities = extractor.extract_llm(note.content.raw)
+
+            if not any(llm_entities.values()):
+                # LLM found nothing new — skip
+                self._pending_enrichment.discard(job.note_id)
+                return
+
+            # Merge with existing entities (extend, don't overwrite)
+            existing = note.semantic.entities if note.semantic.entities else []
+            new_flat = []
+            for etype, values in llm_entities.items():
+                for v in values:
+                    tag = f"{etype}:{v}"
+                    if tag not in existing:
+                        new_flat.append(tag)
+
+            duration_ms = (time.perf_counter() - start) * 1000
+            self.stats["llm_ner_total_duration_ms"] += duration_ms
+
+            if new_flat:
+                # Update entity index in storage backend
+                for etype, values in llm_entities.items():
+                    for v in values:
+                        self.store.add_entity_mapping(etype, v, note.id)
+
+                # Update legacy EntityIndexer (JSON)
+                self.indexer.add_note(note.id, llm_entities)
+
+                self.stats["llm_ner_success"] += 1
+                self.stats["llm_ner_total_new_entities"] += len(new_flat)
+                self._logger.info(
+                    "llm_ner_complete",
+                    note_id=note.id,
+                    new_entities=len(new_flat),
+                    duration_ms=round(duration_ms, 1),
+                )
+            else:
+                self.stats["llm_ner_no_new"] += 1
+                self._logger.debug(
+                    "llm_ner_no_new_entities",
+                    note_id=note.id,
+                    duration_ms=round(duration_ms, 1),
+                )
+        except Exception:
+            self.stats["llm_ner_failure"] += 1
+            self._logger.warning("llm_ner_failed", note_id=job.note_id, exc_info=True)
         finally:
             self._pending_enrichment.discard(job.note_id)
 
@@ -880,8 +976,13 @@ class MemoryManager:
         while not self._enrichment_queue.empty() and time.monotonic() < deadline:
             try:
                 job = self._enrichment_queue.get_nowait()
+                if job.defer:
+                    self._enrichment_queue.task_done()
+                    continue
                 if job.job_type == "neighbor_evolution":
                     self._run_evolution(job)
+                elif job.job_type == "llm_ner":
+                    self._run_llm_ner(job)
                 else:
                     self._run_enrichment(job)
                 self._enrichment_queue.task_done()

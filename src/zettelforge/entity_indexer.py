@@ -339,7 +339,15 @@ class EntityExtractor:
         # LLM NER for conversational entities
         if use_llm:
             llm_results = self.extract_llm(text)
-            results.update(llm_results)
+            # Merge LLM results with regex results (extend, don't overwrite)
+            for etype, values in llm_results.items():
+                if etype in results and results[etype]:
+                    # Deduplicate across regex + LLM
+                    merged = set(results[etype])
+                    merged.update(values)
+                    results[etype] = list(merged)
+                else:
+                    results[etype] = values
         else:
             # Ensure all non-regex types are present with empty lists
             for etype in ["person", "location", "organization", "event", "activity", "temporal"]:
