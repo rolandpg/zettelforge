@@ -332,6 +332,41 @@ Notes need different update/decay behavior by type.
 - [x] Integrated into MemoryManager.remember() write path
 - [x] 14 consolidation tests passing
 
+### Causal Chain (MAGMA-inspired)
+- [x] Fixed edge_type bug (causal edges invisible to retrieval)
+- [x] Alias resolution on causal triple subjects/objects
+- [x] Reverse causal traversal (get_incoming_causal for "why" queries)
+- [x] Bidirectional provenance_chain() with direction param
+- [x] recall() causal boost traverses both forward + backward
+
+### Memory Evolution (A-Mem inspired)
+- [x] MemoryEvolver implementation (255 lines, 25+ tests)
+- [x] Wired into enrichment queue (job_type dispatch)
+- [x] Auto-triggers after remember() when >= 3 notes
+- [x] Public evolve_note() API for manual/MCP invocation
+
+### Governance
+- [x] Spec-driven governance manifest (governance/controls.yaml)
+- [x] Spec-drift detection tests (7 tests, catches phantom controls)
+- [x] Removed phantom GOV-006 and undocumented print() check
+- [x] Coverage gate enforced (--cov-fail-under=67)
+
+### Growth (Session: 2026-04-15)
+- [x] Demo GIF (Playwright-generated, 699KB, in README)
+- [x] README badges (PyPI downloads, stars, contributors, last commit, SafeSkill)
+- [x] "Why ZettelForge?" narrative section
+- [x] ThreatRecall logo set (mark + wordmark, SVG + PNG)
+- [x] Social preview image (1280x640)
+- [x] CODE_OF_CONDUCT.md (Contributor Covenant v2.1)
+- [x] 9 good-first-issues updated with acceptance criteria
+- [x] 3 Discussions seeded with substantive replies
+- [x] Show HN posted
+- [x] SafeSkill: removed one-off scripts, dynamic badge
+- [x] LangChain retriever test fix
+
+### Benchmarks
+- [x] CTIBench ATE: F1 0.0 → 0.146 (pipeline was broken, ICS noise removed)
+
 ### Research Validated (no change needed)
 - [x] Tool-based memory actions (ADD/UPDATE/DELETE/NOOP) — AgeMem, Mem0, Anatomy confirm
 - [x] Dual-stream write (fast+slow) — MAGMA confirms
@@ -342,13 +377,11 @@ Notes need different update/decay behavior by type.
 
 ## What To Do Next (in order)
 
-1. **Growth Week 1 remainder** — demo GIF, Discussions, Discord, r/netsec draft, Show HN
-2. **Causal graph** — the CTI differentiator, enables "why" queries (MAGMA paper)
-3. **Memory evolution** — highest-value missing feature per 12 papers (A-Mem paper)
-4. **SQLite migration** — storage reliability, eliminates 8 crash windows per remember()
-5. **CTIBench ATE fix** — 2.25 hrs for 8-11x F1 improvement
-6. **Persistence semantics** — 4-tier note types (knowledge/memory/wisdom/intelligence)
-7. **Format stability Phase 2** — init/health commands, cloud providers, config file
+1. **SQLite migration** — storage reliability, eliminates 8 crash windows per remember()
+2. **Persistence semantics** — 4-tier note types (knowledge/memory/wisdom/intelligence)
+3. **Format stability Phase 2** — init/health commands, cloud providers, config file
+4. **Growth Week 2** — r/netsec, r/cybersecurity, LinkedIn, Twitter launch
+5. **CTIBench ATE Phase 2** — LLM-based technique mapping to break 0.30 F1 ceiling
 
 ---
 
@@ -356,8 +389,8 @@ Notes need different update/decay behavior by type.
 
 | Paper | Key Takeaway for ZettelForge | Status |
 |-------|------------------------------|--------|
-| A-Mem (NeurIPS 2025) | Memory evolution — neighbors update on new evidence | NOT IMPL |
-| MAGMA | 4-graph separation (semantic/temporal/causal/entity) + intent routing | PARTIAL (intent classifier done, causal missing) |
+| A-Mem (NeurIPS 2025) | Memory evolution — neighbors update on new evidence | WIRED + ACTIVE |
+| MAGMA | 4-graph separation (semantic/temporal/causal/entity) + intent routing | DONE (intent classifier + causal chain fix) |
 | GAM (April 2026) | Hierarchical consolidation (EPG/TAN) + semantic shift detection | MERGED + INTEGRATED |
 | SSGM | Governance middleware — NLI contradiction checks, Weibull decay, drift bounds | NOT IMPL |
 | Anatomy | Format stability critical for local models, LLM-as-Judge > lexical metrics | NOT IMPL |
