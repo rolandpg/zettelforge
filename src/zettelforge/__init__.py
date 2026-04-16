@@ -51,7 +51,7 @@ from zettelforge.synthesis_generator import SynthesisGenerator, get_synthesis_ge
 from zettelforge.synthesis_validator import SynthesisValidator, get_synthesis_validator
 from zettelforge.vector_retriever import VectorRetriever
 
-__version__ = "2.1.1"
+__version__ = "2.2.0"
 __all__ = [
     # Edition
     "Edition",

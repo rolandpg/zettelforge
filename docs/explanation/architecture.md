@@ -5,7 +5,7 @@ diataxis_type: explanation
 audience: "Senior CTI Practitioner"
 tags: [architecture, sqlite, lancedb, design-decisions]
 last_updated: "2026-04-16"
-version: "2.1.1"
+version: "2.2.0"
 ---
 
 # Why SQLite + LanceDB (Not One or the Other)

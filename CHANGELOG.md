@@ -6,27 +6,44 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [2.2.0] - 2026-04-16
+
+SQLite default backend, causal chain retrieval, memory evolution, STIX taxonomy alignment, and community-first package cleanup.
+
+### Added
+
+- **SQLite default backend** — SQLite (WAL mode) replaces JSONL as the default storage for notes, knowledge graph, and entity index. Zero-config, ACID guarantees. LanceDB stays for vector search. `StorageBackend` ABC (33 methods), `SQLiteBackend` (700+ lines), backend factory with auto-detection.
+- **JSONL to SQLite migration script** — `scripts/migrate_jsonl_to_sqlite.py` with backup, verification, and idempotent re-runs.
+- **Causal chain retrieval** — Fixed `edge_type="causal"` bug that made all LLM-extracted causal edges invisible. Added reverse traversal (`get_incoming_causal`) for "why did X happen?" queries. Bidirectional `provenance_chain()` with direction parameter.
+- **Memory Evolution wired** — `MemoryEvolver` (A-Mem inspired, 255 lines) now auto-triggers after `remember()` when 3+ notes exist. Background enrichment queue dispatches evolution jobs alongside causal extraction. Public `evolve_note()` API.
+- **Spec-driven governance** — `governance/controls.yaml` manifest as single source of truth. Spec-drift detection tests catch phantom controls in CI.
+- **Demo GIF** — Playwright-based terminal animation in README hero.
+- **LangChain retriever** — `ZettelForgeRetriever` integration for LangChain pipelines.
+- **SQLite integration tests** — 5 end-to-end tests with real SQLiteBackend.
+- **CODE_OF_CONDUCT.md** — Contributor Covenant v2.1.
+
+### Changed
+
+- **STIX 2.1 entity taxonomy** — APT/UNC/TA/FIN groups now stored as `intrusion_set` (not `actor`). `recall_actor()` searches `actor`, `threat_actor`, and `intrusion_set` for backward compatibility.
+- **Web app hardened** — API key authentication required for exposed endpoints, localhost-only default, XSS fix, rate limiting, request bounds.
+- **Backend defaults aligned** — `config.py`, `config.default.yaml`, `knowledge_graph.py`, tutorials, and docs all default to SQLite.
+- **CI simplified** — Extension-only tests gated with `pytest.importorskip()`, no more `--ignore` flags. Backend matrix dropped fake JSONL entry.
+- **Coverage threshold** — Governance doc updated from 80% to 67% to match actual enforcement.
+- **CTIBench ATE** — F1 improved from 0.0 to 0.146 (fixed broken ingestion pipeline, removed ICS matrix noise).
+
 ### Fixed
 
-- **Graph traversal blackout on CTI relational queries** — The intent
-  classifier was assigning `FACTUAL` intent to CTI relational queries
-  (e.g., "what infrastructure does APT28 use?") because FACTUAL keywords
-  (`apt`, `threat`, `malware`) matched before any RELATIONAL keyword
-  could score. With `FACTUAL` policy setting `graph=0.0`, the
-  `BlendedRetriever` silently multiplied all graph results by zero.
-  Two changes fix this:
-  - `FACTUAL` policy `graph` weight raised from `0.0` to `0.2`, so
-    graph results contribute to factual queries that span a graph hop.
-  - `RELATIONAL` keyword list expanded to cover CTI query patterns:
-    `what infrastructure`, `which campaigns`, `show relationships`,
-    `associated indicators`, `relationships between`, `targets`,
-    `attributed to`, `linked with`, `campaigns by`, `infrastructure
-    used`. These patterns now correctly score as RELATIONAL before
-    FACTUAL keywords can dominate.
-  See `tasks/graph-traversal-optimization.md` for root cause analysis
-  and the four-strategy roadmap for further improvements.
+- **Causal edges invisible to retrieval** — `store_causal_edges()` was not setting `edge_type="causal"` in properties, defaulting all causal edges to `"heuristic"`. `get_causal_edges()` filter found nothing.
+- **Alias resolution on causal triples** — Subjects and objects now resolved before storage, preventing duplicate graph nodes.
+- **Graph traversal blackout on relational queries** — FACTUAL intent was dominating CTI relational queries. Graph weight raised, RELATIONAL keywords expanded.
+- **LangChain test fixture** — `persist_directory` kwarg corrected to `jsonl_path`.
+- **Phantom governance controls removed** — GOV-006 (CODEOWNERS) and undocumented print() scan were in CI without spec backing.
 
-## [2.1.1] - Upcoming
+### Removed
+
+- One-off demo recording scripts (`record-demo-playwright.js`, `frames-to-gif.py`) — SafeSkill flagged filesystem operations.
+
+## [2.1.1] - 2026-04-15
 
 Production hardening release targeting P0 blockers identified in the
 2026-04-14 architecture review (5 P0 issues, conducted by 3 independent

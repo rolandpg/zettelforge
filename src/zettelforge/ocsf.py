@@ -22,7 +22,7 @@ from zettelforge.log import get_logger
 
 logger = get_logger("zettelforge.ocsf")
 
-_PRODUCT_VERSION = "2.1.1"
+_PRODUCT_VERSION = "2.2.0"
 
 # OCSF severity mapping
 SEVERITY_UNKNOWN = 0
