@@ -10,8 +10,9 @@ Give your AI agents persistent memory with entity extraction, knowledge graphs, 
 [![CI](https://github.com/rolandpg/zettelforge/actions/workflows/ci.yml/badge.svg)](https://github.com/rolandpg/zettelforge/actions)
 [![Version](https://img.shields.io/badge/version-2.1.1-green.svg)](https://github.com/rolandpg/zettelforge/releases)
 
-<!-- Demo GIF goes here -->
-<!-- <img src="docs/assets/demo.gif" width="800" alt="ZettelForge demo"> -->
+<p align="center">
+  <img src="docs/assets/demo.gif" width="720" alt="ZettelForge demo — CTI agentic memory in action">
+</p>
 
 ## Why ZettelForge?
 

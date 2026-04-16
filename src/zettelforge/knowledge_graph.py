@@ -18,6 +18,7 @@ import json
 import os
 import threading
 import uuid
+from collections import deque
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
@@ -266,6 +267,11 @@ class KnowledgeGraph:
 
             if existing:
                 if properties:
+                    # Promote edge_type if a more specific type is provided
+                    # (fixes pre-upgrade causal edges stuck as "heuristic")
+                    new_edge_type = properties.pop("edge_type", None)
+                    if new_edge_type and existing.get("edge_type") == "heuristic":
+                        existing["edge_type"] = new_edge_type
                     existing["properties"].update(properties)
                     existing["updated_at"] = datetime.now().isoformat()
                     self._append_jsonl(self.edges_file, existing)
@@ -380,17 +386,17 @@ class KnowledgeGraph:
     def get_causal_edges(
         self, entity_type: str, entity_value: str, max_depth: int = 3, max_visited: int = 50
     ) -> List[Dict]:
-        """Get causal edges reachable from an entity, with BFS cap."""
+        """BFS over OUTGOING causal edges — traces forward from cause to effects."""
         node_id = self._node_index.get(entity_type, {}).get(entity_value.lower())
         if not node_id:
             return []
 
         visited: set = set()
-        queue = [(node_id, 0)]
+        bfs_queue = deque([(node_id, 0)])
         causal_edges = []
 
-        while queue and len(visited) < max_visited:
-            current_id, depth = queue.pop(0)
+        while bfs_queue and len(visited) < max_visited:
+            current_id, depth = bfs_queue.popleft()
             if depth > max_depth or current_id in visited:
                 continue
             visited.add(current_id)
@@ -400,7 +406,34 @@ class KnowledgeGraph:
                     causal_edges.append(edge)
                     to_id = edge["to_node_id"]
                     if to_id not in visited:
-                        queue.append((to_id, depth + 1))
+                        bfs_queue.append((to_id, depth + 1))
+
+        return causal_edges
+
+    def get_incoming_causal(
+        self, entity_type: str, entity_value: str, max_depth: int = 3, max_visited: int = 50
+    ) -> List[Dict]:
+        """BFS over INCOMING causal edges — traces back to root causes ('why' queries)."""
+        node_id = self._node_index.get(entity_type, {}).get(entity_value.lower())
+        if not node_id:
+            return []
+
+        visited: set = set()
+        bfs_queue = deque([(node_id, 0)])
+        causal_edges = []
+
+        while bfs_queue and len(visited) < max_visited:
+            current_id, depth = bfs_queue.popleft()
+            if depth > max_depth or current_id in visited:
+                continue
+            visited.add(current_id)
+
+            for edge in self._edges_to.get(current_id, []):
+                if edge.get("edge_type") == "causal":
+                    causal_edges.append(edge)
+                    from_id = edge["from_node_id"]
+                    if from_id not in visited:
+                        bfs_queue.append((from_id, depth + 1))
 
         return causal_edges
 

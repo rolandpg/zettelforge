@@ -467,17 +467,35 @@ class MemoryManager:
             results = vector_results[:k]
 
         # Causal retrieval boost: traverse causal edges when intent is CAUSAL
-        if intent.value == "causal" and hasattr(kg, "get_causal_edges"):
+        if intent.value == "causal":
             result_ids_causal = {n.id for n in results}
             for etype, elist in resolved.items():
                 for evalue in elist:
-                    causal_edges = kg.get_causal_edges(etype, evalue, max_depth=3, max_visited=50)
-                    for edge in causal_edges:
-                        to_node = kg._nodes.get(edge.get("to_node_id"))
-                        if to_node and to_node.get("entity_type") == "note":
-                            note_id = to_node.get("entity_value")
-                            note = self.store.get_note_by_id(note_id)
-                            if note and note.id not in result_ids_causal:
+                    # Forward (what does X cause?) + backward (why did X happen?)
+                    all_causal = []
+                    if hasattr(kg, "get_causal_edges"):
+                        all_causal.extend(
+                            kg.get_causal_edges(etype, evalue, max_depth=3, max_visited=50)
+                        )
+                    if hasattr(kg, "get_incoming_causal"):
+                        all_causal.extend(
+                            kg.get_incoming_causal(etype, evalue, max_depth=3, max_visited=50)
+                        )
+                    for edge in all_causal:
+                        # Check both endpoints for note references
+                        for endpoint in ("to_node_id", "from_node_id"):
+                            node = kg._nodes.get(edge.get(endpoint))
+                            if node and node.get("entity_type") == "note":
+                                nid = node.get("entity_value")
+                                note = self.store.get_note_by_id(nid)
+                                if note and note.id not in result_ids_causal:
+                                    results.append(note)
+                                    result_ids_causal.add(note.id)
+                        # Also pull notes via the edge's source note_id
+                        src_note_id = edge.get("properties", {}).get("note_id", "")
+                        if src_note_id and src_note_id not in result_ids_causal:
+                            note = self.store.get_note_by_id(src_note_id)
+                            if note:
                                 results.append(note)
                                 result_ids_causal.add(note.id)
 
@@ -872,27 +890,44 @@ class MemoryManager:
         kg.add_edge(from_type, from_value, to_type, to_value, relationship, properties or {})
 
     def provenance_chain(
-        self, entity_type: str, entity_value: str, max_depth: int = 3
+        self,
+        entity_type: str,
+        entity_value: str,
+        max_depth: int = 3,
+        direction: str = "forward",
     ) -> List[Dict]:
         """Trace causal provenance chain from an entity.
 
+        Args:
+            direction: "forward" = what does X cause/enable? (outgoing causal edges)
+                       "backward" = why did X happen? (incoming causal edges)
+
         Returns list of steps:
             [{from_entity, relationship, to_entity, edge_type, note_id}]
-
-        Requires community KnowledgeGraph with get_causal_edges().
-        Returns empty list if the backend does not support causal traversal.
         """
         kg = get_knowledge_graph()
         canonical = self.resolver.resolve(entity_type, entity_value)
 
-        if not hasattr(kg, "get_causal_edges"):
+        if direction not in ("forward", "backward"):
+            raise ValueError(f"direction must be 'forward' or 'backward', got '{direction}'")
+
+        if direction == "backward":
+            if hasattr(kg, "get_incoming_causal"):
+                causal_edges = kg.get_incoming_causal(entity_type, canonical, max_depth=max_depth)
+            else:
+                self._logger.info(
+                    "provenance_chain_unsupported",
+                    reason="KG backend lacks get_incoming_causal",
+                )
+                return []
+        elif hasattr(kg, "get_causal_edges"):
+            causal_edges = kg.get_causal_edges(entity_type, canonical, max_depth=max_depth)
+        else:
             self._logger.info(
                 "provenance_chain_unsupported",
-                reason="KG backend lacks get_causal_edges",
+                reason="KG backend lacks causal traversal",
             )
             return []
-
-        causal_edges = kg.get_causal_edges(entity_type, canonical, max_depth=max_depth)
 
         chain = []
         for edge in causal_edges:

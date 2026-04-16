@@ -12,6 +12,7 @@ import re
 from datetime import datetime
 from typing import Dict, List
 
+from zettelforge.alias_resolver import AliasResolver
 from zettelforge.json_parse import extract_json
 from zettelforge.log import get_logger
 
@@ -171,6 +172,7 @@ JSON:"""
             return 0
 
         kg = get_knowledge_graph()
+        resolver = AliasResolver()
         edges_added = 0
 
         for triple in triples:
@@ -184,13 +186,21 @@ JSON:"""
                     from_type = self._infer_entity_type(subject)
                     to_type = self._infer_entity_type(obj)
 
+                    # Resolve aliases before storing to prevent duplicate nodes
+                    subject = resolver.resolve(from_type, subject)
+                    obj = resolver.resolve(to_type, obj)
+
                     kg.add_edge(
                         from_type=from_type,
                         from_value=subject,
                         to_type=to_type,
                         to_value=obj,
                         relationship=relation,
-                        properties={"note_id": note_id, "source": "llm_extraction"},
+                        properties={
+                            "note_id": note_id,
+                            "source": "llm_extraction",
+                            "edge_type": "causal",
+                        },
                     )
                     edges_added += 1
                 except Exception as e:

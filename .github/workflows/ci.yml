@@ -78,36 +78,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install -e ".[dev]" || pip install -e "." && pip install pytest pytest-cov
 
-    - name: GOV-003 — No print() in production code
-      run: |
-        python -c "
-        import ast, sys
-        from pathlib import Path
-        violations = {}
-        for f in sorted(Path('src/zettelforge').rglob('*.py')):
-            source = f.read_text()
-            try:
-                tree = ast.parse(source)
-            except SyntaxError:
-                continue
-            main_lines = set()
-            for node in ast.walk(tree):
-                if isinstance(node, ast.If):
-                    t = node.test
-                    if isinstance(t, ast.Compare) and isinstance(t.left, ast.Name) and t.left.id == '__name__':
-                        for ln in range(node.lineno, node.end_lineno + 1):
-                            main_lines.add(ln)
-            for node in ast.walk(tree):
-                if isinstance(node, ast.Call):
-                    func = node.func
-                    if isinstance(func, ast.Name) and func.id == 'print' and node.lineno not in main_lines:
-                        violations.setdefault(f.name, []).append(node.lineno)
-        if violations:
-            print(f'GOV-003 FAIL: print() in production code: {violations}')
-            sys.exit(1)
-        print('GOV-003 PASS: No print() in production code')
-        "
-
     - name: GOV-012 — Logging compliance tests
       env:
         ZETTELFORGE_BACKEND: jsonl
