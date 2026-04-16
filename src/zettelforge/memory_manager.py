@@ -18,12 +18,12 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
 
 from zettelforge.alias_resolver import AliasResolver
+from zettelforge.backend_factory import get_storage_backend
 from zettelforge.consolidation import ConsolidationMiddleware
 from zettelforge.entity_indexer import EntityIndexer
 from zettelforge.extensions import has_extension
 from zettelforge.fact_extractor import FactExtractor
 from zettelforge.governance_validator import GovernanceValidator, GovernanceViolationError
-from zettelforge.knowledge_graph import get_knowledge_graph
 from zettelforge.log import get_logger
 from zettelforge.memory_store import MemoryStore, get_default_data_dir
 from zettelforge.memory_updater import MemoryUpdater
@@ -74,10 +74,30 @@ class MemoryManager:
     """
 
     def __init__(self, jsonl_path: Optional[str] = None, lance_path: Optional[str] = None):
-        self.store = MemoryStore(jsonl_path=jsonl_path, lance_path=lance_path)
-        self.constructor = NoteConstructor()
+        # Derive data_dir from jsonl_path if provided (tests pass custom paths)
+        _data_dir = None
+        if jsonl_path:
+            from pathlib import Path
+
+            _data_dir = str(Path(jsonl_path).parent)
+
+        # Primary storage: SQLite backend for notes, KG, and entities
+        self.store = get_storage_backend(data_dir=_data_dir)
+        self.store.initialize()
+
+        # Backward-compat alias: callers (evolver, updater, consolidation) use
+        # store._rewrite_note() -- delegate to the public rewrite_note() method.
+        if not hasattr(self.store, "_rewrite_note"):
+            self.store._rewrite_note = self.store.rewrite_note
+
+        # LanceDB access: keep a MemoryStore for vector indexing only
+        self._lance_store = MemoryStore(jsonl_path=jsonl_path, lance_path=lance_path)
+
+        # Legacy EntityIndexer kept for extractor, stats(), and build() compatibility
         self.indexer = EntityIndexer()
-        self.retriever = VectorRetriever(memory_store=self.store)
+
+        self.constructor = NoteConstructor()
+        self.retriever = VectorRetriever(memory_store=self._lance_store)
         self.governance = GovernanceValidator()
         self.resolver = AliasResolver()
         self.consolidation = ConsolidationMiddleware(self)
@@ -100,6 +120,7 @@ class MemoryManager:
         )
         self._enrichment_worker.start()
         atexit.register(self._drain_enrichment_queue)
+        atexit.register(self.store.close)
 
     def remember(
         self,
@@ -196,6 +217,13 @@ class MemoryManager:
         self.store.write_note(note)
         self.stats["notes_created"] += 1
 
+        # Keep LanceDB in sync for vector retrieval
+        if self._lance_store.lancedb is not None:
+            try:
+                self._lance_store._index_in_lance(note)
+            except Exception:
+                self._logger.warning("lance_index_sync_failed", note_id=note.id, exc_info=True)
+
         # Alias resolution and indexing (regex-only for speed; LLM NER runs on recall)
         raw_entities = self.indexer.extractor.extract_all(note.content.raw, use_llm=False)
 
@@ -204,6 +232,11 @@ class MemoryManager:
             resolved_entities[etype] = [self.resolver.resolve(etype, e) for e in elist]
 
         self.indexer.add_note(note.id, resolved_entities)
+
+        # Write entity mappings to SQLite backend
+        for etype, elist in resolved_entities.items():
+            for evalue in elist:
+                self.store.add_entity_mapping(etype, evalue, note.id)
 
         # GAM consolidation: observe note for semantic shift detection
         try:
@@ -467,6 +500,7 @@ class MemoryManager:
         # Blended retrieval: combine vector similarity with graph traversal
         from zettelforge.blended_retriever import BlendedRetriever
         from zettelforge.graph_retriever import GraphRetriever
+        from zettelforge.knowledge_graph import get_knowledge_graph
 
         kg = get_knowledge_graph()
         graph_retriever = GraphRetriever(kg)
@@ -492,18 +526,16 @@ class MemoryManager:
                 for evalue in elist:
                     # Forward (what does X cause?) + backward (why did X happen?)
                     all_causal = []
-                    if hasattr(kg, "get_causal_edges"):
-                        all_causal.extend(
-                            kg.get_causal_edges(etype, evalue, max_depth=3, max_visited=50)
-                        )
-                    if hasattr(kg, "get_incoming_causal"):
-                        all_causal.extend(
-                            kg.get_incoming_causal(etype, evalue, max_depth=3, max_visited=50)
-                        )
+                    all_causal.extend(
+                        self.store.get_causal_edges(etype, evalue, max_depth=3, max_visited=50)
+                    )
+                    all_causal.extend(
+                        self.store.get_incoming_causal(etype, evalue, max_depth=3, max_visited=50)
+                    )
                     for edge in all_causal:
                         # Check both endpoints for note references
                         for endpoint in ("to_node_id", "from_node_id"):
-                            node = kg._nodes.get(edge.get(endpoint))
+                            node = self.store.get_kg_node_by_id(edge.get(endpoint, ""))
                             if node and node.get("entity_type") == "note":
                                 nid = node.get("entity_value")
                                 note = self.store.get_note_by_id(nid)
@@ -582,7 +614,10 @@ class MemoryManager:
         entity_type: 'cve', 'actor', 'tool', 'campaign', 'person', 'location', 'organization', 'event', 'activity', 'temporal'
         """
         self.stats["entity_index_hits"] += 1
-        note_ids = self.indexer.get_note_ids(entity_type, entity_value.lower())
+        note_ids = self.store.get_note_ids_for_entity(entity_type, entity_value.lower())
+        # Fall back to legacy JSON indexer if backend returns nothing
+        if not note_ids:
+            note_ids = self.indexer.get_note_ids(entity_type, entity_value.lower())
         notes = []
         for nid in note_ids[:k]:
             note = self.store.get_note_by_id(nid)
@@ -634,12 +669,11 @@ class MemoryManager:
         }
 
     def _update_knowledge_graph(self, note: MemoryNote, resolved_entities: Dict[str, List[str]]):
-        kg = get_knowledge_graph()
         now = datetime.now().isoformat()
         edge_props = {"first_observed": now, "confidence": note.metadata.confidence}
 
         # 1. Add Note node
-        kg.add_node(
+        self.store.add_kg_node(
             "note", note.id, {"content": note.content.raw[:200], "domain": note.metadata.domain}
         )
 
@@ -648,7 +682,9 @@ class MemoryManager:
         for etype, elist in resolved_entities.items():
             for evalue in elist:
                 all_entities.append((etype, evalue))
-                kg.add_edge(etype, evalue, "note", note.id, "MENTIONED_IN", edge_props)
+                self.store.add_kg_edge(
+                    etype, evalue, "note", note.id, "MENTIONED_IN", properties=edge_props
+                )
 
         # 3. Inferred Entity-to-Entity Relationships (Heuristic)
 
@@ -661,28 +697,38 @@ class MemoryManager:
 
         for a in actors:
             for t in tools:
-                kg.add_edge("actor", a, "tool", t, "USES_TOOL", edge_props)
+                self.store.add_kg_edge("actor", a, "tool", t, "USES_TOOL", properties=edge_props)
             for c in cves:
-                kg.add_edge("actor", a, "cve", c, "EXPLOITS_CVE", edge_props)
+                self.store.add_kg_edge("actor", a, "cve", c, "EXPLOITS_CVE", properties=edge_props)
             for asset in assets:
-                kg.add_edge("actor", a, "asset", asset, "TARGETS_ASSET", edge_props)
+                self.store.add_kg_edge(
+                    "actor", a, "asset", asset, "TARGETS_ASSET", properties=edge_props
+                )
             for camp in campaigns:
-                kg.add_edge("actor", a, "campaign", camp, "CONDUCTS_CAMPAIGN", edge_props)
+                self.store.add_kg_edge(
+                    "actor", a, "campaign", camp, "CONDUCTS_CAMPAIGN", properties=edge_props
+                )
 
         for t in tools:
             for asset in assets:
-                kg.add_edge("tool", t, "asset", asset, "TARGETS_ASSET", edge_props)
+                self.store.add_kg_edge(
+                    "tool", t, "asset", asset, "TARGETS_ASSET", properties=edge_props
+                )
             for c in cves:
-                kg.add_edge("tool", t, "cve", c, "EXPLOITS_CVE", edge_props)
+                self.store.add_kg_edge("tool", t, "cve", c, "EXPLOITS_CVE", properties=edge_props)
 
         attack_patterns = resolved_entities.get("attack_pattern", [])
         for a in actors:
             for ap in attack_patterns:
-                kg.add_edge("actor", a, "attack_pattern", ap, "USES_TECHNIQUE", edge_props)
+                self.store.add_kg_edge(
+                    "actor", a, "attack_pattern", ap, "USES_TECHNIQUE", properties=edge_props
+                )
         malwares = resolved_entities.get("malware", [])
         for m in malwares:
             for ap in attack_patterns:
-                kg.add_edge("malware", m, "attack_pattern", ap, "IMPLEMENTS", edge_props)
+                self.store.add_kg_edge(
+                    "malware", m, "attack_pattern", ap, "IMPLEMENTS", properties=edge_props
+                )
 
         # --- Conversational relationships (RFC-001) ---
         persons = resolved_entities.get("person", [])
@@ -694,25 +740,39 @@ class MemoryManager:
 
         for p in persons:
             for org in organizations:
-                kg.add_edge("person", p, "organization", org, "AFFILIATED_WITH", edge_props)
+                self.store.add_kg_edge(
+                    "person", p, "organization", org, "AFFILIATED_WITH", properties=edge_props
+                )
             for ev in events:
-                kg.add_edge("person", p, "event", ev, "ATTENDED", edge_props)
+                self.store.add_kg_edge("person", p, "event", ev, "ATTENDED", properties=edge_props)
             for loc in locations:
-                kg.add_edge("person", p, "location", loc, "LOCATED_AT", edge_props)
+                self.store.add_kg_edge(
+                    "person", p, "location", loc, "LOCATED_AT", properties=edge_props
+                )
             for act in activities:
-                kg.add_edge("person", p, "activity", act, "PARTICIPATES_IN", edge_props)
+                self.store.add_kg_edge(
+                    "person", p, "activity", act, "PARTICIPATES_IN", properties=edge_props
+                )
 
         for ev in events:
             for loc in locations:
-                kg.add_edge("event", ev, "location", loc, "HELD_AT", edge_props)
+                self.store.add_kg_edge(
+                    "event", ev, "location", loc, "HELD_AT", properties=edge_props
+                )
             for org in organizations:
-                kg.add_edge("event", ev, "organization", org, "ORGANIZED_BY", edge_props)
+                self.store.add_kg_edge(
+                    "event", ev, "organization", org, "ORGANIZED_BY", properties=edge_props
+                )
             for tmp in temporals:
-                kg.add_edge("event", ev, "temporal", tmp, "OCCURRED_ON", edge_props)
+                self.store.add_kg_edge(
+                    "event", ev, "temporal", tmp, "OCCURRED_ON", properties=edge_props
+                )
 
         for org in organizations:
             for loc in locations:
-                kg.add_edge("organization", org, "location", loc, "BASED_IN", edge_props)
+                self.store.add_kg_edge(
+                    "organization", org, "location", loc, "BASED_IN", properties=edge_props
+                )
 
         # NOTE: LLM causal triple extraction moved to _run_enrichment() (slow path)
 
@@ -748,7 +808,7 @@ class MemoryManager:
         try:
             triples = self.constructor.extract_causal_triples(note.content.raw, note.id)
             if triples:
-                edges = self.constructor.store_causal_edges(triples, note.id)
+                edges = self.constructor.store_causal_edges(triples, note.id, backend=self.store)
                 self._logger.info(
                     "causal_triples_stored", note_id=note.id, triples=len(triples), edges=edges
                 )
@@ -845,15 +905,15 @@ class MemoryManager:
         if note_id not in new_note.links.supersedes:
             new_note.links.supersedes.append(note_id)
 
-        self.store._rewrite_note(old_note)
-        self.store._rewrite_note(new_note)
+        self.store.rewrite_note(old_note)
+        self.store.rewrite_note(new_note)
 
         # Remove superseded note from entity index so recall_entity() won't return it
         self.indexer.remove_note(note_id)
+        self.store.remove_entity_mappings_for_note(note_id)
 
         # Add temporal edge to knowledge graph (Task 2)
-        kg = get_knowledge_graph()
-        kg.add_temporal_edge(
+        self.store.add_temporal_edge(
             from_type="note",
             from_value=superseded_by_id,
             to_type="note",
@@ -896,7 +956,10 @@ class MemoryManager:
         candidate_overlap: Dict[str, int] = {}
         for key in _entity_keys:
             for evalue in new_entities[key]:
-                for nid in self.indexer.get_note_ids(key, evalue):
+                nids = self.store.get_note_ids_for_entity(key, evalue)
+                if not nids:
+                    nids = self.indexer.get_note_ids(key, evalue)
+                for nid in nids:
                     if nid == new_note.id:
                         continue
                     candidate_overlap[nid] = candidate_overlap.get(nid, 0) + 1
@@ -973,6 +1036,17 @@ class MemoryManager:
             relationship: Relationship label (e.g. "USES_TOOL", "TARGETS_ASSET").
             properties: Optional dict of edge properties (confidence, timestamps, …).
         """
+        self.store.add_kg_edge(
+            from_type,
+            from_value,
+            to_type,
+            to_value,
+            relationship,
+            properties=properties or {},
+        )
+        # Also write to legacy JSONL KG for backward compatibility
+        from zettelforge.knowledge_graph import get_knowledge_graph
+
         kg = get_knowledge_graph()
         kg.add_edge(from_type, from_value, to_type, to_value, relationship, properties or {})
 
@@ -992,34 +1066,22 @@ class MemoryManager:
         Returns list of steps:
             [{from_entity, relationship, to_entity, edge_type, note_id}]
         """
-        kg = get_knowledge_graph()
         canonical = self.resolver.resolve(entity_type, entity_value)
 
         if direction not in ("forward", "backward"):
             raise ValueError(f"direction must be 'forward' or 'backward', got '{direction}'")
 
         if direction == "backward":
-            if hasattr(kg, "get_incoming_causal"):
-                causal_edges = kg.get_incoming_causal(entity_type, canonical, max_depth=max_depth)
-            else:
-                self._logger.info(
-                    "provenance_chain_unsupported",
-                    reason="KG backend lacks get_incoming_causal",
-                )
-                return []
-        elif hasattr(kg, "get_causal_edges"):
-            causal_edges = kg.get_causal_edges(entity_type, canonical, max_depth=max_depth)
-        else:
-            self._logger.info(
-                "provenance_chain_unsupported",
-                reason="KG backend lacks causal traversal",
+            causal_edges = self.store.get_incoming_causal(
+                entity_type, canonical, max_depth=max_depth
             )
-            return []
+        else:
+            causal_edges = self.store.get_causal_edges(entity_type, canonical, max_depth=max_depth)
 
         chain = []
         for edge in causal_edges:
-            from_node = kg._nodes.get(edge.get("from_node_id"), {})
-            to_node = kg._nodes.get(edge.get("to_node_id"), {})
+            from_node = self.store.get_kg_node_by_id(edge.get("from_node_id", "")) or {}
+            to_node = self.store.get_kg_node_by_id(edge.get("to_node_id", "")) or {}
             chain.append(
                 {
                     "from_entity": (
@@ -1035,12 +1097,10 @@ class MemoryManager:
 
     def get_entity_relationships(self, entity_type: str, entity_value: str) -> List[Dict]:
         """Get direct relationships for an entity from the knowledge graph."""
-        kg = get_knowledge_graph()
-
         # Resolve alias if necessary
         canonical = self.resolver.resolve(entity_type, entity_value)
 
-        return kg.get_neighbors(entity_type, canonical)
+        return self.store.get_kg_neighbors(entity_type, canonical)
 
     def traverse_graph(self, start_type: str, start_value: str, max_depth: int = 2) -> List[Dict]:
         """Traverse relationships from a starting entity.
@@ -1055,10 +1115,9 @@ class MemoryManager:
                 max_depth=2,
                 reason="Install zettelforge-enterprise for deeper TypeDB traversal",
             )
-        kg = get_knowledge_graph()
         canonical = self.resolver.resolve(start_type, start_value)
 
-        return kg.traverse(start_type, canonical, max_depth)
+        return self.store.traverse_kg(start_type, canonical, max_depth)
 
     # === Phase 7: Synthesis Layer ===
 

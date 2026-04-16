@@ -163,15 +163,19 @@ JSON:"""
             _logger.warning("causal_extraction_failed", error=str(e))
             return []
 
-    def store_causal_edges(self, triples: List[Dict], note_id: str = "") -> int:
+    def store_causal_edges(self, triples: List[Dict], note_id: str = "", backend=None) -> int:
         """
         Store causal triples as edges in KnowledgeGraph.
         Returns number of edges added.
+
+        Args:
+            triples: List of causal triple dicts.
+            note_id: Source note ID for provenance.
+            backend: Optional StorageBackend; falls back to JSONL KG singleton.
         """
         if not triples:
             return 0
 
-        kg = get_knowledge_graph()
         resolver = AliasResolver()
         edges_added = 0
 
@@ -190,18 +194,32 @@ JSON:"""
                     subject = resolver.resolve(from_type, subject)
                     obj = resolver.resolve(to_type, obj)
 
-                    kg.add_edge(
-                        from_type=from_type,
-                        from_value=subject,
-                        to_type=to_type,
-                        to_value=obj,
-                        relationship=relation,
-                        properties={
-                            "note_id": note_id,
-                            "source": "llm_extraction",
-                            "edge_type": "causal",
-                        },
-                    )
+                    edge_props = {
+                        "note_id": note_id,
+                        "source": "llm_extraction",
+                        "edge_type": "causal",
+                    }
+
+                    if backend is not None:
+                        backend.add_kg_edge(
+                            from_type=from_type,
+                            from_value=subject,
+                            to_type=to_type,
+                            to_value=obj,
+                            relationship=relation,
+                            note_id=note_id,
+                            properties=edge_props,
+                        )
+                    else:
+                        kg = get_knowledge_graph()
+                        kg.add_edge(
+                            from_type=from_type,
+                            from_value=subject,
+                            to_type=to_type,
+                            to_value=obj,
+                            relationship=relation,
+                            properties=edge_props,
+                        )
                     edges_added += 1
                 except Exception as e:
                     _logger.warning(
