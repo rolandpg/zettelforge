@@ -694,8 +694,9 @@ def recall(
 
 recall:
   depth_routing:
-    # Master switch. When false, recall() runs System 1 only (current behavior).
-    enabled: true
+    # Master switch. Ships disabled by default; when false, recall() runs
+    # System 1 only (current behavior). Enable after telemetry validates rollout.
+    enabled: false
 
     quality_gate:
       # Threshold for routing to System 2. Range [0.0, 1.0].
