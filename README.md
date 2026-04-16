@@ -14,6 +14,9 @@ Give your AI agents persistent memory with entity extraction, knowledge graphs, 
 [![Last Commit](https://img.shields.io/github/last-commit/rolandpg/zettelforge)](https://github.com/rolandpg/zettelforge/commits/master)
 [![SafeSkill](https://safeskill.dev/api/badge/rolandpg-zettelforge)](https://safeskill.dev/scan/rolandpg-zettelforge)
 
+
+<a href="https://www.buymeacoffee.com/xypher22pr0" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-green.png" alt="Buy Me a Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
 <p align="center">
   <img src="docs/assets/demo.gif" width="720" alt="ZettelForge demo — CTI agentic memory in action">
 </p>
