@@ -180,7 +180,7 @@ def _row_to_note(row: sqlite3.Row) -> MemoryNote:
         evolved_from=r.get("evolved_from"),
         evolved_by=json.loads(r.get("evolved_by") or "[]"),
         content=Content(
-            raw=r["content_raw"],
+            raw=r["content_raw"] or "",
             source_type=r.get("content_source_type") or "conversation",
             source_ref=r.get("content_source_ref") or "",
             previous_raw=r.get("content_previous_raw"),
