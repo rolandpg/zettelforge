@@ -4,11 +4,6 @@
 
 Give your AI agents persistent memory with entity extraction, knowledge graphs, and STIX ontology -- no cloud, no API keys, works offline.
 
-<p align="center">
-  <a href="https://www.buymeacoffee.com/xypher22pr0">
-    <img src="https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&emoji=&slug=xypher22pr0&button_colour=40DCA5&font_colour=ffffff&font_family=Cookie&outline_colour=000000&coffee_colour=FFDD00" alt="Buy me a coffee">
-  </a>
-</p>
 
 [![PyPI](https://img.shields.io/pypi/v/zettelforge)](https://pypi.org/project/zettelforge/)
 [![Downloads](https://static.pepy.tech/badge/zettelforge)](https://pepy.tech/projects/zettelforge)
@@ -20,9 +15,9 @@ Give your AI agents persistent memory with entity extraction, knowledge graphs, 
 [![Last Commit](https://img.shields.io/github/last-commit/rolandpg/zettelforge)](https://github.com/rolandpg/zettelforge/commits/master)
 [![SafeSkill](https://safeskill.dev/api/badge/rolandpg-zettelforge)](https://safeskill.dev/scan/rolandpg-zettelforge)
 
-
+<p align="center">
 <a href="https://www.buymeacoffee.com/xypher22pr0" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-green.png" alt="Buy Me a Coffee" style="height: 60px !important;width: 217px !important;" ></a>
-
+</p>
 <p align="center">
   <img src="docs/assets/demo.gif" width="720" alt="ZettelForge demo — CTI agentic memory in action">
 </p>
