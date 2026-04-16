@@ -12,7 +12,7 @@
 
 ## Summary
 
-Introduce a **Quality Gate** on `recall()` that routes queries to one of two retrieval depths: **System 1** (the current blended-retrieval pipeline — fast, vector + graph + entity + reranker) or **System 2** (a new exhaustive-scan path with pre-filtering and temporal-chunk scoring). The gate is deterministic, LLM-free on the fast path, and uses heuristic signals derived from the already-computed intent classification, query entity extraction, and a single vector top-1 score probe. Per D-Mem (arXiv:2603.18631), routing ~3% of queries to System 2 recovers 96.7% of full-deliberation accuracy while preserving System 1 latency for the other 97%.
+Introduce a **Quality Gate** on `recall()` that routes queries to one of two retrieval depths: **System 1** (the current blended-retrieval pipeline — fast, vector + graph + entity + reranker) or **System 2** (a new exhaustive-scan path with pre-filtering and temporal-chunk scoring). The gate is deterministic, LLM-free on the fast path, and uses heuristic signals derived from the already-computed intent classification, query entity extraction, and explicit query markers. Per D-Mem (arXiv:2603.18631), routing ~3% of queries to System 2 recovers 96.7% of full-deliberation accuracy while preserving System 1 latency for the other 97%.
 
 The existing `intent_classifier.py` and `blended_retriever.py` are not modified. System 1 is the current `recall()` body, lifted behind an interface. System 2 is a new module built on ZettelForge's existing primitives (LanceDB, SQLite, fastembed, entity indexer) — no external dependencies.
 
