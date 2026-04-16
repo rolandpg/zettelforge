@@ -221,5 +221,54 @@ class TestIntentRouting:
         assert len(results) >= 1
 
 
+class TestCausalRetrieval:
+    """Test causal provenance chain retrieval."""
+
+    def test_provenance_chain_returns_list(self, temp_memory):
+        """provenance_chain() returns a list even with no causal edges."""
+        mm = MemoryManager(jsonl_path=f"{temp_memory}/notes.jsonl")
+        mm.remember("APT28 uses Cobalt Strike for C2", domain="security_ops")
+
+        chain = mm.provenance_chain("actor", "apt28")
+        assert isinstance(chain, list)
+
+    def test_provenance_chain_unknown_entity(self, temp_memory):
+        """provenance_chain() returns empty list for unknown entities."""
+        mm = MemoryManager(jsonl_path=f"{temp_memory}/notes.jsonl")
+
+        chain = mm.provenance_chain("actor", "nonexistent_actor_xyz")
+        assert chain == []
+
+
+class TestPersistenceFiltering:
+    """Test persistence semantics filtering in recall."""
+
+    def test_recall_filters_expired_by_default(self, temp_memory):
+        """recall() with include_expired=False does not crash."""
+        mm = MemoryManager(jsonl_path=f"{temp_memory}/notes.jsonl")
+        mm.remember("Test note about persistence", domain="security_ops")
+
+        results = mm.recall("persistence", include_expired=False)
+        # Fresh notes should not be expired, so all should be returned
+        assert isinstance(results, list)
+
+    def test_recall_include_expired_flag(self, temp_memory):
+        """recall() accepts include_expired parameter."""
+        mm = MemoryManager(jsonl_path=f"{temp_memory}/notes.jsonl")
+        mm.remember("Test note for expiry", domain="security_ops")
+
+        results_default = mm.recall("test")
+        results_with_expired = mm.recall("test", include_expired=True)
+        assert isinstance(results_default, list)
+        assert isinstance(results_with_expired, list)
+
+    def test_fresh_notes_not_expired(self, temp_memory):
+        """Freshly created notes should not be expired."""
+        mm = MemoryManager(jsonl_path=f"{temp_memory}/notes.jsonl")
+        note, _ = mm.remember("Fresh note about security", domain="security_ops")
+
+        assert not note.is_expired()
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

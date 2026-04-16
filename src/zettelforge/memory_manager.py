@@ -385,6 +385,7 @@ class MemoryManager:
         k: int = 10,
         include_links: bool = True,
         exclude_superseded: bool = True,
+        include_expired: bool = False,
     ) -> List[MemoryNote]:
         """
         Retrieve memories relevant to query using blended vector + graph retrieval.
@@ -465,6 +466,21 @@ class MemoryManager:
         if len(results) < len(vector_results):
             results = vector_results[:k]
 
+        # Causal retrieval boost: traverse causal edges when intent is CAUSAL
+        if intent.value == "causal" and hasattr(kg, "get_causal_edges"):
+            result_ids_causal = {n.id for n in results}
+            for etype, elist in resolved.items():
+                for evalue in elist:
+                    causal_edges = kg.get_causal_edges(etype, evalue, max_depth=3, max_visited=50)
+                    for edge in causal_edges:
+                        to_node = kg._nodes.get(edge.get("to_node_id"))
+                        if to_node and to_node.get("entity_type") == "note":
+                            note_id = to_node.get("entity_value")
+                            note = self.store.get_note_by_id(note_id)
+                            if note and note.id not in result_ids_causal:
+                                results.append(note)
+                                result_ids_causal.add(note.id)
+
         # Entity-augmented recall: also pull notes via entity index for query entities
         # This ensures multi-entity answers (e.g., "tools used by APT28") include all
         # relevant notes, not just the top-k by vector similarity
@@ -493,6 +509,14 @@ class MemoryManager:
         # Filter superseded notes
         if exclude_superseded:
             results = [n for n in results if not n.links.superseded_by]
+
+        # Filter expired notes (persistence semantics)
+        if not include_expired:
+            pre_filter_count = len(results)
+            results = [n for n in results if not n.is_expired()]
+            filtered_count = pre_filter_count - len(results)
+            if filtered_count > 0:
+                self._logger.info("expired_notes_filtered", count=filtered_count, query=query[:50])
 
         # Cap at k after entity augmentation and reranking
         results = results[:k]
@@ -846,6 +870,46 @@ class MemoryManager:
         """
         kg = get_knowledge_graph()
         kg.add_edge(from_type, from_value, to_type, to_value, relationship, properties or {})
+
+    def provenance_chain(
+        self, entity_type: str, entity_value: str, max_depth: int = 3
+    ) -> List[Dict]:
+        """Trace causal provenance chain from an entity.
+
+        Returns list of steps:
+            [{from_entity, relationship, to_entity, edge_type, note_id}]
+
+        Requires community KnowledgeGraph with get_causal_edges().
+        Returns empty list if the backend does not support causal traversal.
+        """
+        kg = get_knowledge_graph()
+        canonical = self.resolver.resolve(entity_type, entity_value)
+
+        if not hasattr(kg, "get_causal_edges"):
+            self._logger.info(
+                "provenance_chain_unsupported",
+                reason="KG backend lacks get_causal_edges",
+            )
+            return []
+
+        causal_edges = kg.get_causal_edges(entity_type, canonical, max_depth=max_depth)
+
+        chain = []
+        for edge in causal_edges:
+            from_node = kg._nodes.get(edge.get("from_node_id"), {})
+            to_node = kg._nodes.get(edge.get("to_node_id"), {})
+            chain.append(
+                {
+                    "from_entity": (
+                        f"{from_node.get('entity_type')}:{from_node.get('entity_value')}"
+                    ),
+                    "relationship": edge.get("relationship"),
+                    "to_entity": (f"{to_node.get('entity_type')}:{to_node.get('entity_value')}"),
+                    "edge_type": edge.get("edge_type", "unknown"),
+                    "note_id": edge.get("properties", {}).get("note_id", ""),
+                }
+            )
+        return chain
 
     def get_entity_relationships(self, entity_type: str, entity_value: str) -> List[Dict]:
         """Get direct relationships for an entity from the knowledge graph."""
