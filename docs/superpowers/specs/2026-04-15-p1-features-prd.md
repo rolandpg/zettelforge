@@ -18,6 +18,32 @@ shippable and ordered by dependency: SQLite migration has no blockers, causal gr
 and memory evolution can proceed in parallel after it, and persistence semantics
 layers on top of the evolved schema.
 
+## Research Update: Nexus Synthesis
+
+Nexus research completed through 2026-04-16 does not invalidate the P1 direction,
+but it raises the proof bar. ZettelForge must be specified as a **CTI memory
+quality system**, not only a feature bundle. CTIBench and CTI-REALM validate
+downstream CTI task quality, while LoCoMo validates conversational memory; none
+of them prove that CTI memory remains correct, current, governed, and explainable
+over time.
+
+This PRD therefore adds two cross-cutting requirements:
+
+1. **CTI-MEM validation.** Before differentiated claims ship, ZettelForge must
+   pass a CTI-specific memory benchmark covering IOC preservation, TTP temporal
+   accuracy, attribution confidence decay, memory-state transition correctness,
+   consolidation precision, prospective recall, and memory-vs-full-context
+   saturation delta.
+2. **External claim gating.** Documentation and launch copy may only claim
+   temporal reasoning, causal reasoning, multi-hop traversal, alias resolution,
+   or synthesis quality after regression-scale tests pass for that capability.
+
+The April 8 benchmark and later fix-status reports conflict: the benchmark found
+major failures in temporal reasoning, multi-hop traversal, synthesis, and ingest
+scale, while the later fix report passed a smaller 38-note verification set. The
+spec treats those fixes as promising but not sufficient. Regression-scale proof is
+required before public claims.
+
 ---
 
 ## Dependency Map
@@ -31,11 +57,14 @@ SQLite Migration (no deps)
     |
     +---> CTIBench ATE Fix (no deps -- pure recall parameter tuning)
     |
+    +---> CTI-MEM Benchmark (depends on representative corpus + stable storage)
+    |
     +---> Persistence Semantics (needs schema field; ideally after SQLite migration)
 ```
 
 Recommended build order: SQLite Migration -> Causal Graph -> Memory Evolution ->
-Persistence Semantics -> CTIBench ATE Fix (can slot in anywhere as a 2-hour task).
+Persistence Semantics -> CTI-MEM Benchmark -> CTIBench ATE Fix (can slot in
+anywhere as a tactical task).
 
 ---
 
@@ -401,25 +430,29 @@ capability for agentic memory systems.
 
 ### Solution
 
-After creating a new note, find the top-k most similar existing notes and use an
-LLM to decide whether each neighbor should be evolved (updated in-place) based
-on the new information.
+After creating a new note, find the top-k most similar existing notes and use a
+governed LLM decision to decide whether each neighbor should be evolved
+(updated in-place), buffered for later corroboration, ignored, or left unchanged.
+Evolution is not allowed to promote unverified CTI into permanent memory.
 
 **Flow:**
 
 ```
 remember(content) -> note_created
     |
-    +-> evolve_neighbors(new_note)
+    +-> govern_and_evolve_neighbors(new_note)
          |
          +-> vector_search(new_note.embedding, k=5, exclude=new_note.id)
          |
          +-> for each neighbor:
          |     LLM prompt: "Given NEW information and EXISTING note,
-         |                  should the existing note be updated?
-         |                  Return: {action: 'evolve'|'keep', updated_content: ...}"
+         |                  should the existing note be updated, buffered,
+         |                  ignored, or kept?
+         |                  Return: {action: 'evolve'|'buffer'|'ignore'|'keep',
+         |                           updated_content: ..., provenance_required: ...}"
          |
          +-> if action == 'evolve':
+              verify provenance + confidence gate
                neighbor.content.raw = updated_content
                neighbor.updated_at = now
                neighbor.increment_evolution(new_note.id)
@@ -437,6 +470,8 @@ remember(content) -> note_created
   can disable it for benchmarking or resource-constrained environments.
 - As an operator, I want to see which notes were evolved and by what trigger so
   that I can audit the chain of changes.
+- As a CTI operator, I want incomplete or uncorroborated threat reports buffered
+  rather than consolidated so that memory poisoning does not become permanent.
 
 ### Acceptance Criteria
 
@@ -462,6 +497,14 @@ remember(content) -> note_created
       HeadLace and `evolution_count == 1`.
 - [ ] Evolution prompt includes a `keep` option -- not every neighbor should be
       updated. LLM must justify with `reason` field.
+- [ ] Evolution prompt includes `buffer` and `ignore` options. `buffer` stores
+      incomplete or uncorroborated CTI as non-permanent pending memory; `ignore`
+      drops low-value IOC chatter from evolution.
+- [ ] Permanent evolution requires provenance: `source_ref`, `source_type`,
+      `confidence`, and at least one evidence note ID for wisdom/intelligence
+      updates.
+- [ ] Memory poisoning test: contradictory low-confidence CTI must not overwrite
+      a higher-confidence permanent note.
 - [ ] Maximum evolution depth: a note evolved in this cycle is not eligible to
       trigger further evolution (no cascading).
 - [ ] Evolution events are logged via structlog with note IDs, action, and reason.
@@ -571,7 +614,11 @@ Return JSON:
 ### Problem
 
 The CTIBench Attack Technique Extraction (ATE) benchmark scores **F1=0.0**. This
-is caused by 4 compounding failures, not a fundamental architecture issue:
+is caused by 4 compounding failures, not a fundamental architecture issue. Nexus
+research also shows that CTIBench ATE is a tactical downstream-task benchmark,
+not proof of CTI memory quality. Passing ATE is useful, but it does not validate
+IOC preservation, temporal accuracy, attribution confidence, consolidation
+quality, or prospective reasoning.
 
 1. **Techniques not isolated in a queryable domain.** Attack patterns (MITRE
    T-codes) are stored as entities but there is no way to retrieve "all
@@ -662,6 +709,8 @@ Three targeted fixes, each addressing a specific failure mode:
 - ATE F1 >= 0.25 (target 0.30-0.40).
 - Other CTIBench subtask scores unchanged or improved.
 - RAGAS baseline updated with `--domain cti` scores.
+- Passing ATE does not unlock public claims about CTI memory quality. Those
+  claims require Feature 6 (CTI-MEM) regression results.
 
 ---
 
@@ -685,7 +734,10 @@ same decay behavior, and the same recall priority. This leads to:
 The `Metadata.tier` field (`A`/`B`/`C`) partially addresses this with
 epistemic tiers for consolidation, but it does not encode update rules or
 decay behavior. The Knowledge Layer paper (arXiv:2604.11364) formalizes this
-as four persistence classes.
+as four persistence classes. Nexus CTI-memory research adds an additional
+constraint: CTI facts need temporal validity and confidence decay, not just TTL.
+An old TTP, attribution, or IOC may remain historically true while no longer
+representing the current threat state.
 
 ### Solution
 
@@ -695,16 +747,27 @@ each encoding distinct lifecycle rules:
 | Semantic | Examples | TTL | Update Rule | Decay |
 |----------|----------|-----|-------------|-------|
 | `knowledge` | IOCs, TTP definitions, CVE records | Indefinite | Strict: only update with higher-confidence source | None |
-| `memory` | Analyst session notes, conversation context | 30-90 days default | Soft: any new information can update | Ebbinghaus-style (access resets) |
-| `wisdom` | Synthesized insights, trend analyses | Indefinite | Evidence-gated: requires 2+ supporting notes | None, but confidence decays if supporting notes are superseded |
-| `intelligence` | Reasoning context, intermediate steps | 7 days default | None (append-only, never evolve) | Hard TTL, auto-expire |
+| `memory` | Analyst session notes, conversation context | 90 days default | Soft: any new information can update | Access-reset TTL |
+| `wisdom` | Synthesized insights, trend analyses | Indefinite | Evidence-gated: requires new note + 1 existing evidence note | None, but confidence decays if supporting notes are superseded |
+| `intelligence` | Synthesized assessments | 180 days default | Versioned, keep history | Confidence decay, not hard delete |
+
+Additional CTI lifecycle fields:
+
+- `valid_from`: first date the claim applies.
+- `valid_until`: optional date after which the claim is no longer current.
+- `last_observed`: latest observation timestamp for time-sensitive CTI.
+- `source_confidence`: confidence assigned by the source.
+- `attribution_confidence`: confidence in actor attribution.
+- `source_reliability`: source trust bucket or numeric score.
+- `provenance_verified`: whether the note passed consolidation governance.
+- `decay_model`: lifecycle rule used for confidence decay.
 
 ### User Stories
 
 - As a CTI analyst agent, I want IOC notes to persist indefinitely and resist
   casual updates so that I can trust their accuracy.
-- As an operator, I want ephemeral reasoning steps to auto-expire after 7 days
-  so that they do not clutter future recall results.
+- As an operator, I want operational memory to expire by access-reset TTL so that
+  stale context does not clutter future recall results.
 - As a synthesis engine, I want insight notes to require evidence from multiple
   sources before being updated so that synthesized knowledge remains reliable.
 
@@ -712,6 +775,9 @@ each encoding distinct lifecycle rules:
 
 - [ ] `Metadata.persistence_semantics` field added to `MemoryNote` with type
       `Literal["knowledge", "memory", "wisdom", "intelligence"]`, default `"memory"`.
+- [ ] `Metadata` includes CTI lifecycle fields: `valid_from`, `valid_until`,
+      `last_observed`, `source_confidence`, `attribution_confidence`,
+      `source_reliability`, `provenance_verified`, and `decay_model`.
 - [ ] `NoteConstructor.construct()` infers `persistence_semantics` from
       `source_type` and `domain`:
   - `source_type="ingestion"` + `domain="cti"` -> `"knowledge"`
@@ -723,10 +789,17 @@ each encoding distinct lifecycle rules:
       `new_note.metadata.confidence >= existing.metadata.confidence`.
 - [ ] `memory` notes: `ttl=90` (default, configurable), access resets decay
       timer. Notes not accessed within TTL are excluded from `recall()`.
-- [ ] `wisdom` notes: `ttl=None`, evolution requires `evolved_by` list to
-      contain >= 2 distinct note IDs (evidence gate).
-- [ ] `intelligence` notes: `ttl=7` (default, configurable), never evolved
-      (skipped by `evolve_neighbors()`), excluded from recall after expiry.
+- [ ] `wisdom` notes: `ttl=None`, creation/evolution requires the new note plus
+      at least 1 existing evidence note ID. This is checked at creation time,
+      not via a retroactive `evolved_by` count.
+- [ ] `intelligence` notes: `ttl=180` (default, configurable), versioned on
+      update, excluded from current-state recall after expiry unless
+      `include_expired=True` or the query is historical.
+- [ ] Temporal recall distinguishes historical truth from current state. A note
+      with `valid_until` in the past may be returned for timeline queries but
+      not for "current TTP" queries unless explicitly requested.
+- [ ] Attribution recall surfaces `attribution_confidence` and does not treat
+      copied TTPs as actor attribution without supporting evidence.
 - [ ] `recall()` filters out expired notes (where `created_at + ttl < now`
       and `last_accessed + ttl < now` for memory-type).
 - [ ] Consolidation layer (`consolidation.py`) respects persistence semantics:
@@ -743,6 +816,14 @@ each encoding distinct lifecycle rules:
   - Add to `Metadata`:
     ```python
     persistence_semantics: str = "memory"  # knowledge | memory | wisdom | intelligence
+    valid_from: Optional[str] = None
+    valid_until: Optional[str] = None
+    last_observed: Optional[str] = None
+    source_confidence: Optional[float] = None
+    attribution_confidence: Optional[float] = None
+    source_reliability: Optional[str] = None
+    provenance_verified: bool = False
+    decay_model: Optional[str] = None
     ```
 
 - `src/zettelforge/note_constructor.py`:
@@ -753,15 +834,16 @@ each encoding distinct lifecycle rules:
 - `src/zettelforge/memory_evolution.py` (from Feature 3):
   - `_evaluate_evolution()`: Check neighbor's `persistence_semantics`:
     - `knowledge`: only evolve if new note confidence >= neighbor confidence.
-    - `wisdom`: only evolve if neighbor already has >= 2 entries in `evolved_by`.
-    - `intelligence`: skip entirely.
+    - `wisdom`: only evolve if the new note provides at least 1 existing
+      evidence note ID.
+    - `intelligence`: version rather than destructive rewrite.
     - `memory`: evolve freely (current behavior).
 
 - `src/zettelforge/memory_manager.py`:
   - `recall()`: Add TTL filter before returning results:
     ```python
     if note.metadata.persistence_semantics == "intelligence":
-        if _is_expired(note, default_ttl=7): continue
+        if _is_expired(note, default_ttl=180): continue
     elif note.metadata.persistence_semantics == "memory":
         if _is_expired(note, default_ttl=90): continue
     ```
@@ -772,7 +854,7 @@ each encoding distinct lifecycle rules:
     - `intelligence` -> never eligible.
 
 - SQLite migration (if landed): Add `meta_persistence_semantics TEXT DEFAULT
-  'memory'` column to `notes` table.
+  'memory'` column plus CTI lifecycle metadata columns to `notes` table.
 
 ### Dependencies
 
@@ -795,11 +877,92 @@ each encoding distinct lifecycle rules:
 ### Success Metrics
 
 - 100% of new notes have a non-empty `persistence_semantics` value.
-- `intelligence`-type notes are absent from recall results after 7 days.
+- `intelligence`-type notes are absent from current-state recall results after
+  180 days unless `include_expired=True` or the query is historical.
 - `knowledge`-type notes are never downgraded or expired.
-- `wisdom`-type notes with only 1 supporting source resist evolution attempts.
+- `wisdom`-type notes with no existing evidence note resist creation/evolution.
 - Recall result quality improves as ephemeral notes are filtered (measure via
   RAGAS context precision).
+
+---
+
+## Feature 6: CTI-MEM Benchmark and Claim Gating
+
+### Problem
+
+ZettelForge needs a benchmark that measures the thing it claims to be good at:
+long-lived CTI memory. Existing benchmarks leave a gap:
+
+- LoCoMo and LongMemEval measure conversational recall.
+- CTIBench and CTI-REALM measure downstream CTI task output.
+- Neither class measures whether memory preserves, updates, decays, and explains
+  CTI facts correctly over time.
+
+Without a CTI-memory benchmark, the project can pass useful task benchmarks while
+still failing its core product promise.
+
+### Solution
+
+Create `CTI-MEM`, a regression benchmark that feeds realistic CTI over time,
+inserts distractors/noise, then queries memory for current state, historical
+timeline, attribution, IOC preservation, consolidation correctness, and
+prospective reasoning.
+
+**Metrics:**
+
+| Metric | Purpose |
+|--------|---------|
+| IOC-Recall@K | Indicator preservation after N intervening insertions |
+| TTP-Temporal-Accuracy | Current vs historical TTP correctness |
+| Attribution-Confidence-F1 | Actor attribution with confidence decay |
+| Memory Levenshtein Distance (MLD) | Correctness of memory state transitions |
+| Consolidation-Precision | Governance gate false-positive rate |
+| Prospective-Recall | Forward-looking recall from prospective index |
+| Saturation-Delta | Benefit of memory over full-context baseline |
+
+### User Stories
+
+- As a maintainer, I want a CTI-memory regression suite so that feature work
+  cannot silently break temporal, causal, or attribution behavior.
+- As a product owner, I want public claims gated by passing benchmarks so that
+  docs and launch materials remain defensible.
+- As a CTI analyst, I want memory answers to distinguish "historically observed"
+  from "currently assessed" so that stale intelligence does not drive action.
+
+### Acceptance Criteria
+
+- [ ] `benchmarks/cti_mem/` contains a reproducible benchmark harness.
+- [ ] Benchmark corpus includes at least 3 actors, 5 malware/tools, 10 TTPs,
+      20 IOCs, temporal updates, contradictory reports, and noise insertions.
+- [ ] Harness runs write phase, temporal gap/noise phase, and read phase.
+- [ ] Harness compares ZettelForge against at least one baseline: full-context
+      retrieval or no-memory/vector-only retrieval.
+- [ ] Harness reports all 7 CTI-MEM metrics in JSON and Markdown.
+- [ ] CI or release checklist runs CTI-MEM before docs claim CTI memory quality.
+- [ ] Public docs can only claim a capability if its corresponding CTI-MEM or
+      regression metric passes.
+
+### Claim Gating Matrix
+
+| Claim | Required proof |
+|-------|----------------|
+| Alias resolution | Regression: `Fancy Bear -> APT28` and reverse lookup pass |
+| Temporal reasoning | CTI-MEM TTP-Temporal-Accuracy threshold passes |
+| Causal reasoning | Causal-chain regression returns ordered, sourced chain |
+| Multi-hop traversal | Actor->malware->campaign and sector->actor paths pass |
+| Synthesis quality | Grounded answer regression returns source-backed answer |
+| CTI memory quality | CTI-MEM overall report passes release threshold |
+
+### Effort Estimate
+
+**4-6 weeks** for corpus design, harness, baseline comparison, and regression
+reporting. A smaller smoke suite should land earlier to gate docs.
+
+### Success Metrics
+
+- CTI-MEM smoke suite runs in <10 minutes.
+- Full CTI-MEM suite produces stable JSON/Markdown reports.
+- Public documentation maps each differentiated claim to a passing test.
 
 ---
 
@@ -812,11 +975,16 @@ each encoding distinct lifecycle rules:
 | Memory Evolution | 3-4 | Benefits from SQLite | Causal Graph |
 | CTIBench ATE Fix | 0.5 | None | Everything |
 | Persistence Semantics | 2-3 | Soft dep on Evolution | Causal Graph |
+| CTI-MEM Benchmark | 20-30 | Stable storage + representative corpus | Docs/claim gating |
 
-**Total: 14-17.5 developer-days** (~3 weeks at sustainable pace).
+**Total: 34-47.5 developer-days** including CTI-MEM (~7-10 weeks at sustainable pace).
+The original P1 feature bundle remains 14-17.5 developer-days; CTI-MEM is the
+validation track required for external differentiated claims.
 
 **Recommended sequence:**
-1. CTIBench ATE Fix (2 hours, immediate credibility win for benchmarks)
-2. SQLite Migration (foundation, eliminates crash risk)
-3. Causal Graph + Memory Evolution (parallel, both benefit from SQLite)
-4. Persistence Semantics (layers on top of evolution rules)
+1. SQLite Migration (foundation, eliminates crash risk)
+2. Format Stability / structured-output hardening (required before LLM writes)
+3. Persistence Semantics base fields and governance metadata
+4. Causal Graph + Governed Memory Evolution
+5. CTI-MEM smoke suite, then full CTI-MEM benchmark
+6. CTIBench ATE Fix (tactical compatibility task; can slot in earlier)

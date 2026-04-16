@@ -1,6 +1,6 @@
 ---
 title: "Quickstart: Your First Memory"
-description: Store, recall, and synthesize threat intelligence with ZettelForge in under 5 minutes.
+description: "Get started with ZettelForge in 5 minutes. Install via pip, store your first threat intel, and recall with alias resolution — no cloud or API keys required."
 diataxis_type: "tutorial"
 audience: "L1/L2 SOC Analyst"
 tags: [tutorial, quickstart, getting-started]

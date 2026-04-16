@@ -8,6 +8,26 @@
 
 Add typed causal edges to the community knowledge graph, route CAUSAL-intent queries to a causal-only traversal, and expose a `provenance_chain()` that traces entity-to-entity causal paths back to source notes.
 
+## Approved Spec Update: Intent-Routed CTI Retrieval
+
+Nexus research validates causal graph work but broadens the retrieval
+requirement. CTI queries need routing across factual/entity, temporal,
+causal, relationship, prospective, and complex multi-hop paths. Causal
+traversal remains this plan's main deliverable, but the implementation should
+centralize route selection so a D-Mem-style `QualityGate` can choose fast
+System 1 retrieval versus deeper graph/history deliberation later.
+
+Initial query classes:
+
+| Query class | Retrieval path |
+|-------------|----------------|
+| Factual/entity | Entity index + vector fallback |
+| Temporal/current state | Temporal edges + validity metadata |
+| Causal/why | Causal-only graph traversal |
+| Actor/TTP relationship | Entity graph + typed relationships |
+| Prospective/what next | Prospective index + entity context |
+| Complex multi-hop | QualityGate routes to deeper graph/history traversal |
+
 ## Architecture Decisions
 
 ### AD-1: `edge_type` is community-only
@@ -27,6 +47,20 @@ Each step in the chain is a dict: `{note_id, entity_type, entity_value, relation
 ### AD-3: BFS cap at 50 nodes visited total
 
 The existing `GraphRetriever._bfs_collect` has no fan-out limit. High-fan-out entities like "phishing" will explode at depth 3. Fix: cap `visited` set at 50 nodes total, independent of depth. This is a global guard, not per-entity.
+
+### AD-3a: QualityGate hook
+
+Do not scatter retrieval branching across `recall()`. Put causal route selection
+behind a small method that can later become a `RetrievalRouter`:
+
+```python
+route = self._select_retrieval_route(query, intent, resolved_entities)
+if route == "causal":
+    return graph_retriever.retrieve_causal(...)
+```
+
+If a full router is out of scope for this feature, keep the helper local to
+`MemoryManager` and cover it with tests.
 
 ### AD-4: Correct add_edge count
 
@@ -371,3 +405,5 @@ git add src/zettelforge/knowledge_graph.py src/zettelforge/graph_retriever.py \
 - **Fan-out cap too aggressive:** 50 nodes may be insufficient for deeply connected graphs. Monitor with structured logging and tune.
 - **Backfill:** Existing edges have no `edge_type`. The `get("edge_type", "heuristic")` default handles this gracefully -- all legacy edges are treated as heuristic.
 - **TypeDB divergence:** Enterprise users relying on causal traversal need a separate `TypeDBKnowledgeGraph.provenance_chain()` implementation. Track as follow-up.
+- **Router drift:** Additional CTI query classes can make `recall()` brittle if
+  each route is added inline. Keep route selection centralized.

@@ -1,11 +1,11 @@
 ---
-title: ZettelForge Documentation
-description: Production-grade agentic memory system for cyber threat intelligence, powered by hybrid graph + vector retrieval over STIX 2.1 ontology.
+title: Agentic Memory for Cyber Threat Intelligence
+description: ZettelForge documentation — tutorials, API reference, and architecture guides for the open-source CTI memory system with STIX knowledge graphs, alias resolution, and agent-native retrieval.
 diataxis_type: "navigation"
 audience: "all"
 tags: [overview, navigation]
-last_updated: "2026-04-09"
-version: "2.0.0"
+last_updated: "2026-04-16"
+version: "2.2.0"
 ---
 
 # ZettelForge Documentation

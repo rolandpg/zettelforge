@@ -8,6 +8,27 @@
 
 Add a `persistence_semantics` field to notes with four values: `knowledge`, `memory`, `wisdom`, `intelligence`. Each tier has different TTL behavior and update rules. Fix the adversarial review findings on TTL silent drops, circular wisdom gates, unmapped source types, and backfill.
 
+## Approved Spec Update: CTI Lifecycle Metadata
+
+Nexus research shows TTL alone is insufficient for CTI. Threat intelligence has
+historical truth, current-state validity, source confidence, attribution
+confidence, and decay. This plan therefore includes CTI lifecycle fields in
+addition to `persistence_semantics`.
+
+Required metadata fields:
+
+- `valid_from`
+- `valid_until`
+- `last_observed`
+- `source_confidence`
+- `attribution_confidence`
+- `source_reliability`
+- `provenance_verified`
+- `decay_model`
+
+Current-state queries must filter or down-rank stale CTI, while timeline queries
+may still return historical notes.
+
 ## Architecture Decisions
 
 ### AD-1: Persistence tier definitions
@@ -83,6 +104,14 @@ class Metadata(BaseModel):
     ttl: Optional[int] = None  # Access-reset TTL in days (not Ebbinghaus)
     ttl_anchor: Optional[str] = None  # ISO timestamp: TTL counts from this date
     persistence_semantics: str = "memory"  # knowledge | memory | wisdom | intelligence
+    valid_from: Optional[str] = None
+    valid_until: Optional[str] = None
+    last_observed: Optional[str] = None
+    source_confidence: Optional[float] = None
+    attribution_confidence: Optional[float] = None
+    source_reliability: Optional[str] = None
+    provenance_verified: bool = False
+    decay_model: Optional[str] = None
     domain: str = "general"
     tier: str = "B"
     importance: int = 5
@@ -111,6 +140,20 @@ def is_expired(self) -> bool:
         return datetime.now() > anchor_dt + timedelta(days=self.metadata.ttl)
     except (ValueError, TypeError):
         return False
+```
+
+3. Add `is_current()` helper for CTI current-state queries:
+
+```python
+def is_current(self, now: Optional[datetime] = None) -> bool:
+    """Return False when valid_until is in the past."""
+    if not self.metadata.valid_until:
+        return True
+    now = now or datetime.now()
+    try:
+        return now <= datetime.fromisoformat(self.metadata.valid_until)
+    except (ValueError, TypeError):
+        return True
 ```
 
 **Test:**
@@ -357,6 +400,10 @@ python -m pytest tests/ -k "test_persistence" -x
 4. Test `filter_expired()` returns correct counts.
 5. Test `recall(include_expired=True)` returns expired notes.
 6. Test backfill sets `ttl_anchor` to migration timestamp, not `created_at`.
+7. Test current-state recall excludes notes with past `valid_until` unless the
+   query is explicitly historical/timeline.
+8. Test attribution recall surfaces `attribution_confidence` and does not treat
+   copied TTPs as actor attribution without evidence.
 
 ## Commits
 
@@ -370,3 +417,6 @@ python -m pytest tests/ -k "test_persistence" -x
 - **TTL too aggressive for memory tier:** 90 days may be too short for infrequently-accessed but valuable operational notes. Configurable per-domain in a future pass.
 - **Wisdom gate still manual:** Creation of wisdom notes requires explicit `evidence_note_ids`. No automatic promotion path exists yet. Track as follow-up.
 - **Backfill idempotency:** Running the backfill script twice should be safe (it checks for existing values), but should log "already backfilled" counts for auditability.
+- **Historical vs. current ambiguity:** A stale TTP can be historically true but
+  operationally wrong for current-state queries. Retrieval must preserve both
+  paths instead of deleting old evidence.

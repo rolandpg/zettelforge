@@ -1,6 +1,6 @@
 ---
 title: "Integrate ZettelForge into an AI Agent"
-description: "Use MemoryManager, ProactiveAgentMixin, and get_context() to add persistent CTI memory to an AI agent loop."
+description: "Connect ZettelForge as an MCP server for Claude Code or integrate with any LLM agent. Persistent CTI memory across sessions with entity extraction and graph retrieval."
 diataxis_type: "how-to"
 audience: "Agent developers building CTI-aware AI systems, engineers integrating ZettelForge into any LLM agent framework"
 tags: [agent-integration, context-injection, proactive-mixin, llm-agent, openclaw, prompt-injection]

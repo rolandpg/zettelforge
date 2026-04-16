@@ -1,6 +1,6 @@
 ---
 title: "How STIX 2.1 Maps to ZettelForge"
-description: "The translation between STIX 2.1 specification and ZettelForge's TypeDB implementation"
+description: "How ZettelForge uses STIX 2.1 ontology to structure threat intelligence as a knowledge graph with entity extraction, causal triples, and alias resolution."
 diataxis_type: explanation
 audience: "Senior CTI Practitioner"
 tags: [stix, ontology, typedb, mapping, cti]

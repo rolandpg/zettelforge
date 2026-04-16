@@ -8,6 +8,26 @@
 
 Add a `MemoryEvolver` that finds top-k semantic neighbors for a note, uses the LLM to synthesize an evolved version incorporating neighbor context, and persists the update with rollback capability. Runs on the existing enrichment queue to prevent race conditions.
 
+## Approved Spec Update: Governed Evolution
+
+Nexus research changes this feature from "neighbor synthesis" to **governed
+memory evolution**. CTI memory is adversarial and time-sensitive; unverified
+updates must not overwrite permanent intelligence just because they are
+semantically similar.
+
+The evolver must support four outcomes:
+
+| Action | Meaning |
+|--------|---------|
+| `evolve` | Update an existing note after provenance and confidence gates pass |
+| `buffer` | Store incomplete or uncorroborated CTI as pending, non-permanent memory |
+| `ignore` | Drop low-value IOC chatter from the evolution path |
+| `keep` | Leave the neighbor unchanged |
+
+Permanent evolution requires source provenance, confidence metadata, and an audit
+trail. A low-confidence contradiction must not overwrite a higher-confidence
+knowledge or wisdom note.
+
 ## Architecture Decisions
 
 ### AD-1: Evolution runs on the existing enrichment queue
@@ -20,6 +40,25 @@ No separate thread. The `_EnrichmentJob` dataclass gains a `job_type` field: `"c
 - `json_mode=True` via `generate()`
 - Parse with `json_parse.extract_json(output, expect="object")`
 - Single retry on parse failure (call generate again once)
+
+### AD-2a: Governance output schema
+
+The evolution prompt returns:
+
+```json
+{
+  "action": "evolve|buffer|ignore|keep",
+  "evolved_content": "full updated note content when action=evolve",
+  "evolution_rationale": "why this action was selected",
+  "confidence": 0.0,
+  "provenance_required": true,
+  "evidence_note_ids": ["note_id"]
+}
+```
+
+`action="evolve"` is rejected unless confidence and provenance gates pass.
+`action="buffer"` stores the new information without promoting it into permanent
+memory.
 
 ### AD-3: Original content preserved
 
@@ -383,6 +422,7 @@ python -m pytest tests/ -k "test_evolve" -x
 
 ## Risks
 
-- **LLM hallucination:** Evolution may introduce false facts. The `confidence` gate at 0.5 and `previous_raw` rollback mitigate but do not eliminate this.
+- **LLM hallucination:** Evolution may introduce false facts. The `confidence` gate at 0.5, provenance verification, BUFFER action, and `previous_raw` rollback mitigate but do not eliminate this.
+- **Memory poisoning:** Adversarial or low-confidence CTI could corrupt permanent memory. Reject evolution when source confidence is lower than the target note or when provenance is missing.
 - **Embedding drift:** Repeated evolution may drift embeddings away from original meaning. `evolution_count > 5` triggers `should_flag_for_review()` (already implemented).
 - **Queue depth:** Large batches of evolution jobs could starve causal extraction. Consider priority queueing in a future pass if this becomes a problem.

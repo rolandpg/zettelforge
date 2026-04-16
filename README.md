@@ -4,6 +4,12 @@
 
 Give your AI agents persistent memory with entity extraction, knowledge graphs, and STIX ontology -- no cloud, no API keys, works offline.
 
+<p align="center">
+  <a href="https://www.buymeacoffee.com/xypher22pr0">
+    <img src="https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&emoji=&slug=xypher22pr0&button_colour=40DCA5&font_colour=ffffff&font_family=Cookie&outline_colour=000000&coffee_colour=FFDD00" alt="Buy me a coffee">
+  </a>
+</p>
+
 [![PyPI](https://img.shields.io/pypi/v/zettelforge)](https://pypi.org/project/zettelforge/)
 [![Downloads](https://static.pepy.tech/badge/zettelforge)](https://pepy.tech/projects/zettelforge)
 [![Stars](https://img.shields.io/github/stars/rolandpg/zettelforge)](https://github.com/rolandpg/zettelforge/stargazers)

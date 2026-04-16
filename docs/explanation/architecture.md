@@ -1,6 +1,6 @@
 ---
 title: "Why SQLite + LanceDB"
-description: "Architectural rationale for ZettelForge's hybrid two-database design"
+description: "ZettelForge architecture: SQLite + LanceDB hybrid storage, dual-stream write pipeline, blended retrieval with intent classification, and the data model for CTI memory."
 diataxis_type: explanation
 audience: "Senior CTI Practitioner"
 tags: [architecture, sqlite, lancedb, design-decisions]
