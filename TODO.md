@@ -27,7 +27,9 @@ Priority: **P0** = do now, **P1** = this sprint, **P2** = next sprint, **P3** = 
 | 2026-04-15 | FalkorDB: PASS | SSPLv1 blocks SaaS, hybrid search unsupported, FalkorDBLite immature |
 | 2026-04-15 | OpenCTI shared TypeDB DB: parked | Rely on sync agent for now |
 | 2026-04-15 | TE-009 research validates architecture | Tool-based actions, dual-stream write, intent routing all confirmed by 12 papers. Three gaps identified. |
-| 2026-04-16 | SQLite is default backend | Runtime factory, StorageBackend ABC, and SQLiteBackend are present. Config/docs/web defaults still need alignment. |
+| 2026-04-16 | SQLite is default backend | Runtime factory, StorageBackend ABC, SQLiteBackend, config.py, config.default.yaml, KG singleton all default to sqlite. |
+| 2026-04-16 | STIX intrusion_set taxonomy shipped | APT/UNC/TA/FIN → intrusion_set in extractor, constructor, graph edges, recall_actor compat. Docs still say "actor". |
+| 2026-04-16 | Web app hardened | API key auth, 127.0.0.1 default, XSS escaped, rate limits, request bounds. |
 
 ---
 
@@ -338,6 +340,14 @@ Current-state reconciliation on 2026-04-16 found SQLite wiring in place, but pac
 ### Benchmarks
 - [x] CTIBench ATE: F1 0.0 → 0.146 (pipeline was broken, ICS noise removed)
 
+### Package Alignment (2026-04-16)
+- [x] Backend defaults: config.py, config.default.yaml, KG singleton → sqlite
+- [x] Test collection: pytest.importorskip for TypeDB/CTI tests, removed CI --ignore flags
+- [x] CI simplified: single sqlite backend (dropped fake JSONL matrix)
+- [x] STIX taxonomy: _infer_entity_type("APT28") → intrusion_set, graph edges updated
+- [x] recall_actor() compatibility: searches actor, threat_actor, intrusion_set
+- [x] Web hardening: API key auth, 127.0.0.1 default, XSS fix, rate limits, request bounds
+
 ### Research Validated (no change needed)
 - [x] Tool-based memory actions (ADD/UPDATE/DELETE/NOOP) — AgeMem, Mem0, Anatomy confirm
 - [x] Dual-stream write (fast+slow) — MAGMA confirms
@@ -348,7 +358,7 @@ Current-state reconciliation on 2026-04-16 found SQLite wiring in place, but pac
 
 ## What To Do Next (in order)
 
-1. **Package Alignment P0** — TypeDB removal from community defaults, STIX taxonomy fix, web hardening, test reliability
+1. **Package Alignment P0 (remaining)** — STIX docs wording, MemoryManager.close() API, package smoke tests, _rewrite_note cleanup, GraphRetriever decoupling
 2. **Persistence semantics** — 4-tier note types (knowledge/memory/wisdom/intelligence)
 3. **Growth Week 2** — r/netsec, r/cybersecurity, LinkedIn, Twitter launch
 4. **Format stability Phase 2** — init/health commands, cloud providers
