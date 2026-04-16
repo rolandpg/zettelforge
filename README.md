@@ -5,10 +5,13 @@
 Give your AI agents persistent memory with entity extraction, knowledge graphs, and STIX ontology -- no cloud, no API keys, works offline.
 
 [![PyPI](https://img.shields.io/pypi/v/zettelforge)](https://pypi.org/project/zettelforge/)
+[![Downloads](https://static.pepy.tech/badge/zettelforge)](https://pepy.tech/projects/zettelforge)
+[![Stars](https://img.shields.io/github/stars/rolandpg/zettelforge)](https://github.com/rolandpg/zettelforge/stargazers)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/downloads/)
 [![CI](https://github.com/rolandpg/zettelforge/actions/workflows/ci.yml/badge.svg)](https://github.com/rolandpg/zettelforge/actions)
-[![Version](https://img.shields.io/badge/version-2.1.1-green.svg)](https://github.com/rolandpg/zettelforge/releases)
+[![Contributors](https://img.shields.io/github/contributors/rolandpg/zettelforge)](https://github.com/rolandpg/zettelforge/graphs/contributors)
+[![Last Commit](https://img.shields.io/github/last-commit/rolandpg/zettelforge)](https://github.com/rolandpg/zettelforge/commits/master)
 [![SafeSkill](https://safeskill.dev/api/badge/rolandpg-zettelforge)](https://safeskill.dev/scan/rolandpg-zettelforge)
 
 <p align="center">
@@ -16,6 +19,10 @@ Give your AI agents persistent memory with entity extraction, knowledge graphs, 
 </p>
 
 ## Why ZettelForge?
+
+General-purpose memory systems don't understand threat intelligence. They can't tell APT28 from Fancy Bear, don't know that CVE-2024-3094 is the XZ Utils backdoor, and can't track how intelligence evolves across reports. When your agent forgets context between investigations, you end up re-reading the same reports and re-building the same mental models.
+
+ZettelForge was built from the ground up for analysts who think in threat graphs, not chat histories. It extracts CVEs, threat actors, IOCs, and MITRE ATT&CK techniques automatically, resolves aliases across naming conventions, builds a knowledge graph with causal relationships, and retrieves memories using intent-aware blended search -- all offline, with no API keys or cloud dependencies.
 
 | Feature | ZettelForge | Mem0 | Graphiti | Cognee |
 |---------|------------|------|----------|--------|

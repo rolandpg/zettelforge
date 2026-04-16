@@ -1,0 +1,22 @@
+<svg viewBox="0 0 430 96" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Threat Recall logo</title>
+  <desc id="desc">Threat Recall wordmark with a minimal shield, recall loop, and connected threat intelligence nodes.</desc>
+  <rect width="430" height="96" rx="18" fill="#07110E"/>
+  <g transform="translate(16 0)">
+    <path d="M48 13L77 24V49C77 65.5 65.4 78.1 48 84C30.6 78.1 19 65.5 19 49V24L48 13Z" stroke="#EAF7F1" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M61.5 34.5C57.9 30.9 53.1 29 48 29C37.5 29 29 37.5 29 48C29 58.5 37.5 67 48 67C56.4 67 63.5 61.6 66.1 54.1" stroke="#00FFA3" stroke-width="4" stroke-linecap="round"/>
+    <path d="M61 25V35H71" stroke="#00FFA3" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M39 45L48 38L59 49L48 58L39 45Z" stroke="#EAF7F1" stroke-width="3" stroke-linejoin="round"/>
+    <circle cx="39" cy="45" r="3.8" fill="#00FFA3"/>
+    <circle cx="48" cy="38" r="3.8" fill="#EAF7F1"/>
+    <circle cx="59" cy="49" r="3.8" fill="#EAF7F1"/>
+  </g>
+  <text x="124" y="52" fill="#EAF7F1" font-family="Inter, DejaVu Sans, Arial, sans-serif" font-size="27" font-weight="700" letter-spacing="4">THREAT</text>
+  <text x="124" y="75" fill="#00FFA3" font-family="Inter, DejaVu Sans, Arial, sans-serif" font-size="21" font-weight="600" letter-spacing="4">RECALL</text>
+  <path d="M326 26H392" stroke="#1A3A30" stroke-width="2" stroke-linecap="round"/>
+  <path d="M326 48H379" stroke="#1A3A30" stroke-width="2" stroke-linecap="round"/>
+  <path d="M326 70H392" stroke="#1A3A30" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="395" cy="26" r="3" fill="#00FFA3"/>
+  <circle cx="382" cy="48" r="3" fill="#EAF7F1"/>
+  <circle cx="395" cy="70" r="3" fill="#EAF7F1"/>
+</svg>
