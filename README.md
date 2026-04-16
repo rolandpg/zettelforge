@@ -9,7 +9,7 @@ Give your AI agents persistent memory with entity extraction, knowledge graphs, 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/downloads/)
 [![CI](https://github.com/rolandpg/zettelforge/actions/workflows/ci.yml/badge.svg)](https://github.com/rolandpg/zettelforge/actions)
 [![Version](https://img.shields.io/badge/version-2.1.1-green.svg)](https://github.com/rolandpg/zettelforge/releases)
-[![SafeSkill 93/100](https://img.shields.io/badge/SafeSkill-93%2F100_Verified%20Safe-brightgreen)](https://safeskill.dev/scan/rolandpg-zettelforge)
+[![SafeSkill](https://safeskill.dev/api/badge/rolandpg-zettelforge)](https://safeskill.dev/scan/rolandpg-zettelforge)
 
 <p align="center">
   <img src="docs/assets/demo.gif" width="720" alt="ZettelForge demo — CTI agentic memory in action">
