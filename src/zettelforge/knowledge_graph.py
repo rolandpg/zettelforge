@@ -404,6 +404,33 @@ class KnowledgeGraph:
 
         return causal_edges
 
+    def get_incoming_causal(
+        self, entity_type: str, entity_value: str, max_depth: int = 3, max_visited: int = 50
+    ) -> List[Dict]:
+        """BFS over INCOMING causal edges — traces back to root causes ('why' queries)."""
+        node_id = self._node_index.get(entity_type, {}).get(entity_value.lower())
+        if not node_id:
+            return []
+
+        visited: set = set()
+        queue_items = [(node_id, 0)]
+        causal_edges = []
+
+        while queue_items and len(visited) < max_visited:
+            current_id, depth = queue_items.pop(0)
+            if depth > max_depth or current_id in visited:
+                continue
+            visited.add(current_id)
+
+            for edge in self._edges_to.get(current_id, []):
+                if edge.get("edge_type") == "causal":
+                    causal_edges.append(edge)
+                    from_id = edge["from_node_id"]
+                    if from_id not in visited:
+                        queue_items.append((from_id, depth + 1))
+
+        return causal_edges
+
     def get_latest_state(self, entity_type: str, entity_value: str) -> Optional[Dict]:
         """Get the latest known state of an entity."""
         timeline = self.get_entity_timeline(entity_type, entity_value)
