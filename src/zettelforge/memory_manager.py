@@ -890,7 +890,10 @@ class MemoryManager:
         kg.add_edge(from_type, from_value, to_type, to_value, relationship, properties or {})
 
     def provenance_chain(
-        self, entity_type: str, entity_value: str, max_depth: int = 3,
+        self,
+        entity_type: str,
+        entity_value: str,
+        max_depth: int = 3,
         direction: str = "forward",
     ) -> List[Dict]:
         """Trace causal provenance chain from an entity.
