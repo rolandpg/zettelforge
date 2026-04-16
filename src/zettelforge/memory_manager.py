@@ -908,8 +908,18 @@ class MemoryManager:
         kg = get_knowledge_graph()
         canonical = self.resolver.resolve(entity_type, entity_value)
 
-        if direction == "backward" and hasattr(kg, "get_incoming_causal"):
-            causal_edges = kg.get_incoming_causal(entity_type, canonical, max_depth=max_depth)
+        if direction not in ("forward", "backward"):
+            raise ValueError(f"direction must be 'forward' or 'backward', got '{direction}'")
+
+        if direction == "backward":
+            if hasattr(kg, "get_incoming_causal"):
+                causal_edges = kg.get_incoming_causal(entity_type, canonical, max_depth=max_depth)
+            else:
+                self._logger.info(
+                    "provenance_chain_unsupported",
+                    reason="KG backend lacks get_incoming_causal",
+                )
+                return []
         elif hasattr(kg, "get_causal_edges"):
             causal_edges = kg.get_causal_edges(entity_type, canonical, max_depth=max_depth)
         else:
