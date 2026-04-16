@@ -39,11 +39,10 @@ from zettelforge import MemoryManager, __version__
 
 _ATTACK_DIR = Path(__file__).parent
 
-# All three ATT&CK matrices — enterprise, mobile, ICS
+# ATT&CK matrices — enterprise + mobile (ICS excluded: zero ICS T-codes in CTIBench ground truth)
 _ATTACK_FILES = [
     _ATTACK_DIR / "enterprise-attack.json",
     _ATTACK_DIR / "mobile-attack.json",
-    _ATTACK_DIR / "ics-attack.json",
 ]
 
 
@@ -344,7 +343,7 @@ def run_ate_benchmark(max_samples: Optional[int] = None, k: int = 25) -> Dict:
     print("\n[2/4] Pre-populating ATT&CK techniques into ZettelForge...")
     attack_techniques = load_attack_techniques()
     print(
-        f"  Loaded {len(attack_techniques)} main techniques from ATT&CK matrices (enterprise + mobile + ICS)"
+        f"  Loaded {len(attack_techniques)} main techniques from ATT&CK matrices (enterprise + mobile)"
     )
     atk_start = time.perf_counter()
     atk_ingested = populate_attack_techniques(mm, attack_techniques)

@@ -148,10 +148,12 @@ Replace JSONL with SQLite for notes, KG, and entity index. LanceDB stays for vec
 
 ## P1: Benchmarks
 
-- [ ] CTIBench ATE fix — ~2.25 hrs, projected F1: 0.30-0.40
-  - [ ] Isolate techniques in separate domain
-  - [ ] Increase k from 10 to 20-30
-  - [ ] Reframe query without wrapper
+- [x] CTIBench ATE fix — F1: 0.0 → 0.146 (retrieval pipeline was broken, now working)
+  - [x] Fixed LanceDB ingestion (was silently failing, 0 retrieval)
+  - [x] Removed ICS matrix (0 ICS T-codes in CTIBench ground truth, was polluting results)
+  - [x] Domain isolation working (attack_techniques separate from cti)
+  - [x] k sweep: optimal k=20 gives F1=0.146, precision=0.084, recall=0.376
+  - [ ] F1 ceiling ~0.15 with retrieval-only approach — semantic gap between behavioral descriptions and technique definitions. LLM-based mapping needed for 0.30+ (P2)
 - [ ] RAGAS re-run with `--domain cti`
 
 ---
