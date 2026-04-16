@@ -128,9 +128,9 @@ An attacker who knows the marker regexes can craft queries that always route to 
 All marker regexes are English. A Spanish CTI analyst asking *"¿qué actores usan CVE-2024-3400 en campañas entre Q3 2024 y Q1 2025?"* scores exactly zero on every span marker. The gate routes every non-English query to System 1 by construction, regardless of how deliberation-worthy it is. RFC doesn't acknowledge this.
 **Fix**: Document as a known limitation. Consider a config-loadable marker set (`config.recall.depth_routing.marker_sets: [en, es, fr]`) in a follow-up.
 
-### 4. The intent classifier tie-breaking leaks nondeterminism
+### 4. The intent classifier tie-breaking is order-dependent
 
-`max(scores, key=scores.get)` on ties picks the first-inserted intent in `INTENT_KEYWORDS`. Multiple keyword hits across intents (e.g., "why was CVE-X used by APT28?" hits CAUSAL:why, FACTUAL:cve-, RELATIONAL:used by) tie at 1 each → FACTUAL wins only because it's first in the dict. The RFC relies on intent as a primary routing signal but inherits this nondeterminism. Reordering `INTENT_KEYWORDS` silently changes the gate's behavior for tied queries.
+`max(scores, key=scores.get)` on ties picks the first-inserted intent in `INTENT_KEYWORDS`. Multiple keyword hits across intents (e.g., "why was CVE-X used by APT28?" hits CAUSAL:why, FACTUAL:cve-, RELATIONAL:used by) tie at 1 each → FACTUAL wins only because it's first in the dict. The RFC relies on intent as a primary routing signal but inherits this order-dependent tie-breaking. Reordering `INTENT_KEYWORDS` silently changes the gate's behavior for tied queries.
 **Fix**: Call out as a known upstream behavior. Add an intent_classifier regression test that asserts the ordering isn't accidentally changed.
 
 ### 5. Temporal regex false-positive on causal queries
