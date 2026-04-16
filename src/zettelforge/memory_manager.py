@@ -65,6 +65,7 @@ class _EnrichmentJob:
     domain: str
     content_len: int
     resolved_entities: dict = field(default_factory=dict)
+    job_type: str = "causal_extraction"  # or "neighbor_evolution"
 
 
 class MemoryManager:
@@ -242,6 +243,24 @@ class MemoryManager:
                 self._pending_enrichment.add(note.id)
             except queue.Full:
                 self._logger.warning("enrichment_queue_full", note_id=note.id)
+
+        # Phase 6c: Neighbor evolution (A-Mem inspired — background worker)
+        # Skip if fewer than 3 notes exist — not enough neighbors to evolve against
+        if self.store.count_notes() >= 3:
+            evolution_job = _EnrichmentJob(
+                note_id=note.id,
+                domain=domain,
+                content_len=len(content),
+                job_type="neighbor_evolution",
+            )
+            if sync:
+                self._run_evolution(evolution_job)
+            else:
+                try:
+                    self._enrichment_queue.put_nowait(evolution_job)
+                    self._pending_enrichment.add(note.id)
+                except queue.Full:
+                    self._logger.warning("evolution_queue_full", note_id=note.id)
 
         duration_ms = (time.perf_counter() - start) * 1000
         log_api_activity(
@@ -700,11 +719,14 @@ class MemoryManager:
     # ── Dual-stream: slow path enrichment worker ──────────────────────────
 
     def _enrichment_loop(self) -> None:
-        """Background worker: process causal enrichment jobs until process exits."""
+        """Background worker: process enrichment jobs until process exits."""
         while True:
             try:
                 job = self._enrichment_queue.get(timeout=1.0)
-                self._run_enrichment(job)
+                if job.job_type == "neighbor_evolution":
+                    self._run_evolution(job)
+                else:
+                    self._run_enrichment(job)
                 self._enrichment_queue.task_done()
             except queue.Empty:
                 continue
@@ -735,18 +757,83 @@ class MemoryManager:
         finally:
             self._pending_enrichment.discard(job.note_id)
 
+    def _run_evolution(self, job: _EnrichmentJob) -> None:
+        """Execute neighbor evolution for one note."""
+        note = self.store.get_note_by_id(job.note_id)
+        if note is None:
+            self._pending_enrichment.discard(job.note_id)
+            return
+
+        try:
+            from zettelforge.memory_evolver import MemoryEvolver
+
+            evolver = MemoryEvolver(self)
+            report = evolver.evolve_neighbors(note)
+            self._logger.info(
+                "neighbor_evolution_complete",
+                note_id=job.note_id,
+                candidates_found=report["candidates_found"],
+                evolved=report["evolved"],
+                kept=report["kept"],
+                errors=report["errors"],
+            )
+        except Exception:
+            self._logger.warning("neighbor_evolution_failed", note_id=job.note_id, exc_info=True)
+        finally:
+            self._pending_enrichment.discard(job.note_id)
+
     def _drain_enrichment_queue(self) -> None:
         """atexit: process remaining enrichment jobs within a 10-second window."""
         deadline = time.monotonic() + 10.0
         while not self._enrichment_queue.empty() and time.monotonic() < deadline:
             try:
                 job = self._enrichment_queue.get_nowait()
-                self._run_enrichment(job)
+                if job.job_type == "neighbor_evolution":
+                    self._run_evolution(job)
+                else:
+                    self._run_enrichment(job)
                 self._enrichment_queue.task_done()
             except queue.Empty:
                 break
             except Exception:
                 self._logger.warning("enrichment_drain_failed", exc_info=True)
+
+    def evolve_note(self, note_id: str, sync: bool = False) -> Optional[Dict]:
+        """Trigger neighbor evolution for an existing note.
+
+        Intended for manual or MCP invocation.
+
+        Args:
+            note_id: The note to evolve neighbors around.
+            sync: If True, run inline (blocking). Otherwise queue to background worker.
+
+        Returns:
+            Evolution report dict when sync=True, None when queued or note not found.
+        """
+        note = self.store.get_note_by_id(note_id)
+        if note is None:
+            self._logger.warning("evolve_note_not_found", note_id=note_id)
+            return None
+
+        job = _EnrichmentJob(
+            note_id=note_id,
+            domain=note.metadata.domain,
+            content_len=len(note.content.raw),
+            job_type="neighbor_evolution",
+        )
+
+        if sync:
+            from zettelforge.memory_evolver import MemoryEvolver
+
+            evolver = MemoryEvolver(self)
+            return evolver.evolve_neighbors(note)
+
+        try:
+            self._enrichment_queue.put_nowait(job)
+            self._pending_enrichment.add(note_id)
+        except queue.Full:
+            self._logger.warning("evolution_queue_full", note_id=note_id)
+        return None
 
     def mark_note_superseded(self, note_id: str, superseded_by_id: str) -> bool:
         old_note = self.store.get_note_by_id(note_id)
