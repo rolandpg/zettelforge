@@ -27,6 +27,9 @@ General-purpose memory systems don't understand threat intelligence. They can't 
 
 ZettelForge was built from the ground up for analysts who think in threat graphs, not chat histories. It extracts CVEs, threat actors, IOCs, and MITRE ATT&CK techniques automatically, resolves aliases across naming conventions, builds a knowledge graph with causal relationships, and retrieves memories using intent-aware blended search -- all offline, with no API keys or cloud dependencies.
 
+>"Memory augmentation closes 33% of the gap between small and large models on CTI tasks (CTI-REALM, Microsoft 2026)." [1]
+
+
 | Feature | ZettelForge | Mem0 | Graphiti | Cognee |
 |---------|------------|------|----------|--------|
 | CTI entity extraction (CVEs, actors, IOCs) | Yes | No | No | No |
@@ -37,6 +40,12 @@ ZettelForge was built from the ground up for analysts who think in threat graphs
 | Offline / local-first (no API keys) | Yes | No | No | No |
 | OCSF audit logging | Yes | No | No | No |
 | MCP server (Claude Code) | Yes | No | No | No |
+
+## Data Pipeline
+<p align="center">
+  <img src="docs/assets/zettelforge_architecture.svg" width="720" alt="ZettelForge">
+</p>
+
 
 ## Features
 
@@ -234,3 +243,5 @@ MIT -- See [LICENSE](LICENSE).
 - STIX 2.1 schema informed by [typedb-cti](https://github.com/typedb-osi/typedb-cti)
 - Benchmarked against [LOCOMO](https://snap-research.github.io/locomo/) (ACL 2024) and [CTIBench](https://arxiv.org/abs/2406.07599) (NeurIPS 2024)
 - [LanceDB](https://lancedb.com) | [fastembed](https://github.com/qdrant/fastembed) | [Pydantic](https://pydantic.dev) | [TypeDB](https://typedb.com)
+
+[1]: https://www.microsoft.com/en-us/security/blog/2026/03/20/cti-realm-a-new-benchmark-for-end-to-end-detection-rule-generation-with-ai-agents/
