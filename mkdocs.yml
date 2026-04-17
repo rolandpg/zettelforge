@@ -43,6 +43,10 @@ nav:
     - Run Temporal Query: how-to/run-temporal-query.md
     - Query APT Tools: how-to/query-apt-tools.md
     - Integrate LLM Agent: how-to/integrate-llm-agent.md
+    - Migrate JSONL to SQLite: how-to/migrate-jsonl-to-sqlite.md
+    - Reproduce Benchmarks: how-to/reproduce-benchmarks.md
+    - Troubleshoot: how-to/troubleshoot.md
+    - Upgrade: how-to/upgrade.md
   - Concepts:
     - Architecture: explanation/architecture.md
     - Two-Phase Pipeline: explanation/two-phase-pipeline.md
@@ -55,6 +59,12 @@ nav:
     - Retrieval Policies: reference/retrieval-policies.md
     - STIX Schema: reference/stix-schema.md
     - Governance Controls: reference/governance-controls.md
+  - Design:
+    - RFC-001 Conversational Entity Extractor: rfcs/RFC-001-conversational-entity-extractor.md
+    - RFC-002 Universal LLM Provider Interface: rfcs/RFC-002-universal-llm-provider.md
+    - RFC-003 Read-Path Depth Routing: rfcs/RFC-003-read-path-depth-routing.md
+  - About:
+    - Why ZettelForge: narrative/2026-04-16-the-memory-problem.md
 
 markdown_extensions:
   - pymdownx.highlight:

@@ -6,6 +6,66 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- **MCP server as a first-class module** — `python -m zettelforge.mcp`
+  now works out of a `pip install zettelforge` with no git clone
+  required. New package `zettelforge.mcp` (with `server.py`,
+  `__main__.py`, and a console-script entry `zettelforge-mcp`).
+  The previous entry point at `web/mcp_server.py` is retained as a
+  thin backward-compat shim.
+- **How-to guides** — migration (`migrate-jsonl-to-sqlite.md`),
+  benchmark reproduction (`reproduce-benchmarks.md`), troubleshooting
+  (`troubleshoot.md`), and upgrade (`upgrade.md`). Linked from the
+  MkDocs nav.
+- **Design and About sections in the docs nav** — RFC-001, RFC-002,
+  RFC-003 and the origin-story narrative are now discoverable from
+  `docs.threatrecall.ai`.
+- **Archive directory** — `docs/archive/` holds retired v1.0.0-alpha
+  snapshots (`SKILL.md`, `PACKAGE_SUMMARY.md`) with a README explaining
+  their provenance.
+- **`llm_ner` configuration reference** — `docs/reference/configuration.md`
+  now documents `llm_ner.enabled` and the `ZETTELFORGE_LLM_NER_ENABLED`
+  environment override.
+- **Console scripts** — `zettelforge` and `zettelforge-mcp` entry
+  points added to `pyproject.toml`.
+
+### Changed
+
+- **SECURITY.md** — contact updated to `contact@threatrecall.ai`,
+  supported-versions table refreshed to 2.2.x, storage section
+  refreshed to reflect SQLite-by-default.
+- **`docs/llms.txt`** — rewritten to match v2.2.0 reality (SQLite
+  default, 19 runtime entity types, correct GOV-003/007/011/012
+  descriptions, MCP invocation).
+- **BENCHMARK_REPORT.md** — CTIBench ATE row updated (F1 = 0.146,
+  v2.2.0); architecture summary reframed as SQLite + LanceDB default
+  with TypeDB as an extension; `ctibench_results.json` date bumped.
+- **README.md** — pipeline step 1 entity count corrected from "10
+  types" to the 19 types `EntityExtractor` actually recognises.
+- **`docs/superpowers/plans/` renamed to `docs/superpowers/research/`**
+  with a README making clear these are aspirational synthesis, not
+  roadmap commitments. The stray untracked `docs/plans/` directory
+  was removed.
+- **Tutorials and governance-controls reference** — `last_updated`
+  and `version` metadata bumped to v2.2.0 / 2026-04-16.
+- **`zettelforge.ontology` exports** — `TypedEntityStore`,
+  `OntologyValidator`, `get_ontology_store`, `get_ontology_validator`
+  removed from the top-level `__all__` (still importable from
+  `zettelforge.ontology`). They are a parallel store not wired into
+  `MemoryManager` as of v2.2.0.
+- **`observability.py` and `cache.py` headers** — annotated as
+  currently unwired; kept for future integration.
+
+### Removed
+
+- Six superseded branches that had already been squash-merged into
+  master — `feat/causal-chain-fix-and-demo-gif`,
+  `feat/entity-vocabulary-expansion`,
+  `feature/RFC-001-conversational-entity-extractor`,
+  `fix/intent-classifier-graph-weight`,
+  `fix/p0-production-blockers`, `feat/remember-evolve`.
+
 ## [2.2.0] - 2026-04-16
 
 SQLite default backend, causal chain retrieval, memory evolution, STIX taxonomy alignment, and community-first package cleanup.

@@ -8,8 +8,8 @@ tags:
   - environment-variables
   - settings
   - deployment
-last_updated: "2026-04-09"
-version: "2.0.0"
+last_updated: "2026-04-16"
+version: "2.2.0"
 ---
 
 # Configuration Reference
@@ -132,6 +132,20 @@ class LLMConfig:
 | `llm.model` | `str` | `Qwen2.5-3B-Instruct-Q4_K_M.gguf` | `ZETTELFORGE_LLM_MODEL` | LLM for fact extraction, intent classification, causal triple extraction, and synthesis. Default for local: Qwen2.5-3B-Instruct Q4_K_M GGUF (~2.0 GB, ~15.6 tok/s). For Ollama provider, use Ollama model tags (e.g., `qwen2.5:3b`). |
 | `llm.url` | `str` | `http://localhost:11434` | `ZETTELFORGE_LLM_URL` | LLM server URL. Only used when `llm.provider` is `ollama`. |
 | `llm.temperature` | `float` | `0.1` | -- | Sampling temperature. `0.0` = deterministic, `0.1` = near-deterministic (default), `0.7` = creative. |
+
+---
+
+### llm_ner
+
+```python
+@dataclass
+class LLMNerConfig:
+    enabled: bool = True
+```
+
+| Key | Type | Default | Env Override | Description |
+|:----|:-----|:--------|:-------------|:------------|
+| `llm_ner.enabled` | `bool` | `True` | `ZETTELFORGE_LLM_NER_ENABLED` | Enable always-on LLM Named Entity Recognition. When `True`, every `remember()` call enqueues a background LLM NER job that augments the fast regex-based entity extraction with conversational entities (`person`, `location`, `organization`, `event`, `activity`, `temporal`). Fast-path writes still return in ~45 ms; LLM NER runs asynchronously via the enrichment queue and merges into the note's entity set when it completes. Set `False` for air-gapped or benchmark runs that need deterministic regex-only extraction. |
 
 ---
 
@@ -302,6 +316,7 @@ See [Configure OpenCTI Integration](../how-to/configure-opencti.md) for setup st
 | `ZETTELFORGE_LLM_PROVIDER` | `llm.provider` | `ollama` |
 | `ZETTELFORGE_LLM_MODEL` | `llm.model` | `qwen2.5:7b` |
 | `ZETTELFORGE_LLM_URL` | `llm.url` | `http://gpu-box:11434` |
+| `ZETTELFORGE_LLM_NER_ENABLED` | `llm_ner.enabled` | `true` |
 | `OPENCTI_URL` | `Enterprise only: opencti.url` | `https://opencti.corp.internal` |
 | `OPENCTI_TOKEN` | `Enterprise only: opencti.token` | `abc123...` |
 | `OPENCTI_SYNC_INTERVAL` | `Enterprise only: opencti.sync_interval` | `3600` |

@@ -6,7 +6,7 @@
 
 Report security issues by email to:
 
-**security@zettelforge.dev**
+**contact@threatrecall.ai**
 
 Include in your report:
 - A description of the vulnerability and its potential impact
@@ -39,9 +39,9 @@ backported to the prior minor release.
 
 | Version | Supported |
 |---|---|
-| 2.1.x (current) | Yes — active security support |
-| 2.0.x | Critical fixes only, for 60 days after 2.1.0 release |
-| < 2.0 | No — upgrade required |
+| 2.2.x (current) | Yes — active security support |
+| 2.1.x | Critical fixes only, for 60 days after 2.2.0 release |
+| < 2.1 | No — upgrade required |
 
 ---
 
@@ -53,8 +53,9 @@ The following components are covered by this policy:
 
 - **Memory pipeline** — `remember()`, `recall()`, `synthesize()`, and
   the two-phase extraction pipeline
-- **Storage layer** — JSONL notes store, LanceDB vector index, entity
-  index, knowledge graph JSONL
+- **Storage layer** — SQLite backend (notes, knowledge graph, entity index)
+  and the LanceDB vector index. Legacy JSONL paths still present for
+  migration are also in scope.
 - **MCP server** — all tool handlers exposed to Claude Code and other
   MCP clients
 - **REST API** — all FastAPI endpoints in `src/zettelforge/server.py`
@@ -83,11 +84,16 @@ The following components are covered by this policy:
 
 ### Data at Rest
 
-- Notes are stored as JSONL on local disk. No encryption at rest is
-  applied by ZettelForge itself — encrypt the filesystem or volume at
-  the OS level for sensitive deployments.
-- LanceDB vector index files are stored in the configured data directory
-  and carry the same recommendation.
+- Notes, the knowledge graph, and the entity index are stored in a local
+  SQLite database (WAL mode) under the configured data directory. No
+  encryption at rest is applied by ZettelForge itself — encrypt the
+  filesystem or volume at the OS level for sensitive deployments.
+- LanceDB vector index files live alongside the SQLite database and
+  carry the same recommendation.
+- Legacy v2.1.x deployments that still use JSONL (`notes.jsonl`,
+  `kg_nodes.jsonl`, `kg_edges.jsonl`, `entity_index.json`) should run
+  `scripts/migrate_jsonl_to_sqlite.py` — the JSONL paths are no longer
+  the default but remain supported as a migration input.
 
 ### Injection Defenses
 

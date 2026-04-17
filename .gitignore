@@ -62,7 +62,7 @@ htmlcov/
 vectordb/
 .vector_memory.lance/
 .snapshots/
-archive/
+/archive/
 
 # Data directories (runtime, not source)
 /data/

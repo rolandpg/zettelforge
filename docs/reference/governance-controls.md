@@ -9,8 +9,8 @@ tags:
   - validation
   - security
   - audit
-last_updated: "2026-04-09"
-version: "2.0.0"
+last_updated: "2026-04-16"
+version: "2.2.0"
 ---
 
 # Governance Controls Reference

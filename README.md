@@ -113,7 +113,7 @@ mm.remember(
 
 Every `remember()` call triggers a pipeline:
 
-1. **Entity Extraction** -- regex + LLM NER identifies CVEs, actors, tools, campaigns, people, locations, orgs (10 types)
+1. **Entity Extraction** -- regex + LLM NER identifies CVEs, intrusion sets, threat actors, tools, campaigns, ATT&CK techniques, IOCs (IPv4, domain, URL, MD5/SHA1/SHA256, email), people, locations, organizations, events, activities, and temporal references (19 types)
 2. **Knowledge Graph Update** -- entities become nodes, co-occurrence becomes edges, LLM infers causal triples
 3. **Vector Embedding** -- 768-dim fastembed (ONNX, in-process, 7ms/embed) stored in LanceDB
 4. **Supersession Check** -- entity overlap detection marks stale notes as superseded
