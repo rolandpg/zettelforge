@@ -27,6 +27,11 @@ plugins:
   - search
   - meta
 
+extra:
+  # Sourced by docs/overrides/main.html for JSON-LD SoftwareApplication.
+  # Bump on each release so schema.org metadata stays in sync with PyPI.
+  version: "2.2.1"
+
 extra_css:
   - stylesheets/extra.css
 

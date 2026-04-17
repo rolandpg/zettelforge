@@ -23,7 +23,8 @@
   {% set og_image = page.meta.image if page and page.meta and page.meta.image else (config.site_url ~ "assets/social-preview.png") %}
   {% set og_url = page.canonical_url if page and page.canonical_url else config.site_url %}
 
-  <meta property="og:type" content="article">
+  {% set og_type = "website" if page and page.is_homepage else "article" %}
+  <meta property="og:type" content="{{ og_type }}">
   <meta property="og:site_name" content="{{ config.site_name }}">
   <meta property="og:title" content="{{ og_title }}">
   <meta property="og:description" content="{{ og_description }}">
@@ -52,7 +53,7 @@
     "applicationCategory": "SecurityApplication",
     "applicationSubCategory": "Cyber Threat Intelligence",
     "operatingSystem": "Linux, macOS, Windows",
-    "softwareVersion": "2.2.0",
+    "softwareVersion": "{{ config.extra.version }}",
     "license": "https://opensource.org/licenses/MIT",
     "isAccessibleForFree": true,
     "programmingLanguage": "Python",
