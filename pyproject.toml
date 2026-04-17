@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "zettelforge"
-version = "2.2.0"
+version = "2.2.1"
 description = "ZettelForge: Agentic Memory System with vector search, knowledge graph, and synthesis"
 readme = "README.md"
 license = "MIT"
@@ -12,7 +12,7 @@ requires-python = ">=3.10"
 authors = [
     {name = "Patrick Roland", email = "patrick@groland.com"}
 ]
-keywords = ["cybersecurity", "threat-intelligence", "cti", "stix", "agent-memory", "knowledge-graph", "mcp-server", "ai-agent", "rag", "zettelkasten"]
+keywords = ["cybersecurity", "threat-intelligence", "cti", "stix", "agentic-memory", "knowledge-graph", "mcp-server", "ai-agent", "rag", "llm-memory"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -23,6 +23,8 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Security",
+    "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
 # Core dependencies (Community edition — MIT licensed)
