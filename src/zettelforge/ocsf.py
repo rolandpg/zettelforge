@@ -16,13 +16,27 @@ Event classes:
 """
 
 from datetime import datetime, timezone
+from importlib.metadata import PackageNotFoundError, version
 from typing import Any, Optional
 
 from zettelforge.log import get_logger
 
 logger = get_logger("zettelforge.ocsf")
 
-_PRODUCT_VERSION = "2.2.0"
+
+def _resolve_product_version() -> str:
+    """Read the installed package version so OCSF events don't drift on release bumps.
+
+    Falls back to a known value only when the package isn't installed (e.g. running
+    directly from a source checkout without an editable install).
+    """
+    try:
+        return version("zettelforge")
+    except PackageNotFoundError:
+        return "0.0.0+unknown"
+
+
+_PRODUCT_VERSION = _resolve_product_version()
 
 # OCSF severity mapping
 SEVERITY_UNKNOWN = 0

@@ -84,6 +84,32 @@ Versioning follows [Semantic Versioning](https://semver.org/).
   `fix/intent-classifier-graph-weight`,
   `fix/p0-production-blockers`, `feat/remember-evolve`.
 
+## [2.2.1] - 2026-04-16
+
+Metadata-only patch release. No functional changes. Addresses three
+PyPI discoverability issues surfaced by an internal SEO audit: a
+stale classifier on the published wheel, a missing `Topic :: Security`
+filter, and README images that rendered as broken links on the PyPI
+long-description because they used relative repo paths.
+
+### Changed
+
+- **PyPI classifiers** — added `Topic :: Security` (primary filter
+  security engineers use to browse PyPI) and
+  `Topic :: Software Development :: Libraries :: Python Modules`.
+  Existing `Topic :: Scientific/Engineering :: Artificial Intelligence`
+  retained. Development Status stays at `4 - Beta` (corrected in
+  v2.2.0 on master; this release republishes so the PyPI browse
+  filters match reality).
+- **PyPI keywords** — swapped `agent-memory` → `agentic-memory`
+  (emerging category keyword) and `zettelkasten` → `llm-memory`
+  (direct intent match for Mem0/Graphiti discovery traffic). Still
+  10 keywords total; within the PyPI display limit.
+- **README image paths** — `docs/assets/demo.gif` and
+  `docs/assets/zettelforge_architecture.svg` rewritten to absolute
+  `raw.githubusercontent.com` URLs so the long description renders
+  correctly on PyPI (relative paths 404 on the PyPI CDN).
+
 ## [2.2.0] - 2026-04-16
 
 SQLite default backend, causal chain retrieval, memory evolution, STIX taxonomy alignment, and community-first package cleanup.
