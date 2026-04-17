@@ -5,6 +5,14 @@ roadmap. They were produced during deep-dive sessions over Tamara / Nexus
 corpora and Codex research agents, and capture the direction a feature
 *could* take — not what is committed to ship.
 
+> **Heads up for contributors.** Some of these notes contain absolute local
+> paths (`/home/rolandpg/…`) and references to machine-specific dev
+> branches. They are preserved as captured so the original reasoning is
+> auditable. Treat any absolute path you see here as a placeholder — the
+> canonical locations for runnable code are the top of this repo plus the
+> `zettelforge-enterprise` package on PyPI. Do not rely on these paths
+> existing on your own machine.
+
 If you are looking for the roadmap of what has actually landed, see:
 
 - [CHANGELOG.md](../../../CHANGELOG.md) — shipped per release

@@ -40,7 +40,9 @@ Pre-download the model outside ZettelForge:
 
 ```python
 from fastembed import TextEmbedding
-TextEmbedding(model_name="nomic-embed-text-v1.5-Q")
+# Use the full HF model id that ZettelForge defaults to internally.
+# The short form "nomic-embed-text-v1.5-Q" is rejected by fastembed.
+TextEmbedding(model_name="nomic-ai/nomic-embed-text-v1.5-Q")
 ```
 
 ### Ollama backend returns empty strings
