@@ -77,7 +77,7 @@ class TestEntityRecall:
     def test_recall_cve_returns_notes(self, temp_memory):
         """CVE recall returns matching notes."""
         mm = MemoryManager(jsonl_path=f"{temp_memory}/notes.jsonl")
-        mm.remember("CVE-2024-3094 is a backdoor in XZ Utils", domain="security_ops")
+        mm.remember("CVE-2024-3094 is a backdoor in XZ Utils", domain="security_ops", sync=True)
 
         results = mm.recall_cve("CVE-2024-3094", k=5)
 
@@ -125,7 +125,7 @@ class TestVectorRecall:
 
         # Add some notes
         for i in range(10):
-            mm.remember(f"Test note {i} about security topics", domain="general")
+            mm.remember(f"Test note {i} about security topics", domain="general", sync=True)
 
         start = time.time()
         results = mm.recall("security topics", k=5)
