@@ -40,18 +40,20 @@ class TestRememberWithExtraction:
         )
         assert len(results) == 0
 
-    @pytest.mark.xfail(
-        reason="remember_with_extraction calls generate 4x; mock side_effect count and NOOP/UPDATE routing need rework"
-    )
     @patch("zettelforge.llm_client.generate")
     def test_update_supersedes_old_note(self, mock_generate, fresh_mm):
         old_note, _ = fresh_mm.remember("APT28 uses DROPBEAR malware", domain="cti")
 
-        # Mock returns: extraction → decision → any extra generate calls get empty
-        mock_generate.side_effect = [
-            '[{"fact": "APT28 no longer uses DROPBEAR", "importance": 9}]',
-            '{"operation": "UPDATE", "reason": "refines old intel"}',
-        ] + [""] * 10  # Extra calls (synthesis, causal, etc.) get empty string
+        # Prompt-aware mock: responds based on prompt content rather than call order.
+        # This is robust to call count drift (retries, background enrichment workers).
+        def _route(prompt, *args, **kwargs):
+            if "Extract the most important facts" in prompt:
+                return '[{"fact": "APT28 no longer uses DROPBEAR", "importance": 9}]'
+            if "Compare this new fact" in prompt:
+                return '{"operation": "UPDATE", "reason": "refines old intel"}'
+            return ""
+
+        mock_generate.side_effect = _route
         results = fresh_mm.remember_with_extraction(
             "APT28 has dropped DROPBEAR from their toolkit.",
             domain="cti",
@@ -62,18 +64,19 @@ class TestRememberWithExtraction:
         refreshed_old = fresh_mm.store.get_note_by_id(old_note.id)
         assert refreshed_old.links.superseded_by == new_note.id
 
-    @pytest.mark.xfail(
-        reason="remember_with_extraction calls generate 4x; mock side_effect count and NOOP routing need rework"
-    )
     @patch("zettelforge.llm_client.generate")
     def test_noop_stores_nothing_new(self, mock_generate, fresh_mm):
         fresh_mm.remember("APT28 targets NATO", domain="cti")
         initial_count = fresh_mm.store.count_notes()
 
-        mock_generate.side_effect = [
-            '[{"fact": "APT28 targets NATO", "importance": 6}]',
-            '{"operation": "NOOP", "reason": "already stored"}',
-        ] + [""] * 10  # Extra calls get empty string
+        def _route(prompt, *args, **kwargs):
+            if "Extract the most important facts" in prompt:
+                return '[{"fact": "APT28 targets NATO", "importance": 6}]'
+            if "Compare this new fact" in prompt:
+                return '{"operation": "NOOP", "reason": "already stored"}'
+            return ""
+
+        mock_generate.side_effect = _route
         results = fresh_mm.remember_with_extraction(
             "APT28 targets NATO allies.",
             domain="cti",
