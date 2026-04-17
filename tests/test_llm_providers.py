@@ -113,6 +113,10 @@ class TestMockProvider:
 
 # ── OllamaProvider ───────────────────────────────────────────────────────────
 
+# The ollama SDK is not a core dependency — skip this class when it is
+# unavailable (e.g. the minimal CI environment without zettelforge[local]).
+pytest.importorskip("ollama", reason="ollama SDK not installed")
+
 
 class TestOllamaProvider:
     def test_generate_calls_ollama_with_expected_args(self):
