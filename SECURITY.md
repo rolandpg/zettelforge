@@ -1,5 +1,26 @@
 # Security Policy
 
+## Canonical Channels
+
+To avoid supply-chain and impersonation risk, only the following are
+official distribution channels for ZettelForge and ThreatRecall:
+
+| Artifact | Canonical URL |
+|---|---|
+| Source repository | https://github.com/rolandpg/zettelforge |
+| Python package | https://pypi.org/project/zettelforge/ |
+| Release artifacts | https://github.com/rolandpg/zettelforge/releases |
+| Documentation | https://docs.threatrecall.ai/ |
+| Official hosted service | https://threatrecall.ai/ |
+| Security disclosure | contact@threatrecall.ai (this file) |
+
+Packages installed from anywhere else — including any `zettelforge-*`
+typosquats, alternate PyPI mirrors, forks published under a different
+namespace, or third-party "ZettelForge Cloud" / "ThreatRecall" hosted
+services — are not affiliated with this project and have not been
+reviewed by the maintainers. Verify provenance via the signed release
+artifacts when in doubt.
+
 ## Reporting a Vulnerability
 
 **Do not open a public GitHub issue for security vulnerabilities.**
