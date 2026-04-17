@@ -23,7 +23,7 @@ from typing import Any, Dict, List, Optional
 from langchain_core.callbacks import CallbackManagerForRetrieverRun
 from langchain_core.documents import Document
 from langchain_core.retrievers import BaseRetriever
-from pydantic import Field
+from pydantic import ConfigDict, Field
 
 from zettelforge.memory_manager import MemoryManager
 
@@ -42,16 +42,13 @@ class ZettelForgeRetriever(BaseRetriever):
         exclude_superseded: Whether to filter superseded notes (default True).
     """
 
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
     memory_manager: MemoryManager = Field(exclude=True)
     k: int = 10
     domain: Optional[str] = None
     include_links: bool = True
     exclude_superseded: bool = True
-
-    class Config:
-        """Pydantic config — allow arbitrary types for MemoryManager."""
-
-        arbitrary_types_allowed = True
 
     def _get_relevant_documents(
         self, query: str, *, run_manager: CallbackManagerForRetrieverRun
