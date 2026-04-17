@@ -61,7 +61,11 @@ class TestZettelForgeRetriever:
     def test_metadata_fields(self, memory_manager):
         """Documents carry ZettelForge metadata fields."""
         retriever = ZettelForgeRetriever(memory_manager=memory_manager, k=5)
-        docs = retriever.invoke("XZ Utils CVE")
+        # Use the exact CVE ID so fastembed + the CVE-ID regex recall path
+        # reliably returns the seeded security_ops note; fuzzy queries like
+        # "XZ Utils CVE" don't score highly enough on fastembed with a
+        # 3-note corpus.
+        docs = retriever.invoke("CVE-2024-3094")
 
         assert len(docs) > 0
         doc = docs[0]
