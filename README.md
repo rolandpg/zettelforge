@@ -19,7 +19,7 @@ Give your AI agents persistent memory with entity extraction, knowledge graphs, 
 <a href="https://www.buymeacoffee.com/xypher22pr0" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-green.png" alt="Buy Me a Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 </p>
 <p align="center">
-  <img src="https://raw.githubusercontent.com/rolandpg/zettelforge/master/docs/assets/demo.gif" width="720" alt="ZettelForge demo — CTI agentic memory in action">
+  <img src="https://raw.githubusercontent.com/rolandpg/zettelforge/v2.2.1/docs/assets/demo.gif" width="720" alt="ZettelForge demo — CTI agentic memory in action">
 </p>
 
 ## Why ZettelForge?
@@ -44,7 +44,7 @@ ZettelForge was built from the ground up for analysts who think in threat graphs
 
 ## Data Pipeline
 <p align="center">
-  <img src="https://raw.githubusercontent.com/rolandpg/zettelforge/master/docs/assets/zettelforge_architecture.svg" width="720" alt="ZettelForge architecture — Extract, Graph, Embed, Recall pipeline">
+  <img src="https://raw.githubusercontent.com/rolandpg/zettelforge/v2.2.1/docs/assets/zettelforge_architecture.svg" width="720" alt="ZettelForge architecture — Extract, Graph, Embed, Recall pipeline">
 </p>
 
 

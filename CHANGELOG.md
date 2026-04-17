@@ -69,11 +69,10 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 ## [2.2.1] - 2026-04-16
 
 Metadata-only patch release. No functional changes. Addresses three
-PyPI discoverability issues surfaced by the Phase 0 SEO audit
-(`phase-0/github-seo-audit.md`): a stale classifier on the published
-wheel, a missing `Topic :: Security` filter, and README images that
-rendered as broken links on the PyPI long-description because they
-used relative repo paths.
+PyPI discoverability issues surfaced by an internal SEO audit: a
+stale classifier on the published wheel, a missing `Topic :: Security`
+filter, and README images that rendered as broken links on the PyPI
+long-description because they used relative repo paths.
 
 ### Changed
 
