@@ -352,42 +352,53 @@ class SQLiteBackend(StorageBackend):
         )
 
     def get_note_by_id(self, note_id: str) -> Optional[MemoryNote]:
-        cur = self._conn.execute("SELECT * FROM notes WHERE id = ?", (note_id,))
-        row = cur.fetchone()
+        with self._write_lock:
+            cur = self._conn.execute("SELECT * FROM notes WHERE id = ?", (note_id,))
+            row = cur.fetchone()
         if row is None:
             return None
         return _row_to_note(row)
 
     def get_note_by_source_ref(self, source_ref: str) -> Optional[MemoryNote]:
-        cur = self._conn.execute(
-            "SELECT * FROM notes WHERE content_source_ref = ? LIMIT 1",
-            (source_ref,),
-        )
-        row = cur.fetchone()
+        with self._write_lock:
+            cur = self._conn.execute(
+                "SELECT * FROM notes WHERE content_source_ref = ? LIMIT 1",
+                (source_ref,),
+            )
+            row = cur.fetchone()
         if row is None:
             return None
         return _row_to_note(row)
 
     def iterate_notes(self) -> Iterator[MemoryNote]:
-        cur = self._conn.execute("SELECT * FROM notes")
+        with self._write_lock:
+            cur = self._conn.execute("SELECT * FROM notes")
         while True:
-            rows = cur.fetchmany(100)
+            with self._write_lock:
+                rows = cur.fetchmany(100)
             if not rows:
                 break
             for row in rows:
                 yield _row_to_note(row)
 
     def get_notes_by_domain(self, domain: str) -> List[MemoryNote]:
-        cur = self._conn.execute("SELECT * FROM notes WHERE domain = ?", (domain,))
-        return [_row_to_note(r) for r in cur.fetchall()]
+        with self._write_lock:
+            cur = self._conn.execute("SELECT * FROM notes WHERE domain = ?", (domain,))
+            rows = cur.fetchall()
+        return [_row_to_note(r) for r in rows]
 
     def get_recent_notes(self, limit: int = 10) -> List[MemoryNote]:
-        cur = self._conn.execute("SELECT * FROM notes ORDER BY created_at DESC LIMIT ?", (limit,))
-        return [_row_to_note(r) for r in cur.fetchall()]
+        with self._write_lock:
+            cur = self._conn.execute(
+                "SELECT * FROM notes ORDER BY created_at DESC LIMIT ?", (limit,)
+            )
+            rows = cur.fetchall()
+        return [_row_to_note(r) for r in rows]
 
     def count_notes(self) -> int:
-        cur = self._conn.execute("SELECT COUNT(*) FROM notes")
-        return cur.fetchone()[0]
+        with self._write_lock:
+            cur = self._conn.execute("SELECT COUNT(*) FROM notes")
+            return cur.fetchone()[0]
 
     def delete_note(self, note_id: str) -> bool:
         with self._write_lock:
@@ -458,11 +469,12 @@ class SQLiteBackend(StorageBackend):
         return node_id
 
     def get_kg_node(self, entity_type: str, entity_value: str) -> Optional[Dict]:
-        cur = self._conn.execute(
-            "SELECT * FROM kg_nodes WHERE entity_type = ? AND entity_value = ?",
-            (entity_type, entity_value),
-        )
-        row = cur.fetchone()
+        with self._write_lock:
+            cur = self._conn.execute(
+                "SELECT * FROM kg_nodes WHERE entity_type = ? AND entity_value = ?",
+                (entity_type, entity_value),
+            )
+            row = cur.fetchone()
         if row is None:
             return None
         return {
@@ -538,33 +550,35 @@ class SQLiteBackend(StorageBackend):
         entity_value: str,
         relationship: Optional[str] = None,
     ) -> List[Dict]:
-        # Resolve node_id
-        cur = self._conn.execute(
-            "SELECT node_id FROM kg_nodes WHERE entity_type = ? AND entity_value = ?",
-            (entity_type, entity_value),
-        )
-        row = cur.fetchone()
-        if row is None:
-            return []
-        node_id = row["node_id"]
+        with self._write_lock:
+            # Resolve node_id
+            cur = self._conn.execute(
+                "SELECT node_id FROM kg_nodes WHERE entity_type = ? AND entity_value = ?",
+                (entity_type, entity_value),
+            )
+            row = cur.fetchone()
+            if row is None:
+                return []
+            node_id = row["node_id"]
 
-        if relationship:
-            edges_cur = self._conn.execute(
-                "SELECT e.*, n.entity_type AS to_type, n.entity_value AS to_value, n.properties AS to_props "
-                "FROM kg_edges e JOIN kg_nodes n ON e.to_node_id = n.node_id "
-                "WHERE e.from_node_id = ? AND e.relationship = ?",
-                (node_id, relationship),
-            )
-        else:
-            edges_cur = self._conn.execute(
-                "SELECT e.*, n.entity_type AS to_type, n.entity_value AS to_value, n.properties AS to_props "
-                "FROM kg_edges e JOIN kg_nodes n ON e.to_node_id = n.node_id "
-                "WHERE e.from_node_id = ?",
-                (node_id,),
-            )
+            if relationship:
+                edges_cur = self._conn.execute(
+                    "SELECT e.*, n.entity_type AS to_type, n.entity_value AS to_value, n.properties AS to_props "
+                    "FROM kg_edges e JOIN kg_nodes n ON e.to_node_id = n.node_id "
+                    "WHERE e.from_node_id = ? AND e.relationship = ?",
+                    (node_id, relationship),
+                )
+            else:
+                edges_cur = self._conn.execute(
+                    "SELECT e.*, n.entity_type AS to_type, n.entity_value AS to_value, n.properties AS to_props "
+                    "FROM kg_edges e JOIN kg_nodes n ON e.to_node_id = n.node_id "
+                    "WHERE e.from_node_id = ?",
+                    (node_id,),
+                )
+            erows = edges_cur.fetchall()
 
         neighbors = []
-        for erow in edges_cur.fetchall():
+        for erow in erows:
             neighbors.append(
                 {
                     "node": {
@@ -587,11 +601,12 @@ class SQLiteBackend(StorageBackend):
         max_depth: int = 2,
     ) -> List[List[Dict]]:
         """BFS/DFS traversal up to max_depth.  Returns list of paths."""
-        cur = self._conn.execute(
-            "SELECT node_id FROM kg_nodes WHERE entity_type = ? AND entity_value = ?",
-            (start_type, start_value),
-        )
-        row = cur.fetchone()
+        with self._write_lock:
+            cur = self._conn.execute(
+                "SELECT node_id FROM kg_nodes WHERE entity_type = ? AND entity_value = ?",
+                (start_type, start_value),
+            )
+            row = cur.fetchone()
         if row is None:
             return []
 
@@ -604,17 +619,19 @@ class SQLiteBackend(StorageBackend):
                 return
             visited.add(current_id)
 
-            edges_cur = self._conn.execute(
-                "SELECT e.to_node_id, e.relationship, "
-                "nf.entity_type AS from_type, nf.entity_value AS from_value, "
-                "nt.entity_type AS to_type, nt.entity_value AS to_value "
-                "FROM kg_edges e "
-                "JOIN kg_nodes nf ON e.from_node_id = nf.node_id "
-                "JOIN kg_nodes nt ON e.to_node_id = nt.node_id "
-                "WHERE e.from_node_id = ?",
-                (current_id,),
-            )
-            for erow in edges_cur.fetchall():
+            with self._write_lock:
+                edges_cur = self._conn.execute(
+                    "SELECT e.to_node_id, e.relationship, "
+                    "nf.entity_type AS from_type, nf.entity_value AS from_value, "
+                    "nt.entity_type AS to_type, nt.entity_value AS to_value "
+                    "FROM kg_edges e "
+                    "JOIN kg_nodes nf ON e.from_node_id = nf.node_id "
+                    "JOIN kg_nodes nt ON e.to_node_id = nt.node_id "
+                    "WHERE e.from_node_id = ?",
+                    (current_id,),
+                )
+                erows = edges_cur.fetchall()
+            for erow in erows:
                 step = {
                     "from_type": erow["from_type"],
                     "from_value": erow["from_value"],
@@ -633,25 +650,27 @@ class SQLiteBackend(StorageBackend):
 
     def get_entity_timeline(self, entity_type: str, entity_value: str) -> List[Dict]:
         """Get temporal timeline of states for an entity via temporal edges."""
-        cur = self._conn.execute(
-            "SELECT node_id FROM kg_nodes WHERE entity_type = ? AND entity_value = ?",
-            (entity_type, entity_value),
-        )
-        row = cur.fetchone()
-        if row is None:
-            return []
-        node_id = row["node_id"]
+        with self._write_lock:
+            cur = self._conn.execute(
+                "SELECT node_id FROM kg_nodes WHERE entity_type = ? AND entity_value = ?",
+                (entity_type, entity_value),
+            )
+            row = cur.fetchone()
+            if row is None:
+                return []
+            node_id = row["node_id"]
 
-        edges_cur = self._conn.execute(
-            "SELECT e.*, nt.entity_type AS to_type, nt.entity_value AS to_value "
-            "FROM kg_edges e JOIN kg_nodes nt ON e.to_node_id = nt.node_id "
-            "WHERE e.from_node_id = ? AND "
-            "(e.relationship LIKE 'TEMPORAL_%' OR e.relationship = 'SUPERSEDES') "
-            "ORDER BY e.created_at",
-            (node_id,),
-        )
+            edges_cur = self._conn.execute(
+                "SELECT e.*, nt.entity_type AS to_type, nt.entity_value AS to_value "
+                "FROM kg_edges e JOIN kg_nodes nt ON e.to_node_id = nt.node_id "
+                "WHERE e.from_node_id = ? AND "
+                "(e.relationship LIKE 'TEMPORAL_%' OR e.relationship = 'SUPERSEDES') "
+                "ORDER BY e.created_at",
+                (node_id,),
+            )
+            erows = edges_cur.fetchall()
         timeline = []
-        for erow in edges_cur.fetchall():
+        for erow in erows:
             props = json.loads(erow["properties"] or "{}")
             ts = props.get("timestamp") or erow["created_at"] or ""
             timeline.append(
@@ -666,20 +685,22 @@ class SQLiteBackend(StorageBackend):
 
     def get_changes_since(self, timestamp: str) -> List[Dict]:
         """Get all temporal edge changes since a given ISO-8601 timestamp."""
-        edges_cur = self._conn.execute(
-            "SELECT e.*, "
-            "nf.entity_type AS from_type, nf.entity_value AS from_value, "
-            "nt.entity_type AS to_type, nt.entity_value AS to_value "
-            "FROM kg_edges e "
-            "JOIN kg_nodes nf ON e.from_node_id = nf.node_id "
-            "JOIN kg_nodes nt ON e.to_node_id = nt.node_id "
-            "WHERE (e.relationship LIKE 'TEMPORAL_%' OR e.relationship = 'SUPERSEDES') "
-            "AND e.created_at >= ? "
-            "ORDER BY e.created_at",
-            (timestamp,),
-        )
+        with self._write_lock:
+            edges_cur = self._conn.execute(
+                "SELECT e.*, "
+                "nf.entity_type AS from_type, nf.entity_value AS from_value, "
+                "nt.entity_type AS to_type, nt.entity_value AS to_value "
+                "FROM kg_edges e "
+                "JOIN kg_nodes nf ON e.from_node_id = nf.node_id "
+                "JOIN kg_nodes nt ON e.to_node_id = nt.node_id "
+                "WHERE (e.relationship LIKE 'TEMPORAL_%' OR e.relationship = 'SUPERSEDES') "
+                "AND e.created_at >= ? "
+                "ORDER BY e.created_at",
+                (timestamp,),
+            )
+            erows = edges_cur.fetchall()
         changes = []
-        for erow in edges_cur.fetchall():
+        for erow in erows:
             changes.append(
                 {
                     "timestamp": erow["created_at"],
@@ -692,8 +713,9 @@ class SQLiteBackend(StorageBackend):
 
     def get_kg_node_by_id(self, node_id: str) -> Optional[Dict]:
         """Lookup a KG node by its internal node_id."""
-        cur = self._conn.execute("SELECT * FROM kg_nodes WHERE node_id = ?", (node_id,))
-        row = cur.fetchone()
+        with self._write_lock:
+            cur = self._conn.execute("SELECT * FROM kg_nodes WHERE node_id = ?", (node_id,))
+            row = cur.fetchone()
         if row is None:
             return None
         return {
@@ -713,11 +735,12 @@ class SQLiteBackend(StorageBackend):
         max_visited: int = 50,
     ) -> List[Dict]:
         """BFS over outgoing causal edges — traces forward from cause to effects."""
-        cur = self._conn.execute(
-            "SELECT node_id FROM kg_nodes WHERE entity_type = ? AND entity_value = ?",
-            (entity_type, entity_value),
-        )
-        row = cur.fetchone()
+        with self._write_lock:
+            cur = self._conn.execute(
+                "SELECT node_id FROM kg_nodes WHERE entity_type = ? AND entity_value = ?",
+                (entity_type, entity_value),
+            )
+            row = cur.fetchone()
         if row is None:
             return []
 
@@ -732,11 +755,13 @@ class SQLiteBackend(StorageBackend):
                 continue
             visited.add(current_id)
 
-            edges_cur = self._conn.execute(
-                "SELECT * FROM kg_edges WHERE from_node_id = ? AND edge_type = 'causal'",
-                (current_id,),
-            )
-            for erow in edges_cur.fetchall():
+            with self._write_lock:
+                edges_cur = self._conn.execute(
+                    "SELECT * FROM kg_edges WHERE from_node_id = ? AND edge_type = 'causal'",
+                    (current_id,),
+                )
+                erows = edges_cur.fetchall()
+            for erow in erows:
                 edge = dict(erow)
                 edge["properties"] = json.loads(edge.get("properties") or "{}")
                 causal_edges.append(edge)
@@ -754,11 +779,12 @@ class SQLiteBackend(StorageBackend):
         max_visited: int = 50,
     ) -> List[Dict]:
         """BFS over incoming causal edges — traces back to root causes."""
-        cur = self._conn.execute(
-            "SELECT node_id FROM kg_nodes WHERE entity_type = ? AND entity_value = ?",
-            (entity_type, entity_value),
-        )
-        row = cur.fetchone()
+        with self._write_lock:
+            cur = self._conn.execute(
+                "SELECT node_id FROM kg_nodes WHERE entity_type = ? AND entity_value = ?",
+                (entity_type, entity_value),
+            )
+            row = cur.fetchone()
         if row is None:
             return []
 
@@ -773,11 +799,13 @@ class SQLiteBackend(StorageBackend):
                 continue
             visited.add(current_id)
 
-            edges_cur = self._conn.execute(
-                "SELECT * FROM kg_edges WHERE to_node_id = ? AND edge_type = 'causal'",
-                (current_id,),
-            )
-            for erow in edges_cur.fetchall():
+            with self._write_lock:
+                edges_cur = self._conn.execute(
+                    "SELECT * FROM kg_edges WHERE to_node_id = ? AND edge_type = 'causal'",
+                    (current_id,),
+                )
+                erows = edges_cur.fetchall()
+            for erow in erows:
                 edge = dict(erow)
                 edge["properties"] = json.loads(edge.get("properties") or "{}")
                 causal_edges.append(edge)
@@ -804,21 +832,25 @@ class SQLiteBackend(StorageBackend):
             self._conn.commit()
 
     def get_note_ids_for_entity(self, entity_type: str, entity_value: str) -> List[str]:
-        cur = self._conn.execute(
-            "SELECT note_id FROM entity_index WHERE entity_type = ? AND entity_value = ?",
-            (entity_type, entity_value),
-        )
-        return [r["note_id"] for r in cur.fetchall()]
+        with self._write_lock:
+            cur = self._conn.execute(
+                "SELECT note_id FROM entity_index WHERE entity_type = ? AND entity_value = ?",
+                (entity_type, entity_value),
+            )
+            rows = cur.fetchall()
+        return [r["note_id"] for r in rows]
 
     def search_entities(self, query: str, limit: int = 10) -> Dict[str, List[str]]:
         """Prefix search across entity types."""
-        cur = self._conn.execute(
-            "SELECT DISTINCT entity_type, entity_value FROM entity_index "
-            "WHERE entity_value LIKE ? LIMIT ?",
-            (f"{query}%", limit),
-        )
+        with self._write_lock:
+            cur = self._conn.execute(
+                "SELECT DISTINCT entity_type, entity_value FROM entity_index "
+                "WHERE entity_value LIKE ? LIMIT ?",
+                (f"{query}%", limit),
+            )
+            rows = cur.fetchall()
         result: Dict[str, List[str]] = defaultdict(list)
-        for row in cur.fetchall():
+        for row in rows:
             result[row["entity_type"]].append(row["entity_value"])
         return dict(result)
 
