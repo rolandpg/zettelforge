@@ -1,6 +1,10 @@
-"""
-Intelligent caching layer for ZettelForge
-Complies with GOV-003 (Python standards) and GOV-012 (observability)
+"""Intelligent caching layer for ZettelForge.
+
+.. note::
+   As of v2.2.0 this module is **not wired into** ``MemoryManager`` or any
+   of the retrievers. ``config.cache.*`` values are parsed but not consumed.
+   Kept for future integration (e.g. recall-result caching) and may be
+   removed if the direction changes.
 """
 
 import time

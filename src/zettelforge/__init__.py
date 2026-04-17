@@ -39,13 +39,17 @@ from zettelforge.memory_manager import MemoryManager, get_memory_manager
 from zettelforge.memory_updater import MemoryUpdater, UpdateOperation
 from zettelforge.note_constructor import NoteConstructor
 from zettelforge.note_schema import MemoryNote
+# Ontology module: ENTITY_TYPES/RELATION_TYPES are reference tables consumers
+# can use directly. TypedEntityStore / OntologyValidator are a parallel store
+# not wired into MemoryManager as of v2.2.0 — importable for advanced use but
+# no longer part of the advertised public API.
 from zettelforge.ontology import (
     ENTITY_TYPES,
     RELATION_TYPES,
-    OntologyValidator,
-    TypedEntityStore,
-    get_ontology_store,
-    get_ontology_validator,
+    OntologyValidator,  # noqa: F401  (advanced/optional — not in __all__)
+    TypedEntityStore,  # noqa: F401   (advanced/optional — not in __all__)
+    get_ontology_store,  # noqa: F401 (advanced/optional — not in __all__)
+    get_ontology_validator,  # noqa: F401 (advanced/optional — not in __all__)
 )
 from zettelforge.synthesis_generator import SynthesisGenerator, get_synthesis_generator
 from zettelforge.synthesis_validator import SynthesisValidator, get_synthesis_validator
@@ -76,11 +80,9 @@ __all__ = [
     "GraphRetriever",
     "ScoredResult",
     "BlendedRetriever",
-    # Ontology
-    "TypedEntityStore",
-    "OntologyValidator",
-    "get_ontology_store",
-    "get_ontology_validator",
+    # Ontology reference tables (TypedEntityStore / OntologyValidator are
+    # importable from zettelforge.ontology but are not part of the public API
+    # — see the module comment above for details).
     "ENTITY_TYPES",
     "RELATION_TYPES",
     # Intent Classification
