@@ -88,8 +88,9 @@ below.
 ### Changed
 
 - **SECURITY.md** — contact updated to `contact@threatrecall.ai`,
-  supported-versions table refreshed to 2.2.x, storage section
-  refreshed to reflect SQLite-by-default.
+  supported-versions table refreshed to mark `2.3.x` as current and
+  `2.2.x` as the prior minor release; storage section refreshed to
+  reflect SQLite-by-default.
 - **`docs/llms.txt`** — rewritten to match current reality (SQLite
   default, 19 runtime entity types, correct GOV-003/007/011/012
   descriptions, MCP invocation).
