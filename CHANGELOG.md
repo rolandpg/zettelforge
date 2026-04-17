@@ -6,6 +6,16 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [2.3.0] - 2026-04-17
+
+Pluggable LLM provider infrastructure (RFC-002 Phase 1), MCP server
+as a first-class Python module, PyPI discoverability refresh, SEO
+foundations across the docs site, and a full docs-vs-code
+reconciliation. All additions are backward-compatible; no existing
+API changes. Supersedes the never-tagged 2.2.1 metadata patch —
+its PyPI classifier / keyword / image-URL changes are folded in
+below.
+
 ### Added
 
 - **Pluggable LLM provider infrastructure (RFC-002 Phase 1)** — new
@@ -17,13 +27,22 @@ Versioning follows [Semantic Versioning](https://semver.org/).
   `intent_classifier`, `note_constructor`, `entity_indexer`,
   `memory_evolver`) keep working without modification. Third-party
   providers can register via the `zettelforge.llm_providers`
-  entry-point group. `openai_compat` and `anthropic` providers land in
-  Phase 2 and Phase 3.
+  entry-point group. `openai_compat` and `anthropic` providers land
+  in Phase 2 and Phase 3.
 - **`LLMConfig` expanded** — new `api_key`, `timeout`, `max_retries`,
   `fallback`, and `extra` fields. `api_key` supports `${ENV_VAR}`
-  references and is redacted from `repr()`. New env overrides:
-  `ZETTELFORGE_LLM_API_KEY`, `ZETTELFORGE_LLM_TIMEOUT`,
-  `ZETTELFORGE_LLM_MAX_RETRIES`, `ZETTELFORGE_LLM_FALLBACK`.
+  references and is redacted from `repr()`. Sensitive keys inside
+  `extra` (matching `key|token|secret|password|credential|auth`) are
+  redacted as well. New env overrides: `ZETTELFORGE_LLM_API_KEY`,
+  `ZETTELFORGE_LLM_TIMEOUT`, `ZETTELFORGE_LLM_MAX_RETRIES`,
+  `ZETTELFORGE_LLM_FALLBACK`.
+- **`LLMProviderConfigurationError`** — new exception surfaced for
+  non-recoverable provider setup problems (bad API key, missing
+  optional SDK) so `generate()` can distinguish "try the fallback"
+  from "stop and report".
+- **`llm_client.reload()` helper** — clears the provider registry
+  and config cache so test suites and long-lived processes can
+  reconfigure the LLM backend without a process restart.
 - **Hardened .gitignore** per GOV-023 — added `.env.*`, `*.key`,
   `*.pem`.
 - **MCP server as a first-class module** — `python -m zettelforge.mcp`
@@ -32,6 +51,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
   `__main__.py`, and a console-script entry `zettelforge-mcp`).
   The previous entry point at `web/mcp_server.py` is retained as a
   thin backward-compat shim.
+- **Console scripts** — `zettelforge` and `zettelforge-mcp` entry
+  points added to `pyproject.toml`.
 - **How-to guides** — migration (`migrate-jsonl-to-sqlite.md`),
   benchmark reproduction (`reproduce-benchmarks.md`), troubleshooting
   (`troubleshoot.md`), and upgrade (`upgrade.md`). Linked from the
@@ -39,41 +60,85 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - **Design and About sections in the docs nav** — RFC-001, RFC-002,
   RFC-003 and the origin-story narrative are now discoverable from
   `docs.threatrecall.ai`.
+- **RFC-003 design proposal (docs only)** — read-path depth routing
+  with a deterministic Quality Gate plus System 1 / System 2 recall
+  paths. Ships with an adversarial-review artifact (4 blockers, 13
+  warnings). No runtime changes yet — implementation deferred.
 - **Archive directory** — `docs/archive/` holds retired v1.0.0-alpha
   snapshots (`SKILL.md`, `PACKAGE_SUMMARY.md`) with a README explaining
   their provenance.
 - **`llm_ner` configuration reference** — `docs/reference/configuration.md`
   now documents `llm_ner.enabled` and the `ZETTELFORGE_LLM_NER_ENABLED`
   environment override.
-- **Console scripts** — `zettelforge` and `zettelforge-mcp` entry
-  points added to `pyproject.toml`.
+- **Docs SEO foundation** — per-page canonical URLs, OpenGraph and
+  Twitter-card metadata, and a `SoftwareApplication` JSON-LD block on
+  the home page via a `docs/overrides/main.html` theme override. The
+  `softwareVersion` value is sourced from `config.extra.version` in
+  `mkdocs.yml` so it stays in sync with releases.
+- **PyPI classifier refresh** — added `Topic :: Security` (primary
+  filter security engineers use to browse PyPI) and
+  `Topic :: Software Development :: Libraries :: Python Modules`.
+  Existing `Topic :: Scientific/Engineering :: Artificial Intelligence`
+  retained. Development Status stays at `4 - Beta`.
+- **PyPI keyword refresh** — swapped `agent-memory` → `agentic-memory`
+  (emerging category keyword) and `zettelkasten` → `llm-memory`
+  (direct intent match for Mem0/Graphiti discovery traffic). Still
+  10 keywords total; within the PyPI display limit.
 
 ### Changed
 
 - **SECURITY.md** — contact updated to `contact@threatrecall.ai`,
-  supported-versions table refreshed to 2.2.x, storage section
-  refreshed to reflect SQLite-by-default.
-- **`docs/llms.txt`** — rewritten to match v2.2.0 reality (SQLite
+  supported-versions table refreshed to mark `2.3.x` as current and
+  `2.2.x` as the prior minor release; storage section refreshed to
+  reflect SQLite-by-default.
+- **`docs/llms.txt`** — rewritten to match current reality (SQLite
   default, 19 runtime entity types, correct GOV-003/007/011/012
   descriptions, MCP invocation).
-- **BENCHMARK_REPORT.md** — CTIBench ATE row updated (F1 = 0.146,
-  v2.2.0); architecture summary reframed as SQLite + LanceDB default
-  with TypeDB as an extension; `ctibench_results.json` date bumped.
-- **README.md** — pipeline step 1 entity count corrected from "10
-  types" to the 19 types `EntityExtractor` actually recognises.
+- **BENCHMARK_REPORT.md** — CTIBench ATE row updated (F1 = 0.146);
+  architecture summary reframed as SQLite + LanceDB default with
+  TypeDB as an extension; `ctibench_results.json` date bumped.
+- **README** — above-fold rewritten (CTA row, keyword density,
+  PyPI-safe absolute-URL images). Pipeline step 1 entity count
+  corrected from "10 types" to the 19 types `EntityExtractor`
+  actually recognises.
+- **README image paths** — `docs/assets/demo.gif` and
+  `docs/assets/zettelforge_architecture.svg` rewritten to absolute
+  `raw.githubusercontent.com` URLs so the PyPI long description
+  renders correctly (relative paths 404 on the PyPI CDN). Pinned to
+  the `master` ref; can be re-pinned to the `v2.3.0` tag in the
+  next release PR if PyPI-side stability matters.
 - **`docs/superpowers/plans/` renamed to `docs/superpowers/research/`**
   with a README making clear these are aspirational synthesis, not
   roadmap commitments. The stray untracked `docs/plans/` directory
   was removed.
 - **Tutorials and governance-controls reference** — `last_updated`
-  and `version` metadata bumped to v2.2.0 / 2026-04-16.
+  and `version` metadata refreshed.
 - **`zettelforge.ontology` exports** — `TypedEntityStore`,
   `OntologyValidator`, `get_ontology_store`, `get_ontology_validator`
   removed from the top-level `__all__` (still importable from
   `zettelforge.ontology`). They are a parallel store not wired into
-  `MemoryManager` as of v2.2.0.
+  `MemoryManager`.
 - **`observability.py` and `cache.py` headers** — annotated as
   currently unwired; kept for future integration.
+- **OCSF `_PRODUCT_VERSION`** — sourced from
+  `importlib.metadata.version("zettelforge")` instead of a hard-coded
+  string, so emitted OCSF events stop drifting when `__version__`
+  bumps.
+- **OpenGraph `og:type`** — `website` on the home page, `article`
+  elsewhere (was unconditionally `article`).
+
+### Fixed
+
+- **OllamaProvider host routing** — now instantiates
+  `ollama.Client(host=self._url)` so the configured URL actually
+  takes effect (previously the module-level `ollama.generate()` call
+  ignored per-instance host).
+- **Provider registry race** — `register()` now checks and mutates
+  under the registry lock, closing a TOCTOU window on concurrent
+  provider registration.
+- **MCP server lazy instantiation** — `MemoryManager` is now created
+  on first tool call rather than at server import time, so `--help`
+  and protocol-handshake tests don't pay the model-load cost.
 
 ### Removed
 
@@ -83,32 +148,6 @@ Versioning follows [Semantic Versioning](https://semver.org/).
   `feature/RFC-001-conversational-entity-extractor`,
   `fix/intent-classifier-graph-weight`,
   `fix/p0-production-blockers`, `feat/remember-evolve`.
-
-## [2.2.1] - 2026-04-16
-
-Metadata-only patch release. No functional changes. Addresses three
-PyPI discoverability issues surfaced by an internal SEO audit: a
-stale classifier on the published wheel, a missing `Topic :: Security`
-filter, and README images that rendered as broken links on the PyPI
-long-description because they used relative repo paths.
-
-### Changed
-
-- **PyPI classifiers** — added `Topic :: Security` (primary filter
-  security engineers use to browse PyPI) and
-  `Topic :: Software Development :: Libraries :: Python Modules`.
-  Existing `Topic :: Scientific/Engineering :: Artificial Intelligence`
-  retained. Development Status stays at `4 - Beta` (corrected in
-  v2.2.0 on master; this release republishes so the PyPI browse
-  filters match reality).
-- **PyPI keywords** — swapped `agent-memory` → `agentic-memory`
-  (emerging category keyword) and `zettelkasten` → `llm-memory`
-  (direct intent match for Mem0/Graphiti discovery traffic). Still
-  10 keywords total; within the PyPI display limit.
-- **README image paths** — `docs/assets/demo.gif` and
-  `docs/assets/zettelforge_architecture.svg` rewritten to absolute
-  `raw.githubusercontent.com` URLs so the long description renders
-  correctly on PyPI (relative paths 404 on the PyPI CDN).
 
 ## [2.2.0] - 2026-04-16
 
