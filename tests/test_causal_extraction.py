@@ -5,11 +5,13 @@ Validates Task 1: LLM-based causal edge extraction from consolidation pass.
 """
 
 import sys
+import os
 import tempfile
 # Package installed via pip - no sys.path manipulation needed
 
 from zettelforge import MemoryManager
 from zettelforge.note_constructor import NoteConstructor
+import zettelforge.knowledge_graph as knowledge_graph_module
 from zettelforge.knowledge_graph import get_knowledge_graph
 
 
@@ -17,78 +19,89 @@ def test_causal_extraction():
     print("=== Causal Triple Extraction Test ===\n")
 
     # Create temp memory manager with fresh KG
+    old_data_dir = os.environ.get("AMEM_DATA_DIR")
+    old_kg_instance = knowledge_graph_module._kg_instance
     tmpdir = tempfile.mkdtemp()
+    os.environ["AMEM_DATA_DIR"] = tmpdir
+    knowledge_graph_module._kg_instance = None
     mm = MemoryManager(jsonl_path=f"{tmpdir}/notes.jsonl", lance_path=f"{tmpdir}/vectordb")
 
-    # Test CTI content with causal relationships
-    cti_content = """
-    APT28 (Fancy Bear) continues to target critical infrastructure in the energy sector.
-    The group uses DROPBEAR malware for initial access and Cobalt Strike for lateral movement.
-    CVE-2024-1111 enables remote code execution on unpatched Microsoft Exchange servers.
-    APT48 used this vulnerability to compromise Server ALPHA on May 15, 2024.
-    The incident was contained after patching on May 20, 2024.
-    """
+    try:
+        # Test CTI content with causal relationships
+        cti_content = """
+        APT28 (Fancy Bear) continues to target critical infrastructure in the energy sector.
+        The group uses DROPBEAR malware for initial access and Cobalt Strike for lateral movement.
+        CVE-2024-1111 enables remote code execution on unpatched Microsoft Exchange servers.
+        APT48 used this vulnerability to compromise Server ALPHA on May 15, 2024.
+        The incident was contained after patching on May 20, 2024.
+        """
 
-    print("Input CTI content:")
-    print(cti_content[:300])
-    print()
+        print("Input CTI content:")
+        print(cti_content[:300])
+        print()
 
-    # Remember the note - should trigger causal extraction
-    note, status = mm.remember(cti_content, domain="cti")
-    print(f"Note created: {note.id}")
-    print(f"Status: {status}")
-    print()
+        # Remember the note - should trigger causal extraction
+        note, status = mm.remember(cti_content, domain="cti")
+        print(f"Note created: {note.id}")
+        print(f"Status: {status}")
+        print()
 
-    # Check knowledge graph for causal edges
-    kg = get_knowledge_graph()
+        # Check knowledge graph for causal edges
+        kg = get_knowledge_graph()
 
-    print("=== Knowledge Graph Results ===")
+        print("=== Knowledge Graph Results ===")
 
-    # Check edges
-    print(f"\nTotal nodes: {len(kg._nodes)}")
-    print(f"Total edges: {len(kg._edges)}")
+        # Check edges
+        print(f"\nTotal nodes: {len(kg._nodes)}")
+        print(f"Total edges: {len(kg._edges)}")
 
-    # List all edges
-    print("\nEdges in graph:")
-    for edge_id, edge in list(kg._edges.items())[:20]:
-        from_node = kg._nodes.get(edge.get("from_node_id"), {})
-        to_node = kg._nodes.get(edge.get("to_node_id"), {})
-        print(
-            f"  {from_node.get('entity_value')} --[{edge.get('relationship')}]--> {to_node.get('entity_value')}"
-        )
+        # List all edges
+        print("\nEdges in graph:")
+        for edge_id, edge in list(kg._edges.items())[:20]:
+            from_node = kg._nodes.get(edge.get("from_node_id"), {})
+            to_node = kg._nodes.get(edge.get("to_node_id"), {})
+            print(
+                f"  {from_node.get('entity_value')} --[{edge.get('relationship')}]--> {to_node.get('entity_value')}"
+            )
 
-    # Check for causal triples specifically
-    print("\n=== Causal Edges (from LLM extraction) ===")
-    causal_edges = [
-        e for e in kg._edges.values() if e.get("properties", {}).get("source") == "llm_extraction"
-    ]
-    print(f"Causal edges found: {len(causal_edges)}")
+        # Check for causal triples specifically
+        print("\n=== Causal Edges (from LLM extraction) ===")
+        causal_edges = [
+            e for e in kg._edges.values() if e.get("properties", {}).get("source") == "llm_extraction"
+        ]
+        print(f"Causal edges found: {len(causal_edges)}")
 
-    for edge in causal_edges:
-        from_node = kg._nodes.get(edge.get("from_node_id"), {})
-        to_node = kg._nodes.get(edge.get("to_node_id"), {})
-        print(
-            f"  ✓ {from_node.get('entity_value')} --[{edge.get('relationship')}]--> {to_node.get('entity_value')}"
-        )
-        print(f"    Properties: {edge.get('properties')}")
+        for edge in causal_edges:
+            from_node = kg._nodes.get(edge.get("from_node_id"), {})
+            to_node = kg._nodes.get(edge.get("to_node_id"), {})
+            print(
+                f"  ✓ {from_node.get('entity_value')} --[{edge.get('relationship')}]--> {to_node.get('entity_value')}"
+            )
+            print(f"    Properties: {edge.get('properties')}")
 
-    # Test graph traversal
-    print("\n=== Graph Traversal Test ===")
-    results = kg.traverse("actor", "apt28", max_depth=2)
-    print(f"Traversing from APT28 (depth=2): {len(results)} paths found")
-    for r in results[:5]:
-        path_str = " -> ".join(
-            [f"{s['from_value']}-{s['relationship']}-{s['to_value']}" for s in r]
-        )
-        print(f"  {path_str}")
+        # Test graph traversal
+        print("\n=== Graph Traversal Test ===")
+        results = kg.traverse("actor", "apt28", max_depth=2)
+        print(f"Traversing from APT28 (depth=2): {len(results)} paths found")
+        for r in results[:5]:
+            path_str = " -> ".join(
+                [f"{s['from_value']}-{s['relationship']}-{s['to_value']}" for s in r]
+            )
+            print(f"  {path_str}")
 
-    print("\n=== Test Complete ===")
-    # Assert the ingestion pipeline ran end-to-end. Causal-edge count is not
-    # asserted: it requires a real LLM (mock provider returns unparseable
-    # text) AND routes through the JSONL KG singleton that SQLite backend
-    # doesn't write to. Diagnostic output above remains useful when run
-    # against a real LLM.
-    assert note.id
+        print("\n=== Test Complete ===")
+        # Assert the ingestion pipeline ran end-to-end. Causal-edge count is not
+        # asserted: it requires a real LLM (mock provider returns unparseable
+        # text) AND routes through the JSONL KG singleton that SQLite backend
+        # doesn't write to. Diagnostic output above remains useful when run
+        # against a real LLM.
+        assert note.id
+    finally:
+        knowledge_graph_module._kg_instance = old_kg_instance
+        if old_data_dir is None:
+            os.environ.pop("AMEM_DATA_DIR", None)
+        else:
+            os.environ["AMEM_DATA_DIR"] = old_data_dir
 
 
 if __name__ == "__main__":
