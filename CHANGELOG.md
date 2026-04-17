@@ -6,6 +6,38 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **SQLite backend concurrency** — 16 reader methods in
+  `SQLiteBackend` (`get_note_by_id`, `get_note_by_source_ref`,
+  `iterate_notes`, `get_notes_by_domain`, `get_recent_notes`,
+  `count_notes`, `get_kg_node`, `get_kg_node_by_id`,
+  `get_kg_neighbors`, `traverse_kg`, `get_entity_timeline`,
+  `get_changes_since`, `get_causal_edges`, `get_incoming_causal`,
+  `get_note_ids_for_entity`, `search_entities`) were executing
+  `SELECT` statements without holding `_write_lock`, while writers
+  acquired it. Under concurrent background enrichment, readers could
+  observe a partially-written row and raise `pydantic.ValidationError`
+  on NULL columns. Each reader now wraps its SQL execute+fetch block
+  in `with self._write_lock:` (RLock, reentrant-safe). Closes #68.
+  Eliminates the `test_apply_delete_marks_superseded` flake and
+  prevents the same race from surfacing in production
+  `recall()`-during-write paths.
+
+### Changed
+
+- **Test suite hygiene** — post-v2.3.0 audit (see
+  `docs/superpowers/research/2026-04-17-test-suite-audit.md`)
+  converted 10 CI-skipped LLM tests to the mock provider (RFC-002
+  Phase 1), resolved both remaining `xfail` tests via prompt-routed
+  mocks, eliminated two long-standing flakes
+  (`test_recall_cve_returns_notes`, `test_apply_delete_marks_superseded`),
+  prepped `langchain_retriever` for Pydantic V3 by migrating to
+  `ConfigDict`, and reinstated meaningful causal-edge validation via
+  mock-seeded triples + `SQLiteBackend.get_causal_edges` query. Net
+  test-suite delta: 280 passed / 17 skipped / 2 xfailed → 305 passed
+  / 10 skipped / 0 xfailed on test-3.12.
+
 ## [2.3.0] - 2026-04-17
 
 Pluggable LLM provider infrastructure (RFC-002 Phase 1), MCP server

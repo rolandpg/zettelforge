@@ -34,7 +34,9 @@ directory on first use.
 1. Copies `notes.jsonl`, `kg_nodes.jsonl`, `kg_edges.jsonl`, and
    `entity_index.json` into `<data_dir>/backup_pre_sqlite/`.
 2. Creates or re-uses `<data_dir>/zettelforge.db` via
-   `SQLiteBackend` (WAL mode, 33-method ABC).
+   `SQLiteBackend` (WAL mode, 33-method ABC). Reads and writes are
+   serialized through an internal `threading.RLock`, so concurrent
+   background enrichment does not expose mid-write rows to readers.
 3. Writes every note with `INSERT OR REPLACE`, every entity with
    `INSERT OR IGNORE`, and upserts knowledge-graph nodes and edges.
 4. Leaves the original JSONL files on disk so you can roll back.
