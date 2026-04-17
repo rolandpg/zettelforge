@@ -138,8 +138,8 @@ class LLMConfig:
 | `llm.url` | `str` | `http://localhost:11434` | `ZETTELFORGE_LLM_URL` | Base URL. Meaning is provider-specific — Ollama endpoint for `ollama`, `/v1/chat/completions` base for `openai_compat`, ignored for `local` and `anthropic`. |
 | `llm.api_key` | `str` | `""` | `ZETTELFORGE_LLM_API_KEY` | API key for authenticated providers. Accepts `${ENV_VAR}` references — never commit raw keys. Redacted from `repr(LLMConfig)`. |
 | `llm.temperature` | `float` | `0.1` | — | Sampling temperature. `0.0` = deterministic, `0.1` = near-deterministic (default), `0.7` = creative. |
-| `llm.timeout` | `float` | `60.0` | `ZETTELFORGE_LLM_TIMEOUT` | HTTP request timeout in seconds (used by HTTP-based providers). |
-| `llm.max_retries` | `int` | `2` | `ZETTELFORGE_LLM_MAX_RETRIES` | Number of retries on transient failures (429, 5xx, timeout). Phase 2 providers respect `Retry-After` headers on 429. |
+| `llm.timeout` | `float` | `60.0` | `ZETTELFORGE_LLM_TIMEOUT` | **Reserved for Phase 2+ HTTP providers.** Configured and env-overridable today, but the Phase 1 `ollama` provider does not apply it. Set now so your config is ready for the `openai_compat` / `anthropic` providers shipping in Phase 2. |
+| `llm.max_retries` | `int` | `2` | `ZETTELFORGE_LLM_MAX_RETRIES` | **Reserved for Phase 2+ HTTP providers.** Same story as `timeout` — the Phase 1 `ollama` provider does not retry. Phase 2 will respect `Retry-After` headers on 429. |
 | `llm.fallback` | `str` | `""` | `ZETTELFORGE_LLM_FALLBACK` | Backup provider invoked when the primary fails with a non-configuration error. Empty string preserves the implicit `local → ollama` fallback for backward compatibility; set explicitly to any other registered provider to route elsewhere. |
 | `llm.extra` | `dict` | `{}` | — | Provider-specific kwargs forwarded to the constructor. Example for `local`: `{filename: qwen2.5-3b-instruct-q4_k_m.gguf, n_ctx: 4096}`. String values inside `extra` also honour `${ENV_VAR}` resolution. |
 

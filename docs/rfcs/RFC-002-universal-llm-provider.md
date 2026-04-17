@@ -870,7 +870,7 @@ Each phase is independently shippable. If Phase 2 stalls, Phase 1 still delivers
 - 27 new tests in `tests/test_llm_providers.py` covering the protocol,
   registry, every built-in provider, `generate()` delegation, `__repr__`
   redaction, and `${VAR}` env resolution.
-- All 5 existing callers of `generate()` (fact extractor, memory
+- All 7 existing callers of `generate()` (fact extractor, memory
   updater, synthesis generator, intent classifier, note constructor,
   entity indexer, memory evolver) exercise the new registry path
   through their existing test suites — no per-caller change was

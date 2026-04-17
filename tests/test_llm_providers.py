@@ -25,8 +25,8 @@ from zettelforge.llm_providers.base import LLMProvider
 def reset_registry_instances():
     """Clear cached provider instances between tests.
 
-    Registrations (from zettelforge.llm_providers import time) are
-    preserved; only singleton instances are reset.
+    Registrations created when ``zettelforge.llm_providers`` is imported
+    are preserved; only cached singleton instances are reset.
     """
     registry.reset()
     yield
