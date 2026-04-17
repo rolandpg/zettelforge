@@ -43,7 +43,11 @@ ZettelForge was built from the ground up for analysts who think in threat graphs
 
 ## Data Pipeline
 <p align="center">
-  <img src="https://raw.githubusercontent.com/rolandpg/zettelforge/master/docs/assets/zettelforge_architecture.svg" width="720" alt="ZettelForge architecture — Extract, Graph, Embed, Recall pipeline">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/rolandpg/zettelforge/master/docs/assets/zettelforge_architecture.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/rolandpg/zettelforge/master/docs/assets/zettelforge_architecture-light.svg">
+    <img src="https://raw.githubusercontent.com/rolandpg/zettelforge/master/docs/assets/zettelforge_architecture.svg" width="720" alt="ZettelForge architecture — neural recall loop: ingest, enrich, retrieve, synthesize, backed by SQLite + LanceDB">
+  </picture>
 </p>
 
 
