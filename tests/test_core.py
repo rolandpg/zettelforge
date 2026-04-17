@@ -125,7 +125,7 @@ class TestVectorRecall:
 
         # Add some notes
         for i in range(10):
-            mm.remember(f"Test note {i} about security topics", domain="general")
+            mm.remember(f"Test note {i} about security topics", domain="general", sync=True)
 
         start = time.time()
         results = mm.recall("security topics", k=5)
