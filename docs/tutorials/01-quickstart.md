@@ -4,8 +4,8 @@ description: "Get started with ZettelForge in 5 minutes. Install via pip, store 
 diataxis_type: "tutorial"
 audience: "L1/L2 SOC Analyst"
 tags: [tutorial, quickstart, getting-started]
-last_updated: "2026-04-09"
-version: "2.0.0"
+last_updated: "2026-04-16"
+version: "2.2.0"
 ---
 
 # Quickstart: Your First Memory

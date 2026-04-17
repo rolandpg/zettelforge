@@ -4,8 +4,8 @@ description: "Walk through ingesting a threat intelligence report into ZettelFor
 diataxis_type: "tutorial"
 audience: "L1/L2 SOC Analyst"
 tags: [tutorial, stix, cti, ingestion]
-last_updated: "2026-04-09"
-version: "2.0.0"
+last_updated: "2026-04-16"
+version: "2.2.0"
 ---
 
 # Ingest Your First CTI Report

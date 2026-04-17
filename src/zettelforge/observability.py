@@ -1,6 +1,11 @@
-"""
-Observability for ZettelForge
-Implements GOV-012 (Observability & Logging Standards)
+"""Observability helpers for ZettelForge.
+
+.. note::
+   As of v2.2.0 this module is **not wired into** ``MemoryManager``. GOV-012
+   observability is satisfied by ``zettelforge.log`` (structlog) and
+   ``zettelforge.ocsf`` (audit events). This module is kept for users who
+   want a lightweight ``@timed_operation`` decorator on their own code and
+   may be removed in a future release.
 """
 
 import time
