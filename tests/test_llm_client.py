@@ -1,9 +1,11 @@
 """Tests for LLM client (local llama-cpp-python + ollama fallback)."""
 
 import os
-import pytest
 from unittest.mock import patch
-from zettelforge.llm_client import generate, _get_local_llm
+
+import pytest
+
+from zettelforge.llm_client import _get_local_llm, generate
 
 _SKIP_INTEGRATION = pytest.mark.skipif(
     os.environ.get("CI") == "true",
@@ -30,7 +32,6 @@ class TestLocalLLM:
         )
 
     def test_generate_json_extraction(self):
-        import json
 
         result = generate(
             'Extract facts as JSON array: [{"fact": "text", "importance": 1-10}]\n'
@@ -69,12 +70,16 @@ class TestGenerateJsonMode:
         from zettelforge.llm_providers import MockProvider
 
         mock = MockProvider(responses=['{"test": true}'])
-        return mock, patch(
-            "zettelforge.llm_providers.registry.get",
-            return_value=mock,
-        ), patch(
-            "zettelforge.llm_client.get_llm_provider",
-            return_value=provider_name,
+        return (
+            mock,
+            patch(
+                "zettelforge.llm_providers.registry.get",
+                return_value=mock,
+            ),
+            patch(
+                "zettelforge.llm_client.get_llm_provider",
+                return_value=provider_name,
+            ),
         )
 
     def test_json_mode_passed_to_provider(self):

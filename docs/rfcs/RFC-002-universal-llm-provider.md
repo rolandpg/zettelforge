@@ -854,3 +854,30 @@ Each phase is independently shippable. If Phase 2 stalls, Phase 1 still delivers
 - **Date**: 2026-04-16
 - **Decision Maker**: Patrick Roland
 - **Rationale**: Adversarial review completed with 3 blockers (all fixed), 7 warnings (6 addressed, Azure deferred to follow-up), 5 nits (3 fixed). Open questions resolved: Azure deferred, per-call provider override approved for Phase 5, streaming excluded, Retry-After approved for Phase 2, ZETTELFORGE_OLLAMA_MODEL deprecated with 3-version transition plan.
+
+## Implementation Status
+
+| Phase | Scope | Status | Shipped in |
+|-------|-------|--------|------------|
+| Phase 1 | Provider infrastructure (`llm_providers/` package, registry, `local` / `ollama` / `mock` providers, expanded `LLMConfig`, env-ref resolution, entry-point discovery) | **Shipped** | 2026-04-17 (commit `f67db7d`) |
+| Phase 2 | `openai_compat` provider (OpenAI, Azure OpenAI, vLLM, LiteLLM, Together AI, Groq) with `Retry-After` support | Planned | — |
+| Phase 3 | `anthropic` native SDK provider | Planned | — |
+| Phase 4 | Full env-var documentation, per-extra env resolution, third-party entry-point guide | In progress (docs ship with Phase 1) | — |
+| Phase 5 | Per-call `provider=` override on `generate()`, Azure OpenAI dedicated provider | Planned | — |
+
+### Phase 1 verification snapshot (2026-04-17)
+
+- 27 new tests in `tests/test_llm_providers.py` covering the protocol,
+  registry, every built-in provider, `generate()` delegation, `__repr__`
+  redaction, and `${VAR}` env resolution.
+- All 5 existing callers of `generate()` (fact extractor, memory
+  updater, synthesis generator, intent classifier, note constructor,
+  entity indexer, memory evolver) exercise the new registry path
+  through their existing test suites — no per-caller change was
+  needed.
+- `mypy --disallow-untyped-defs` clean on `src/zettelforge/llm_providers/`.
+- Governance controls verified: **GOV-002** (commit format),
+  **GOV-003** (type hints + protocol + dataclass), **GOV-006** (code
+  review checklist), **GOV-007** (67 % coverage gate), **GOV-014**
+  (api_key never logged; `${VAR}` resolution; env override), **GOV-023**
+  (.gitignore hardened).

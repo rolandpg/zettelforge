@@ -120,18 +120,28 @@ class EmbeddingConfig:
 ```python
 @dataclass
 class LLMConfig:
-    provider: str = "local"
-    model: str = "Qwen2.5-3B-Instruct-Q4_K_M.gguf"
+    provider: str = "ollama"
+    model: str = "qwen3.5:9b"
     url: str = "http://localhost:11434"
+    api_key: str = ""              # supports ${ENV_VAR} references
     temperature: float = 0.1
+    timeout: float = 60.0
+    max_retries: int = 2
+    fallback: str = ""             # "" preserves implicit local→ollama fallback
+    extra: dict = field(default_factory=dict)
 ```
 
 | Key | Type | Default | Env Override | Description |
 |:----|:-----|:--------|:-------------|:------------|
-| `llm.provider` | `str` | `local` | `ZETTELFORGE_LLM_PROVIDER` | LLM provider. Values: `local` (in-process llama-cpp-python, default), `ollama` (requires Ollama running at `llm.url`). |
-| `llm.model` | `str` | `Qwen2.5-3B-Instruct-Q4_K_M.gguf` | `ZETTELFORGE_LLM_MODEL` | LLM for fact extraction, intent classification, causal triple extraction, and synthesis. Default for local: Qwen2.5-3B-Instruct Q4_K_M GGUF (~2.0 GB, ~15.6 tok/s). For Ollama provider, use Ollama model tags (e.g., `qwen2.5:3b`). |
-| `llm.url` | `str` | `http://localhost:11434` | `ZETTELFORGE_LLM_URL` | LLM server URL. Only used when `llm.provider` is `ollama`. |
-| `llm.temperature` | `float` | `0.1` | -- | Sampling temperature. `0.0` = deterministic, `0.1` = near-deterministic (default), `0.7` = creative. |
+| `llm.provider` | `str` | `ollama` | `ZETTELFORGE_LLM_PROVIDER` | LLM provider name. Values shipped in core: `local` (in-process llama-cpp-python via `zettelforge[local]`), `ollama` (HTTP), `mock` (tests only). `openai_compat` and `anthropic` land in RFC-002 Phase 2/3. Third-party providers register via the `zettelforge.llm_providers` entry point. |
+| `llm.model` | `str` | `qwen3.5:9b` | `ZETTELFORGE_LLM_MODEL` | Model identifier. Meaning is provider-specific: Ollama tag (`qwen2.5:3b`), HuggingFace repo for local (`Qwen/Qwen2.5-3B-Instruct-GGUF`), OpenAI-compatible model name, or Anthropic model ID. |
+| `llm.url` | `str` | `http://localhost:11434` | `ZETTELFORGE_LLM_URL` | Base URL. Meaning is provider-specific — Ollama endpoint for `ollama`, `/v1/chat/completions` base for `openai_compat`, ignored for `local` and `anthropic`. |
+| `llm.api_key` | `str` | `""` | `ZETTELFORGE_LLM_API_KEY` | API key for authenticated providers. Accepts `${ENV_VAR}` references — never commit raw keys. Redacted from `repr(LLMConfig)`. |
+| `llm.temperature` | `float` | `0.1` | — | Sampling temperature. `0.0` = deterministic, `0.1` = near-deterministic (default), `0.7` = creative. |
+| `llm.timeout` | `float` | `60.0` | `ZETTELFORGE_LLM_TIMEOUT` | HTTP request timeout in seconds (used by HTTP-based providers). |
+| `llm.max_retries` | `int` | `2` | `ZETTELFORGE_LLM_MAX_RETRIES` | Number of retries on transient failures (429, 5xx, timeout). Phase 2 providers respect `Retry-After` headers on 429. |
+| `llm.fallback` | `str` | `""` | `ZETTELFORGE_LLM_FALLBACK` | Backup provider invoked when the primary fails with a non-configuration error. Empty string preserves the implicit `local → ollama` fallback for backward compatibility; set explicitly to any other registered provider to route elsewhere. |
+| `llm.extra` | `dict` | `{}` | — | Provider-specific kwargs forwarded to the constructor. Example for `local`: `{filename: qwen2.5-3b-instruct-q4_k_m.gguf, n_ctx: 4096}`. String values inside `extra` also honour `${ENV_VAR}` resolution. |
 
 ---
 
@@ -316,6 +326,10 @@ See [Configure OpenCTI Integration](../how-to/configure-opencti.md) for setup st
 | `ZETTELFORGE_LLM_PROVIDER` | `llm.provider` | `ollama` |
 | `ZETTELFORGE_LLM_MODEL` | `llm.model` | `qwen2.5:7b` |
 | `ZETTELFORGE_LLM_URL` | `llm.url` | `http://gpu-box:11434` |
+| `ZETTELFORGE_LLM_API_KEY` | `llm.api_key` | `sk-…` |
+| `ZETTELFORGE_LLM_TIMEOUT` | `llm.timeout` | `60` |
+| `ZETTELFORGE_LLM_MAX_RETRIES` | `llm.max_retries` | `2` |
+| `ZETTELFORGE_LLM_FALLBACK` | `llm.fallback` | `ollama` |
 | `ZETTELFORGE_LLM_NER_ENABLED` | `llm_ner.enabled` | `true` |
 | `OPENCTI_URL` | `Enterprise only: opencti.url` | `https://opencti.corp.internal` |
 | `OPENCTI_TOKEN` | `Enterprise only: opencti.token` | `abc123...` |

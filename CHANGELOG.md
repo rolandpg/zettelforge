@@ -8,6 +8,24 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **Pluggable LLM provider infrastructure (RFC-002 Phase 1)** — new
+  `zettelforge.llm_providers` package with a `@runtime_checkable`
+  `LLMProvider` protocol, a thread-safe registry, and built-in
+  providers for `local` (llama-cpp-python), `ollama`, and `mock`.
+  The public `generate()` signature is unchanged; all 7 existing call
+  sites (`fact_extractor`, `memory_updater`, `synthesis_generator`,
+  `intent_classifier`, `note_constructor`, `entity_indexer`,
+  `memory_evolver`) keep working without modification. Third-party
+  providers can register via the `zettelforge.llm_providers`
+  entry-point group. `openai_compat` and `anthropic` providers land in
+  Phase 2 and Phase 3.
+- **`LLMConfig` expanded** — new `api_key`, `timeout`, `max_retries`,
+  `fallback`, and `extra` fields. `api_key` supports `${ENV_VAR}`
+  references and is redacted from `repr()`. New env overrides:
+  `ZETTELFORGE_LLM_API_KEY`, `ZETTELFORGE_LLM_TIMEOUT`,
+  `ZETTELFORGE_LLM_MAX_RETRIES`, `ZETTELFORGE_LLM_FALLBACK`.
+- **Hardened .gitignore** per GOV-023 — added `.env.*`, `*.key`,
+  `*.pem`.
 - **MCP server as a first-class module** — `python -m zettelforge.mcp`
   now works out of a `pip install zettelforge` with no git clone
   required. New package `zettelforge.mcp` (with `server.py`,
