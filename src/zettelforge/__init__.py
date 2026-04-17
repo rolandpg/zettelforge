@@ -39,10 +39,6 @@ from zettelforge.memory_manager import MemoryManager, get_memory_manager
 from zettelforge.memory_updater import MemoryUpdater, UpdateOperation
 from zettelforge.note_constructor import NoteConstructor
 from zettelforge.note_schema import MemoryNote
-# Ontology module: ENTITY_TYPES/RELATION_TYPES are reference tables consumers
-# can use directly. TypedEntityStore / OntologyValidator are a parallel store
-# not wired into MemoryManager as of v2.2.0 — importable for advanced use but
-# no longer part of the advertised public API.
 from zettelforge.ontology import (
     ENTITY_TYPES,
     RELATION_TYPES,
@@ -54,6 +50,12 @@ from zettelforge.ontology import (
 from zettelforge.synthesis_generator import SynthesisGenerator, get_synthesis_generator
 from zettelforge.synthesis_validator import SynthesisValidator, get_synthesis_validator
 from zettelforge.vector_retriever import VectorRetriever
+
+# Note on the ontology module above: ENTITY_TYPES and RELATION_TYPES are
+# reference tables consumers use directly. TypedEntityStore / OntologyValidator
+# are a parallel store not wired into MemoryManager as of v2.2.0 — they remain
+# importable for advanced use but are not part of the advertised public API
+# and are therefore excluded from __all__ below.
 
 __version__ = "2.2.0"
 __all__ = [
