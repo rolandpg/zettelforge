@@ -171,26 +171,6 @@ python examples/athf_bridge.py /path/to/hunts/
 
 See [examples/athf_bridge.py](examples/athf_bridge.py).
 
-## Architecture
-
-```
-┌──────────────────────────────────────────────────────────────────────┐
-│                           MemoryManager                              │
-│  remember()  remember_with_extraction()  recall()  synthesize()      │
-├──────────┬───────────┬──────────────┬───────────┬────────────────────┤
-│  Note    │  Fact     │   Memory     │  Blended  │   Synthesis        │
-│Constructor│ Extractor │  Updater     │ Retriever │   Generator        │
-│(enrich)  │(Phase 1)  │(Phase 2)     │(vec+graph)│   (RAG)            │
-├──────────┴───────────┴──────────────┼───────────┴────────────────────┤
-│       Entity Indexer + Alias        │  Intent Classifier             │
-│       Resolver                      │  (factual/temporal/causal)     │
-├─────────────────────────────────────┼────────────────────────────────┤
-│   Knowledge Graph (SQLite)          │  LanceDB (Vectors)             │
-│   Entity nodes + edges              │  768-dim fastembed (ONNX)      │
-│   Causal triple inference           │  Zettelkasten notes            │
-│   SQLite WAL (TypeDB via extension) │  IVF_PQ index                  │
-└─────────────────────────────────────┴────────────────────────────────┘
-```
 
 ## Extensions
 
