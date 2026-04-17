@@ -89,15 +89,28 @@ of the pixels in a frame, stop and use a neutral instead.
 
 ## 4. Typography
 
-Two families, deliberately paired. No third font.
+Three families. Two do the daily work; the third is reserved for brand moments.
 
 - **Sans (headlines + prose):** `Inter, system-ui, -apple-system, "Segoe UI", sans-serif`
 - **Mono (everything technical):** `"JetBrains Mono", ui-monospace, Menlo, Consolas, monospace`
+- **Display (brand only):** `Neuropol` — geometric, wide, slightly sci-fi. Use **only** for:
+  - the ZettelForge / ThreatRecall wordmark and lockups
+  - hero display text on marketing surfaces (landing page hero, social card headlines)
+  - the single title of a cover slide
+  Never use Neuropol below ~28px, never for body copy, never for paragraphs,
+  never for UI controls. Its wide forms kill legibility at small sizes.
+  Default tracking `0.01em`–`0.02em`; uppercase for wordmarks.
+
+The font file ships with the brand assets at `fonts/Neuropol.otf` and is
+declared via `@font-face` in `colors_and_type.css` as `font-family: 'Neuropol'`.
+Stack: `'Neuropol', 'Inter', -apple-system, sans-serif` (Inter is the fallback
+so a missing file degrades to the sans headline treatment, not Times).
 
 ### Scale & treatment
 
 | Role                    | Font  | Size | Weight | Letter-spacing | Color  |
 | ----------------------- | ----- | ---- | ------ | -------------- | ------ |
+| Wordmark / hero display | Neuropol | 44–64 | 400 | 0.01em UPPER | fg-1 (accent permitted on a single word) |
 | Display headline        | sans  | 28   | 700    | -0.02em        | fg-1   |
 | Stage title             | sans  | 15   | 600    | -0.01em        | fg-1   |
 | Body prose              | sans  | 12–14 | 400    | normal         | fg-2   |
@@ -219,7 +232,20 @@ Never use emoji. Never use exclamation marks. Metrics over adjectives.
 | `zettelforge_architecture.svg`         | Architecture diagram, **Neural Dark** — canonical |
 | `zettelforge_architecture-light.svg`   | Same diagram, light parity for print/GitHub light |
 | `colors_and_type.css`                  | Token source of truth for HTML surfaces           |
+| `fonts/Neuropol.otf`                   | Display face — wordmarks and hero moments only    |
 | `brandIdentity.md`                     | This document                                     |
+
+### Using the fonts in a codebase
+
+For HTML / web surfaces, import `colors_and_type.css` — it already declares
+the `@font-face` for Neuropol (pointing at `fonts/Neuropol.otf`) and pulls
+Inter + JetBrains Mono from Google Fonts. Copy both `colors_and_type.css`
+and the `fonts/` directory to the target project, preserving the relative
+path `fonts/Neuropol.otf`.
+
+For anywhere you cannot ship the OTF (third-party slide tools, email, etc.),
+fall back to the `font-display: swap` stack — Inter renders in place of
+Neuropol and the layout stays intact.
 
 When producing a new diagram, copy `zettelforge_architecture.svg` and mutate
 it — do not redraw from scratch. Geometry, stroke weights, and font sizes

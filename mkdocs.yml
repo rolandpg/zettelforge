@@ -14,6 +14,7 @@ theme:
     accent: custom
   font:
     text: Inter
+    code: JetBrains Mono
   features:
     - navigation.tabs
     - navigation.sections
@@ -33,6 +34,13 @@ extra:
   version: "2.3.0"
 
 extra_css:
+  # Brand tokens first — defines --signal-*, --graphite-*, --fog-*, --font-*
+  # that extra.css maps into mkdocs-material's --md-* variables below.
+  # This is the :root-only subset of docs/brand/colors_and_type.css; the
+  # full canonical file (with semantic type roles) is kept as a reference
+  # but not loaded into mkdocs because its html/body/h1-h4 rules would
+  # fight mkdocs-material's theme.
+  - stylesheets/brand-tokens.css
   - stylesheets/extra.css
 
 nav:
