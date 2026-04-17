@@ -74,9 +74,14 @@ dev = [
 
 [project.urls]
 Homepage = "https://github.com/rolandpg/zettelforge"
-Documentation = "https://github.com/rolandpg/zettelforge/blob/main/docs/"
+Documentation = "https://docs.threatrecall.ai"
 Repository = "https://github.com/rolandpg/zettelforge"
 Issues = "https://github.com/rolandpg/zettelforge/issues"
+Changelog = "https://github.com/rolandpg/zettelforge/blob/master/CHANGELOG.md"
+
+[project.scripts]
+zettelforge = "zettelforge.__main__:main"
+zettelforge-mcp = "zettelforge.mcp.server:run_stdio"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/zettelforge"]
