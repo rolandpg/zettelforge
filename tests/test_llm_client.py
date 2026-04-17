@@ -14,7 +14,15 @@ _SKIP_INTEGRATION = pytest.mark.skipif(
 
 
 @_SKIP_INTEGRATION
-class TestLocalLLM:
+class TestLocalLLMIntegration:
+    """Full-stack integration tests requiring a real llama-cpp or Ollama backend.
+
+    These exercise output quality (instruction-following, JSON-ish content), not
+    just API shape, so they need a real model. Stay skipped in CI — the mock
+    provider cannot meaningfully verify quality. See ``TestGenerateContract``
+    below for CI-safe coverage of the ``generate()`` API contract.
+    """
+
     def test_generate_returns_string(self):
         result = generate("Say hello in one word.", max_tokens=10)
         assert isinstance(result, str)
@@ -55,6 +63,60 @@ class TestLocalLLM:
         )
         assert isinstance(result, str)
         assert len(result) > 0
+
+
+class TestGenerateContract:
+    """Verify the public ``generate()`` API contract via the mock provider.
+
+    Covers the same surface area as the skipped integration tests (string
+    return type, ``max_tokens`` / ``system`` / ``json_mode`` kwargs flowing
+    through to the provider) but asserts contract — return types and that
+    arguments reach the provider — rather than model output quality. Runs
+    in CI because it has no external dependency.
+    """
+
+    @pytest.fixture(autouse=True)
+    def _mock_provider(self, monkeypatch):
+        from zettelforge import llm_client
+        from zettelforge.llm_providers import MockProvider, registry
+
+        monkeypatch.setenv("ZETTELFORGE_LLM_PROVIDER", "mock")
+
+        # Capture the instance constructed by the registry so tests can
+        # inspect ``calls``. A fresh instance per test keeps ``calls`` clean.
+        captured: dict = {}
+
+        class CapturingMockProvider(MockProvider):
+            def __init__(self, **_kwargs):
+                super().__init__(responses=['{"ok": true}'])
+                captured["instance"] = self
+
+        original_cls = registry._registry.get("mock")
+        registry._registry["mock"] = CapturingMockProvider
+        llm_client.reload()
+        try:
+            yield captured
+        finally:
+            if original_cls is not None:
+                registry._registry["mock"] = original_cls
+            llm_client.reload()
+
+    def test_generate_returns_string(self, _mock_provider):
+        result = generate("hello", max_tokens=10)
+        assert isinstance(result, str)
+        assert result == '{"ok": true}'
+
+    def test_max_tokens_flows_to_provider(self, _mock_provider):
+        generate("hello", max_tokens=42)
+        assert _mock_provider["instance"].calls[-1]["max_tokens"] == 42
+
+    def test_system_prompt_flows_to_provider(self, _mock_provider):
+        generate("hello", system="Be concise.")
+        assert _mock_provider["instance"].calls[-1]["system"] == "Be concise."
+
+    def test_json_mode_flows_to_provider(self, _mock_provider):
+        generate("hello", json_mode=True)
+        assert _mock_provider["instance"].calls[-1]["json_mode"] is True
 
 
 class TestGenerateJsonMode:

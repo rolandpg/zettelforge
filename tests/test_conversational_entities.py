@@ -5,12 +5,51 @@ Validates hybrid regex+LLM entity extraction, knowledge graph edge inference,
 and supersession for conversational entity types.
 """
 
-import os
-
 import pytest
 
 from zettelforge.entity_indexer import EntityExtractor, EntityIndexer
 from zettelforge.note_constructor import NoteConstructor
+
+
+# JSON payload that satisfies every minimum-cardinality assertion in the
+# LLM-extraction tests below. MockProvider cycles through a fixed list of
+# responses, so one superset response covers every test without needing a
+# per-prompt map. Asserts are shape/cardinality checks, not quality checks —
+# this preserves the semantics of the original (skipped) tests while letting
+# CI execute them against the mock provider (RFC-002 Phase 1).
+_MOCK_NER_JSON = (
+    '{"person": ["Alice", "Bob"], "location": ["Paris"], '
+    '"organization": ["Google"], "event": [], "activity": [], "temporal": []}'
+)
+
+
+@pytest.fixture
+def mock_llm_provider(monkeypatch):
+    """Point ``llm_client.generate`` at a mock provider seeded with NER JSON.
+
+    MockProvider is a registry singleton keyed by name. We re-register under
+    ``mock`` with a subclass that ignores config kwargs and returns the
+    seeded payload, then call ``llm_client.reload()`` to flush any cached
+    instance. Teardown restores the original registration.
+    """
+    from zettelforge import llm_client
+    from zettelforge.llm_providers import MockProvider, registry
+
+    monkeypatch.setenv("ZETTELFORGE_LLM_PROVIDER", "mock")
+
+    class SeededMockProvider(MockProvider):
+        def __init__(self, **_kwargs):
+            super().__init__(responses=[_MOCK_NER_JSON])
+
+    original_cls = registry._registry.get("mock")
+    registry._registry["mock"] = SeededMockProvider
+    llm_client.reload()
+    try:
+        yield
+    finally:
+        if original_cls is not None:
+            registry._registry["mock"] = original_cls
+        llm_client.reload()
 
 
 class TestRegexExtraction:
@@ -44,12 +83,15 @@ class TestRegexExtraction:
             assert result.get(etype, []) == []
 
 
-@pytest.mark.skipif(
-    os.environ.get("CI") == "true",
-    reason="LLM tests crash in CI due to llama-cpp native library segfault",
-)
+@pytest.mark.usefixtures("mock_llm_provider")
 class TestLLMExtraction:
-    """LLM NER extraction for conversational types."""
+    """LLM NER extraction for conversational types.
+
+    Runs in CI against the mock provider (RFC-002 Phase 1). The mock is
+    seeded with a JSON payload that contains >=1 person and >=1 location,
+    matching the shape/cardinality assertions below. Short-text inputs
+    short-circuit before the LLM is called, so they pass regardless.
+    """
 
     def test_llm_extraction_returns_person(self):
         ext = EntityExtractor()
@@ -69,10 +111,7 @@ class TestLLMExtraction:
             assert result.get(etype, []) == []
 
 
-@pytest.mark.skipif(
-    os.environ.get("CI") == "true",
-    reason="LLM tests crash in CI due to llama-cpp native library segfault",
-)
+@pytest.mark.usefixtures("mock_llm_provider")
 class TestHybridExtraction:
     """Combined regex + LLM extraction via extract_all."""
 
