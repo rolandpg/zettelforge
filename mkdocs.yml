@@ -67,6 +67,7 @@ nav:
     - STIX Schema: reference/stix-schema.md
     - Governance Controls: reference/governance-controls.md
   - Design:
+    - Brand Identity: brand/brandIdentity.md
     - RFC-001 Conversational Entity Extractor: rfcs/RFC-001-conversational-entity-extractor.md
     - RFC-002 Universal LLM Provider Interface: rfcs/RFC-002-universal-llm-provider.md
     - RFC-003 Read-Path Depth Routing: rfcs/RFC-003-read-path-depth-routing.md
