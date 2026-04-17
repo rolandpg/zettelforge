@@ -3,15 +3,36 @@
 import json
 import os
 import sys
+import threading
 import time
+from typing import Optional
 
 from zettelforge import MemoryManager, __version__
 
 # SQLite is the v2.2.0 community default; honour any caller-provided override.
+# Setting this at import time (before MemoryManager is ever instantiated) keeps
+# `from zettelforge.mcp import TOOLS` side-effect free while still ensuring the
+# backend defaults to sqlite when the server actually runs.
 os.environ.setdefault("ZETTELFORGE_BACKEND", "sqlite")
 
-# Singleton — instantiated on first import so CLI startup pays init cost once.
-mm = MemoryManager()
+_mm: Optional[MemoryManager] = None
+_mm_lock = threading.Lock()
+
+
+def get_mm() -> MemoryManager:
+    """Return the process-wide MemoryManager, instantiating on first call.
+
+    Deliberately lazy: importing ``zettelforge.mcp`` to inspect ``TOOLS`` or
+    pull in ``run_stdio`` should not spin up a backend or start the
+    enrichment worker thread. The cost is paid on the first tool call (or
+    the first JSON-RPC request in ``run_stdio``).
+    """
+    global _mm
+    if _mm is None:
+        with _mm_lock:
+            if _mm is None:
+                _mm = MemoryManager()
+    return _mm
 
 
 def handle_tool_call(name: str, arguments: dict) -> dict:
@@ -20,6 +41,8 @@ def handle_tool_call(name: str, arguments: dict) -> dict:
     # Backward compat: accept old threatrecall_* names.
     if name.startswith("threatrecall_"):
         name = name.replace("threatrecall_", "zettelforge_", 1)
+
+    mm = get_mm()
 
     if name == "zettelforge_remember":
         content = arguments.get("content", "")
