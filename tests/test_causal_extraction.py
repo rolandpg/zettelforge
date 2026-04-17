@@ -83,7 +83,7 @@ def test_causal_extraction():
         print(f"  {path_str}")
 
     print("\n=== Test Complete ===")
-    return len(causal_edges) > 0
+    assert len(causal_edges) > 0
 
 
 if __name__ == "__main__":
