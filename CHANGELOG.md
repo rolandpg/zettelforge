@@ -8,6 +8,24 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **Pluggable LLM provider infrastructure (RFC-002 Phase 1)** — new
+  `zettelforge.llm_providers` package with a `@runtime_checkable`
+  `LLMProvider` protocol, a thread-safe registry, and built-in
+  providers for `local` (llama-cpp-python), `ollama`, and `mock`.
+  The public `generate()` signature is unchanged; all 7 existing call
+  sites (`fact_extractor`, `memory_updater`, `synthesis_generator`,
+  `intent_classifier`, `note_constructor`, `entity_indexer`,
+  `memory_evolver`) keep working without modification. Third-party
+  providers can register via the `zettelforge.llm_providers`
+  entry-point group. `openai_compat` and `anthropic` providers land in
+  Phase 2 and Phase 3.
+- **`LLMConfig` expanded** — new `api_key`, `timeout`, `max_retries`,
+  `fallback`, and `extra` fields. `api_key` supports `${ENV_VAR}`
+  references and is redacted from `repr()`. New env overrides:
+  `ZETTELFORGE_LLM_API_KEY`, `ZETTELFORGE_LLM_TIMEOUT`,
+  `ZETTELFORGE_LLM_MAX_RETRIES`, `ZETTELFORGE_LLM_FALLBACK`.
+- **Hardened .gitignore** per GOV-023 — added `.env.*`, `*.key`,
+  `*.pem`.
 - **MCP server as a first-class module** — `python -m zettelforge.mcp`
   now works out of a `pip install zettelforge` with no git clone
   required. New package `zettelforge.mcp` (with `server.py`,
@@ -65,6 +83,32 @@ Versioning follows [Semantic Versioning](https://semver.org/).
   `feature/RFC-001-conversational-entity-extractor`,
   `fix/intent-classifier-graph-weight`,
   `fix/p0-production-blockers`, `feat/remember-evolve`.
+
+## [2.2.1] - 2026-04-16
+
+Metadata-only patch release. No functional changes. Addresses three
+PyPI discoverability issues surfaced by an internal SEO audit: a
+stale classifier on the published wheel, a missing `Topic :: Security`
+filter, and README images that rendered as broken links on the PyPI
+long-description because they used relative repo paths.
+
+### Changed
+
+- **PyPI classifiers** — added `Topic :: Security` (primary filter
+  security engineers use to browse PyPI) and
+  `Topic :: Software Development :: Libraries :: Python Modules`.
+  Existing `Topic :: Scientific/Engineering :: Artificial Intelligence`
+  retained. Development Status stays at `4 - Beta` (corrected in
+  v2.2.0 on master; this release republishes so the PyPI browse
+  filters match reality).
+- **PyPI keywords** — swapped `agent-memory` → `agentic-memory`
+  (emerging category keyword) and `zettelkasten` → `llm-memory`
+  (direct intent match for Mem0/Graphiti discovery traffic). Still
+  10 keywords total; within the PyPI display limit.
+- **README image paths** — `docs/assets/demo.gif` and
+  `docs/assets/zettelforge_architecture.svg` rewritten to absolute
+  `raw.githubusercontent.com` URLs so the long description renders
+  correctly on PyPI (relative paths 404 on the PyPI CDN).
 
 ## [2.2.0] - 2026-04-16
 

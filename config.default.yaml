@@ -140,38 +140,55 @@ embedding:
 
 # ── LLM ─────────────────────────────────────────────────────────────────────
 # Language model for fact extraction, intent classification, causal triple
-# extraction, and RAG synthesis. Must support Ollama-compatible API.
+# extraction, and RAG synthesis.
+#
+# Provider selects the backend registered in zettelforge.llm_providers:
+#   local           — in-process llama-cpp-python (requires zettelforge[local])
+#   ollama          — Ollama HTTP API
+#   mock            — test-only canned responses
+#   openai_compat   — any /v1/chat/completions endpoint (Phase 2, upcoming)
+#   anthropic       — Anthropic native SDK (Phase 3, upcoming)
 #
 # Examples:
-#   # Small and fast (default, good for homelab)
-#   model: qwen2.5:3b
+#   # Default — Ollama on localhost
+#   provider: ollama
+#   model: qwen3.5:9b
 #
-#   # Medium (better quality, needs ~8GB VRAM)
-#   model: qwen2.5:7b
+#   # In-process GGUF (fully offline)
+#   provider: local
+#   model: Qwen/Qwen2.5-3B-Instruct-GGUF
 #
-#   # Large (best quality, needs ~24GB VRAM or cloud GPU)
-#   model: qwen2.5:32b
+# api_key supports ${ENV_VAR} references — never commit raw API keys.
+#   api_key: ${OPENAI_API_KEY}
 #
-#   # Llama 3.1
-#   model: llama3.1:8b
+# fallback: name of a backup provider invoked on transient failure of
+# the primary. Leave empty to preserve the implicit ``local -> ollama``
+# fallback for backward compatibility.
 #
-#   # Cloud-hosted (via Ollama proxy or compatible endpoint)
-#   model: qwen3.5:cloud
-#   url: http://ollama-proxy.internal:11434
-#
-# Temperature:
-#   0.0 = deterministic (best for extraction and classification)
-#   0.1 = near-deterministic (default, slight variation)
-#   0.7 = creative (use for synthesis if you want varied phrasing)
+# extra: provider-specific kwargs forwarded to the constructor. Examples:
+#   extra:
+#     filename: qwen2.5-3b-instruct-q4_k_m.gguf   # local provider
+#     n_ctx: 4096
 #
 # Env overrides:
+#   ZETTELFORGE_LLM_PROVIDER=ollama
 #   ZETTELFORGE_LLM_MODEL=qwen2.5:7b
 #   ZETTELFORGE_LLM_URL=http://gpu-box:11434
+#   ZETTELFORGE_LLM_API_KEY=sk-...
+#   ZETTELFORGE_LLM_TIMEOUT=60
+#   ZETTELFORGE_LLM_MAX_RETRIES=2
+#   ZETTELFORGE_LLM_FALLBACK=ollama
 #
 llm:
+  provider: ollama
   model: qwen3.5:9b
   url: http://localhost:11434
+  api_key: ""
   temperature: 0.1
+  timeout: 60.0
+  max_retries: 2
+  fallback: ""
+  extra: {}
 
 
 # ── Two-Phase Extraction Pipeline ──────────────────────────────────────────

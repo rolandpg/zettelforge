@@ -17,11 +17,39 @@ Usage:
 """
 
 import os
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 from zettelforge.log import get_logger
+
+# Matches ${VAR_NAME} references used to inject secrets from the
+# environment into config values without storing them in YAML.
+_ENV_VAR_PATTERN = re.compile(r"\$\{([A-Za-z_][A-Za-z0-9_]*)\}")
+
+
+def _resolve_env_refs(value: str) -> str:
+    """Replace ``${VAR}`` references in ``value`` with environment values.
+
+    Unresolved references emit a WARNING log and are replaced with the
+    empty string so misconfigured deployments fail fast at auth time
+    rather than silently shipping the literal ``${...}`` token.
+    """
+
+    def _replace(match: "re.Match[str]") -> str:
+        var_name = match.group(1)
+        env_value = os.environ.get(var_name)
+        if env_value is None:
+            get_logger("zettelforge.config").warning(
+                "env_var_not_found",
+                var=var_name,
+                hint=f"Set {var_name} in your environment",
+            )
+            return ""
+        return env_value
+
+    return _ENV_VAR_PATTERN.sub(_replace, value)
 
 
 @dataclass
@@ -48,10 +76,51 @@ class EmbeddingConfig:
 
 @dataclass
 class LLMConfig:
-    provider: str = "ollama"  # "local" (llama-cpp-python, in-process) or "ollama" (HTTP server)
-    model: str = "qwen3.5:9b"  # Ollama model name, or HuggingFace repo for local provider
-    url: str = "http://localhost:11434"  # only used when provider=ollama
+    """LLM provider configuration (RFC-002).
+
+    ``provider`` selects the backend registered in
+    :mod:`zettelforge.llm_providers`. ``api_key`` supports ``${VAR}``
+    env-reference syntax and is redacted from ``repr()``.
+    """
+
+    provider: str = "ollama"
+    model: str = "qwen3.5:9b"
+    url: str = "http://localhost:11434"
+    api_key: str = ""  # supports ${ENV_VAR} references — never commit raw keys
     temperature: float = 0.1
+    timeout: float = 60.0
+    max_retries: int = 2
+    fallback: str = ""  # empty preserves implicit local→ollama fallback
+    extra: Dict[str, Any] = field(default_factory=dict)
+
+    # Keys under ``extra`` that are commonly used for secrets. Matched
+    # case-insensitively as substrings so ``openai_api_key``, ``client_secret``,
+    # ``auth_token``, ``azure_ad_token``, ``credentials_json`` all redact.
+    _SENSITIVE_EXTRA_KEYS = ("key", "token", "secret", "password", "credential", "auth")
+
+    def _redact_extra(self) -> Dict[str, Any]:
+        """Return ``extra`` with sensitive-looking values replaced by ``'***'``."""
+        redacted: Dict[str, Any] = {}
+        for k, v in self.extra.items():
+            k_low = k.lower() if isinstance(k, str) else ""
+            if isinstance(v, str) and v and any(s in k_low for s in self._SENSITIVE_EXTRA_KEYS):
+                redacted[k] = "***"
+            else:
+                redacted[k] = v
+        return redacted
+
+    def __repr__(self) -> str:
+        # Redact api_key plus any sensitive-looking keys inside ``extra`` so
+        # secrets resolved via ``${ENV_VAR}`` refs don't leak into structured
+        # logs or debug dumps.
+        key_display = "'***'" if self.api_key else "''"
+        return (
+            f"LLMConfig(provider={self.provider!r}, model={self.model!r}, "
+            f"url={self.url!r}, api_key={key_display}, "
+            f"temperature={self.temperature}, timeout={self.timeout}, "
+            f"max_retries={self.max_retries}, fallback={self.fallback!r}, "
+            f"extra={self._redact_extra()!r})"
+        )
 
 
 @dataclass
@@ -233,8 +302,16 @@ def _apply_yaml(cfg: ZettelForgeConfig, data: dict):
 
     if "llm" in data and isinstance(data["llm"], dict):
         for k, v in data["llm"].items():
-            if hasattr(cfg.llm, k):
-                setattr(cfg.llm, k, v)
+            if not hasattr(cfg.llm, k):
+                continue
+            # Resolve ${ENV_VAR} refs for sensitive string fields.
+            if k == "api_key" and isinstance(v, str):
+                v = _resolve_env_refs(v)
+            elif k == "extra" and isinstance(v, dict):
+                v = {
+                    ek: _resolve_env_refs(ev) if isinstance(ev, str) else ev for ek, ev in v.items()
+                }
+            setattr(cfg.llm, k, v)
 
     if "llm_ner" in data and isinstance(data["llm_ner"], dict):
         for k, v in data["llm_ner"].items():
@@ -319,6 +396,25 @@ def _apply_env(cfg: ZettelForgeConfig):
         cfg.llm.model = v
     if v := os.environ.get("ZETTELFORGE_LLM_URL"):
         cfg.llm.url = v
+    # RFC-002: api_key / timeout / retries / fallback env overrides.
+    if v := os.environ.get("ZETTELFORGE_LLM_API_KEY"):
+        cfg.llm.api_key = v
+    if v := os.environ.get("ZETTELFORGE_LLM_TIMEOUT"):
+        try:
+            cfg.llm.timeout = float(v)
+        except ValueError:
+            get_logger("zettelforge.config").warning(
+                "invalid_llm_timeout", value=v, hint="Must be a float"
+            )
+    if v := os.environ.get("ZETTELFORGE_LLM_MAX_RETRIES"):
+        try:
+            cfg.llm.max_retries = int(v)
+        except ValueError:
+            get_logger("zettelforge.config").warning(
+                "invalid_llm_max_retries", value=v, hint="Must be an int"
+            )
+    if v := os.environ.get("ZETTELFORGE_LLM_FALLBACK"):
+        cfg.llm.fallback = v
 
     # LLM NER
     if v := os.environ.get("ZETTELFORGE_LLM_NER_ENABLED"):
