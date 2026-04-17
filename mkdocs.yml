@@ -1,11 +1,13 @@
 site_name: ZettelForge Documentation
-site_url: https://docs.threatrecall.ai
-site_description: "ZettelForge — agentic memory for cyber threat intelligence"
+site_url: https://docs.threatrecall.ai/
+site_description: "ZettelForge — agentic memory for Python agents with CTI entity extraction, STIX knowledge graphs, threat-actor alias resolution, and an MCP server. Offline-first, MIT-licensed."
+site_author: Patrick Roland
 repo_url: https://github.com/rolandpg/zettelforge
 repo_name: rolandpg/zettelforge
 
 theme:
   name: material
+  custom_dir: docs/overrides
   palette:
     scheme: slate
     primary: custom
@@ -24,6 +26,11 @@ theme:
 plugins:
   - search
   - meta
+
+extra:
+  # Sourced by docs/overrides/main.html for JSON-LD SoftwareApplication.
+  # Bump on each release so schema.org metadata stays in sync with PyPI.
+  version: "2.2.1"
 
 extra_css:
   - stylesheets/extra.css
