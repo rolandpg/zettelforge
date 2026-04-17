@@ -2,25 +2,21 @@
 
 **The only agentic memory system built for cyber threat intelligence.**
 
-Give your AI agents persistent memory with entity extraction, knowledge graphs, and STIX ontology -- no cloud, no API keys, works offline.
-
+Persistent memory for AI agents and Claude Code — with CTI entity extraction, STIX knowledge graphs, threat-actor alias resolution, and offline-first RAG. MCP server included. No cloud, no API keys.
 
 [![PyPI](https://img.shields.io/pypi/v/zettelforge)](https://pypi.org/project/zettelforge/)
-[![Downloads](https://static.pepy.tech/badge/zettelforge)](https://pepy.tech/projects/zettelforge)
-[![Stars](https://img.shields.io/github/stars/rolandpg/zettelforge)](https://github.com/rolandpg/zettelforge/stargazers)
-[![License: MIT](https://img.shields.io/badge/license-MIT-green)](https://opensource.org/licenses/MIT)
+[![Downloads/month](https://static.pepy.tech/personalized-badge/zettelforge?period=month&units=international_system&left_color=grey&right_color=blue&left_text=downloads%2Fmonth)](https://pepy.tech/projects/zettelforge)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](https://opensource.org/licenses/MIT)
 [![CI](https://github.com/rolandpg/zettelforge/actions/workflows/ci.yml/badge.svg)](https://github.com/rolandpg/zettelforge/actions)
-[![Contributors](https://img.shields.io/github/contributors/rolandpg/zettelforge)](https://github.com/rolandpg/zettelforge/graphs/contributors)
-[![Last Commit](https://img.shields.io/github/last-commit/rolandpg/zettelforge)](https://github.com/rolandpg/zettelforge/commits/master)
-[![SafeSkill](https://safeskill.dev/api/badge/rolandpg-zettelforge)](https://safeskill.dev/scan/rolandpg-zettelforge)
+
+**[⭐ Star](https://github.com/rolandpg/zettelforge) · [📦 `pip install zettelforge`](https://pypi.org/project/zettelforge/) · [📖 Docs](https://docs.threatrecall.ai/) · [🧪 Hosted](https://threatrecall.ai)**
 
 <p align="center">
-<a href="https://www.buymeacoffee.com/xypher22pr0" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-green.png" alt="Buy Me a Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+  <img src="https://raw.githubusercontent.com/rolandpg/zettelforge/master/docs/assets/demo.gif" width="720" alt="ZettelForge demo — CTI agentic memory in action">
 </p>
-<p align="center">
-  <img src="docs/assets/demo.gif" width="720" alt="ZettelForge demo — CTI agentic memory in action">
-</p>
+
+> If ZettelForge fits a CTI workflow you run, a star is the fastest signal that this category is worth continuing to invest in.
 
 ## Why ZettelForge?
 
@@ -44,7 +40,7 @@ ZettelForge was built from the ground up for analysts who think in threat graphs
 
 ## Data Pipeline
 <p align="center">
-  <img src="docs/assets/zettelforge_architecture.svg" width="720" alt="ZettelForge">
+  <img src="https://raw.githubusercontent.com/rolandpg/zettelforge/master/docs/assets/zettelforge_architecture.svg" width="720" alt="ZettelForge architecture — Extract, Graph, Embed, Recall pipeline">
 </p>
 
 
@@ -216,6 +212,12 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup.
 MIT -- See [LICENSE](LICENSE).
 
 **Made by Patrick Roland**.
+
+## Support the Project
+
+ZettelForge is MIT-licensed. If it's useful in your workflow and you'd like to help keep it maintained:
+
+<a href="https://www.buymeacoffee.com/xypher22pr0" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-green.png" alt="Buy Me a Coffee" style="height: 40px !important;width: 145px !important;" ></a>
 
 ## Acknowledgments
 
