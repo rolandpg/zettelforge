@@ -15,7 +15,7 @@ Third-party packages can register additional providers via the
 
 from __future__ import annotations
 
-from zettelforge.llm_providers.base import LLMProvider
+from zettelforge.llm_providers.base import LLMProvider, LLMProviderConfigurationError
 from zettelforge.llm_providers.local_provider import LocalProvider
 from zettelforge.llm_providers.mock_provider import MockProvider
 from zettelforge.llm_providers.ollama_provider import OllamaProvider
@@ -26,6 +26,7 @@ _logger = get_logger("zettelforge.llm_providers")
 
 __all__ = [
     "LLMProvider",
+    "LLMProviderConfigurationError",
     "LocalProvider",
     "OllamaProvider",
     "MockProvider",

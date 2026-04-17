@@ -20,7 +20,7 @@ from __future__ import annotations
 import os
 from typing import Any, Dict, Optional
 
-from zettelforge.llm_providers import registry
+from zettelforge.llm_providers import LLMProviderConfigurationError, registry
 from zettelforge.log import get_logger
 
 _logger = get_logger("zettelforge.llm_client")
@@ -78,8 +78,9 @@ def _provider_kwargs(provider_name: str) -> Dict[str, Any]:
     """Build constructor kwargs for a provider from current config + env.
 
     The registry caches instances keyed by name, so these kwargs are only
-    consumed on first creation. A :func:`reload` is required to pick up
-    config changes at runtime.
+    consumed on first creation. Call :func:`reload` (below) to pick up
+    config changes at runtime — it clears both the cached config and the
+    cached provider instances.
     """
     kwargs: Dict[str, Any] = {}
 
@@ -179,11 +180,12 @@ def generate(
 
     try:
         provider = registry.get(primary, **_provider_kwargs(primary))
-    except ImportError:
-        # Primary SDK missing — do not silently fall back, surface it.
-        raise
-    except ValueError:
-        _logger.error("unknown_llm_provider", provider=primary)
+    except (ImportError, LLMProviderConfigurationError, ValueError):
+        # Configuration errors (missing SDK / bad config / unknown
+        # provider name) are non-recoverable. Surface them rather than
+        # silently falling back to a different provider, which would hide
+        # the real problem until the user debugs the wrong component.
+        _logger.error("llm_provider_config_error", provider=primary, exc_info=True)
         raise
 
     try:
@@ -194,8 +196,9 @@ def generate(
             system=system,
             json_mode=json_mode,
         )
-    except ImportError:
-        # Missing SDK for the primary provider — same rule as above.
+    except (ImportError, LLMProviderConfigurationError):
+        # Same rule as above — config errors raised from ``generate()``
+        # are non-recoverable and must not be masked by the fallback.
         raise
     except Exception:
         _logger.debug("primary_provider_failed", provider=primary, exc_info=True)
@@ -214,11 +217,32 @@ def generate(
             system=system,
             json_mode=json_mode,
         )
+    except (ImportError, LLMProviderConfigurationError, ValueError):
+        # Misconfigured fallback is still a config error — don't eat it.
+        raise
     except Exception:
         _logger.error(
             "all_llm_backends_failed", primary=primary, fallback=fallback_name, exc_info=True
         )
         return ""
+
+
+def reload() -> None:
+    """Reload LLM config and clear cached provider instances.
+
+    Provider instances are cached in the registry keyed by name, so
+    config changes made after the first ``generate()`` call do not reach
+    already-initialised providers. Call this when you mutate env vars or
+    ``config.yaml`` and want the next ``generate()`` to re-read both the
+    config and the provider constructor kwargs.
+
+    Registrations (which providers exist) are preserved; only instance
+    caches are cleared.
+    """
+    from zettelforge.config import reload_config
+
+    reload_config()
+    registry.reset()
 
 
 # ── Backward-compat shims ────────────────────────────────────────────────────
