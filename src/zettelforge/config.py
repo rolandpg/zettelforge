@@ -93,15 +93,33 @@ class LLMConfig:
     fallback: str = ""  # empty preserves implicit local→ollama fallback
     extra: Dict[str, Any] = field(default_factory=dict)
 
+    # Keys under ``extra`` that are commonly used for secrets. Matched
+    # case-insensitively as substrings so ``openai_api_key``, ``client_secret``,
+    # ``auth_token``, ``azure_ad_token``, ``credentials_json`` all redact.
+    _SENSITIVE_EXTRA_KEYS = ("key", "token", "secret", "password", "credential", "auth")
+
+    def _redact_extra(self) -> Dict[str, Any]:
+        """Return ``extra`` with sensitive-looking values replaced by ``'***'``."""
+        redacted: Dict[str, Any] = {}
+        for k, v in self.extra.items():
+            k_low = k.lower() if isinstance(k, str) else ""
+            if isinstance(v, str) and v and any(s in k_low for s in self._SENSITIVE_EXTRA_KEYS):
+                redacted[k] = "***"
+            else:
+                redacted[k] = v
+        return redacted
+
     def __repr__(self) -> str:
-        # Redact api_key from any structured log or debug dump.
+        # Redact api_key plus any sensitive-looking keys inside ``extra`` so
+        # secrets resolved via ``${ENV_VAR}`` refs don't leak into structured
+        # logs or debug dumps.
         key_display = "'***'" if self.api_key else "''"
         return (
             f"LLMConfig(provider={self.provider!r}, model={self.model!r}, "
             f"url={self.url!r}, api_key={key_display}, "
             f"temperature={self.temperature}, timeout={self.timeout}, "
             f"max_retries={self.max_retries}, fallback={self.fallback!r}, "
-            f"extra={self.extra!r})"
+            f"extra={self._redact_extra()!r})"
         )
 
 

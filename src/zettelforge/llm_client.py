@@ -96,12 +96,24 @@ def _provider_kwargs(provider_name: str) -> Dict[str, Any]:
         kwargs["api_key"] = getattr(llm_cfg, "api_key", "")
         kwargs["timeout"] = getattr(llm_cfg, "timeout", 60.0)
         kwargs["max_retries"] = getattr(llm_cfg, "max_retries", 2)
-        kwargs.update(getattr(llm_cfg, "extra", {}) or {})
+        # Guard against the simple-YAML fallback (no PyYAML installed) which
+        # can leave ``extra`` as the literal string ``"{}"``. Only merge dicts.
+        extra = getattr(llm_cfg, "extra", None)
+        if isinstance(extra, dict):
+            kwargs.update(extra)
 
     # Env overrides preserved from pre-RFC-002 behaviour.
     if provider_name == "local":
+        # The shared config's ``llm.model`` may be an Ollama tag like
+        # ``qwen3.5:9b``. llama-cpp-python interprets that as a HuggingFace
+        # repo id and fails. If the configured value looks like an Ollama tag
+        # (colon, no slash) we ignore it and fall back to ``DEFAULT_LLM_MODEL``
+        # unless the user explicitly set ``ZETTELFORGE_LLM_MODEL``.
+        cfg_model = kwargs.get("model") or ""
+        looks_like_ollama_tag = ":" in cfg_model and "/" not in cfg_model
+        local_default = "" if looks_like_ollama_tag else cfg_model
         kwargs["model"] = os.environ.get(
-            "ZETTELFORGE_LLM_MODEL", kwargs.get("model") or DEFAULT_LLM_MODEL
+            "ZETTELFORGE_LLM_MODEL", local_default or DEFAULT_LLM_MODEL
         )
         kwargs["filename"] = os.environ.get(
             "ZETTELFORGE_LLM_FILENAME",

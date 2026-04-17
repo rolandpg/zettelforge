@@ -25,10 +25,11 @@ def register(name: str, provider_class: Type[LLMProvider]) -> None:
     Raises:
         ValueError: if ``name`` is already registered.
     """
-    if name in _registry:
-        raise ValueError(f"LLM provider '{name}' is already registered")
-    _registry[name] = provider_class
-    _logger.debug("provider_registered", provider=name)
+    with _lock:
+        if name in _registry:
+            raise ValueError(f"LLM provider '{name}' is already registered")
+        _registry[name] = provider_class
+        _logger.debug("provider_registered", provider=name)
 
 
 def get(name: str, **kwargs: object) -> LLMProvider:

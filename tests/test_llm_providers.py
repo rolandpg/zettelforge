@@ -119,15 +119,27 @@ pytest.importorskip("ollama", reason="ollama SDK not installed")
 
 
 class TestOllamaProvider:
+    """Verify OllamaProvider wraps the ollama SDK Client correctly.
+
+    The provider instantiates ``ollama.Client(host=<url>)`` so that
+    configuring ``llm.url`` actually directs requests to the intended
+    server. Tests patch the ``Client`` class and inspect the call made
+    on the returned instance.
+    """
+
     def test_generate_calls_ollama_with_expected_args(self):
         provider = OllamaProvider(model="qwen2.5:3b", url="http://host:11434")
-        with patch("ollama.generate") as mocked:
-            mocked.return_value = {"response": "ok"}
+        with patch("ollama.Client") as mock_client_cls:
+            mock_client = mock_client_cls.return_value
+            mock_client.generate.return_value = {"response": "ok"}
+
             result = provider.generate(
                 "hello", max_tokens=50, temperature=0.2, system="sys", json_mode=True
             )
+
             assert result == "ok"
-            args, kwargs = mocked.call_args
+            mock_client_cls.assert_called_once_with(host="http://host:11434")
+            args, kwargs = mock_client.generate.call_args
             assert kwargs["model"] == "qwen2.5:3b"
             assert kwargs["prompt"] == "hello"
             assert kwargs["system"] == "sys"
@@ -136,18 +148,28 @@ class TestOllamaProvider:
 
     def test_generate_omits_system_when_absent(self):
         provider = OllamaProvider(model="qwen2.5:3b")
-        with patch("ollama.generate") as mocked:
-            mocked.return_value = {"response": "ok"}
+        with patch("ollama.Client") as mock_client_cls:
+            mock_client = mock_client_cls.return_value
+            mock_client.generate.return_value = {"response": "ok"}
             provider.generate("hello")
-            _, kwargs = mocked.call_args
+            _, kwargs = mock_client.generate.call_args
             assert "system" not in kwargs
             assert "format" not in kwargs
 
     def test_generate_empty_response_returns_empty_string(self):
         provider = OllamaProvider(model="qwen2.5:3b")
-        with patch("ollama.generate") as mocked:
-            mocked.return_value = {}
+        with patch("ollama.Client") as mock_client_cls:
+            mock_client = mock_client_cls.return_value
+            mock_client.generate.return_value = {}
             assert provider.generate("prompt") == ""
+
+    def test_generate_routes_through_configured_host(self):
+        """``llm.url`` is honoured via ``ollama.Client(host=...)``."""
+        provider = OllamaProvider(model="qwen2.5:3b", url="http://gpu-box:11434")
+        with patch("ollama.Client") as mock_client_cls:
+            mock_client_cls.return_value.generate.return_value = {"response": "ok"}
+            provider.generate("hello")
+            mock_client_cls.assert_called_once_with(host="http://gpu-box:11434")
 
     def test_unknown_kwargs_ignored_at_construction(self):
         # The registry forwards kwargs meant for other providers; they

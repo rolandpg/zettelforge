@@ -48,5 +48,9 @@ class OllamaProvider:
         if json_mode:
             kwargs["format"] = "json"
 
-        response = ollama.generate(**kwargs)
+        # Route through a per-instance Client so ``self._url`` actually affects
+        # where the call goes. The module-level ``ollama.generate`` always
+        # targets the default localhost:11434, ignoring this provider's config.
+        client = ollama.Client(host=self._url)
+        response = client.generate(**kwargs)
         return str(response.get("response", "")).strip()
