@@ -38,6 +38,10 @@ dependencies = [
     "fastembed>=0.8.0",
     "httpx>=0.25.0",
     "structlog>=24.0.0",
+    # Detection rules (Phase 1c): Sigma + YARA first-class
+    "PyYAML>=6.0",
+    "jsonschema>=4.0",
+    "plyara>=2.0",
 ]
 
 [project.optional-dependencies]
