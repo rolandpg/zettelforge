@@ -160,6 +160,35 @@ Your Claude Code agent can now remember and recall threat intelligence across se
 
 Exposed tools: `remember`, `recall`, `synthesize`, `entity`, `graph`, `stats`.
 
+## Detection Rules as Memory (Sigma + YARA)
+
+Sigma and YARA rules are first-class memory primitives. Parse, validate, and ingest a rule and its tags become graph edges: MITRE ATT&CK techniques, CVEs, threat-actor aliases, tools, and malware families resolve against the same ontology as every other note. A shared `DetectionRule` supertype carries `SigmaRule` and `YaraRule` subtypes, so a single rule UUID is addressable across both formats.
+
+Sigma rules are validated against the vendored [SigmaHQ JSON schema](https://github.com/SigmaHQ/sigma-specification). YARA rules are parsed with plyara and validated against the [CCCS YARA metadata standard](https://github.com/CybercentreCanada/CCCS-Yara) (tiers: `strict`, `warn`, `non_cccs`). Ingest is idempotent -- re-ingesting an unchanged rule returns the original note via a content-hashed `source_ref`.
+
+```python
+from zettelforge import MemoryManager
+from zettelforge.sigma import ingest_rule as ingest_sigma
+from zettelforge.yara import ingest_rule as ingest_yara
+
+mm = MemoryManager()
+ingest_sigma("rules/proc_creation_win_office_macro.yml", mm)
+ingest_yara("rules/webshell_china_chopper.yar", mm, tier="warn")
+```
+
+```bash
+# Bulk ingest from SigmaHQ or a private rule repo
+python -m zettelforge.sigma.ingest /path/to/sigma/rules/
+python -m zettelforge.yara.ingest /path/to/yara/rules/ --tier warn
+
+# CI fixture check -- parse + validate, no writes
+python -m zettelforge.sigma.ingest rules/ --dry-run
+```
+
+An LLM rule explainer (`zettelforge.detection.explainer.explain`) produces a structured JSON summary -- intent, key fields, evasion notes, false-positive hypotheses -- for any `DetectionRule`. It runs synchronously on demand in v1; async enrichment-queue wiring is v1.1. Rate-limited via `ZETTELFORGE_EXPLAIN_RPM` (default 60 calls/minute).
+
+References: [Sigma spec](https://github.com/SigmaHQ/sigma-specification), [SigmaHQ rules](https://github.com/SigmaHQ/sigma), [CCCS YARA](https://github.com/CybercentreCanada/CCCS-Yara), [YARA docs](https://yara.readthedocs.io).
+
 ## Integrations
 
 ### ATHF (Agentic Threat Hunting Framework)
