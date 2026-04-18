@@ -27,6 +27,14 @@ import yaml
 Tier = Literal["strict", "warn", "non_cccs"]
 
 
+class YaraValidationError(ValueError):
+    """Raised when a YARA rule fails validation hard enough that callers
+    should treat it as unacceptable (mirrors :class:`~zettelforge.sigma.
+    parser.SigmaValidationError` — ``validate_metadata`` itself still
+    returns a :class:`ValidationResult` so strict/warn/non_cccs callers
+    can inspect the outcome without catching)."""
+
+
 class ValidationResult(NamedTuple):
     """Outcome of :func:`validate_metadata`."""
 

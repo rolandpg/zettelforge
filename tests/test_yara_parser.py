@@ -104,3 +104,23 @@ def test_parse_file_rejects_oversize_rule(tmp_path) -> None:
     big.write_bytes(b"x" * (MAX_RULE_FILE_BYTES * 2))
     with pytest.raises(YaraParseError, match="too large"):
         parse_file(big)
+
+
+def test_yara_public_api_exports_match_sigma_parity() -> None:
+    """CR-W1: ``zettelforge.yara`` must expose the full Phase-3 surface."""
+    import zettelforge.yara as yara_pkg
+
+    for name in (
+        "parse_file",
+        "parse_yara",
+        "validate_metadata",
+        "rule_to_entities",
+        "resolve_yara_tag",
+        "ingest_rule",
+        "ingest_rules_dir",
+        "YaraRule",
+        "YaraParseError",
+        "YaraValidationError",
+    ):
+        assert hasattr(yara_pkg, name), f"zettelforge.yara missing {name!r}"
+        assert name in yara_pkg.__all__, f"{name!r} not advertised in __all__"
