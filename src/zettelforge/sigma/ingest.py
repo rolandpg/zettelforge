@@ -94,10 +94,35 @@ def ingest_rules_dir(
 
     ingested = 0
     skipped = 0
+    root_resolved = root.resolve()
     # Accept both .yml and .yaml; de-duplicate in case the glob overlaps.
     candidates = sorted({*root.glob(glob), *root.glob(glob.replace(".yml", ".yaml"))})
     for fpath in candidates:
         if not fpath.is_file():
+            continue
+        # SEC-3: refuse to follow symlinks or paths that resolve outside the
+        # root. Prevents a malicious rule tree from luring ingest into
+        # /etc/passwd or any other file on disk.
+        if fpath.is_symlink():
+            _log.warning(
+                "ingest_skipped_symlink path=%s resolved_target=%s",
+                fpath,
+                fpath.resolve(strict=False),
+            )
+            skipped += 1
+            continue
+        try:
+            resolved = fpath.resolve(strict=False)
+        except OSError:
+            skipped += 1
+            continue
+        if root_resolved not in resolved.parents and resolved != root_resolved:
+            _log.warning(
+                "ingest_skipped_symlink path=%s resolved_target=%s",
+                fpath,
+                resolved,
+            )
+            skipped += 1
             continue
         try:
             ingest_rule(fpath, mm, domain=domain)

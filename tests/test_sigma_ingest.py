@@ -156,3 +156,25 @@ def test_ingest_rules_dir_skips_invalid_file(tmp_path: Path, mm: MemoryManager) 
     ingested, skipped = ingest_rules_dir(tmp_path, mm)
     assert ingested == 1
     assert skipped == 1
+
+
+def test_ingest_rules_dir_skips_symlinks(tmp_path: Path, mm: MemoryManager) -> None:
+    """SEC-3: a symlink in the rules dir must not be followed during ingest.
+
+    Regression case: prior to SEC-3, a malicious rule tree could lure the
+    walker into reading /etc/passwd via ``rules/evil.yml -> /etc/passwd``.
+    """
+    from zettelforge.sigma.ingest import ingest_rules_dir
+
+    # One genuine rule file.
+    real = tmp_path / "real.yml"
+    real.write_text((FIXTURES / "cloud_example.yml").read_text())
+    # A symlink pointing at a file outside the rules root.
+    victim = tmp_path.parent / "victim.yml"
+    victim.write_text((FIXTURES / "cloud_example.yml").read_text())
+    link = tmp_path / "evil.yml"
+    link.symlink_to(victim)
+
+    ingested, skipped = ingest_rules_dir(tmp_path, mm)
+    assert ingested == 1  # only the real file
+    assert skipped == 1  # the symlink was refused

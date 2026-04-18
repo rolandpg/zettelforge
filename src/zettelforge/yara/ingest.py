@@ -136,12 +136,37 @@ def ingest_rules_dir(
     if glob == "**/*.yar":
         globs.append("**/*.yara")
 
+    root_resolved = root.resolve()
     seen: set[Path] = set()
     for pattern in globs:
         for yar_path in sorted(root.glob(pattern)):
             if yar_path in seen or not yar_path.is_file():
                 continue
             seen.add(yar_path)
+            # SEC-3: never follow symlinks and never read files whose real
+            # path escapes the rules directory — refuses the "point at
+            # /etc/passwd via symlink" trick.
+            if yar_path.is_symlink():
+                _LOG.warning(
+                    "ingest_skipped_symlink path=%s resolved_target=%s",
+                    yar_path,
+                    yar_path.resolve(strict=False),
+                )
+                skipped += 1
+                continue
+            try:
+                resolved = yar_path.resolve(strict=False)
+            except OSError:
+                skipped += 1
+                continue
+            if root_resolved not in resolved.parents and resolved != root_resolved:
+                _LOG.warning(
+                    "ingest_skipped_symlink path=%s resolved_target=%s",
+                    yar_path,
+                    resolved,
+                )
+                skipped += 1
+                continue
             try:
                 rules = parse_file(yar_path)
             except Exception as exc:  # pragma: no cover — defensive

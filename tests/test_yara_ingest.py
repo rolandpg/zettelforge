@@ -72,3 +72,20 @@ def test_ingest_rule_writes_note_findable_by_source_ref(mm: MemoryManager) -> No
     refetched = mm.store.get_note_by_source_ref(note.content.source_ref)
     assert refetched is not None
     assert refetched.id == note.id
+
+
+def test_ingest_rules_dir_skips_symlinks(tmp_path: Path, mm: MemoryManager) -> None:
+    """SEC-3: a symlink in the rules dir must not be followed during ingest."""
+    # Real rule inside the walked root.
+    real = tmp_path / "real.yar"
+    real.write_text((FIXTURES / "malware_hash.yar").read_text())
+    # Symlink whose target lives outside the walked root.
+    victim = tmp_path.parent / "outside_victim.yar"
+    victim.write_text((FIXTURES / "malware_hash.yar").read_text())
+    link = tmp_path / "evil.yar"
+    link.symlink_to(victim)
+
+    result = ingest_rules_dir(tmp_path, mm, tier="non_cccs")
+    # Exactly one rule makes it in; the symlink is refused.
+    assert result["ingested"] == 1
+    assert result["skipped"] >= 1
