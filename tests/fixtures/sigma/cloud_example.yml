@@ -1,0 +1,20 @@
+# Source: SigmaHQ/sigma-specification @ specification/sigma-rules-specification.md
+# https://github.com/SigmaHQ/sigma-specification/blob/main/specification/sigma-rules-specification.md
+# Public domain per upstream LICENSE. Structure derived from spec's §Detection
+# "field: value" map examples (EventLog/EventID) + logsource taxonomy appendix.
+title: Suspicious Security Event Log Cleared
+id: 929a690e-bef0-4204-a928-ef5e620d6fcb
+description: Detects Windows Security event log clear operations (event 1102).
+author: SigmaHQ
+date: 2019-10-23
+logsource:
+    product: windows
+    service: security
+detection:
+    selection:
+        EventLog: Security
+        EventID:
+            - 517
+            - 1102
+    condition: selection
+level: high
