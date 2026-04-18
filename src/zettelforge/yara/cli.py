@@ -32,7 +32,14 @@ from zettelforge.yara.parser import parse_file
 def _build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         prog="python -m zettelforge.yara.ingest",
-        description="Ingest YARA rules into ZettelForge memory.",
+        description=(
+            "Ingest YARA rules into ZettelForge memory. "
+            "Note: the LLM rule explainer is NOT invoked by this command in "
+            "v1 — wiring it into the async enrichment worker is a v1.1 task. "
+            "When the explainer is called directly, its request rate is "
+            "capped by the ZETTELFORGE_EXPLAIN_RPM env var (default 60 "
+            "calls/minute)."
+        ),
     )
     p.add_argument("path", help="Path to a .yar file or directory of rules")
     p.add_argument(

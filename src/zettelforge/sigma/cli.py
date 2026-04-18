@@ -23,7 +23,13 @@ from zettelforge.sigma.parser import (
 def _build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         prog="python -m zettelforge.sigma.ingest",
-        description="Parse and ingest Sigma detection rules into ZettelForge.",
+        description=(
+            "Parse and ingest Sigma detection rules into ZettelForge. "
+            "Note: the LLM rule explainer is NOT invoked by this command in v1 — "
+            "wiring it into the async enrichment worker is a v1.1 task. When "
+            "the explainer is called directly, its request rate is capped by "
+            "the ZETTELFORGE_EXPLAIN_RPM env var (default 60 calls/minute)."
+        ),
     )
     p.add_argument("path", type=Path, help="Sigma rule file or directory")
     p.add_argument(

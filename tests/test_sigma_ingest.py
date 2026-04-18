@@ -158,6 +158,14 @@ def test_ingest_rules_dir_skips_invalid_file(tmp_path: Path, mm: MemoryManager) 
     assert skipped == 1
 
 
+def test_ingest_rule_raises_on_none_memory_manager() -> None:
+    """CR-N2: passing ``mm=None`` must raise, not silently drop the rule."""
+    from zettelforge.sigma.ingest import ingest_rule
+
+    with pytest.raises(ValueError, match="MemoryManager"):
+        ingest_rule(FIXTURES / "cloud_example.yml", None)  # type: ignore[arg-type]
+
+
 def test_ingest_rule_source_ref_is_format_prefixed_content_scoped(
     mm: MemoryManager,
 ) -> None:

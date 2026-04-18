@@ -59,7 +59,12 @@ def ingest_rule(
     Raises:
         SigmaParseError: YAML could not be parsed.
         SigmaValidationError: rule failed JSON-schema validation.
+        ValueError: ``mm`` was ``None`` — caller must pass a real manager
+            so rules are not silently dropped. Matches YARA parity.
     """
+    if mm is None:
+        raise ValueError("ingest_rule requires a MemoryManager instance")
+
     rule_dict, _default_ref = _coerce(rule)
     entity, relations = from_rule_dict(rule_dict)
 
