@@ -152,9 +152,7 @@ def _validate_field(name: str, value: Any) -> str | None:
     if name == "version":
         return None if _VERSION_REGEX.match(str(value)) else f"version: expected x.y ({value!r})"
     if name in {"date", "modified"}:
-        return (
-            None if _DATE_REGEX.match(str(value)) else f"{name}: expected YYYY-MM-DD ({value!r})"
-        )
+        return None if _DATE_REGEX.match(str(value)) else f"{name}: expected YYYY-MM-DD ({value!r})"
     if name == "status":
         return (
             None
@@ -194,11 +192,7 @@ def _validate_field(name: str, value: Any) -> str | None:
             else f"mitre_att: expected T#### / G#### / S#### ({value!r})"
         )
     if name == "author":
-        return (
-            None
-            if _AUTHOR_REGEX.match(str(value))
-            else f"author: unexpected format ({value!r})"
-        )
+        return None if _AUTHOR_REGEX.match(str(value)) else f"author: unexpected format ({value!r})"
     if name == "source":
         # CCCS spec: "uppercase" via valid_source (source organization name).
         # Accept any non-empty string; uppercase is convention, not hard rule.

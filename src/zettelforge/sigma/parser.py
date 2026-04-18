@@ -119,9 +119,7 @@ def parse_file(path: str | Path) -> dict[str, Any]:
     except OSError as exc:
         raise SigmaParseError(f"cannot stat {p}: {exc}") from exc
     if size > MAX_RULE_FILE_BYTES:
-        raise SigmaParseError(
-            f"rule file too large ({size} bytes, max {MAX_RULE_FILE_BYTES}): {p}"
-        )
+        raise SigmaParseError(f"rule file too large ({size} bytes, max {MAX_RULE_FILE_BYTES}): {p}")
     try:
         text = p.read_text(encoding="utf-8")
     except OSError as exc:

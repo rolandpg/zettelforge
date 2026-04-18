@@ -72,9 +72,7 @@ def ingest_rule(
     # YARA already uses. Idempotency is handled by the same ``source_ref``
     # lookup pattern, so re-ingesting an unchanged rule returns the original
     # note instead of creating a duplicate.
-    effective_source_ref = (
-        source_ref or f"sigma:{entity.rule_id}:{entity.content_sha256[:12]}"
-    )
+    effective_source_ref = source_ref or f"sigma:{entity.rule_id}:{entity.content_sha256[:12]}"
 
     store = getattr(mm, "store", None)
     if store is not None and hasattr(store, "get_note_by_source_ref"):
@@ -196,9 +194,7 @@ def _build_content(rule_dict: dict[str, Any], entity: SigmaRule) -> str:
     return f"{body.rstrip()}\n\n{summary}\n"
 
 
-def _persist_relations(
-    mm: Any, relations: list[dict[str, Any]], note_id: str
-) -> None:
+def _persist_relations(mm: Any, relations: list[dict[str, Any]], note_id: str) -> None:
     """Write each relation dict into the KG via the storage backend."""
     store = getattr(mm, "store", None)
     if store is None or not hasattr(store, "add_kg_edge"):

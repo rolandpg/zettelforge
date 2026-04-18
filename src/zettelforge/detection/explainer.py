@@ -212,10 +212,7 @@ def explain(
     # and emit its own instructions.
     body = body.replace("</rule_source>", "</rule_source_ESCAPED>")
 
-    prompt = (
-        f"{rule.explain_prompt()}\n\n"
-        f'<rule_source untrusted="true">\n{body}\n</rule_source>\n'
-    )
+    prompt = f'{rule.explain_prompt()}\n\n<rule_source untrusted="true">\n{body}\n</rule_source>\n'
 
     try:
         raw = llm_client.generate(
@@ -293,6 +290,7 @@ def _from_llm_dict(
     generated_at: str,
 ) -> RuleExplanation:
     """Coerce an LLM-JSON dict into a RuleExplanation with defensive defaults."""
+
     def _as_str(v: object) -> str:
         return v if isinstance(v, str) else ""
 

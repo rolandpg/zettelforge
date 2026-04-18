@@ -225,9 +225,7 @@ def _tag_relations(entity: SigmaRule) -> list[dict[str, Any]]:
     return out
 
 
-def _related_relations(
-    entity: SigmaRule, related: list[dict[str, Any]]
-) -> list[dict[str, Any]]:
+def _related_relations(entity: SigmaRule, related: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """``related:`` block maps to ``superseded_by`` (obsolete) or ``related_to``."""
     out: list[dict[str, Any]] = []
     for item in related:

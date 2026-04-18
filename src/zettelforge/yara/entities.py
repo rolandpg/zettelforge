@@ -181,9 +181,7 @@ def rule_to_entities(
 
     relations: list[dict[str, Any]] = []
 
-    def _edge(
-        rel: str, to_type: str, to_value: str, properties: dict[str, Any]
-    ) -> dict[str, Any]:
+    def _edge(rel: str, to_type: str, to_value: str, properties: dict[str, Any]) -> dict[str, Any]:
         """Shape every edge exactly as ``add_kg_edge`` expects (CR-B2)."""
         return {
             "from_type": "YaraRule",
@@ -198,9 +196,7 @@ def rule_to_entities(
     mitre = meta.get("mitre_att")
     if mitre:
         for token in _split_mitre(mitre):
-            relations.append(
-                _edge("detects", "AttackPattern", token, {"technique_id": token})
-            )
+            relations.append(_edge("detects", "AttackPattern", token, {"technique_id": token}))
 
     # tagged_with → YaraTag for the CCCS 'technique' meta (not a MITRE ID).
     technique = meta.get("technique")

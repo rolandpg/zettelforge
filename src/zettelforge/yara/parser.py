@@ -99,9 +99,7 @@ def parse_file(path: str | Path) -> list[dict[str, Any]]:
     except OSError as exc:
         raise YaraParseError(f"cannot stat {p}: {exc}") from exc
     if size > MAX_RULE_FILE_BYTES:
-        raise YaraParseError(
-            f"rule file too large ({size} bytes, max {MAX_RULE_FILE_BYTES}): {p}"
-        )
+        raise YaraParseError(f"rule file too large ({size} bytes, max {MAX_RULE_FILE_BYTES}): {p}")
     text = p.read_text(encoding="utf-8")
     return parse_yara(text)
 
