@@ -1,0 +1,30 @@
+# Source: Synthesized from SigmaHQ/sigma-specification §tags appendix.
+# Exercises ATT&CK + CVE tag → typed entity upgrades (Phase 3 Stream A).
+title: Log4Shell Exploitation Attempt
+id: 7e3d88a2-bfaa-4f52-9e0b-2bbbdd0d4ea1
+status: test
+description: Detects JNDI lookup strings associated with CVE-2021-44228 (Log4Shell).
+author: ZettelForge Test Fixtures
+date: 2024-01-15
+modified: 2024-02-01
+references:
+    - https://www.cve.org/CVERecord?id=CVE-2021-44228
+logsource:
+    product: windows
+    category: process_creation
+detection:
+    selection:
+        CommandLine|contains: '${jndi:'
+    condition: selection
+fields:
+    - CommandLine
+    - ProcessName
+falsepositives:
+    - Security researchers running proof-of-concept payloads.
+level: critical
+tags:
+    - attack.t1190
+    - attack.t1059.001
+    - attack.g0007
+    - cve.2021-44228
+    - tlp.amber
