@@ -3,9 +3,11 @@ LLM-generated rule explainer — the v1 killer feature.
 
 See phase-1c-detection-rule-architecture.md §3.
 
-The explainer runs synchronously from this module — the async path via
-``memory_manager._enrichment_worker`` is driven by Sigma/YARA ``ingest.py``
-which enqueue ``explain_rule`` jobs; the worker calls ``explain()`` here.
+The explainer is invoked synchronously by direct callers of ``explain()``.
+In v1 the Sigma/YARA ``ingest.py`` modules do NOT enqueue ``explain_rule``
+jobs — wiring the explainer into the async enrichment worker is a v1.1
+task. Today, callers that want rule explanations must call ``explain()``
+themselves after ingest completes.
 
 Invariants:
 - Pure-ish function. Only persistent state is the in-process rate-limiter
@@ -77,7 +79,6 @@ class RuleExplanation:
     model: str = ""
     generated_at: str = ""
     schema_version: str = SCHEMA_VERSION
-    raw_response: str = ""  # verbatim LLM output, for debug
 
 
 # ── Rate limiter (in-process, token-bucket-ish) ──────────────────────────────
@@ -184,7 +185,6 @@ def explain(
             model=f"mock:{provider_name}",
             generated_at=now_iso,
             schema_version=SCHEMA_VERSION,
-            raw_response="",
         )
 
     # Rate limit — callers are supposed to check rate_limit_ok() before
@@ -208,10 +208,13 @@ def explain(
     body = rule_body or ""
     if len(body) > MAX_RULE_BODY_CHARS:
         body = body[:MAX_RULE_BODY_CHARS] + "... [truncated]"
+    # Neutralise any attempt in the untrusted body to close the delimiter
+    # and emit its own instructions.
+    body = body.replace("</rule_source>", "</rule_source_ESCAPED>")
 
     prompt = (
         f"{rule.explain_prompt()}\n\n"
-        f"Rule body:\n```\n{body}\n```\n"
+        f'<rule_source untrusted="true">\n{body}\n</rule_source>\n'
     )
 
     try:
@@ -237,6 +240,11 @@ def explain(
             schema_version=SCHEMA_VERSION,
         )
 
+    # Keep the verbatim LLM output in a transient local only. Not persisted
+    # on the returned dataclass (SEC-4): rule bodies are untrusted input and
+    # we don't want LLM output round-tripping back to storage.
+    _raw_for_debug = raw if os.environ.get("ZETTELFORGE_LOG_LEVEL") == "DEBUG" else ""
+
     if not raw:
         _logger.warning(
             "rule_explain_empty_response",
@@ -249,7 +257,6 @@ def explain(
             model=provider_name,
             generated_at=now_iso,
             schema_version=SCHEMA_VERSION,
-            raw_response="",
         )
 
     parsed = extract_json(raw, expect="object")
@@ -258,6 +265,7 @@ def explain(
             "rule_explain_parse_failure",
             rule_id=rule.rule_id,
             rule_format=rule.source_format,
+            raw_snippet=_raw_for_debug[:500],
         )
         return RuleExplanation(
             summary="explanation unavailable: invalid json",
@@ -265,10 +273,9 @@ def explain(
             model=provider_name,
             generated_at=now_iso,
             schema_version=SCHEMA_VERSION,
-            raw_response=raw[:500],
         )
 
-    explanation = _from_llm_dict(parsed, provider_name, now_iso, raw)
+    explanation = _from_llm_dict(parsed, provider_name, now_iso)
     _logger.info(
         "rule_explained",
         rule_id=rule.rule_id,
@@ -284,7 +291,6 @@ def _from_llm_dict(
     parsed: dict,
     provider_name: str,
     generated_at: str,
-    raw_response: str,
 ) -> RuleExplanation:
     """Coerce an LLM-JSON dict into a RuleExplanation with defensive defaults."""
     def _as_str(v: object) -> str:
@@ -313,5 +319,4 @@ def _from_llm_dict(
         model=provider_name,
         generated_at=generated_at,
         schema_version=SCHEMA_VERSION,
-        raw_response=raw_response,
     )
