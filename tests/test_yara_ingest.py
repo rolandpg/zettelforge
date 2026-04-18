@@ -74,6 +74,24 @@ def test_ingest_rule_writes_note_findable_by_source_ref(mm: MemoryManager) -> No
     assert refetched.id == note.id
 
 
+def test_ingest_rule_persists_kg_edges(mm: MemoryManager) -> None:
+    """CR-B1: YARA ingest must write relations into the KG, not just return them.
+
+    Pre-fix: relations were returned to the caller but never reached
+    ``store.add_kg_edge``. This test exercises ``get_kg_neighbors`` to
+    assert the edges actually landed in the backend.
+    """
+    note, relations = ingest_rule(FIXTURES / "technique_loader.yar", mm, tier="warn")
+    assert note is not None
+    assert relations, "expected at least one relation on a technique rule"
+
+    # technique_loader.yar → MITRE T1218 + a 'loader:memorymodule' YaraTag.
+    neighbors = mm.store.get_kg_neighbors("YaraRule", relations[0]["from_value"])
+    targets = {(n["node"]["entity_type"], n["node"]["entity_value"]) for n in neighbors}
+    assert ("AttackPattern", "T1218") in targets
+    assert any(t[0] == "YaraTag" for t in targets)
+
+
 def test_ingest_rules_dir_skips_symlinks(tmp_path: Path, mm: MemoryManager) -> None:
     """SEC-3: a symlink in the rules dir must not be followed during ingest."""
     # Real rule inside the walked root.

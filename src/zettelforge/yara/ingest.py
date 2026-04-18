@@ -266,12 +266,53 @@ def _ingest_single(
         sync=True,
     )
 
+    # CR-B1: persist every relation as a KG edge keyed on the YaraRule's
+    # ``entity.rule_id`` / note id. Mirrors ``sigma/ingest._persist_relations``.
+    _persist_relations(mm, relations, note_id=note.id)
+
     # source_path, cccs_tier, mitre refs are recorded inside the note body
     # (see _build_note_content) and on the returned entity/relations. The
     # Metadata schema doesn't expose an extras bucket yet, so we avoid
     # mutating it here — Phase 4 can add a typed metadata extension if
     # downstream consumers need keyed access without re-parsing.
     return note, relations, True
+
+
+def _persist_relations(
+    mm: "MemoryManager", relations: list[dict[str, Any]], *, note_id: str
+) -> None:
+    """Write each canonical-shape relation into the KG via the storage backend.
+
+    Mirrors ``zettelforge.sigma.ingest._persist_relations``: same defensive
+    guards, same ``edge_type='detection'`` / ``source='yara_ingest'``
+    tagging so the enrichment worker can distinguish them from causal or
+    heuristic edges.
+    """
+    store = getattr(mm, "store", None)
+    if store is None or not hasattr(store, "add_kg_edge"):
+        return
+    for rel in relations:
+        props = dict(rel.get("properties") or {})
+        props.setdefault("edge_type", "detection")
+        props.setdefault("source", "yara_ingest")
+        try:
+            store.add_kg_edge(
+                from_type=rel["from_type"],
+                from_value=rel["from_value"],
+                to_type=rel["to_type"],
+                to_value=rel["to_value"],
+                relationship=rel["rel"],
+                note_id=note_id,
+                properties=props,
+            )
+        except Exception:  # pragma: no cover — defensive
+            _LOG.warning(
+                "yara_edge_persist_failed from=%s rel=%s to=%s",
+                rel.get("from_value"),
+                rel.get("rel"),
+                rel.get("to_value"),
+                exc_info=True,
+            )
 
 
 __all__ = ["ingest_rule", "ingest_rules_dir"]
