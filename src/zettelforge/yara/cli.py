@@ -93,7 +93,7 @@ def _dry_run(path: Path, tier: str) -> tuple[int, list[dict[str, Any]]]:
                     "category": entity.category,
                     "n_relations": len(relations),
                     "mitre_att": [
-                        r["to_props"].get("technique_id")
+                        (r.get("properties") or {}).get("technique_id")
                         for r in relations
                         if r.get("rel") == "detects" and r.get("to_type") == "AttackPattern"
                     ],

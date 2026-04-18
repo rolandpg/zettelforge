@@ -10,9 +10,10 @@ Translates a parsed YARA rule dict (as emitted by
   (``AttackPattern`` for MITRE refs, ``ThreatActor`` for actor meta,
   ``YaraTag`` for inline tags + ``technique``).
 
-Relations are plain dicts (``{"rel", "to_type", "to_props"}``) so the
-caller can decide whether to write to the ontology store directly or pass
-through ``MemoryManager``'s entity-hint path.
+Relations are plain dicts shaped to match
+``sqlite_backend.SQLiteMemoryStore.add_kg_edge`` — ``{"from_type",
+"from_value", "rel", "to_type", "to_value", "properties"}`` — so ingest
+can pass them through to the KG backend without remapping.
 """
 
 from __future__ import annotations
@@ -92,17 +93,28 @@ def rule_to_entities(
             that the rule actually passed is recorded on
             ``entity.extra["cccs_compliant"]``.
 
-    Relations schema (each is a dict)::
+    Relations schema (each is a dict, canonical KG-edge shape — matches
+    :meth:`sqlite_backend.SQLiteMemoryStore.add_kg_edge`)::
 
         {
-            "rel": "detects" | "attributed_to" | "tagged_with",
+            "from_type": "YaraRule",
+            "from_value": entity.rule_id,
+            "rel": "detects" | "attributed_to" | "tagged_with" | "references_cve",
             "to_type": "AttackPattern" | "ThreatActor" | "YaraTag" | "Vulnerability",
-            "to_props": {...},
+            "to_value": str,       # primary identifier for the target entity
+            "properties": {...},   # any remaining to_props
         }
 
     v1 follow-up: YARA ``imports`` (``pe``, ``hash``, ``dotnet``) are
     recorded as entity metadata only. They could become typed entities if
     we later want a capability-based retrieval axis.
+
+    NOTE (CR-W4, deliberate divergence): Sigma emits *both* a lossless
+    ``tagged_with → SigmaTag`` edge AND an upgraded edge (``detects`` /
+    ``references_cve`` / ``attributed_to``) for each raw tag, so downstream
+    consumers can pick either view. YARA uses the leaner "single-emit with
+    rel-swap" pattern — one edge per tag, rel swapped based on resolution.
+    This is intentional; do not rework.
     """
     meta: dict[str, Any] = rule.get("meta", {}) or {}
     rule_name = rule.get("rule_name") or "unknown_rule"
@@ -123,9 +135,10 @@ def rule_to_entities(
     fingerprint = meta.get("fingerprint")
     cccs_id = meta.get("id")
     content_hash = _content_sha256(rule)
+    rule_id = cccs_id or rule_name
 
     entity = YaraRule(
-        rule_id=cccs_id or rule_name,
+        rule_id=rule_id,
         title=rule_name,
         source_format="yara",
         content_sha256=content_hash,
@@ -164,44 +177,50 @@ def rule_to_entities(
 
     relations: list[dict[str, Any]] = []
 
+    def _edge(
+        rel: str, to_type: str, to_value: str, properties: dict[str, Any]
+    ) -> dict[str, Any]:
+        """Shape every edge exactly as ``add_kg_edge`` expects (CR-B2)."""
+        return {
+            "from_type": "YaraRule",
+            "from_value": rule_id,
+            "rel": rel,
+            "to_type": to_type,
+            "to_value": to_value,
+            "properties": properties,
+        }
+
     # detects → AttackPattern (mitre_att meta). Normalize T1218, T1218.001.
     mitre = meta.get("mitre_att")
     if mitre:
         for token in _split_mitre(mitre):
             relations.append(
-                {
-                    "rel": "detects",
-                    "to_type": "AttackPattern",
-                    "to_props": {"technique_id": token},
-                }
+                _edge("detects", "AttackPattern", token, {"technique_id": token})
             )
 
     # tagged_with → YaraTag for the CCCS 'technique' meta (not a MITRE ID).
     technique = meta.get("technique")
     if technique:
+        technique_name = str(technique)
         relations.append(
-            {
-                "rel": "tagged_with",
-                "to_type": "YaraTag",
-                "to_props": {"namespace": "technique", "name": str(technique)},
-            }
+            _edge(
+                "tagged_with",
+                "YaraTag",
+                technique_name,
+                {"namespace": "technique", "name": technique_name},
+            )
         )
 
     # attributed_to → ThreatActor when meta.actor or meta.actor_type present.
     actor = meta.get("actor")
     actor_type = meta.get("actor_type")
     if actor:
-        props: dict[str, Any] = {"name": str(actor)}
+        actor_name = str(actor)
+        props: dict[str, Any] = {"name": actor_name}
         if actor_type:
             props["aliases"] = []
             props["resource_level"] = str(actor_type)
-        relations.append(
-            {
-                "rel": "attributed_to",
-                "to_type": "ThreatActor",
-                "to_props": props,
-            }
-        )
+        relations.append(_edge("attributed_to", "ThreatActor", actor_name, props))
     elif actor_type:
         # Actor type without an actor name — still useful as metadata-only
         # hint; no relation emitted because ThreatActor.name is required.
@@ -215,11 +234,20 @@ def rule_to_entities(
             rel_name = "detects"
         elif entity_type == "Vulnerability":
             rel_name = "references_cve"
-        relations.append(
-            {"rel": rel_name, "to_type": entity_type, "to_props": entity_props}
-        )
+        to_value = _tag_to_value(entity_type, entity_props, raw_tag)
+        relations.append(_edge(rel_name, entity_type, to_value, entity_props))
 
     return entity, relations
+
+
+def _tag_to_value(entity_type: str, props: dict[str, Any], raw_tag: str) -> str:
+    """Pick the primary identifier for a tag-derived target entity."""
+    if entity_type == "AttackPattern":
+        return str(props.get("technique_id") or raw_tag)
+    if entity_type == "Vulnerability":
+        return str(props.get("cve_id") or raw_tag)
+    # YaraTag: use the name if present, otherwise the raw tag itself.
+    return str(props.get("name") or raw_tag)
 
 
 def from_rule_dict(rule: dict[str, Any]) -> tuple[YaraRule, list[dict[str, Any]]]:

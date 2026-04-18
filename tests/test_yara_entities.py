@@ -23,11 +23,34 @@ def test_from_rule_dict_returns_yara_rule_entity() -> None:
 
 def test_from_rule_dict_emits_detects_edges_for_mitre_att() -> None:
     rule_dict = {"rule_name": "r", "meta": {"mitre_att": "T1218"}, "tags": []}
-    _entity, relations = from_rule_dict(rule_dict)
+    entity, relations = from_rule_dict(rule_dict)
     detects = [r for r in relations if r["rel"] == "detects"]
     assert len(detects) == 1
-    assert detects[0]["to_type"] == "AttackPattern"
-    assert detects[0]["to_props"]["technique_id"] == "T1218"
+    # CR-B2: canonical KG-edge shape.
+    edge = detects[0]
+    assert edge["from_type"] == "YaraRule"
+    assert edge["from_value"] == entity.rule_id
+    assert edge["to_type"] == "AttackPattern"
+    assert edge["to_value"] == "T1218"
+    assert edge["properties"]["technique_id"] == "T1218"
+
+
+def test_relations_use_canonical_kg_edge_shape() -> None:
+    """CR-B2: YARA relations must match the Sigma / add_kg_edge shape."""
+    rule_dict = {
+        "rule_name": "r",
+        "meta": {"mitre_att": "T1218", "actor": "APT1"},
+        "tags": ["APT"],
+    }
+    entity, relations = from_rule_dict(rule_dict)
+    required_keys = {"from_type", "from_value", "rel", "to_type", "to_value", "properties"}
+    assert relations, "expected at least one relation"
+    for edge in relations:
+        assert required_keys <= edge.keys(), f"missing keys on {edge}"
+        assert edge["from_type"] == "YaraRule"
+        assert edge["from_value"] == entity.rule_id
+        # Legacy `to_props` must be gone — callers must not see the old shape.
+        assert "to_props" not in edge
 
 
 def test_cccs_compliance_tier_is_populated() -> None:
@@ -44,7 +67,7 @@ def test_technique_loader_fixture_produces_attack_pattern_relation() -> None:
     assert entity.technique_tag == "loader:memorymodule"
 
     detect_edges = [r for r in relations if r["rel"] == "detects"]
-    assert any(e["to_props"]["technique_id"] == "T1218" for e in detect_edges)
+    assert any(e["properties"]["technique_id"] == "T1218" for e in detect_edges)
 
     # CCCS meta also produced a YaraTag in the "technique" namespace.
     tech_tags = [
@@ -52,9 +75,9 @@ def test_technique_loader_fixture_produces_attack_pattern_relation() -> None:
         for r in relations
         if r["rel"] == "tagged_with"
         and r["to_type"] == "YaraTag"
-        and r["to_props"].get("namespace") == "technique"
+        and r["properties"].get("namespace") == "technique"
     ]
-    assert tech_tags and tech_tags[0]["to_props"]["name"] == "loader:memorymodule"
+    assert tech_tags and tech_tags[0]["properties"]["name"] == "loader:memorymodule"
 
 
 def test_webshell_inline_tags_map_to_yara_tags() -> None:
@@ -62,8 +85,8 @@ def test_webshell_inline_tags_map_to_yara_tags() -> None:
     rules = parse_file(FIXTURES / "webshell.yar")
     _entity, relations = rule_to_entities(rules[0], tier="warn")
     tag_relations = [r for r in relations if r["rel"] == "tagged_with"]
-    namespaces = {r["to_props"]["namespace"] for r in tag_relations}
-    names = {r["to_props"]["name"] for r in tag_relations}
+    namespaces = {r["properties"]["namespace"] for r in tag_relations}
+    names = {r["properties"]["name"] for r in tag_relations}
     # WEBSHELL is a known category token; ``php`` is freeform.
     assert "category" in namespaces
     assert "freeform" in namespaces

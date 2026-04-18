@@ -47,7 +47,7 @@ def _build_note_content(
     if entity.technique_tag:
         summary_bits.append(f"technique={entity.technique_tag}")
     mitre_from_relations = [
-        r["to_props"].get("technique_id")
+        (r.get("properties") or {}).get("technique_id")
         for r in rule_dict.get("_relations", [])
         if r.get("rel") == "detects"
     ]
