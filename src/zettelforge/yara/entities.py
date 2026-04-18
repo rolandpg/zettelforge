@@ -135,7 +135,11 @@ def rule_to_entities(
     fingerprint = meta.get("fingerprint")
     cccs_id = meta.get("id")
     content_hash = _content_sha256(rule)
-    rule_id = cccs_id or rule_name
+    # CR-W5: two rules named ``silent_banker`` in different files used to
+    # collide on ``rule_id`` when no CCCS id was present. Fall back to a
+    # content-hash-namespaced id so every rule body is unique regardless of
+    # source path. CCCS-ID-bearing rules keep their authoritative id.
+    rule_id = cccs_id or f"yara_{content_hash[:16]}"
 
     entity = YaraRule(
         rule_id=rule_id,

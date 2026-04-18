@@ -68,10 +68,27 @@ def test_ingest_rule_strict_rejects_plain_yara(mm: MemoryManager) -> None:
 def test_ingest_rule_writes_note_findable_by_source_ref(mm: MemoryManager) -> None:
     note, _ = ingest_rule(FIXTURES / "technique_loader.yar", mm, tier="warn")
     assert note is not None
-    assert note.content.source_ref.startswith("yara:MemoryModule:")
+    # CR-W5: rule_id for a non-CCCS-id rule is now a content-hash fallback
+    # (``yara_<16-hex>``) instead of the rule_name, so two rules named the
+    # same in different files don't collide on the same source_ref.
+    assert note.content.source_ref.startswith("yara:yara_")
     refetched = mm.store.get_note_by_source_ref(note.content.source_ref)
     assert refetched is not None
     assert refetched.id == note.id
+
+
+def test_yara_rule_id_falls_back_to_content_hash_not_rule_name() -> None:
+    """CR-W5: two distinct rules sharing a ``rule_name`` must not collide."""
+    from zettelforge.yara.entities import rule_to_entities
+    from zettelforge.yara.parser import parse_yara
+
+    a_text = 'rule silent_banker { strings: $a = "A" condition: $a }'
+    b_text = 'rule silent_banker { strings: $b = "B" condition: $b }'
+    a_entity, _ = rule_to_entities(parse_yara(a_text)[0])
+    b_entity, _ = rule_to_entities(parse_yara(b_text)[0])
+    assert a_entity.rule_id != b_entity.rule_id
+    assert a_entity.rule_id.startswith("yara_")
+    assert b_entity.rule_id.startswith("yara_")
 
 
 def test_ingest_rule_persists_kg_edges(mm: MemoryManager) -> None:
