@@ -349,6 +349,11 @@ RELATION_TYPES = {
         "to_types": ["SigmaTag", "YaraTag"],
         "cardinality": "many_to_many",
     },
+    "applies_to": {
+        "from_types": ["SigmaRule", "DetectionRule"],
+        "to_types": ["LogSource"],
+        "cardinality": "many_to_many",
+    },
 }
 
 

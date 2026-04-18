@@ -178,6 +178,17 @@ def test_tagged_fixture_emits_full_upgrade_matrix() -> None:
 # ── ``related:`` block ───────────────────────────────────────────────────────
 
 
+def test_applies_to_relation_is_registered_in_ontology() -> None:
+    """CR-W3: Sigma emits ``applies_to`` edges — the ontology must know
+    about them so validation / graph queries don't treat them as unknown."""
+    from zettelforge.ontology import RELATION_TYPES
+
+    assert "applies_to" in RELATION_TYPES
+    rel_def = RELATION_TYPES["applies_to"]
+    assert "SigmaRule" in rel_def["from_types"]
+    assert "LogSource" in rel_def["to_types"]
+
+
 def test_related_obsolete_maps_to_superseded_by() -> None:
     rule_dict = {
         "title": "t",
