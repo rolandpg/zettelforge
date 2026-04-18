@@ -88,3 +88,19 @@ def test_parse_text_raises_on_syntax_error() -> None:
 
     with pytest.raises(ValueError):
         parse_yara("NOT_A_YARA_RULE")
+
+
+def test_parse_file_rejects_oversize_rule(tmp_path) -> None:
+    """SEC-2: files over MAX_RULE_FILE_BYTES must raise before plyara runs."""
+    import pytest
+
+    from zettelforge.yara.parser import (
+        MAX_RULE_FILE_BYTES,
+        YaraParseError,
+        parse_file,
+    )
+
+    big = tmp_path / "giant.yar"
+    big.write_bytes(b"x" * (MAX_RULE_FILE_BYTES * 2))
+    with pytest.raises(YaraParseError, match="too large"):
+        parse_file(big)

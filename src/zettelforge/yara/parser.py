@@ -32,6 +32,16 @@ from typing import Any
 
 import plyara
 
+#: Hard cap on the size of a single YARA rule file. Rules are text, typically
+#: a few KB; a 1 MB ceiling catches runaway payloads without blocking normal
+#: multi-rule files.
+MAX_RULE_FILE_BYTES = 1_048_576  # 1 MB
+
+
+class YaraParseError(ValueError):
+    """Raised when a YARA rule file cannot be parsed or is otherwise rejected
+    before it reaches :mod:`plyara` (I/O error, oversize, etc.)."""
+
 
 def _flatten_metadata(metadata: list[dict[str, Any]] | None) -> dict[str, Any]:
     """Collapse plyara's list-of-single-key dicts into a flat mapping."""
@@ -83,7 +93,16 @@ def parse_yara(text: str) -> list[dict[str, Any]]:
 
 def parse_file(path: str | Path) -> list[dict[str, Any]]:
     """Parse a .yar/.yara file into a list of normalized rule dicts."""
-    text = Path(path).read_text(encoding="utf-8")
+    p = Path(path)
+    try:
+        size = p.stat().st_size
+    except OSError as exc:
+        raise YaraParseError(f"cannot stat {p}: {exc}") from exc
+    if size > MAX_RULE_FILE_BYTES:
+        raise YaraParseError(
+            f"rule file too large ({size} bytes, max {MAX_RULE_FILE_BYTES}): {p}"
+        )
+    text = p.read_text(encoding="utf-8")
     return parse_yara(text)
 
 

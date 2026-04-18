@@ -24,6 +24,10 @@ from jsonschema import Draft202012Validator
 
 _SCHEMA_CACHE: dict[str, dict[str, Any]] = {}
 
+#: Hard cap on the size of a single Sigma rule file. Rules are YAML, typically
+#: a few KB; anything near the cap is either malicious or a misrouted blob.
+MAX_RULE_FILE_BYTES = 1_048_576  # 1 MB
+
 
 class SigmaParseError(ValueError):
     """Raised when a Sigma rule cannot be parsed (bad YAML)."""
@@ -110,6 +114,14 @@ def parse_yaml(text: str) -> dict[str, Any]:
 def parse_file(path: str | Path) -> dict[str, Any]:
     """Parse a Sigma rule file into a validated dict."""
     p = Path(path)
+    try:
+        size = p.stat().st_size
+    except OSError as exc:
+        raise SigmaParseError(f"cannot stat {p}: {exc}") from exc
+    if size > MAX_RULE_FILE_BYTES:
+        raise SigmaParseError(
+            f"rule file too large ({size} bytes, max {MAX_RULE_FILE_BYTES}): {p}"
+        )
     try:
         text = p.read_text(encoding="utf-8")
     except OSError as exc:

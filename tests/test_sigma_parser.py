@@ -108,3 +108,18 @@ def test_parse_file_raises_on_missing_path(tmp_path: Path) -> None:
     missing = tmp_path / "does_not_exist.yml"
     with pytest.raises(SigmaParseError):
         parse_file(missing)
+
+
+def test_parse_file_rejects_oversize_rule(tmp_path: Path) -> None:
+    """SEC-2: files over MAX_RULE_FILE_BYTES must raise before any YAML load."""
+    from zettelforge.sigma.parser import (
+        MAX_RULE_FILE_BYTES,
+        SigmaParseError,
+        parse_file,
+    )
+
+    big = tmp_path / "giant.yml"
+    # 2 MB — twice the cap. Write raw bytes to skip any YAML cost.
+    big.write_bytes(b"x" * (MAX_RULE_FILE_BYTES * 2))
+    with pytest.raises(SigmaParseError, match="too large"):
+        parse_file(big)
