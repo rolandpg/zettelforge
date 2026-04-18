@@ -158,6 +158,30 @@ def test_ingest_rules_dir_skips_invalid_file(tmp_path: Path, mm: MemoryManager) 
     assert skipped == 1
 
 
+def test_ingest_rule_source_ref_is_format_prefixed_content_scoped(
+    mm: MemoryManager,
+) -> None:
+    """CR-W2: Sigma source_ref must follow ``sigma:<rule_id>:<hash12>``."""
+    from zettelforge.sigma.ingest import ingest_rule
+
+    note, _rels = ingest_rule(FIXTURES / "cloud_example.yml", mm)
+    assert note is not None
+    ref = note.content.source_ref
+    assert ref.startswith("sigma:929a690e-bef0-4204-a928-ef5e620d6fcb:")
+    # 12-char content-hash suffix → full ref ends with hex.
+    assert len(ref.rsplit(":", 1)[-1]) == 12
+
+
+def test_ingest_rule_is_idempotent_on_repeat_call(mm: MemoryManager) -> None:
+    """CR-W2: re-ingesting an unchanged rule returns the same note, not a dup."""
+    from zettelforge.sigma.ingest import ingest_rule
+
+    first, _ = ingest_rule(FIXTURES / "cloud_example.yml", mm)
+    second, _ = ingest_rule(FIXTURES / "cloud_example.yml", mm)
+    assert first is not None and second is not None
+    assert first.id == second.id
+
+
 def test_ingest_rules_dir_skips_symlinks(tmp_path: Path, mm: MemoryManager) -> None:
     """SEC-3: a symlink in the rules dir must not be followed during ingest.
 

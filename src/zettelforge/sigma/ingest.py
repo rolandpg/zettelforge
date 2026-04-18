@@ -60,14 +60,28 @@ def ingest_rule(
         SigmaParseError: YAML could not be parsed.
         SigmaValidationError: rule failed JSON-schema validation.
     """
-    rule_dict, default_ref = _coerce(rule)
+    rule_dict, _default_ref = _coerce(rule)
     entity, relations = from_rule_dict(rule_dict)
+
+    # CR-W2: adopt the format-prefixed + content-hash-scoped source_ref that
+    # YARA already uses. Idempotency is handled by the same ``source_ref``
+    # lookup pattern, so re-ingesting an unchanged rule returns the original
+    # note instead of creating a duplicate.
+    effective_source_ref = (
+        source_ref or f"sigma:{entity.rule_id}:{entity.content_sha256[:12]}"
+    )
+
+    store = getattr(mm, "store", None)
+    if store is not None and hasattr(store, "get_note_by_source_ref"):
+        existing = store.get_note_by_source_ref(effective_source_ref)
+        if existing is not None:
+            return existing, relations
 
     content = _build_content(rule_dict, entity)
     note, _status = mm.remember(
         content=content,
         source_type="sigma_rule",
-        source_ref=source_ref or default_ref or entity.rule_id,
+        source_ref=effective_source_ref,
         domain=domain,
         sync=True,
     )
