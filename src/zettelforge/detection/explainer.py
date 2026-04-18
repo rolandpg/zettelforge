@@ -1,45 +1,317 @@
 """
 LLM-generated rule explainer — the v1 killer feature.
 
-See phase-1c-detection-rule-architecture.md §3 for the full spec.
+See phase-1c-detection-rule-architecture.md §3.
 
-Phase 2: dataclass shape + stubbed ``explain`` signature. Phase 3 wires the
-LLM provider, prompt dispatch, JSON-mode parsing, and retry/backoff.
+The explainer runs synchronously from this module — the async path via
+``memory_manager._enrichment_worker`` is driven by Sigma/YARA ``ingest.py``
+which enqueue ``explain_rule`` jobs; the worker calls ``explain()`` here.
+
+Invariants:
+- Pure-ish function. Only persistent state is the in-process rate-limiter
+  bucket (module-level dict). No files, no databases.
+- Never raises for recoverable conditions (LLM offline, invalid JSON,
+  rate-limit). Returns a ``RuleExplanation`` with ``confidence=0.0`` and
+  a diagnostic summary so callers can render something safe.
+- Hard-caps ``rule_body`` at 8192 chars before calling the LLM to limit
+  prompt-injection blast radius and token cost.
 """
 
 from __future__ import annotations
 
+import os
+import time
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING
+from datetime import datetime, timezone
+from typing import TYPE_CHECKING, Optional
+
+from zettelforge import llm_client
+from zettelforge.json_parse import extract_json
+from zettelforge.log import get_logger
 
 if TYPE_CHECKING:
     from zettelforge.detection.base import DetectionRule
+
+
+_logger = get_logger("zettelforge.detection.explainer")
+
+
+# ── Constants ────────────────────────────────────────────────────────────────
+
+#: Hard cap on rule_body passed to the LLM (chars). Guards against prompt
+#: injection and runaway token cost. Longer bodies are truncated.
+MAX_RULE_BODY_CHARS = 8192
+
+#: Cost-envelope knob: max explanations per minute per process. Callers
+#: (bulk ingest) should check ``rate_limit_ok()`` before enqueuing, but the
+#: explainer also enforces it internally as a belt-and-suspenders measure.
+EXPLAIN_MAX_CALLS_PER_MINUTE = 60
+
+#: Schema version of the RuleExplanation dict. Bump if the shape changes.
+SCHEMA_VERSION = "1.0"
+
+_SYSTEM_PROMPT = (
+    "You are a senior detection engineer. You receive one detection rule "
+    "(Sigma YAML or YARA) and produce a structured explanation for SOC analysts. "
+    "Be precise. Cite specific strings/fields the rule uses. Do not speculate "
+    "beyond the rule text unless you flag the inference. Output valid JSON only."
+)
+
+
+# ── Dataclass ────────────────────────────────────────────────────────────────
 
 
 @dataclass
 class RuleExplanation:
     """Structured explanation emitted by the LLM explainer.
 
-    See §3a of the Phase 1c architecture for schema rationale.
+    See phase-1c §3a for schema rationale.
     """
 
     summary: str
-    mechanism: str
-    threat_model: str
+    mechanism: str = ""
+    threat_model: str = ""
     false_positive_patterns: list[str] = field(default_factory=list)
     related_techniques: list[str] = field(default_factory=list)
     confidence: float = 0.0
     model: str = ""
     generated_at: str = ""
-    schema_version: str = "1.0"
+    schema_version: str = SCHEMA_VERSION
+    raw_response: str = ""  # verbatim LLM output, for debug
 
 
-def explain(rule: "DetectionRule") -> RuleExplanation:
-    """Produce a ``RuleExplanation`` for a detection rule.
+# ── Rate limiter (in-process, token-bucket-ish) ──────────────────────────────
 
-    Phase 3 implementation: invokes the configured LLM provider with a
-    format-aware prompt (Sigma YAML vs. YARA grammar), parses JSON-mode
-    response, retries once on parse failure, and falls back to a stub
-    explanation on persistent failure.
+# Map of start-of-minute-epoch -> call count. Single dict, O(1) cleanup.
+_rate_bucket: dict[int, int] = {}
+
+
+def _current_minute() -> int:
+    return int(time.time() // 60)
+
+
+def rate_limit_ok() -> bool:
+    """Return True iff a new explain call fits under the per-minute cap.
+
+    Does NOT increment the counter — callers should call ``_consume_token``
+    on the actual attempt. Kept separate so ingest paths can gate enqueue
+    without polluting the bucket.
     """
-    raise NotImplementedError("zettelforge.detection.explainer.explain: Phase 3")
+    cap = _effective_rpm()
+    now = _current_minute()
+    # Drop stale minutes; only the current bucket matters.
+    for minute in list(_rate_bucket):
+        if minute < now:
+            del _rate_bucket[minute]
+    return _rate_bucket.get(now, 0) < cap
+
+
+def _consume_token() -> bool:
+    """Atomically check and increment the rate-limiter bucket. Returns True
+    if the call was permitted, False if capped."""
+    if not rate_limit_ok():
+        return False
+    now = _current_minute()
+    _rate_bucket[now] = _rate_bucket.get(now, 0) + 1
+    return True
+
+
+def _effective_rpm() -> int:
+    """Honour ``ZETTELFORGE_EXPLAIN_RPM`` env override; fall back to default."""
+    raw = os.environ.get("ZETTELFORGE_EXPLAIN_RPM")
+    if raw:
+        try:
+            value = int(raw)
+            if value > 0:
+                return value
+        except ValueError:
+            pass
+    return EXPLAIN_MAX_CALLS_PER_MINUTE
+
+
+def _reset_rate_limiter() -> None:
+    """Test-only hook. Clears the rate-limiter bucket."""
+    _rate_bucket.clear()
+
+
+# ── Public API ───────────────────────────────────────────────────────────────
+
+
+def explain(
+    rule: "DetectionRule",
+    *,
+    rule_body: str,
+    provider: Optional[str] = None,
+) -> RuleExplanation:
+    """Generate a semantic explanation of a detection rule.
+
+    Args:
+        rule: The parsed ``DetectionRule`` (or subclass).
+        rule_body: Raw rule text (Sigma YAML or YARA source). Truncated
+            to ``MAX_RULE_BODY_CHARS`` before being sent to the LLM.
+        provider: Override provider name (primarily for testing). When
+            ``None``, the configured provider is used via
+            ``llm_client.get_llm_provider()``.
+
+    Returns:
+        A ``RuleExplanation``. Never raises for recoverable failures;
+        on LLM error, parse failure, or rate-limit, returns an
+        explanation with ``confidence=0.0`` and a diagnostic ``summary``.
+    """
+    start = time.monotonic()
+    provider_name = provider or llm_client.get_llm_provider()
+    is_mock = provider_name == "mock"
+    now_iso = datetime.now(timezone.utc).isoformat()
+
+    # Mock provider — return canned deterministic response so CI tests
+    # don't depend on fake-JSON parsing from the MockProvider's "mock response".
+    if is_mock:
+        _logger.info(
+            "rule_explained",
+            rule_id=rule.rule_id,
+            rule_format=rule.source_format,
+            ms_elapsed=round((time.monotonic() - start) * 1000, 2),
+            confidence=0.0,
+            mock_provider=True,
+        )
+        return RuleExplanation(
+            summary="mock provider — no real explanation",
+            mechanism="",
+            threat_model="",
+            false_positive_patterns=[],
+            related_techniques=[],
+            confidence=0.0,
+            model=f"mock:{provider_name}",
+            generated_at=now_iso,
+            schema_version=SCHEMA_VERSION,
+            raw_response="",
+        )
+
+    # Rate limit — callers are supposed to check rate_limit_ok() before
+    # enqueuing, but we double-gate here in case a bad caller bypasses it.
+    if not _consume_token():
+        _logger.warning(
+            "rule_explain_rate_limited",
+            rule_id=rule.rule_id,
+            rule_format=rule.source_format,
+            rpm_cap=_effective_rpm(),
+        )
+        return RuleExplanation(
+            summary="explanation unavailable: rate limited",
+            confidence=0.0,
+            model=provider_name,
+            generated_at=now_iso,
+            schema_version=SCHEMA_VERSION,
+        )
+
+    # Truncate body (prompt-injection + cost guard).
+    body = rule_body or ""
+    if len(body) > MAX_RULE_BODY_CHARS:
+        body = body[:MAX_RULE_BODY_CHARS] + "... [truncated]"
+
+    prompt = (
+        f"{rule.explain_prompt()}\n\n"
+        f"Rule body:\n```\n{body}\n```\n"
+    )
+
+    try:
+        raw = llm_client.generate(
+            prompt,
+            max_tokens=800,
+            temperature=0.1,
+            system=_SYSTEM_PROMPT,
+            json_mode=True,
+        )
+    except Exception as exc:
+        _logger.warning(
+            "rule_explain_llm_error",
+            rule_id=rule.rule_id,
+            rule_format=rule.source_format,
+            error=repr(exc),
+        )
+        return RuleExplanation(
+            summary=f"explanation unavailable: llm error ({type(exc).__name__})",
+            confidence=0.0,
+            model=provider_name,
+            generated_at=now_iso,
+            schema_version=SCHEMA_VERSION,
+        )
+
+    if not raw:
+        _logger.warning(
+            "rule_explain_empty_response",
+            rule_id=rule.rule_id,
+            rule_format=rule.source_format,
+        )
+        return RuleExplanation(
+            summary="explanation unavailable: empty response",
+            confidence=0.0,
+            model=provider_name,
+            generated_at=now_iso,
+            schema_version=SCHEMA_VERSION,
+            raw_response="",
+        )
+
+    parsed = extract_json(raw, expect="object")
+    if parsed is None:
+        _logger.warning(
+            "rule_explain_parse_failure",
+            rule_id=rule.rule_id,
+            rule_format=rule.source_format,
+        )
+        return RuleExplanation(
+            summary="explanation unavailable: invalid json",
+            confidence=0.0,
+            model=provider_name,
+            generated_at=now_iso,
+            schema_version=SCHEMA_VERSION,
+            raw_response=raw[:500],
+        )
+
+    explanation = _from_llm_dict(parsed, provider_name, now_iso, raw)
+    _logger.info(
+        "rule_explained",
+        rule_id=rule.rule_id,
+        rule_format=rule.source_format,
+        ms_elapsed=round((time.monotonic() - start) * 1000, 2),
+        confidence=explanation.confidence,
+        mock_provider=False,
+    )
+    return explanation
+
+
+def _from_llm_dict(
+    parsed: dict,
+    provider_name: str,
+    generated_at: str,
+    raw_response: str,
+) -> RuleExplanation:
+    """Coerce an LLM-JSON dict into a RuleExplanation with defensive defaults."""
+    def _as_str(v: object) -> str:
+        return v if isinstance(v, str) else ""
+
+    def _as_str_list(v: object) -> list[str]:
+        if isinstance(v, list):
+            return [x for x in v if isinstance(x, str)]
+        return []
+
+    def _as_float(v: object) -> float:
+        try:
+            f = float(v)  # type: ignore[arg-type]
+        except (TypeError, ValueError):
+            return 0.0
+        # Clamp to [0, 1].
+        return max(0.0, min(1.0, f))
+
+    return RuleExplanation(
+        summary=_as_str(parsed.get("summary")) or "explanation unavailable: missing summary",
+        mechanism=_as_str(parsed.get("mechanism")),
+        threat_model=_as_str(parsed.get("threat_model")),
+        false_positive_patterns=_as_str_list(parsed.get("false_positive_patterns")),
+        related_techniques=_as_str_list(parsed.get("related_techniques")),
+        confidence=_as_float(parsed.get("confidence")),
+        model=provider_name,
+        generated_at=generated_at,
+        schema_version=SCHEMA_VERSION,
+        raw_response=raw_response,
+    )
