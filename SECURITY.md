@@ -60,9 +60,9 @@ backported to the prior minor release.
 
 | Version | Supported |
 |---|---|
-| 2.3.x (current) | Yes — active security support |
-| 2.2.x | Critical fixes only, for 60 days after 2.3.0 release |
-| < 2.2 | No — upgrade required |
+| 2.4.x (current) | Yes — active security support |
+| 2.3.x | Critical fixes only, for 60 days after 2.4.0 release |
+| < 2.3 | No — upgrade required |
 
 ---
 

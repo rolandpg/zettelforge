@@ -6,9 +6,30 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [2.4.0] - 2026-04-19
+
+Detection-rules-as-memory, MCP Registry publication, SQLite concurrency
+hardening, and a full test-suite hygiene pass.
+
+### Added
+
+- **Detection rules as first-class memory** (#70) — Sigma and YARA rules
+  are now ingested, indexed, and retrieved alongside CTI entities, with
+  an LLM rule explainer that surfaces what each rule detects and the
+  actors/techniques it's associated with. See the "Detection Rules as
+  Memory" section in the README (#74) for usage.
+- **MCP Registry publication** (#75) — `server.json` and the `mcp-name`
+  tag required to publish ZettelForge to the canonical MCP Registry
+  (registry.modelcontextprotocol.io), which feeds mcp.so and the
+  modelcontextprotocol.io community-servers list.
+- **Brand & docs polish** (#61) — neural-chain architecture diagram with
+  light/dark parity, updated GitHub social preview, canonical security
+  channels + RFC 9116 `security.txt`, real Code of Conduct contacts,
+  and a complete brand documentation set.
+
 ### Fixed
 
-- **SQLite backend concurrency** — 16 reader methods in
+- **SQLite backend concurrency** (#69) — 16 reader methods in
   `SQLiteBackend` (`get_note_by_id`, `get_note_by_source_ref`,
   `iterate_notes`, `get_notes_by_domain`, `get_recent_notes`,
   `count_notes`, `get_kg_node`, `get_kg_node_by_id`,
@@ -23,10 +44,12 @@ Versioning follows [Semantic Versioning](https://semver.org/).
   Eliminates the `test_apply_delete_marks_superseded` flake and
   prevents the same race from surfacing in production
   `recall()`-during-write paths.
+- **CI regressions** (#67) — stabilized three tests exposed by the
+  test-suite audit sprint.
 
 ### Changed
 
-- **Test suite hygiene** — post-v2.3.0 audit (see
+- **Test suite hygiene** (#62, #63, #64, #65) — post-v2.3.0 audit (see
   `docs/superpowers/research/2026-04-17-test-suite-audit.md`)
   converted 10 CI-skipped LLM tests to the mock provider (RFC-002
   Phase 1), resolved both remaining `xfail` tests via prompt-routed
