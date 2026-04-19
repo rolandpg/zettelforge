@@ -1,5 +1,7 @@
 # ZettelForge
 
+<!-- mcp-name: io.github.rolandpg/zettelforge -->
+
 **The only agentic memory system built for cyber threat intelligence.**
 
 Persistent memory for AI agents and Claude Code — with CTI entity extraction, STIX knowledge graphs, threat-actor alias resolution, and offline-first RAG. MCP server included. No cloud, no API keys.
