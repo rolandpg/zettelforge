@@ -70,7 +70,7 @@ ZettelForge was built for analysts who think in threat graphs. It extracts CVEs,
 
 **RAG Synthesis** — Synthesize answers across all stored memories with `direct_answer` format.
 
-**In-process by architecture** — fastembed (ONNX) for embeddings, llama-cpp-python for LLM features, SQLite + LanceDB for storage. No external network calls in the default configuration. Runs on a laptop, a workstation, or an air-gapped host — same code, same behavior.
+**In-process by architecture** — fastembed (ONNX) for embeddings, llama-cpp-python for optional local LLM inference, SQLite + LanceDB for storage, and Ollama on localhost by default. No external API keys are required. Outbound network access may occur on first run when embedding/LLM models are downloaded; after models are preloaded, it can run fully offline (including on air-gapped hosts).
 
 **Audit logging in OCSF schema** — Every operation emits a structured event in the Open Cybersecurity Schema Framework format. What you do with the log stream (SIEM, WORM store, nothing) is up to you.
 
