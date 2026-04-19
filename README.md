@@ -1,6 +1,8 @@
 # ZettelForge
 
-**Your SOC's most expensive asset walks out the door every day.**
+<!-- mcp-name: io.github.rolandpg/zettelforge -->
+
+**The only agentic memory system built for cyber threat intelligence.**
 
 When a senior analyst leaves, two or three years of context walks out with them — customer environments, prior investigations, actor TTPs, false-positive patterns, every hard-won "wait, we've seen this before." ZettelForge is an agentic memory system built so that context stays with the team.
 

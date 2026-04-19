@@ -31,7 +31,7 @@ plugins:
 extra:
   # Sourced by docs/overrides/main.html for JSON-LD SoftwareApplication.
   # Bump on each release so schema.org metadata stays in sync with PyPI.
-  version: "2.3.0"
+  version: "2.4.0"
 
 extra_css:
   # Brand tokens first — defines --signal-*, --graphite-*, --fog-*, --font-*

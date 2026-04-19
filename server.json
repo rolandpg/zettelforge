@@ -1,0 +1,21 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.rolandpg/zettelforge",
+  "title": "ZettelForge",
+  "description": "Agentic memory for cyber threat intelligence: STIX knowledge graphs, threat-actor alias resolution, offline-first RAG, Sigma/YARA support.",
+  "repository": {
+    "url": "https://github.com/rolandpg/zettelforge",
+    "source": "github"
+  },
+  "version": "2.4.0",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "identifier": "zettelforge",
+      "version": "2.4.0",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}
