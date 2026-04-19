@@ -1,8 +1,10 @@
 # ZettelForge
 
-**The only agentic memory system built for cyber threat intelligence.**
+**Your SOC's most expensive asset walks out the door every day.**
 
-Persistent memory for AI agents and Claude Code — with CTI entity extraction, STIX knowledge graphs, threat-actor alias resolution, and offline-first RAG. MCP server included. No cloud, no API keys.
+When a senior analyst leaves, two or three years of context walks out with them — customer environments, prior investigations, actor TTPs, false-positive patterns, every hard-won "wait, we've seen this before." ZettelForge is an agentic memory system built so that context stays with the team.
+
+It extracts CVEs, threat actors, IOCs, and ATT&CK techniques from analyst notes and threat reports, resolves aliases (APT28 = Fancy Bear = STRONTIUM = Sofacy), builds a STIX 2.1 knowledge graph, and serves every past investigation back to your analysts — and to Claude Code via MCP — in natural language. Runs entirely in-process. No API keys. No cloud. No data leaves the host.
 
 [![PyPI](https://img.shields.io/pypi/v/zettelforge)](https://pypi.org/project/zettelforge/)
 [![Downloads/month](https://static.pepy.tech/personalized-badge/zettelforge?period=month&units=international_system&left_color=grey&right_color=blue&left_text=downloads%2Fmonth)](https://pepy.tech/projects/zettelforge)
@@ -10,7 +12,7 @@ Persistent memory for AI agents and Claude Code — with CTI entity extraction, 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](https://opensource.org/licenses/MIT)
 [![CI](https://github.com/rolandpg/zettelforge/actions/workflows/ci.yml/badge.svg)](https://github.com/rolandpg/zettelforge/actions)
 
-**[⭐ Star](https://github.com/rolandpg/zettelforge) · [📦 `pip install zettelforge`](https://pypi.org/project/zettelforge/) · [📖 Docs](https://docs.threatrecall.ai/) · [🧪 Hosted](https://threatrecall.ai)**
+**[⭐ Star](https://github.com/rolandpg/zettelforge) · [📦 `pip install zettelforge`](https://pypi.org/project/zettelforge/) · [📖 Docs](https://docs.threatrecall.ai/) · [🧪 Hosted beta](https://threatrecall.ai)**
 
 <p align="center">
 <a href="https://www.buymeacoffee.com/xypher22pr0" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-green.png" alt="Buy Me a Coffee" style="height: 60px !important;width: 217px !important;" ></a>
@@ -21,24 +23,25 @@ Persistent memory for AI agents and Claude Code — with CTI entity extraction, 
 
 > If ZettelForge fits a CTI workflow you run, a star is the fastest signal that this category is worth continuing to invest in.
 
-## Why ZettelForge?
+## The problem
 
-General-purpose memory systems don't understand threat intelligence. They can't tell APT28 from Fancy Bear, don't know that CVE-2024-3094 is the XZ Utils backdoor, and can't track how intelligence evolves across reports. When your agent forgets context between investigations, you end up re-reading the same reports and re-building the same mental models.
+Every SOC loses analysts. When they leave, investigation context, actor attribution, and environment-specific false-positive patterns go with them. Their replacements re-open the same tickets, re-read the same reports, and re-build the same mental models from scratch.
 
-ZettelForge was built from the ground up for analysts who think in threat graphs, not chat histories. It extracts CVEs, threat actors, IOCs, and MITRE ATT&CK techniques automatically, resolves aliases across naming conventions, builds a knowledge graph with causal relationships, and retrieves memories using intent-aware blended search -- all offline, with no API keys or cloud dependencies.
+General-purpose AI memory systems don't fix this for security teams. They can't tell APT28 from Fancy Bear, don't know that CVE-2024-3094 is the XZ Utils backdoor, can't parse Sigma or YARA, and have no concept of MITRE ATT&CK technique IDs. When a CTI analyst gives them a year of intel reports, they get back fuzzy semantic search over chat history.
+
+ZettelForge was built for analysts who think in threat graphs. It extracts CVEs, threat actors, IOCs, and ATT&CK techniques automatically, resolves aliases across naming conventions, builds a knowledge graph with causal relationships, and retrieves memories using intent-aware blended search — all in-process, with no external API dependency.
 
 >"Memory augmentation closes 33% of the gap between small and large models on CTI tasks (CTI-REALM, Microsoft 2026)." [1]
 
-
-| Feature | ZettelForge | Mem0 | Graphiti | Cognee |
-|---------|------------|------|----------|--------|
+| Capability | ZettelForge | Mem0 | Graphiti | Cognee |
+|---|---|---|---|---|
 | CTI entity extraction (CVEs, actors, IOCs) | Yes | No | No | No |
 | STIX 2.1 ontology | Yes | No | No | No |
 | Threat actor alias resolution | Yes (APT28 = Fancy Bear) | No | No | No |
 | Knowledge graph with causal triples | Yes | No | Yes | Yes |
 | Intent-classified retrieval (5 types) | Yes | No | No | No |
-| Offline / local-first (no API keys) | Yes | No | No | No |
-| OCSF audit logging | Yes | No | No | No |
+| In-process / no external API required | Yes | No | No | No |
+| Audit logs in OCSF schema | Yes | No | No | No |
 | MCP server (Claude Code) | Yes | No | No | No |
 
 ## Data Pipeline
@@ -53,21 +56,21 @@ ZettelForge was built from the ground up for analysts who think in threat graphs
 
 ## Features
 
-**Entity Extraction** -- Automatically identifies CVEs, threat actors, IOCs (IPs, domains, hashes, URLs, emails), MITRE ATT&CK techniques, campaigns, intrusion sets, tools, people, locations, and organizations. Regex + LLM NER with STIX 2.1 types throughout.
+**Entity Extraction** — Automatically identifies CVEs, threat actors, IOCs (IPs, domains, hashes, URLs, emails), MITRE ATT&CK techniques, campaigns, intrusion sets, tools, people, locations, and organizations. Regex + LLM NER with STIX 2.1 types throughout.
 
-**Knowledge Graph** -- Entities become nodes, co-occurrence becomes edges. LLM infers causal triples ("APT28 *uses* Cobalt Strike"). Temporal edges and supersession track how intelligence evolves.
+**Knowledge Graph** — Entities become nodes, co-occurrence becomes edges. LLM infers causal triples ("APT28 *uses* Cobalt Strike"). Temporal edges and supersession track how intelligence evolves.
 
-**Alias Resolution** -- APT28, Fancy Bear, Sofacy, STRONTIUM all resolve to the same actor node. Works automatically on store and recall.
+**Alias Resolution** — APT28, Fancy Bear, Sofacy, STRONTIUM all resolve to the same actor node. Works automatically on store and recall.
 
-**Blended Retrieval** -- Vector similarity (768-dim fastembed, ONNX) + graph traversal (BFS over knowledge graph edges), weighted by intent classification. Five intent types: factual, temporal, relational, exploratory, causal.
+**Blended Retrieval** — Vector similarity (768-dim fastembed, ONNX) + graph traversal (BFS over knowledge graph edges), weighted by intent classification. Five intent types: factual, temporal, relational, exploratory, causal.
 
-**Memory Evolution** -- With `evolve=True`, new intel is compared to existing memory. LLM decides ADD, UPDATE, DELETE, or NOOP. Stale intel gets superseded. Contradictions get resolved. Duplicates get skipped.
+**Memory Evolution** — With `evolve=True`, new intel is compared to existing memory. LLM decides ADD, UPDATE, DELETE, or NOOP. Stale intel gets superseded. Contradictions get resolved. Duplicates get skipped.
 
-**RAG Synthesis** -- Synthesize answers across all stored memories with direct_answer format.
+**RAG Synthesis** — Synthesize answers across all stored memories with `direct_answer` format.
 
-**Offline-First** -- fastembed (ONNX) for embeddings, llama-cpp-python for LLM features. No API keys, no cloud dependencies.
+**In-process by architecture** — fastembed (ONNX) for embeddings, llama-cpp-python for LLM features, SQLite + LanceDB for storage. No external network calls in the default configuration. Runs on a laptop, a workstation, or an air-gapped host — same code, same behavior.
 
-**OCSF Audit Logging** -- Every operation is logged in OCSF format (FedRAMP AU controls).
+**Audit logging in OCSF schema** — Every operation emits a structured event in the Open Cybersecurity Schema Framework format. What you do with the log stream (SIEM, WORM store, nothing) is up to you.
 
 ## Quick Start
 
@@ -80,7 +83,7 @@ from zettelforge import MemoryManager
 
 mm = MemoryManager()
 
-# Store threat intel -- entities extracted automatically
+# Store threat intel — entities extracted automatically
 mm.remember("APT28 uses Cobalt Strike for lateral movement via T1021")
 
 # Recall with alias resolution
@@ -91,7 +94,7 @@ results = mm.recall("What tools does Fancy Bear use?")
 answer = mm.synthesize("Summarize known APT28 TTPs")
 ```
 
-No TypeDB, no Ollama, no Docker -- just `pip install`. Embeddings run in-process via fastembed. LLM features (extraction, synthesis) activate when Ollama is available.
+No TypeDB, no Ollama, no Docker — just `pip install`. Embeddings run in-process via fastembed. LLM features (extraction, synthesis) activate when Ollama is available.
 
 ### With Ollama (enables LLM features)
 
@@ -103,7 +106,7 @@ ollama pull qwen2.5:3b && ollama serve
 ### Memory Evolution
 
 ```python
-# New intel arrives -- evolve=True enables memory evolution:
+# New intel arrives — evolve=True enables memory evolution:
 # LLM extracts facts, compares to existing notes, decides ADD/UPDATE/DELETE/NOOP
 mm.remember(
     "APT28 has shifted tactics. They dropped DROPBEAR and now exploit edge devices.",
@@ -116,25 +119,25 @@ mm.remember(
 
 Every `remember()` call triggers a pipeline:
 
-1. **Entity Extraction** -- regex + LLM NER identifies CVEs, intrusion sets, threat actors, tools, campaigns, ATT&CK techniques, IOCs (IPv4, domain, URL, MD5/SHA1/SHA256, email), people, locations, organizations, events, activities, and temporal references (19 types)
-2. **Knowledge Graph Update** -- entities become nodes, co-occurrence becomes edges, LLM infers causal triples
-3. **Vector Embedding** -- 768-dim fastembed (ONNX, in-process, 7ms/embed) stored in LanceDB
-4. **Supersession Check** -- entity overlap detection marks stale notes as superseded
-5. **Dual-Stream Write** -- fast path returns in ~45ms; causal enrichment is deferred to a background worker
+1. **Entity Extraction** — regex + LLM NER identifies CVEs, intrusion sets, threat actors, tools, campaigns, ATT&CK techniques, IOCs (IPv4, domain, URL, MD5/SHA1/SHA256, email), people, locations, organizations, events, activities, and temporal references (19 types)
+2. **Knowledge Graph Update** — entities become nodes, co-occurrence becomes edges, LLM infers causal triples
+3. **Vector Embedding** — 768-dim fastembed (ONNX, in-process, 7ms/embed) stored in LanceDB
+4. **Supersession Check** — entity overlap detection marks stale notes as superseded
+5. **Dual-Stream Write** — fast path returns in ~45ms; causal enrichment is deferred to a background worker
 
 Every `recall()` call blends two retrieval strategies:
 
-1. **Vector similarity** -- semantic search over embeddings
-2. **Graph traversal** -- BFS over knowledge graph edges, scored by hop distance
-3. **Intent routing** -- query classified as factual/temporal/relational/causal/exploratory, weights adjusted per type
-4. **Cross-encoder reranking** -- ms-marco-MiniLM reorders final results by relevance
+1. **Vector similarity** — semantic search over embeddings
+2. **Graph traversal** — BFS over knowledge graph edges, scored by hop distance
+3. **Intent routing** — query classified as factual/temporal/relational/causal/exploratory, weights adjusted per type
+4. **Cross-encoder reranking** — ms-marco-MiniLM reorders final results by relevance
 
 ## Benchmarks
 
 Evaluated against published academic benchmarks:
 
 | Benchmark | What it measures | Score |
-|-----------|-----------------|-------|
+|---|---|---|
 | **CTI Retrieval** | Attribution, CVE linkage, multi-hop | **75.0%** |
 | **RAGAS** | Retrieval quality (keyword presence) | **78.1%** |
 | **LOCOMO** (ACL 2024) | Conversational memory recall | **22.0%** *(with Ollama cloud models)* |
@@ -164,7 +167,7 @@ Exposed tools: `remember`, `recall`, `synthesize`, `entity`, `graph`, `stats`.
 
 Sigma and YARA rules are first-class memory primitives. Parse, validate, and ingest a rule and its tags become graph edges: MITRE ATT&CK techniques, CVEs, threat-actor aliases, tools, and malware families resolve against the same ontology as every other note. A shared `DetectionRule` supertype carries `SigmaRule` and `YaraRule` subtypes, so a single rule UUID is addressable across both formats.
 
-Sigma rules are validated against the vendored [SigmaHQ JSON schema](https://github.com/SigmaHQ/sigma-specification). YARA rules are parsed with plyara and validated against the [CCCS YARA metadata standard](https://github.com/CybercentreCanada/CCCS-Yara) (tiers: `strict`, `warn`, `non_cccs`). Ingest is idempotent -- re-ingesting an unchanged rule returns the original note via a content-hashed `source_ref`.
+Sigma rules are parsed against the vendored [SigmaHQ JSON schema](https://github.com/SigmaHQ/sigma-specification). YARA rules are parsed with plyara and checked against the [CCCS YARA metadata standard](https://github.com/CybercentreCanada/CCCS-Yara) (tiers: `strict`, `warn`, `non_cccs`). Ingest is idempotent — re-ingesting an unchanged rule returns the original note via a content-hashed `source_ref`.
 
 ```python
 from zettelforge import MemoryManager
@@ -181,11 +184,11 @@ ingest_yara("rules/webshell_china_chopper.yar", mm, tier="warn")
 python -m zettelforge.sigma.ingest /path/to/sigma/rules/
 python -m zettelforge.yara.ingest /path/to/yara/rules/ --tier warn
 
-# CI fixture check -- parse + validate, no writes
+# CI fixture check — parse + validate, no writes
 python -m zettelforge.sigma.ingest rules/ --dry-run
 ```
 
-An LLM rule explainer (`zettelforge.detection.explainer.explain`) produces a structured JSON summary -- intent, key fields, evasion notes, false-positive hypotheses -- for any `DetectionRule`. It runs synchronously on demand in v1; async enrichment-queue wiring is v1.1. Rate-limited via `ZETTELFORGE_EXPLAIN_RPM` (default 60 calls/minute).
+An LLM rule explainer (`zettelforge.detection.explainer.explain`) produces a structured JSON summary — intent, key fields, evasion notes, false-positive hypotheses — for any `DetectionRule`. It runs synchronously on demand in v1; async enrichment-queue wiring is v1.1. Rate-limited via `ZETTELFORGE_EXPLAIN_RPM` (default 60 calls/minute).
 
 References: [Sigma spec](https://github.com/SigmaHQ/sigma-specification), [SigmaHQ rules](https://github.com/SigmaHQ/sigma), [CCCS YARA](https://github.com/CybercentreCanada/CCCS-Yara), [YARA docs](https://yara.readthedocs.io).
 
@@ -206,35 +209,31 @@ See [examples/athf_bridge.py](examples/athf_bridge.py).
 
 ## Extensions
 
-ZettelForge is a complete, production-ready agentic memory system.
-Everything documented above works out of the box.
+ZettelForge ships a complete agentic memory core. Everything documented above works from a single `pip install`.
 
-For teams that need TypeDB-scale graph storage, OpenCTI integration,
-or multi-tenant deployment, optional extensions are available:
+For teams that want TypeDB-scale graph storage, OpenCTI integration, or multi-tenant deployment, optional extensions are available:
 
 | Extension | What it adds |
-|-----------|-------------|
+|---|---|
 | TypeDB STIX 2.1 backend | Schema-enforced ontology with inference rules |
 | OpenCTI sync | Bi-directional sync with OpenCTI instances |
 | Multi-tenant auth | OAuth/JWT with per-tenant isolation |
 | Sigma rule generation | Detection rules from extracted IOCs |
 
-Extensions are installed separately:
+Extensions install separately:
 
 ```bash
 pip install zettelforge-enterprise
 ```
 
-**Hosted option:** [ThreatRecall](https://threatrecall.ai) provides
-managed ZettelForge with all extensions, so you don't have to run
-infrastructure yourself.
+**Hosted (private beta):** [ThreatRecall](https://threatrecall.ai) is the managed SaaS version of ZettelForge with enterprise extensions enabled. Currently accepting waitlist signups and a limited number of design partners.
 
 ## Configuration
 
 | Variable | Default | Description |
-|----------|---------|-------------|
+|---|---|---|
 | `AMEM_DATA_DIR` | `~/.amem` | Data directory |
-| `ZETTELFORGE_BACKEND` | `sqlite` | SQLite community backend. TypeDB is available via extension. |
+| `ZETTELFORGE_BACKEND` | `sqlite` | SQLite community backend. TypeDB available via extension. |
 | `ZETTELFORGE_LLM_PROVIDER` | `local` | `local` (llama-cpp) or `ollama` |
 
 See [config.default.yaml](config.default.yaml) for all options.
@@ -245,9 +244,11 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup.
 
 ## License
 
-MIT -- See [LICENSE](LICENSE).
+MIT — See [LICENSE](LICENSE).
 
-**Made by Patrick Roland**.
+## About the author
+
+Built by **Patrick Roland** — Director of SOC Services at Summit 7 Systems, where he built the Vigilance MxDR practice from the ground up. Navy nuclear veteran, CISSP, CCP (CMMC 2.0 Professional). [LinkedIn](https://www.linkedin.com/in/patrickgroland/).
 
 ## Support the Project
 
