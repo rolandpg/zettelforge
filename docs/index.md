@@ -14,7 +14,7 @@ version: "2.3.0"
 
 When a senior analyst leaves, two or three years of context walks out with them — customer environments, prior investigations, actor TTPs, false-positive patterns, every hard-won "wait, we've seen this before." ZettelForge is an agentic memory system built so that context stays with the team.
 
-It extracts CVEs, threat actors, IOCs, and ATT&CK techniques from analyst notes and threat reports, resolves aliases (APT28 = Fancy Bear = STRONTIUM = Sofacy), builds a STIX 2.1 knowledge graph in TypeDB, indexes vector-embedded Zettelkasten notes in LanceDB, and serves every past investigation back to your analysts — and to Claude Code via MCP — in natural language. Runs entirely in-process. No API keys. No cloud. No data leaves the host.
+It extracts CVEs, threat actors, IOCs, and ATT&CK techniques from analyst notes and threat reports, resolves aliases (APT28 = Fancy Bear = STRONTIUM = Sofacy), and indexes vector-embedded Zettelkasten notes in LanceDB for retrieval in natural language by analysts and Claude Code via MCP. Community defaults use SQLite + LanceDB, while TypeDB-backed STIX 2.1 graph storage is optional. No external API keys are required. Default LLM traffic stays on localhost (Ollama), and fully offline operation is possible after required models are preloaded.
 
 **New here?** Start with the [5-minute Quickstart](tutorials/01-quickstart.md), or `pip install zettelforge`.
 
