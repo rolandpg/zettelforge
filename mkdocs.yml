@@ -43,6 +43,9 @@ extra_css:
   - stylesheets/brand-tokens.css
   - stylesheets/extra.css
 
+extra_javascript:
+  - assets/cf-analytics.js
+
 nav:
   - Home: index.md
   - Getting Started:
