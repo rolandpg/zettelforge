@@ -189,7 +189,7 @@ combined = (vector_norm * w_v) + (graph_norm * w_g)
 
 **Reciprocal Rank Fusion (alternative):**
 ```python
-rrf_score = sum(1.0 / (k + rank)) for each signal
+rrf_score = sum(1.0 / (k + rank) for rank in ranks)
 ```
 
 ## Synthesis System
