@@ -303,10 +303,13 @@ combined = (vector_norm * w_v) + (graph_norm * w_g)
 
 ### `yara/` (directory)
 **Files:**
-- `__init__.py`
+- `__init__.py` — Package exports
 - `parser.py` — plyara integration
-- `ingest.py`
-- `entities.py`
+- `ingest.py` — Rule ingestion
+- `entities.py` — Entity extraction
+- `tags.py` — Tag handling
+- `cli.py` — Command-line interface
+- `cccs_metadata.py` — CCCS metadata handling
 
 ### `detection/` (directory)
 **Files:**
