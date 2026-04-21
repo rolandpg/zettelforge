@@ -77,6 +77,8 @@ nav:
     - Retrieval Policies: reference/retrieval-policies.md
     - STIX Schema: reference/stix-schema.md
     - Governance Controls: reference/governance-controls.md
+    - Architecture Deep Dive: reference/architecture-deep-dive.md
+    - Module Inventory: reference/module-inventory.md
   - Design:
     - Brand Identity: brand/brandIdentity.md
     - RFC-001 Conversational Entity Extractor: rfcs/RFC-001-conversational-entity-extractor.md
