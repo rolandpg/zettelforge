@@ -14,7 +14,7 @@ Complete reference of all 57 core modules in ZettelForge v2.4.0.
 
 ## Core API Layer
 
-### `memory_manager.py` (52K lines)
+### `memory_manager.py`
 **Purpose:** Primary interface for all memory operations.
 
 **Key Classes:**
