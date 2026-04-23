@@ -73,8 +73,8 @@ class TypeDBConfig:
     host: str = "localhost"
     port: int = 1729
     database: str = "zettelforge"
-    username: str = "admin"
-    password: str = "password"
+    username: str = ""
+    password: str = ""
 ```
 
 | Key | Type | Default | Env Override | Description |
@@ -82,8 +82,8 @@ class TypeDBConfig:
 | `typedb.host` | `str` | `localhost` | `TYPEDB_HOST` | TypeDB server hostname or IP. |
 | `typedb.port` | `int` | `1729` | `TYPEDB_PORT` | TypeDB server port. |
 | `typedb.database` | `str` | `zettelforge` | `TYPEDB_DATABASE` | TypeDB database name. |
-| `typedb.username` | `str` | `admin` | `TYPEDB_USERNAME` | TypeDB authentication username. |
-| `typedb.password` | `str` | `password` | `TYPEDB_PASSWORD` | TypeDB authentication password. |
+| `typedb.username` | `str` | `""` | `TYPEDB_USERNAME` | TypeDB authentication username. Supply via env var or `${TYPEDB_USERNAME}` in config.yaml. |
+| `typedb.password` | `str` | `""` | `TYPEDB_PASSWORD` | TypeDB authentication password. Supply via env var or `${TYPEDB_PASSWORD}` in config.yaml. |
 
 ---
 

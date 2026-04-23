@@ -62,8 +62,16 @@ class TypeDBConfig:
     host: str = "localhost"
     port: int = 1729
     database: str = "zettelforge"
-    username: str = "admin"
-    password: str = "password"
+    username: str = ""  # set via TYPEDB_USERNAME env var or ${TYPEDB_USERNAME} in config.yaml
+    password: str = ""  # set via TYPEDB_PASSWORD env var or ${TYPEDB_PASSWORD} in config.yaml
+
+    def __repr__(self) -> str:
+        password_display = "'***'" if self.password else "''"
+        return (
+            f"TypeDBConfig(host={self.host!r}, port={self.port}, "
+            f"database={self.database!r}, username={self.username!r}, "
+            f"password={password_display})"
+        )
 
 
 @dataclass
@@ -290,6 +298,8 @@ def _apply_yaml(cfg: ZettelForgeConfig, data: dict):
     if "typedb" in data and isinstance(data["typedb"], dict):
         for k, v in data["typedb"].items():
             if hasattr(cfg.typedb, k):
+                if k in {"username", "password"} and isinstance(v, str):
+                    v = _resolve_env_refs(v)
                 setattr(cfg.typedb, k, v)
 
     if "backend" in data:

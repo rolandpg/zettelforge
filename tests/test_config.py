@@ -7,6 +7,7 @@ from pathlib import Path
 
 from zettelforge.config import (
     ZettelForgeConfig,
+    TypeDBConfig,
     get_config,
     reload_config,
     _apply_env,
@@ -35,6 +36,25 @@ class TestDefaults:
         cfg = ZettelForgeConfig()
         assert cfg.cache.ttl_seconds == 300
         assert cfg.cache.max_entries == 1024
+
+    def test_typedb_no_insecure_default_credentials(self):
+        """TypeDBConfig must not ship with known-insecure defaults."""
+        cfg = TypeDBConfig()
+        assert cfg.username == "", "username default must be empty, not 'admin'"
+        assert cfg.password == "", "password default must be empty, not 'password'"
+
+    def test_typedb_config_repr_redacts_password(self):
+        """TypeDBConfig repr must never expose the plaintext password."""
+        cfg = TypeDBConfig(username="admin", password="s3cret")
+        r = repr(cfg)
+        assert "s3cret" not in r
+        assert "***" in r
+
+    def test_typedb_config_repr_empty_password(self):
+        """repr shows empty string for password when no password is set."""
+        cfg = TypeDBConfig()
+        r = repr(cfg)
+        assert "password=''" in r
 
 
 class TestEnvOverrides:
@@ -117,6 +137,39 @@ class TestYamlOverrides:
         os.unlink(f.name)
         assert data.get("typedb", {}).get("host") == "from-file"
         assert data.get("backend") == "jsonl"
+
+    def test_typedb_yaml_env_refs_resolved(self):
+        """${TYPEDB_USERNAME} and ${TYPEDB_PASSWORD} in YAML are expanded."""
+        os.environ["TYPEDB_USERNAME"] = "myuser"
+        os.environ["TYPEDB_PASSWORD"] = "mypassword"
+        try:
+            cfg = ZettelForgeConfig()
+            _apply_yaml(cfg, {
+                "typedb": {
+                    "username": "${TYPEDB_USERNAME}",
+                    "password": "${TYPEDB_PASSWORD}",
+                }
+            })
+            assert cfg.typedb.username == "myuser"
+            assert cfg.typedb.password == "mypassword"
+        finally:
+            del os.environ["TYPEDB_USERNAME"]
+            del os.environ["TYPEDB_PASSWORD"]
+
+    def test_typedb_yaml_env_refs_missing_var_resolves_to_empty(self):
+        """Missing env var in ${} reference resolves to empty string (consistent with LLM handling)."""
+        os.environ["TYPEDB_PASSWORD"] = "will-be-removed"
+        del os.environ["TYPEDB_PASSWORD"]
+        cfg = ZettelForgeConfig()
+        _apply_yaml(cfg, {"typedb": {"password": "${TYPEDB_PASSWORD}"}})
+        assert cfg.typedb.password == ""
+
+    def test_typedb_yaml_plain_values_still_accepted(self):
+        """Plain string values (no ${}) still work — e.g. for local dev config.yaml."""
+        cfg = ZettelForgeConfig()
+        _apply_yaml(cfg, {"typedb": {"username": "devuser", "password": "devpass"}})
+        assert cfg.typedb.username == "devuser"
+        assert cfg.typedb.password == "devpass"
 
 
 class TestPriorityOrder:
