@@ -145,13 +145,21 @@ def main(
 
 
 def cli() -> None:
-    parser = argparse.ArgumentParser(description="Select random synthesis briefings for human evaluation")
-    parser.add_argument("--dates-dir", default=str(Path.home() / ".amem" / "telemetry"),
-                        help="Directory containing telemetry JSONL files")
+    parser = argparse.ArgumentParser(
+        description="Select random synthesis briefings for human evaluation"
+    )
+    parser.add_argument(
+        "--dates-dir",
+        default=str(Path.home() / ".amem" / "telemetry"),
+        help="Directory containing telemetry JSONL files",
+    )
     parser.add_argument("--date", default=None, help="Single date to evaluate (YYYY-MM-DD)")
-    parser.add_argument("--count", type=int, default=20, help="Number of random briefings to select")
-    parser.add_argument("--write-events", action="store_true",
-                        help="Write human_eval events to telemetry JSONL")
+    parser.add_argument(
+        "--count", type=int, default=20, help="Number of random briefings to select"
+    )
+    parser.add_argument(
+        "--write-events", action="store_true", help="Write human_eval events to telemetry JSONL"
+    )
     args = parser.parse_args()
 
     result = main(

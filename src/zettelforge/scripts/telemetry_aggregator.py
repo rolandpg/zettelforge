@@ -67,12 +67,12 @@ def _aggregate(events: List[Dict[str, Any]], date_str: str, data_dir: str) -> Di
 
     # Latency averages
     avg_recall_latency = (
-        sum(e["duration_ms"] for e in recall_events) / len(recall_events)
-        if recall_events else None
+        sum(e["duration_ms"] for e in recall_events) / len(recall_events) if recall_events else None
     )
     avg_synthesis_latency = (
         sum(e["duration_ms"] for e in synthesis_events) / len(synthesis_events)
-        if synthesis_events else None
+        if synthesis_events
+        else None
     )
 
     # Average confidence from synthesis events
@@ -81,14 +81,13 @@ def _aggregate(events: List[Dict[str, Any]], date_str: str, data_dir: str) -> Di
         debug = ev.get("confidence")
         if debug is not None:
             confidences.append(debug)
-    avg_confidence = (
-        sum(confidences) / len(confidences) if confidences else None
-    )
+    avg_confidence = sum(confidences) / len(confidences) if confidences else None
 
     # Notes per query
     notes_per_query = (
         sum(e.get("result_count", 0) for e in recall_events) / unique_queries
-        if unique_queries > 0 else None
+        if unique_queries > 0
+        else None
     )
 
     # Tier distribution (merge from all events that have it)
@@ -106,9 +105,7 @@ def _aggregate(events: List[Dict[str, Any]], date_str: str, data_dir: str) -> Di
     # Feedback stats
     feedback_count = len(feedback_events)
     if feedback_events:
-        avg_utility = (
-            sum(e.get("utility", 0) for e in feedback_events) / feedback_count
-        )
+        avg_utility = sum(e.get("utility", 0) for e in feedback_events) / feedback_count
         # Top 10 utility notes
         note_utilities: Counter = Counter()
         for e in feedback_events:
@@ -141,7 +138,9 @@ def _aggregate(events: List[Dict[str, Any]], date_str: str, data_dir: str) -> Di
         "total_queries": unique_queries,
         "total_synthesis": len(synthesis_events),
         "avg_recall_latency_ms": round(avg_recall_latency, 2) if avg_recall_latency else None,
-        "avg_synthesis_latency_ms": round(avg_synthesis_latency, 2) if avg_synthesis_latency else None,
+        "avg_synthesis_latency_ms": round(avg_synthesis_latency, 2)
+        if avg_synthesis_latency
+        else None,
         "avg_confidence": round(avg_confidence, 4) if avg_confidence else None,
         "notes_per_query": round(notes_per_query, 2) if notes_per_query else None,
         "tier_distribution": dict(sorted(tier_dist.items())),
@@ -170,6 +169,8 @@ def main(date_str: Optional[str] = None) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Aggregate daily telemetry into a JSON report")
-    parser.add_argument("--date", default=None, help="Date to aggregate (YYYY-MM-DD), defaults to yesterday")
+    parser.add_argument(
+        "--date", default=None, help="Date to aggregate (YYYY-MM-DD), defaults to yesterday"
+    )
     args = parser.parse_args()
     main(args.date)

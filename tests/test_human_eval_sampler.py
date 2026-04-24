@@ -89,8 +89,14 @@ class TestFormatBriefing:
 class TestRubricTemplate:
     def test_contains_all_six_criteria(self):
         template = _build_rubric_template()
-        for name in ["Recall relevance", "Synthesis value", "Critical notes missing",
-                      "Unsupported claims", "Latency perception", "Overall trust"]:
+        for name in [
+            "Recall relevance",
+            "Synthesis value",
+            "Critical notes missing",
+            "Unsupported claims",
+            "Latency perception",
+            "Overall trust",
+        ]:
             assert name in template
 
 

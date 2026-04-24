@@ -117,7 +117,8 @@ class TestLoadEvents:
     def test_tolerates_corrupt_lines(self, tmp_path: Path) -> None:
         path = tmp_path / "telemetry_2026-04-23.jsonl"
         path.write_text(
-            json.dumps({"event_type": "recall", "query_id": "good", "timestamp": 1.0}) + "\n"
+            json.dumps({"event_type": "recall", "query_id": "good", "timestamp": 1.0})
+            + "\n"
             + "{malformed\n"
         )
         events = load_events(tmp_path)

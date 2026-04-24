@@ -33,9 +33,7 @@ from typing import Any, Dict, List
 try:
     import pandas as pd
 except ImportError as e:  # pragma: no cover
-    raise SystemExit(
-        "telemetry_dashboard requires pandas. Install with: pip install pandas"
-    ) from e
+    raise SystemExit("telemetry_dashboard requires pandas. Install with: pip install pandas") from e
 
 # streamlit is imported lazily inside render() — pure compute functions
 # below stay testable without Streamlit installed.
@@ -174,8 +172,7 @@ def render(data_dir: Path) -> None:  # pragma: no cover — exercised by manual 
         import streamlit as st
     except ImportError as e:
         raise SystemExit(
-            "telemetry_dashboard render() requires streamlit. "
-            "Install with: pip install streamlit"
+            "telemetry_dashboard render() requires streamlit. Install with: pip install streamlit"
         ) from e
     st.set_page_config(page_title="ZettelForge Telemetry", layout="wide")
     st.title("ZettelForge Telemetry")

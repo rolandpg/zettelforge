@@ -80,7 +80,9 @@ def _read_events(data_dir: str) -> List[Dict[str, Any]]:
     return events
 
 
-def _make_telem(data_dir: str, logger_name: str = "zettelforge.telemetry.test") -> TelemetryCollector:
+def _make_telem(
+    data_dir: str, logger_name: str = "zettelforge.telemetry.test"
+) -> TelemetryCollector:
     """Create a TelemetryCollector with real init into *data_dir*."""
     _enable_debug(logger_name)
     tc = TelemetryCollector(data_dir=data_dir, logger_name=logger_name)
@@ -126,7 +128,9 @@ class TestTelemetryIntegration:
         assert ctx.query == "APT28 infrastructure"
         assert ctx.actor == "vigil"
 
-        tc.log_recall(qid, [mock_note], intent="factual", vector_latency_ms=45.2, graph_latency_ms=12.8)
+        tc.log_recall(
+            qid, [mock_note], intent="factual", vector_latency_ms=45.2, graph_latency_ms=12.8
+        )
 
         events = _read_events(telem_data_dir)
         recall_events = [e for e in events if e["event_type"] == "recall"]
@@ -222,6 +226,7 @@ class TestTelemetryIntegration:
         """Cited notes should get utility=4, uncited utility=2."""
         # Use a temp dir that _enable_debug will write to
         import tempfile
+
         with tempfile.TemporaryDirectory() as td:
             tc = _make_telem(td, "zettelforge.telemetry.integration.r5")
             qid = tc.start_query("auto-feedback test")

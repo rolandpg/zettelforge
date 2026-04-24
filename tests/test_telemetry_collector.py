@@ -27,9 +27,7 @@ from zettelforge.telemetry import (
 @pytest.fixture
 def collector(tmp_path: Path) -> TelemetryCollector:
     """Fresh collector writing into an isolated tmp dir."""
-    return TelemetryCollector(
-        data_dir=str(tmp_path), logger_name="zettelforge.telemetry.test"
-    )
+    return TelemetryCollector(data_dir=str(tmp_path), logger_name="zettelforge.telemetry.test")
 
 
 @pytest.fixture
@@ -83,9 +81,7 @@ class TestStartQuery:
         b = collector.start_query("q2")
         assert a != b
 
-    def test_actor_and_query_tracked_internally(
-        self, collector: TelemetryCollector
-    ) -> None:
+    def test_actor_and_query_tracked_internally(self, collector: TelemetryCollector) -> None:
         qid = collector.start_query("test-query", actor="vigil")
         ctx = collector._get_context(qid)
         assert ctx is not None
@@ -97,9 +93,7 @@ class TestStartQuery:
 
 
 class TestLogRecall:
-    def test_writes_jsonl_info_mode(
-        self, collector: TelemetryCollector, tmp_path: Path
-    ) -> None:
+    def test_writes_jsonl_info_mode(self, collector: TelemetryCollector, tmp_path: Path) -> None:
         qid = collector.start_query("apt28 tools", actor="vigil")
         collector.log_recall(qid, [_make_note("n1"), _make_note("n2")], intent="factual")
 
@@ -156,9 +150,7 @@ class TestLogRecall:
             },
         ]
 
-    def test_accepts_enum_intent(
-        self, debug_collector: TelemetryCollector, tmp_path: Path
-    ) -> None:
+    def test_accepts_enum_intent(self, debug_collector: TelemetryCollector, tmp_path: Path) -> None:
         """intent may be a QueryIntent enum; collector stringifies via .value."""
         intent_enum = SimpleNamespace(value="temporal")
         qid = debug_collector.start_query("q")
@@ -192,9 +184,7 @@ class TestLogSynthesis:
             ],
         }
 
-    def test_writes_synthesis_event(
-        self, collector: TelemetryCollector, tmp_path: Path
-    ) -> None:
+    def test_writes_synthesis_event(self, collector: TelemetryCollector, tmp_path: Path) -> None:
         qid = collector.start_query("q", actor="vigil")
         collector.log_synthesis(qid, self._synth_result(), synthesis_latency_ms=2847)
         e = _read_jsonl(tmp_path)[0]
@@ -238,9 +228,7 @@ class TestLogSynthesis:
 
 
 class TestLogFeedback:
-    def test_writes_feedback_event(
-        self, collector: TelemetryCollector, tmp_path: Path
-    ) -> None:
+    def test_writes_feedback_event(self, collector: TelemetryCollector, tmp_path: Path) -> None:
         qid = collector.start_query("q", actor="vigil")
         collector.log_feedback(qid, "note_xyz", utility=5, agent="vigil")
         e = _read_jsonl(tmp_path)[0]
@@ -254,9 +242,7 @@ class TestLogFeedback:
 
 
 class TestAutoFeedback:
-    def test_only_runs_in_debug_mode(
-        self, collector: TelemetryCollector, tmp_path: Path
-    ) -> None:
+    def test_only_runs_in_debug_mode(self, collector: TelemetryCollector, tmp_path: Path) -> None:
         qid = collector.start_query("q", actor="vigil")
         collector.auto_feedback_from_synthesis(
             qid,

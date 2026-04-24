@@ -1322,9 +1322,7 @@ class MemoryManager:
         # Reuse query_id from the last recall() so synthesis telemetry
         # correlates to the same query.  If the caller passed actor directly
         # without a preceding recall() call, start a fresh query.
-        query_id = self._telemetry_query_id or self._telemetry.start_query(
-            query, actor=actor
-        )
+        query_id = self._telemetry_query_id or self._telemetry.start_query(query, actor=actor)
         if query_id and self._telemetry_query_id is None:
             # Fresh query started here — keep the id for consistency
             self._telemetry_query_id = query_id
@@ -1336,13 +1334,15 @@ class MemoryManager:
 
         duration_ms = (time.perf_counter() - start) * 1000
         synthesis_latency_ms = (
-            (time.perf_counter() - start) * 1000
-        )  # gen.synthesize is the synthesis work
+            time.perf_counter() - start
+        ) * 1000  # gen.synthesize is the synthesis work
         source_count = len(result.get("sources", []))
 
         # ── RFC-007 US-002: log_synthesis ─────────────────────────────
         if query_id is not None:
-            self._telemetry.log_synthesis(query_id, result, synthesis_latency_ms=int(synthesis_latency_ms))
+            self._telemetry.log_synthesis(
+                query_id, result, synthesis_latency_ms=int(synthesis_latency_ms)
+            )
             # Auto-feedback is DEBUG-only inside the collector
             retrieved = self._telemetry_retrieved_notes or []
             self._telemetry.auto_feedback_from_synthesis(query_id, retrieved, result)
