@@ -138,7 +138,7 @@ class TestOllamaProvider:
             )
 
             assert result == "ok"
-            mock_client_cls.assert_called_once_with(host="http://host:11434")
+            mock_client_cls.assert_called_once_with(host="http://host:11434", timeout=60.0)
             args, kwargs = mock_client.generate.call_args
             assert kwargs["model"] == "qwen2.5:3b"
             assert kwargs["prompt"] == "hello"
@@ -169,11 +169,26 @@ class TestOllamaProvider:
         with patch("ollama.Client") as mock_client_cls:
             mock_client_cls.return_value.generate.return_value = {"response": "ok"}
             provider.generate("hello")
-            mock_client_cls.assert_called_once_with(host="http://gpu-box:11434")
+            mock_client_cls.assert_called_once_with(host="http://gpu-box:11434", timeout=60.0)
+
+    def test_timeout_threads_through_to_client(self):
+        """[RFC-010] Configured timeout must reach ``ollama.Client``.
+
+        Before RFC-010, ``OllamaProvider.__init__`` dropped ``timeout`` into
+        ``**_`` and the client inherited an effectively-unbounded default,
+        causing the 66.5s `remember()` tail observed in the 2026-04-24
+        Vigil audit.
+        """
+        provider = OllamaProvider(model="qwen2.5:3b", timeout=7.5)
+        with patch("ollama.Client") as mock_client_cls:
+            mock_client_cls.return_value.generate.return_value = {"response": "ok"}
+            provider.generate("hello")
+            mock_client_cls.assert_called_once_with(host="http://localhost:11434", timeout=7.5)
 
     def test_unknown_kwargs_ignored_at_construction(self):
         # The registry forwards kwargs meant for other providers; they
-        # must be accepted silently.
+        # must be accepted silently. Note: ``timeout`` is now a first-class
+        # parameter (RFC-010) but ``**_`` still absorbs anything else.
         provider = OllamaProvider(
             model="qwen2.5:3b",
             api_key="ignored",

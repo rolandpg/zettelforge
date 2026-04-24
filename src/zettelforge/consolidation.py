@@ -20,6 +20,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from zettelforge.log import get_logger
 from zettelforge.ocsf import STATUS_SUCCESS, log_api_activity
+from zettelforge.storage_backend import BackendClosedError
 
 logger = get_logger("zettelforge.consolidation")
 
@@ -217,6 +218,17 @@ class ConsolidationEngine:
             "errors": [],
         }
 
+        # [RFC-010] fast-path guard — skip when the backing MemoryManager has
+        # begun shutdown. Prevents the shutdown-race `BackendClosedError` that
+        # surfaced in production logs 2026-04-24T17:25:48Z from
+        # consolidation.py:224 (iterate_notes). RFC-009 Section 4.3 replaces
+        # this with explicit cursor tracking; until then, this guard + the
+        # catch in the iteration below form a two-layer defense.
+        if not getattr(self._mm, "_accepting", True):
+            report["status"] = "skipped"
+            report["reason"] = "backend not accepting (shutdown in progress)"
+            return report
+
         try:
             # Gather recent notes (EPG candidates)
             # Only notes created since the last consolidation window
@@ -296,6 +308,13 @@ class ConsolidationEngine:
             self._detector.reset()
             self._consolidation_count += 1
 
+        except BackendClosedError:
+            # [RFC-010] Narrow race: _accepting was true at the guard check
+            # above, but flipped to false before iterate_notes yielded its
+            # first row. Treat as a clean skip rather than a noisy error.
+            report["status"] = "skipped"
+            report["reason"] = "backend closed mid-iteration"
+            return report
         except Exception as e:
             self._logger.error("consolidation_failed", error=str(e), exc_info=True)
             report["errors"].append(str(e))
