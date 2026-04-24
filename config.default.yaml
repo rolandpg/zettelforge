@@ -54,6 +54,9 @@ storage:
 #   host: zettelforge-typedb.eastus2.azurecontainer.io
 #   port: 1729
 #
+# Credentials are required when using the TypeDB backend. Supply them via
+# environment variables — never commit plaintext secrets to version control.
+#
 # Env overrides:
 #   TYPEDB_HOST=db.internal
 #   TYPEDB_PORT=1729
@@ -65,8 +68,8 @@ typedb:
   host: localhost
   port: 1729
   database: zettelforge
-  username: admin
-  password: password
+  username: ${TYPEDB_USERNAME}
+  password: ${TYPEDB_PASSWORD}
 
 
 # ── Storage Backend ────────────────────────────────────────────────────────

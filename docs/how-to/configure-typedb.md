@@ -103,14 +103,14 @@ typedb:
   host: localhost
   port: 1729
   database: zettelforge
-  username: admin
-  password: password
+  username: ${TYPEDB_USERNAME}
+  password: ${TYPEDB_PASSWORD}
 
 backend: typedb
 ```
 
-> [!TIP]
-> `config.yaml` is in `.gitignore`. Safe for credentials. Environment variables override config file values.
+> [!IMPORTANT]
+> TypeDB credentials must be supplied via environment variables. `config.yaml` is in `.gitignore` so it is safe for local overrides, but the preferred approach is to set `TYPEDB_USERNAME` and `TYPEDB_PASSWORD` in your shell or container environment rather than writing them into any config file.
 
 ### 6. Override with environment variables (optional)
 
@@ -118,6 +118,8 @@ backend: typedb
 export TYPEDB_HOST=localhost
 export TYPEDB_PORT=1729
 export TYPEDB_DATABASE=zettelforge
+export TYPEDB_USERNAME=admin
+export TYPEDB_PASSWORD=<your-password>
 export ZETTELFORGE_BACKEND=typedb
 ```
 
