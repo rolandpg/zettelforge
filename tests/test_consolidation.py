@@ -15,6 +15,7 @@ from zettelforge.consolidation import (
     ConsolidationMiddleware,
     SemanticShiftDetector,
 )
+from zettelforge.storage_backend import BackendClosedError
 
 # ── SemanticShiftDetector Tests ─────────────────────────────────────────────
 
@@ -178,6 +179,35 @@ class TestConsolidationEngine:
         stats = engine.get_stats()
         assert "consolidation_count" in stats
         assert "detector_state" in stats
+
+    def test_consolidate_skips_when_backend_not_accepting(self):
+        """[RFC-010] Shutdown-race fast-path: if `_accepting` is False, skip
+        without ever calling `iterate_notes()`. Fixes the race where the
+        v2.4.1 BackendClosedError fired from consolidation.py:224 at
+        2026-04-24T17:25:48Z during Vigil's process shutdown."""
+        mm = MagicMock()
+        mm._accepting = False
+        engine = ConsolidationEngine(mm)
+        report = engine.consolidate()
+        assert report["status"] == "skipped"
+        assert "not accepting" in report["reason"]
+        mm.store.iterate_notes.assert_not_called()
+
+    def test_consolidate_catches_backend_closed_error_mid_iteration(self):
+        """[RFC-010] Second-layer defense: `_accepting` check passes, but
+        shutdown fires between the guard and the iterator yielding rows.
+        The narrow `BackendClosedError` catch turns the race into a clean
+        skip instead of `consolidation_failed` noise in the logs."""
+        mm = MagicMock()
+        mm._accepting = True
+        mm.store.iterate_notes.side_effect = BackendClosedError("SQLiteBackend(...) is closed")
+        engine = ConsolidationEngine(mm)
+        report = engine.consolidate()
+        assert report["status"] == "skipped"
+        assert "mid-iteration" in report["reason"]
+        # The outer except Exception: handler must NOT have been reached
+        # (i.e. report["errors"] was not populated).
+        assert report["errors"] == []
 
 
 # ── ConsolidationMiddleware Tests ───────────────────────────────────────────
