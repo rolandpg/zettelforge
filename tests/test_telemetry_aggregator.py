@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import json
-from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -12,9 +10,7 @@ import pytest
 from zettelforge.scripts.telemetry_aggregator import (
     _aggregate,
     _load_events,
-    main,
 )
-
 
 DATE = "2026-04-23"
 

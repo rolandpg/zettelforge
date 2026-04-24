@@ -16,7 +16,6 @@ import argparse
 import json
 import random
 import sys
-from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -95,7 +94,7 @@ def main(
         if not path.exists():
             print(f"No telemetry file found for {date_str}", file=sys.stderr)
             return ""
-        events = [json.loads(l) for l in path.read_text().strip().split("\n") if l.strip()]
+        events = [json.loads(ln) for ln in path.read_text().strip().split("\n") if ln.strip()]
         events = [e for e in events if e.get("event_type") == "synthesis"]
     else:
         events = _read_telemetry(dates_dir)

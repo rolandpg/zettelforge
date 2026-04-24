@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import json
 import logging
-import threading
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List
@@ -19,8 +18,7 @@ from unittest.mock import MagicMock
 import pytest
 
 from zettelforge.memory_manager import MemoryManager
-from zettelforge.telemetry import TelemetryCollector, get_telemetry, reset_telemetry_for_testing
-
+from zettelforge.telemetry import TelemetryCollector, reset_telemetry_for_testing
 
 # ── Fixtures ────────────────────────────────────────────────────────
 

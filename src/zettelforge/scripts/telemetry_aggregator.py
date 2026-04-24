@@ -15,9 +15,8 @@ from __future__ import annotations
 
 import argparse
 import json
-import sys
-from collections import Counter, defaultdict
-from dataclasses import dataclass, field, asdict
+from collections import Counter
+from dataclasses import asdict, dataclass, field
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Dict, List, Optional

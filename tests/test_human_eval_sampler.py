@@ -6,8 +6,6 @@ import json
 from pathlib import Path
 from typing import Any, Dict
 
-import pytest
-
 from zettelforge.scripts.human_eval_sampler import (
     _build_rubric_template,
     _format_briefing,
