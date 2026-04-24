@@ -6,6 +6,7 @@ import pytest
 
 from zettelforge.note_schema import Content, Embedding, Links, Metadata, MemoryNote, Semantic
 from zettelforge.sqlite_backend import SQLiteBackend
+from zettelforge.storage_backend import BackendClosedError
 
 
 # ---------------------------------------------------------------------------
@@ -303,13 +304,86 @@ class TestSQLiteLifecycle:
 
     def test_export_snapshot(self, db):
         import os
+        import sqlite3
         import tempfile
 
         db.write_note(_make_note())
         outdir = tempfile.mkdtemp()
         db.export_snapshot(outdir)
-        files = os.listdir(outdir)
-        assert any(f.startswith("zettelforge_") and f.endswith(".db") for f in files)
+
+        # Exported file exists and opens as a valid SQLite database with
+        # the expected row (Connection.backup produces a consistent copy,
+        # not a torn file like shutil.copy2 of a live WAL).
+        files = [f for f in os.listdir(outdir) if f.startswith("zettelforge_") and f.endswith(".db")]
+        assert len(files) == 1
+        dest = os.path.join(outdir, files[0])
+        conn = sqlite3.connect(dest)
+        try:
+            count = conn.execute("SELECT COUNT(*) FROM notes").fetchone()[0]
+            assert count == 1
+            row = conn.execute("SELECT content_raw FROM notes WHERE id = ?", ("n1",)).fetchone()
+            assert row[0] == "APT28 uses Cobalt Strike"
+        finally:
+            conn.close()
+
+    def test_reindex_vector_preserves_other_fields(self, db):
+        """reindex_vector must not clobber concurrent edits to other columns.
+
+        Simulates a concurrent mark_access_dirty bump happening between
+        reindex_vector's read and write — the old RMW path would lose
+        the access_count increment; the targeted UPDATE preserves it.
+        """
+        db.write_note(_make_note())
+        # Bump access_count via the targeted UPDATE path
+        db.mark_access_dirty("n1")
+        db.mark_access_dirty("n1")
+        before = db.get_note_by_id("n1")
+        assert before.metadata.access_count == 2
+
+        # reindex_vector should update only the vector column
+        new_vec = [0.9] * 768
+        db.reindex_vector("n1", new_vec)
+
+        after = db.get_note_by_id("n1")
+        assert abs(after.embedding.vector[0] - 0.9) < 1e-6
+        # access_count is preserved (not clobbered by a full-row rewrite)
+        assert after.metadata.access_count == 2
+
+    def test_close_is_idempotent(self, db):
+        """close() must be safe to call multiple times — atexit may race."""
+        db.close()
+        db.close()  # second call must not raise
+        assert db.health_check()["status"] == "closed"
+
+    def test_readers_raise_backend_closed_error_after_close(self):
+        """After close(), readers raise BackendClosedError instead of NPE.
+
+        Production log (2026-04-23) showed 170 AttributeError: 'NoneType'
+        on the drain path. BackendClosedError is the clean signal callers
+        can catch without scanning stack traces.
+        """
+        tmpdir = tempfile.mkdtemp()
+        backend = SQLiteBackend(db_path=f"{tmpdir}/closed.db")
+        backend.initialize()
+        backend.write_note(_make_note())
+        backend.close()
+
+        with pytest.raises(BackendClosedError):
+            backend.get_note_by_id("n1")
+        with pytest.raises(BackendClosedError):
+            backend.count_notes()
+        with pytest.raises(BackendClosedError):
+            backend.write_note(_make_note("n2"))
+
+    def test_initialize_is_idempotent(self):
+        """initialize() called twice must not reopen the connection."""
+        tmpdir = tempfile.mkdtemp()
+        backend = SQLiteBackend(db_path=f"{tmpdir}/idem.db")
+        backend.initialize()
+        conn1 = backend._conn
+        backend.initialize()  # no-op
+        assert backend._conn is conn1
+        backend.close()
 
     def test_close_and_reopen(self):
         tmpdir = tempfile.mkdtemp()
