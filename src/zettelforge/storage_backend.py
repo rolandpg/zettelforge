@@ -15,6 +15,15 @@ from typing import Any, Dict, Iterator, List, Optional
 from zettelforge.note_schema import MemoryNote
 
 
+class BackendClosedError(RuntimeError):
+    """Raised when an operation is attempted on a closed storage backend.
+
+    Surfaces a clean, catchable signal during shutdown races (e.g. atexit
+    drain running after close()) instead of an opaque AttributeError on a
+    nil connection.
+    """
+
+
 class StorageBackend(ABC):
     """Abstract storage backend for ZettelForge persistence layer."""
 
