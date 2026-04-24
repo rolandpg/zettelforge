@@ -157,8 +157,9 @@ data directory (never to stdout by design — see GOV-012). Typical
 locations:
 
 ```bash
-tail -f ~/.amem/zettelforge.log
-tail -f ~/.amem/audit.log
+tail -f ~/.amem/zettelforge.log        # OCSF structured events (API activity, auth, file I/O)
+tail -f ~/.amem/audit.log              # Security-relevant events only (GOV-012)
+tail -f ~/.amem/telemetry/telemetry_$(date +%F).jsonl  # Operational telemetry (RFC-007)
 ```
 
 Useful log events to grep:
@@ -172,6 +173,27 @@ Useful log events to grep:
 | `governance_violation` | Input validation rejected a write |
 
 Set `logging.level: DEBUG` in `config.yaml` for verbose output.
+
+### Operational telemetry (RFC-007)
+
+Every `MemoryManager.recall()` and `.synthesize()` call also emits a
+per-query event to `~/.amem/telemetry/telemetry_YYYY-MM-DD.jsonl`
+(parallel to the main OCSF log). In INFO mode this is aggregated
+counts plus latency; at DEBUG level it adds per-note metadata, tier
+distribution, vector/graph latency breakdown, and citation-based
+utility feedback.
+
+Tooling:
+
+| Script | Purpose |
+|--------|---------|
+| `python -m zettelforge.scripts.telemetry_aggregator --date YYYY-MM-DD` | Daily summary report (latency averages, tier distribution, unused notes, top utility notes) |
+| `python -m zettelforge.scripts.human_eval_sampler` | Sample 20 random synthesis briefings for the monthly human evaluation rubric (see `docs/human-evaluation-rubric.md`) |
+| `streamlit run src/zettelforge/scripts/telemetry_dashboard.py` | Optional visualization (query volume, latency p50/p95, tier/utility trends, unused notes warning) |
+
+Raw note content is never persisted in telemetry — only IDs, tiers,
+source types, and domains. Query text is truncated to 200 chars at INFO
+and 500 at DEBUG. All data stays local.
 
 ## Related
 
