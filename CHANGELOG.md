@@ -6,6 +6,91 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [2.4.1] - 2026-04-24
+
+Operational telemetry (RFC-007), TypeDB authentication hardening, and a
+tranche of SQLite backend correctness fixes surfaced by the sqlite
+review in issue #83.
+
+### Added
+
+- **Operational telemetry** (RFC-007, #85) — per-query recall /
+  synthesis metrics captured to `~/.amem/telemetry/telemetry_YYYY-MM-DD.jsonl`
+  when `ZETTELFORGE_LOG_LEVEL=DEBUG`. Five shipped components:
+  - `TelemetryCollector` class (`start_query` / `log_recall` /
+    `log_synthesis` / `log_feedback` / `auto_feedback_from_synthesis`)
+    with INFO/DEBUG-gated field sets, 1-hour TTL on in-memory query
+    context, and thread-safe JSONL append.
+  - `MemoryManager` integration — `recall()` and `synthesize()` gain a
+    non-breaking `actor=` kwarg; OCSF events extended via the
+    sanctioned `unmapped` object with a `zf_` prefix (class_uid 6002
+    compliant). `recall()` wraps `retriever.retrieve()` and
+    `graph_retriever.retrieve_note_ids()` with narrow-scope
+    `perf_counter` deltas for `vector_latency_ms` / `graph_latency_ms`.
+  - Daily aggregator (`python -m zettelforge.scripts.telemetry_aggregator`)
+    emitting a `DailyMetrics` JSON report (latency averages, tier
+    distribution, unused-notes count, top-utility notes).
+  - Human-evaluation workflow — 6-question rubric (`docs/human-evaluation-rubric.md`),
+    sampler script (`python -m zettelforge.scripts.human_eval_sampler`)
+    that selects 20 random briefings as a fill-in Markdown template,
+    and a `--write-events` path to append `event_type: "human_eval"`
+    entries back to telemetry.
+  - Optional Streamlit dashboard (`streamlit run
+    src/zettelforge/scripts/telemetry_dashboard.py`) — query volume,
+    latency p50/p95/max, tier distribution, utility trend,
+    unused-notes warning.
+  - Privacy contract: raw note content never persisted (IDs / tiers /
+    source_types / domains only); query text truncated at 200 chars
+    INFO / 500 chars DEBUG; local-only, no network calls.
+
+### Fixed
+
+- **SQLite shutdown NPE** (#84, issue #83 H3) — `close()` and
+  `initialize()` are now lock-protected and idempotent. Readers and
+  writers raise a clean `BackendClosedError` (new, in
+  `storage_backend`) instead of the opaque `AttributeError: 'NoneType'
+  object has no attribute 'execute'` seen 170× in production logs on
+  2026-04-23 during atexit. `memory_manager._enrichment_loop` and
+  `_drain_enrichment_queue` catch `BackendClosedError` and exit
+  cleanly.
+- **SQLite torn snapshot** (#84, issue #83 C1) — `export_snapshot()`
+  now uses `sqlite3.Connection.backup()` for a page-consistent copy.
+  The previous `shutil.copy2` path could produce a corrupt backup
+  missing `-wal` / `-shm` sidecars, unsafe for DR restore.
+- **SQLite reindex race** (#84, issue #83 C2) — `reindex_vector()` now
+  uses a single-lock targeted `UPDATE` on the `embedding_vector`
+  column. The previous `get_note_by_id → rewrite_note` path spanned
+  two lock acquisitions and could clobber concurrent
+  `mark_access_dirty` / `evolve` / supersede edits via
+  `INSERT OR REPLACE`.
+
+### Security
+
+- **TypeDB authentication hardening** (#82) — removed known-insecure
+  `admin` / `password` defaults from `TypeDBConfig` and
+  `config.default.yaml`. `TypeDBConfig.__repr__` now redacts
+  non-empty passwords as `***`. The config loader resolves
+  `${TYPEDB_USERNAME}` / `${TYPEDB_PASSWORD}` env-var references in
+  YAML (same pattern already used for `llm.api_key`), so secrets can
+  stay in env / container secret stores rather than on disk.
+  Migration: set `TYPEDB_USERNAME` / `TYPEDB_PASSWORD` in your
+  environment or use the `${VAR}` references in a local
+  `config.yaml`. Direct env overrides (`TYPEDB_USERNAME=…`) already
+  worked and are unaffected.
+
+### Docs
+
+- **Architecture Deep Dive + Module Inventory for v2.4.0** (#80) —
+  reference-level architecture documentation.
+- **RFC-007 Operational Telemetry** (#85) — full design doc including
+  the four subagent-resolved frictions (caller-opt-in query_id
+  correlation, narrow-scope latency instrumentation, OCSF unmapped
+  extension, hybrid `__new__`-bypass integration tests).
+- **Human Evaluation Rubric** (#85) — 6-question monthly review
+  rubric with scoring summary table.
+- **Troubleshoot guide** (#85) — "Operational telemetry" subsection
+  covering the three CLI entry points and the privacy contract.
+
 ## [2.4.0] - 2026-04-19
 
 Detection-rules-as-memory, MCP Registry publication, SQLite concurrency
