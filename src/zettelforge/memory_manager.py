@@ -37,6 +37,7 @@ from zettelforge.ocsf import (
     log_api_activity,
     log_authorization,
 )
+from zettelforge.storage_backend import BackendClosedError
 from zettelforge.synthesis_generator import get_synthesis_generator
 from zettelforge.synthesis_validator import get_synthesis_validator
 from zettelforge.vector_retriever import VectorRetriever
@@ -853,6 +854,9 @@ class MemoryManager:
                 self._enrichment_queue.task_done()
             except queue.Empty:
                 continue
+            except BackendClosedError:
+                # Storage backend has shut down — exit the worker cleanly.
+                return
             except Exception:
                 self._logger.error("enrichment_worker_error", exc_info=True)
 
@@ -988,6 +992,9 @@ class MemoryManager:
                 self._enrichment_queue.task_done()
             except queue.Empty:
                 break
+            except BackendClosedError:
+                # Backend already closed — nothing left to drain against.
+                return
             except Exception:
                 self._logger.warning("enrichment_drain_failed", exc_info=True)
 

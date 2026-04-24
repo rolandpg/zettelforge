@@ -28,7 +28,7 @@ from zettelforge.note_schema import (
     VulnerabilityMeta,
 )
 from zettelforge.ocsf import log_file_activity
-from zettelforge.storage_backend import StorageBackend
+from zettelforge.storage_backend import BackendClosedError, StorageBackend
 
 # ---------------------------------------------------------------------------
 # Schema DDL
@@ -289,38 +289,58 @@ class SQLiteBackend(StorageBackend):
         self._conn: sqlite3.Connection | None = None
         self._write_lock = threading.RLock()
 
+    def _check_open(self) -> None:
+        # Call inside _write_lock. Surfaces close()/never-initialized as a
+        # clean BackendClosedError instead of AttributeError on None.
+        if self._conn is None:
+            raise BackendClosedError(f"SQLiteBackend({self.db_path}) is closed")
+
     # ── Lifecycle ───────────────────────────────────────────────────────
 
     def initialize(self) -> None:
-        """Create connection, enable WAL, create tables."""
+        """Create connection, enable WAL, create tables. Idempotent."""
         import os
 
-        os.makedirs(os.path.dirname(os.path.abspath(self.db_path)), exist_ok=True)
-        self._conn = sqlite3.connect(self.db_path, check_same_thread=False)
-        self._conn.row_factory = sqlite3.Row
-        self._conn.execute("PRAGMA journal_mode=WAL")
-        self._conn.execute("PRAGMA synchronous=NORMAL")
-        self._conn.execute("PRAGMA foreign_keys=ON")
-        self._conn.execute("PRAGMA busy_timeout=5000")
-        self._conn.executescript(_SCHEMA_DDL)
-        self._conn.commit()
+        with self._write_lock:
+            if self._conn is not None:
+                return
+            os.makedirs(os.path.dirname(os.path.abspath(self.db_path)), exist_ok=True)
+            conn = sqlite3.connect(self.db_path, check_same_thread=False)
+            conn.row_factory = sqlite3.Row
+            conn.execute("PRAGMA journal_mode=WAL")
+            conn.execute("PRAGMA synchronous=NORMAL")
+            conn.execute("PRAGMA foreign_keys=ON")
+            conn.execute("PRAGMA busy_timeout=5000")
+            conn.executescript(_SCHEMA_DDL)
+            conn.commit()
+            self._conn = conn
 
     def close(self) -> None:
-        """Checkpoint WAL and close."""
-        if self._conn:
+        """Checkpoint WAL and close. Idempotent; safe to call from atexit."""
+        with self._write_lock:
+            conn = self._conn
+            if conn is None:
+                return
+            self._conn = None
             try:
-                self._conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+                conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
             except Exception:
                 pass
-            self._conn.close()
-            self._conn = None
+            conn.close()
 
     def health_check(self) -> Dict[str, Any]:
+        if self._conn is None:
+            return {
+                "status": "closed",
+                "backend": "SQLiteBackend",
+                "db_path": self.db_path,
+                "note_count": -1,
+            }
         return {
-            "status": "ok" if self._conn else "closed",
+            "status": "ok",
             "backend": "SQLiteBackend",
             "db_path": self.db_path,
-            "note_count": self.count_notes() if self._conn else -1,
+            "note_count": self.count_notes(),
         }
 
     # ── Note Operations ─────────────────────────────────────────────────
@@ -336,6 +356,7 @@ class SQLiteBackend(StorageBackend):
         row = _note_to_row(note)
         values = [row[c] for c in _NOTE_COLUMNS]
         with self._write_lock:
+            self._check_open()
             self._conn.execute(_INSERT_NOTE_SQL, values)
             self._conn.commit()
         log_file_activity(self.db_path, "Create", actor="SQLiteBackend.write_note", note_id=note.id)
@@ -345,6 +366,7 @@ class SQLiteBackend(StorageBackend):
         row = _note_to_row(note)
         values = [row[c] for c in _NOTE_COLUMNS]
         with self._write_lock:
+            self._check_open()
             self._conn.execute(_INSERT_NOTE_SQL, values)
             self._conn.commit()
         log_file_activity(
@@ -353,6 +375,7 @@ class SQLiteBackend(StorageBackend):
 
     def get_note_by_id(self, note_id: str) -> Optional[MemoryNote]:
         with self._write_lock:
+            self._check_open()
             cur = self._conn.execute("SELECT * FROM notes WHERE id = ?", (note_id,))
             row = cur.fetchone()
         if row is None:
@@ -361,6 +384,7 @@ class SQLiteBackend(StorageBackend):
 
     def get_note_by_source_ref(self, source_ref: str) -> Optional[MemoryNote]:
         with self._write_lock:
+            self._check_open()
             cur = self._conn.execute(
                 "SELECT * FROM notes WHERE content_source_ref = ? LIMIT 1",
                 (source_ref,),
@@ -372,9 +396,11 @@ class SQLiteBackend(StorageBackend):
 
     def iterate_notes(self) -> Iterator[MemoryNote]:
         with self._write_lock:
+            self._check_open()
             cur = self._conn.execute("SELECT * FROM notes")
         while True:
             with self._write_lock:
+                self._check_open()
                 rows = cur.fetchmany(100)
             if not rows:
                 break
@@ -383,12 +409,14 @@ class SQLiteBackend(StorageBackend):
 
     def get_notes_by_domain(self, domain: str) -> List[MemoryNote]:
         with self._write_lock:
+            self._check_open()
             cur = self._conn.execute("SELECT * FROM notes WHERE domain = ?", (domain,))
             rows = cur.fetchall()
         return [_row_to_note(r) for r in rows]
 
     def get_recent_notes(self, limit: int = 10) -> List[MemoryNote]:
         with self._write_lock:
+            self._check_open()
             cur = self._conn.execute(
                 "SELECT * FROM notes ORDER BY created_at DESC LIMIT ?", (limit,)
             )
@@ -397,11 +425,13 @@ class SQLiteBackend(StorageBackend):
 
     def count_notes(self) -> int:
         with self._write_lock:
+            self._check_open()
             cur = self._conn.execute("SELECT COUNT(*) FROM notes")
             return cur.fetchone()[0]
 
     def delete_note(self, note_id: str) -> bool:
         with self._write_lock:
+            self._check_open()
             cur = self._conn.execute("DELETE FROM notes WHERE id = ?", (note_id,))
             self._conn.commit()
         deleted = cur.rowcount > 0
@@ -415,6 +445,7 @@ class SQLiteBackend(StorageBackend):
         """Targeted UPDATE for access tracking — avoids full note rewrite."""
         now = datetime.now().isoformat()
         with self._write_lock:
+            self._check_open()
             self._conn.execute(
                 "UPDATE notes SET access_count = access_count + 1, last_accessed = ? WHERE id = ?",
                 (now, note_id),
@@ -424,12 +455,24 @@ class SQLiteBackend(StorageBackend):
     # ── Vector Index Sync ───────────────────────────────────────────────
 
     def reindex_vector(self, note_id: str, vector: List[float]) -> None:
-        """Update embedding vector in SQLite.  LanceDB sync is external."""
-        note = self.get_note_by_id(note_id)
-        if note is None:
+        """Update embedding vector in SQLite.  LanceDB sync is external.
+
+        Targeted UPDATE inside a single lock acquisition — avoids the
+        read-modify-write race where a concurrent mark_access_dirty /
+        rewrite_note edit would be clobbered by the full-row rewrite.
+        """
+        vec_json = json.dumps(vector)
+        now = datetime.now().isoformat()
+        with self._write_lock:
+            self._check_open()
+            cur = self._conn.execute(
+                "UPDATE notes SET embedding_vector = ?, updated_at = ? WHERE id = ?",
+                (vec_json, now, note_id),
+            )
+            self._conn.commit()
+            rowcount = cur.rowcount
+        if rowcount == 0:
             raise ValueError(f"Note {note_id} not found")
-        note.embedding.vector = vector
-        self.rewrite_note(note)
 
     # ── Knowledge Graph: Nodes ──────────────────────────────────────────
 
@@ -443,6 +486,7 @@ class SQLiteBackend(StorageBackend):
         props_json = json.dumps(properties or {})
 
         with self._write_lock:
+            self._check_open()
             # Try to find existing node
             cur = self._conn.execute(
                 "SELECT node_id FROM kg_nodes WHERE entity_type = ? AND entity_value = ?",
@@ -470,6 +514,7 @@ class SQLiteBackend(StorageBackend):
 
     def get_kg_node(self, entity_type: str, entity_value: str) -> Optional[Dict]:
         with self._write_lock:
+            self._check_open()
             cur = self._conn.execute(
                 "SELECT * FROM kg_nodes WHERE entity_type = ? AND entity_value = ?",
                 (entity_type, entity_value),
@@ -499,6 +544,7 @@ class SQLiteBackend(StorageBackend):
         properties: Optional[Dict] = None,
     ) -> str:
         with self._write_lock:
+            self._check_open()
             from_node_id = self.add_kg_node(from_type, from_value)
             to_node_id = self.add_kg_node(to_type, to_value)
             now = datetime.now().isoformat()
@@ -551,6 +597,7 @@ class SQLiteBackend(StorageBackend):
         relationship: Optional[str] = None,
     ) -> List[Dict]:
         with self._write_lock:
+            self._check_open()
             # Resolve node_id
             cur = self._conn.execute(
                 "SELECT node_id FROM kg_nodes WHERE entity_type = ? AND entity_value = ?",
@@ -602,6 +649,7 @@ class SQLiteBackend(StorageBackend):
     ) -> List[List[Dict]]:
         """BFS/DFS traversal up to max_depth.  Returns list of paths."""
         with self._write_lock:
+            self._check_open()
             cur = self._conn.execute(
                 "SELECT node_id FROM kg_nodes WHERE entity_type = ? AND entity_value = ?",
                 (start_type, start_value),
@@ -620,6 +668,7 @@ class SQLiteBackend(StorageBackend):
             visited.add(current_id)
 
             with self._write_lock:
+                self._check_open()
                 edges_cur = self._conn.execute(
                     "SELECT e.to_node_id, e.relationship, "
                     "nf.entity_type AS from_type, nf.entity_value AS from_value, "
@@ -651,6 +700,7 @@ class SQLiteBackend(StorageBackend):
     def get_entity_timeline(self, entity_type: str, entity_value: str) -> List[Dict]:
         """Get temporal timeline of states for an entity via temporal edges."""
         with self._write_lock:
+            self._check_open()
             cur = self._conn.execute(
                 "SELECT node_id FROM kg_nodes WHERE entity_type = ? AND entity_value = ?",
                 (entity_type, entity_value),
@@ -686,6 +736,7 @@ class SQLiteBackend(StorageBackend):
     def get_changes_since(self, timestamp: str) -> List[Dict]:
         """Get all temporal edge changes since a given ISO-8601 timestamp."""
         with self._write_lock:
+            self._check_open()
             edges_cur = self._conn.execute(
                 "SELECT e.*, "
                 "nf.entity_type AS from_type, nf.entity_value AS from_value, "
@@ -714,6 +765,7 @@ class SQLiteBackend(StorageBackend):
     def get_kg_node_by_id(self, node_id: str) -> Optional[Dict]:
         """Lookup a KG node by its internal node_id."""
         with self._write_lock:
+            self._check_open()
             cur = self._conn.execute("SELECT * FROM kg_nodes WHERE node_id = ?", (node_id,))
             row = cur.fetchone()
         if row is None:
@@ -736,6 +788,7 @@ class SQLiteBackend(StorageBackend):
     ) -> List[Dict]:
         """BFS over outgoing causal edges — traces forward from cause to effects."""
         with self._write_lock:
+            self._check_open()
             cur = self._conn.execute(
                 "SELECT node_id FROM kg_nodes WHERE entity_type = ? AND entity_value = ?",
                 (entity_type, entity_value),
@@ -756,6 +809,7 @@ class SQLiteBackend(StorageBackend):
             visited.add(current_id)
 
             with self._write_lock:
+                self._check_open()
                 edges_cur = self._conn.execute(
                     "SELECT * FROM kg_edges WHERE from_node_id = ? AND edge_type = 'causal'",
                     (current_id,),
@@ -780,6 +834,7 @@ class SQLiteBackend(StorageBackend):
     ) -> List[Dict]:
         """BFS over incoming causal edges — traces back to root causes."""
         with self._write_lock:
+            self._check_open()
             cur = self._conn.execute(
                 "SELECT node_id FROM kg_nodes WHERE entity_type = ? AND entity_value = ?",
                 (entity_type, entity_value),
@@ -800,6 +855,7 @@ class SQLiteBackend(StorageBackend):
             visited.add(current_id)
 
             with self._write_lock:
+                self._check_open()
                 edges_cur = self._conn.execute(
                     "SELECT * FROM kg_edges WHERE to_node_id = ? AND edge_type = 'causal'",
                     (current_id,),
@@ -819,6 +875,7 @@ class SQLiteBackend(StorageBackend):
 
     def add_entity_mapping(self, entity_type: str, entity_value: str, note_id: str) -> None:
         with self._write_lock:
+            self._check_open()
             self._conn.execute(
                 "INSERT OR IGNORE INTO entity_index (entity_type, entity_value, note_id) "
                 "VALUES (?, ?, ?)",
@@ -828,11 +885,13 @@ class SQLiteBackend(StorageBackend):
 
     def remove_entity_mappings_for_note(self, note_id: str) -> None:
         with self._write_lock:
+            self._check_open()
             self._conn.execute("DELETE FROM entity_index WHERE note_id = ?", (note_id,))
             self._conn.commit()
 
     def get_note_ids_for_entity(self, entity_type: str, entity_value: str) -> List[str]:
         with self._write_lock:
+            self._check_open()
             cur = self._conn.execute(
                 "SELECT note_id FROM entity_index WHERE entity_type = ? AND entity_value = ?",
                 (entity_type, entity_value),
@@ -843,6 +902,7 @@ class SQLiteBackend(StorageBackend):
     def search_entities(self, query: str, limit: int = 10) -> Dict[str, List[str]]:
         """Prefix search across entity types."""
         with self._write_lock:
+            self._check_open()
             cur = self._conn.execute(
                 "SELECT DISTINCT entity_type, entity_value FROM entity_index "
                 "WHERE entity_value LIKE ? LIMIT ?",
@@ -857,12 +917,19 @@ class SQLiteBackend(StorageBackend):
     # ── Export ──────────────────────────────────────────────────────────
 
     def export_snapshot(self, output_path: str) -> None:
-        """Export full SQLite database via backup API."""
-        import shutil
+        """Export full SQLite database via the online backup API.
 
+        Uses sqlite3.Connection.backup() for a page-consistent snapshot
+        that correctly handles WAL + sidecar files — shutil.copy2 of a
+        live WAL database can produce a torn copy missing -wal / -shm.
+        """
         ts = datetime.now().strftime("%Y%m%d_%H%M%S")
         dest = f"{output_path}/zettelforge_{ts}.db"
-        if self._conn:
-            # Checkpoint WAL first so backup is complete
-            self._conn.execute("PRAGMA wal_checkpoint(FULL)")
-            shutil.copy2(self.db_path, dest)
+        with self._write_lock:
+            self._check_open()
+            dst = sqlite3.connect(dest)
+            try:
+                self._conn.backup(dst)
+            finally:
+                dst.close()
+        log_file_activity(dest, "Create", actor="SQLiteBackend.export_snapshot")
