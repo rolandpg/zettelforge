@@ -6,6 +6,61 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [2.4.2] - 2026-04-24
+
+Patch release bundling the RFC-010 enrichment-pipeline hotfix with the
+RFC-009 Phase 0.5 latency-attribution instrumentation. Response to the
+2026-04-24 Vigil telemetry audit.
+
+### Fixed
+
+- **RFC-010 hotfix — `OllamaProvider` timeout plumbing** (#88). The
+  constructor's `**_: Any` absorbed the configured `timeout` kwarg, so
+  `ollama.Client(host=...)` was built with no timeout and `remember()`
+  could hang up to 66.5s on a slow backend. `timeout` is now a
+  first-class parameter (default 60.0s) threaded through to the client.
+- **RFC-010 hotfix — consolidation shutdown race** (#88). A third
+  `iterate_notes()` site at `consolidation.py:224` was not covered by
+  PR #84's two-site guard. Added a two-layer defense: fast-path
+  `_accepting` pre-check plus a narrow `BackendClosedError` catch on
+  the iterator itself. Clean skip instead of `consolidation_failed`
+  log noise during `atexit`.
+
+### Added
+
+- **RFC-009 Phase 0.5 — per-phase timers in `remember()`** (#90).
+  `memory_manager.remember()` now wraps each direct-store phase
+  (`construct`, `write_note`, `lance_index`, `entity_index`,
+  `consolidation_observe`, `supersession`, `kg_update`,
+  `enrichment_dispatch`) in `time.perf_counter()` and emits the
+  breakdown inside the existing `ocsf_api_activity` event as
+  `phase_timings_ms`. Pure observability. Enables Vigil-side latency
+  attribution without host-side profilers, which do not apply to a
+  library-per-turn deployment. `enrichment_dispatch` is intentionally
+  skipped in `sync=True` runs so inline LLM work cannot corrupt the
+  dispatch bucket.
+- **Phase 0.5 preliminary attribution artifact** (#91) —
+  `docs/superpowers/research/2026-04-24-phase-0.5-attribution-prelim.md`.
+  Analyses 961 real `remember()` calls from Vigil's v2.4.1 OCSF log
+  and finds **98.4% of `remember()` wall-clock is one LanceDB `Update`
+  on the `notes_cti` shard**, which has 7,356 uncompacted fragments
+  versus 458 on the healthy `notes_general` shard. Reshapes RFC-009's
+  Phase 1–6 priority ordering: those phases target the LLM / queue /
+  consolidation paths, which are not what drives the 5.7s average.
+  To be refined or falsified with `phase_timings_ms` data from this
+  release.
+
+### Does NOT address
+
+- The ~2,329 enrichment-job drops/day are still present. Those are
+  caused by HTTP 200 + empty Ollama responses (Ollama returns
+  successfully but with no parseable body), not by hangs — RFC-010's
+  timeout fix does not touch them. The durable outbox + circuit
+  breaker in RFC-009 Phases 1–3 (v2.5.0) is the real fix.
+- LanceDB fragment accumulation on `notes_cti` is identified here but
+  not fixed here. RFC-009 is being revised to add periodic compaction
+  to Phase 1 scope.
+
 ## [2.4.1] - 2026-04-24
 
 Operational telemetry (RFC-007), TypeDB authentication hardening, and a
