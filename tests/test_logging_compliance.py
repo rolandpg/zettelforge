@@ -139,6 +139,75 @@ class TestOCSFEventFields:
         assert event["policy"] == "GOV-011"
 
 
+class TestPhaseTimingsInstrumentation:
+    """[RFC-009 Phase 0.5] remember() emits per-phase timers for latency attribution."""
+
+    def test_remember_emits_phase_timings_ms(self):
+        """The ocsf_api_activity event for remember() must carry phase_timings_ms
+        with numeric values for each instrumented phase."""
+        from zettelforge import MemoryManager
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            mm = MemoryManager(jsonl_path=f"{tmpdir}/notes.jsonl", lance_path=f"{tmpdir}/vectordb")
+            with structlog.testing.capture_logs() as logs:
+                mm.remember("APT28 deploys Cobalt Strike beacons", domain="cti")
+
+        remember_events = [
+            e
+            for e in logs
+            if e.get("event") == "ocsf_api_activity" and e.get("activity_name") == "remember"
+        ]
+        assert remember_events, "No ocsf_api_activity event for remember() was emitted"
+
+        event = remember_events[-1]
+        assert "phase_timings_ms" in event, (
+            "phase_timings_ms missing from remember() ocsf_api_activity event"
+        )
+        timings = event["phase_timings_ms"]
+        assert isinstance(timings, dict)
+
+        # Phases that always run on the direct-store async path
+        expected_keys = {
+            "construct",
+            "write_note",
+            "entity_index",
+            "consolidation_observe",
+            "supersession",
+            "kg_update",
+            "enrichment_dispatch",
+        }
+        missing = expected_keys - set(timings)
+        assert not missing, f"Missing phase timings: {missing}. Got: {set(timings)}"
+
+        for key, value in timings.items():
+            assert isinstance(value, (int, float)), (
+                f"phase_timings_ms[{key!r}] is {type(value).__name__}, expected numeric"
+            )
+            assert value >= 0, f"phase_timings_ms[{key!r}] = {value} (negative)"
+
+    def test_enrichment_dispatch_excluded_in_sync_mode(self):
+        """In sync=True mode the dispatch bucket is intentionally omitted so
+        inline LLM work is not misattributed to dispatch latency."""
+        from zettelforge import MemoryManager
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            mm = MemoryManager(jsonl_path=f"{tmpdir}/notes.jsonl", lance_path=f"{tmpdir}/vectordb")
+            with structlog.testing.capture_logs() as logs:
+                mm.remember("APT29 phishing campaign observed", domain="cti", sync=True)
+
+        remember_events = [
+            e
+            for e in logs
+            if e.get("event") == "ocsf_api_activity" and e.get("activity_name") == "remember"
+        ]
+        assert remember_events
+        timings = remember_events[-1]["phase_timings_ms"]
+        assert "enrichment_dispatch" not in timings, (
+            "sync=True should NOT emit enrichment_dispatch (would mix LLM work into "
+            "dispatch bucket and corrupt Phase 0.5 attribution)"
+        )
+
+
 class TestLanceDBFailureLogged:
     """Regression test for #26: LanceDB failures must be logged, not swallowed."""
 
