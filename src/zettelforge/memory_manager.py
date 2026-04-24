@@ -40,6 +40,7 @@ from zettelforge.ocsf import (
 from zettelforge.storage_backend import BackendClosedError
 from zettelforge.synthesis_generator import get_synthesis_generator
 from zettelforge.synthesis_validator import get_synthesis_validator
+from zettelforge.telemetry import get_telemetry
 from zettelforge.vector_retriever import VectorRetriever
 
 # ── Reranker singleton ───────────────────────────────────────────────────────
@@ -121,6 +122,13 @@ class MemoryManager:
             "llm_ner_total_new_entities": 0,
             "llm_ner_total_duration_ms": 0.0,
         }
+
+        # Operational telemetry (RFC-007 / US-002)
+        self._telemetry = get_telemetry()
+        # Correlation slot — recall stores its query_id/results here so
+        # synthesize() can attach synthesis telemetry to the same query_id.
+        self._telemetry_query_id: Optional[str] = None
+        self._telemetry_retrieved_notes: Optional[List] = None
 
         # Dual-stream enrichment: background worker for LLM causal extraction
         self._enrichment_queue: queue.Queue = queue.Queue(maxsize=500)
@@ -467,6 +475,7 @@ class MemoryManager:
         include_links: bool = True,
         exclude_superseded: bool = True,
         include_expired: bool = False,
+        actor: Optional[str] = None,
     ) -> List[MemoryNote]:
         """
         Retrieve memories relevant to query using blended vector + graph retrieval.
@@ -478,6 +487,10 @@ class MemoryManager:
         request_id = uuid.uuid4().hex
         start = time.perf_counter()
         self.stats["retrievals"] += 1
+
+        # ── RFC-007 US-002: telemetry ─────────────────────────────────
+        query_id = self._telemetry.start_query(query, actor=actor)
+        self._telemetry_query_id = query_id
 
         # Classify query intent
         from zettelforge.intent_classifier import get_intent_classifier
@@ -493,9 +506,11 @@ class MemoryManager:
             resolved[etype] = [self.resolver.resolve(etype, e) for e in elist]
 
         # Vector retrieval (Community + Enterprise)
+        _vector_start = time.perf_counter()
         vector_results = self.retriever.retrieve(
             query=query, domain=domain, k=k, include_links=include_links
         )
+        _vector_latency_ms = (time.perf_counter() - _vector_start) * 1000
 
         # Temporal boost: for temporal queries, prioritize notes containing dates from the query
         if intent.value == "temporal":
@@ -533,7 +548,9 @@ class MemoryManager:
 
         kg = get_knowledge_graph()
         graph_retriever = GraphRetriever(kg)
+        _graph_start = time.perf_counter()
         graph_results = graph_retriever.retrieve_note_ids(query_entities=resolved, max_depth=2)
+        _graph_latency_ms = (time.perf_counter() - _graph_start) * 1000
 
         blender = BlendedRetriever()
         results = blender.blend(
@@ -624,7 +641,22 @@ class MemoryManager:
             note.increment_access()
             self.store.mark_access_dirty(note.id)
 
+        # ── RFC-007 US-002: telemetry correlation slot ──────────────
+        self._telemetry_query_id = query_id
+        self._telemetry_retrieved_notes = list(results)
+
         duration_ms = (time.perf_counter() - start) * 1000
+
+        # ── RFC-007 US-002: log_recall ─────────────────────────────
+        intent_str = intent.value if hasattr(intent, "value") else str(intent)
+        self._telemetry.log_recall(
+            query_id,
+            results,
+            intent=intent_str,
+            vector_latency_ms=int(_vector_latency_ms),
+            graph_latency_ms=int(_graph_latency_ms),
+        )
+
         log_api_activity(
             operation="recall",
             status_id=STATUS_SUCCESS,
@@ -634,6 +666,8 @@ class MemoryManager:
             result_count=len(results),
             duration_ms=duration_ms,
             request_id=request_id,
+            telemetry_query_id=query_id,
+            telemetry_actor=actor,
         )
         return results
 
@@ -1262,7 +1296,12 @@ class MemoryManager:
     # === Phase 7: Synthesis Layer ===
 
     def synthesize(
-        self, query: str, format: str = "direct_answer", k: int = 10, tier_filter: List[str] = None
+        self,
+        query: str,
+        format: str = "direct_answer",
+        k: int = 10,
+        tier_filter: List[str] = None,
+        actor: Optional[str] = None,
     ) -> Dict[str, Any]:
         """
         Synthesize an answer from retrieved memories (Phase 7 RAG-as-Answer).
@@ -1287,13 +1326,34 @@ class MemoryManager:
         request_id = uuid.uuid4().hex
         start = time.perf_counter()
 
+        # Reuse query_id from the last recall() so synthesis telemetry
+        # correlates to the same query.  If the caller passed actor directly
+        # without a preceding recall() call, start a fresh query.
+        query_id = self._telemetry_query_id or self._telemetry.start_query(query, actor=actor)
+        if query_id and self._telemetry_query_id is None:
+            # Fresh query started here — keep the id for consistency
+            self._telemetry_query_id = query_id
+
         gen = get_synthesis_generator()
         result = gen.synthesize(
             query=query, memory_manager=self, format=format, k=k, tier_filter=tier_filter
         )
 
         duration_ms = (time.perf_counter() - start) * 1000
+        synthesis_latency_ms = (
+            time.perf_counter() - start
+        ) * 1000  # gen.synthesize is the synthesis work
         source_count = len(result.get("sources", []))
+
+        # ── RFC-007 US-002: log_synthesis ─────────────────────────────
+        if query_id is not None:
+            self._telemetry.log_synthesis(
+                query_id, result, synthesis_latency_ms=int(synthesis_latency_ms)
+            )
+            # Auto-feedback is DEBUG-only inside the collector
+            retrieved = self._telemetry_retrieved_notes or []
+            self._telemetry.auto_feedback_from_synthesis(query_id, retrieved, result)
+
         log_api_activity(
             operation="synthesize",
             status_id=STATUS_SUCCESS,
@@ -1302,6 +1362,8 @@ class MemoryManager:
             source_count=source_count,
             duration_ms=duration_ms,
             request_id=request_id,
+            telemetry_query_id=query_id,
+            telemetry_actor=actor,
         )
         return result
 
