@@ -230,21 +230,33 @@ class MemoryManager:
             )
 
         # Direct store path
+        # [RFC-009 Phase 0.5] Per-phase timings to attribute remember() latency.
+        # Emitted in ocsf_api_activity.phase_timings_ms so the RFC-007 aggregator
+        # can bucket them without schema changes.
+        phase_timings_ms: Dict[str, float] = {}
+
+        _p = time.perf_counter()
         note = self.constructor.construct(
             raw_content=content, source_type=source_type, source_ref=source_ref, domain=domain
         )
+        phase_timings_ms["construct"] = (time.perf_counter() - _p) * 1000
 
+        _p = time.perf_counter()
         self.store.write_note(note)
+        phase_timings_ms["write_note"] = (time.perf_counter() - _p) * 1000
         self.stats["notes_created"] += 1
 
         # Keep LanceDB in sync for vector retrieval
         if self._lance_store.lancedb is not None:
+            _p = time.perf_counter()
             try:
                 self._lance_store._index_in_lance(note)
             except Exception:
                 self._logger.warning("lance_index_sync_failed", note_id=note.id, exc_info=True)
+            phase_timings_ms["lance_index"] = (time.perf_counter() - _p) * 1000
 
         # Alias resolution and indexing (regex-only for speed; LLM NER runs on recall)
+        _p = time.perf_counter()
         raw_entities = self.indexer.extractor.extract_all(note.content.raw, use_llm=False)
 
         resolved_entities = {}
@@ -257,8 +269,10 @@ class MemoryManager:
         for etype, elist in resolved_entities.items():
             for evalue in elist:
                 self.store.add_entity_mapping(etype, evalue, note.id)
+        phase_timings_ms["entity_index"] = (time.perf_counter() - _p) * 1000
 
         # GAM consolidation: observe note for semantic shift detection
+        _p = time.perf_counter()
         try:
             is_shift, shift_meta = self.consolidation.before_write(
                 note_entities=resolved_entities,
@@ -274,14 +288,20 @@ class MemoryManager:
                 )
         except Exception as e:
             self._logger.warning("consolidation_observe_failed", error=str(e))
+        phase_timings_ms["consolidation_observe"] = (time.perf_counter() - _p) * 1000
 
         # Phase 3: Check supersession
+        _p = time.perf_counter()
         self._check_supersession(note, resolved_entities)
+        phase_timings_ms["supersession"] = (time.perf_counter() - _p) * 1000
 
         # Phase 6: Knowledge Graph Update (heuristic edges — fast path)
+        _p = time.perf_counter()
         self._update_knowledge_graph(note, resolved_entities)
+        phase_timings_ms["kg_update"] = (time.perf_counter() - _p) * 1000
 
-        # Phase 6b: LLM causal enrichment (slow path — background worker)
+        # Phase 6b/6c/6d: enqueue background enrichment jobs (causal + NER + evolution)
+        _p = time.perf_counter()
         job = _EnrichmentJob(
             note_id=note.id,
             domain=domain,
@@ -331,6 +351,7 @@ class MemoryManager:
                     self._pending_enrichment.add(note.id)
                 except queue.Full:
                     self._logger.warning("evolution_queue_full", note_id=note.id)
+        phase_timings_ms["enqueue"] = (time.perf_counter() - _p) * 1000
 
         duration_ms = (time.perf_counter() - start) * 1000
         log_api_activity(
@@ -341,6 +362,7 @@ class MemoryManager:
             duration_ms=duration_ms,
             request_id=request_id,
             evolve=False,
+            phase_timings_ms={k: round(v, 2) for k, v in phase_timings_ms.items()},
         )
         return note, "created"
 
