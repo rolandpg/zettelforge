@@ -29,6 +29,22 @@ class LLMProviderConfigurationError(Exception):
     """
 
 
+class LLMEmptyResponseError(Exception):
+    """Raised when the LLM returns an empty response.
+
+    This is distinct from transport failure (timeout, connection error)
+    and indicates the model produced no output. Callers should retry
+    via the outbox rather than in-process.
+    """
+
+    def __init__(self, model: str = "", prompt_len: int = 0) -> None:
+        self.model = model
+        self.prompt_len = prompt_len
+        super().__init__(
+            f"LLM returned empty response: model={model}, prompt_len={prompt_len}"
+        )
+
+
 @runtime_checkable
 class LLMProvider(Protocol):
     """All LLM providers must implement this protocol.

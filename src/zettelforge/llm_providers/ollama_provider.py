@@ -9,6 +9,8 @@ from __future__ import annotations
 
 from typing import Any, Optional
 
+from zettelforge.llm_providers.base import LLMEmptyResponseError
+
 _DEFAULT_MODEL = "qwen2.5:3b"
 _DEFAULT_URL = "http://localhost:11434"
 
@@ -24,9 +26,18 @@ class OllamaProvider:
 
     name = "ollama"
 
-    def __init__(self, model: str = "", url: str = "", **_: Any) -> None:
+    def __init__(
+        self,
+        model: str = "",
+        url: str = "",
+        timeout: float = 60.0,
+        max_retries: int = 2,
+        **_: Any,
+    ) -> None:
         self._model = model or _DEFAULT_MODEL
         self._url = url or _DEFAULT_URL
+        self._timeout = timeout
+        self._max_retries = max_retries
 
     def generate(
         self,
@@ -51,6 +62,9 @@ class OllamaProvider:
         # Route through a per-instance Client so ``self._url`` actually affects
         # where the call goes. The module-level ``ollama.generate`` always
         # targets the default localhost:11434, ignoring this provider's config.
-        client = ollama.Client(host=self._url)
+        client = ollama.Client(host=self._url, timeout=self._timeout)
         response = client.generate(**kwargs)
-        return str(response.get("response", "")).strip()
+        text = str(response.get("response", "")).strip()
+        if not text:
+            raise LLMEmptyResponseError(model=self._model, prompt_len=len(prompt))
+        return text
