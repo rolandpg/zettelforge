@@ -6,9 +6,12 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-Targeting v2.5.0. Most of the work since v2.4.3 has been compliance-audit
-remediation (every CRITICAL and HIGH except H-3 mypy-strict and the ANN
-slice of H-1 closed) plus two new optional LLM backends.
+## [2.5.0] - 2026-04-25
+
+Compliance-driven minor release. Closes every CRITICAL and HIGH audit
+finding except H-3 (mypy strict) and the ANN slice of H-1, both of
+which need per-module ratchet plans. Also adds two new optional LLM
+backends, a Presidio PII detector, and supply-chain hardening.
 
 ### Added
 
@@ -20,13 +23,30 @@ slice of H-1 closed) plus two new optional LLM backends.
   upstream LLM providers via the LiteLLM SDK. Optional extra
   (`pip install zettelforge[litellm]`); the base package never imports
   it unless the SDK is present.
+- **RFC-013 — Microsoft Presidio PII detection** (#118). Optional PII
+  validator with three policies (`log` / `redact` / `block`),
+  configurable via `governance.pii.*`. CTI allowlist excludes
+  `IP_ADDRESS` / `URL` / `DOMAIN_NAME` from detection so legitimate
+  threat-intel indicators flow through unmodified. Soft dependency —
+  `pip install zettelforge[pii]` to activate; the base package never
+  imports `presidio_analyzer` unless the SDK is present.
 - **GOV-009 Snyk SCA + SAST declared in `controls.yaml`** (#114). The
   spec-drift validator now walks every `.github/workflows/*.yml` so
   controls whose CI step lives outside `ci.yml` (Snyk's separate
   workflow) can be honestly declared.
+- **GOV-006 solo-maintainer compensating controls** (#117). New
+  `controls.yaml` entry pins the existing CI gates (lint, tests,
+  governance spec-drift) as compensating controls for the GOV-006
+  two-person review rule that cannot be physically satisfied with one
+  human maintainer. CODEOWNERS updated with explanatory comment.
+- **`SECURITY.md` + CODEOWNERS** added to the repo root for vulnerability
+  disclosure and review attribution.
 
 ### Changed
 
+- **All GitHub Actions are now SHA-pinned** (audit H-5 hardening). Every
+  `uses: org/repo@vX` reference replaced with `uses: org/repo@<full-sha> # vX.Y.Z`
+  to prevent supply-chain attacks via tag rewrites.
 - **Ruff rule set ratcheted to GOV-003 §"Tooling and Automation" minus
   ANN** (#106 + #107 + #109 + #111 + #113). Active `select` list:
   `{E, F, I, W, N, T20, B, UP, SIM, RUF, S}`. Per-line `# noqa: SXXX`
@@ -50,15 +70,16 @@ slice of H-1 closed) plus two new optional LLM backends.
 | CRITICAL | C-2 fabricated `no_hardcoded_secrets` claim | CLOSED (#100) |
 | HIGH | H-1 ruff full select per GOV-003 | CLOSED for {E,F,I,W,N,T20,B,UP,SIM,RUF,S}; ANN ratcheting per-module |
 | HIGH | H-2 coverage threshold not enforced | CLOSED (#100) |
-| HIGH | H-5 SCA gate (pip-audit + Snyk fail-mode) | CLOSED (#102 + #114) |
+| HIGH | H-4 GOV-006 / CODEOWNERS solo-maintainer | CLOSED on the zettelforge side (#117); GOV-006 doc amendment in `rolandpg/governance` repo is separate scope |
+| HIGH | H-5 SCA gate + SHA-pinned actions | CLOSED (#102 + #114 + SHA-pin commit) |
 | MEDIUM | M-1 bare `except:` in production | CLOSED (#100) |
 | MEDIUM | M-3 OCSF `timezone_offset` field | CLOSED (#100) |
 | LOW | L-4 CI install-step shell precedence | CLOSED (#112) |
 
 Outstanding: H-3 (mypy --strict in CI; needs per-module ratchet plan
-for 393 errors across 38 files), H-4 (GOV-006 amendment for
-solo-maintainer mode + CODEOWNERS update), M-2 (rewrite GOV-016 to
-match the YAML-frontmatter practice already in use), M-4 (lock file).
+for 393 errors across 38 files), M-2 (rewrite GOV-016 to match the
+YAML-frontmatter practice already in use), M-4 (lock file), H-1 ANN
+ratchet (121 findings across 38 files).
 
 ## [2.4.3] - 2026-04-25
 
