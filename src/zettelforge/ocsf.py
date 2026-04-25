@@ -45,7 +45,7 @@ def _resolve_product_version() -> str:
                 stripped = line.strip()
                 if stripped.startswith("version") and "=" in stripped:
                     return stripped.split("=", 1)[1].strip().strip('"').strip("'")
-    except Exception:  # pragma: no cover — defensive; fall through to metadata
+    except Exception:  # pragma: no cover  # noqa: S110 — defensive; fall through to metadata
         pass
 
     try:

@@ -129,15 +129,15 @@ def get_embedding(text: str, model: str | None = None) -> list[float]:
     except Exception:
         _logger.warning("http_embedding_failed", exc_info=True)
 
-    # Last resort: deterministic mock embedding
-    h = int(hashlib.md5(text.encode()).hexdigest(), 16)
+    # Last resort: deterministic mock embedding (non-cryptographic).
+    h = int(hashlib.md5(text.encode(), usedforsecurity=False).hexdigest(), 16)
     import random
 
     random.seed(h)
     from zettelforge.config import get_config
 
     dim = get_config().embedding.dimensions
-    return [random.random() for _ in range(dim)]
+    return [random.random() for _ in range(dim)]  # noqa: S311
 
 
 def get_embedding_batch(texts: list[str], model: str | None = None) -> list[list[float]]:

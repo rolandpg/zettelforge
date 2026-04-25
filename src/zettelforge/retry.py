@@ -56,7 +56,8 @@ def with_retry(config: RetryConfig = None, observability: Observability = None):
                 except Exception as e:
                     last_exception = e
                     delay = min(config.base_delay * (2 ** (attempt - 1)), config.max_delay)
-                    jitter = random.uniform(0, 0.1 * delay)
+                    # Backoff jitter — non-cryptographic.
+                    jitter = random.uniform(0, 0.1 * delay)  # noqa: S311
                     sleep_time = delay + jitter
 
                     observability.log_operation(
