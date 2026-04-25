@@ -128,11 +128,7 @@ def _provider_kwargs(provider_name: str) -> Dict[str, Any]:
         if local_backend == "onnxruntime-genai":
             kwargs["model"] = os.environ.get(
                 "ZETTELFORGE_LLM_MODEL",
-                (
-                    ""
-                    if looks_like_ollama_tag
-                    else (cfg_model or _DEFAULT_ONNX_MODEL)
-                ),
+                ("" if looks_like_ollama_tag else (cfg_model or _DEFAULT_ONNX_MODEL)),
             )
             kwargs["filename"] = os.environ.get(
                 "ZETTELFORGE_LLM_FILENAME",
