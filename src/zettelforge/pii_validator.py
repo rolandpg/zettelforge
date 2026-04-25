@@ -24,9 +24,9 @@ _logger = get_logger("zettelforge.pii")
 # redacted by default. Users can override by specifying explicit entities.
 _CTI_ALLOWLIST = frozenset(
     {
-        "IP_ADDRESS",  # IOC — threat data, not PII
-        "URL",  # IOC — threat data, not PII
-        "DOMAIN_NAME",  # IOC — threat data, not PII
+        "IP_ADDRESS",  # IOC -- threat data, not PII
+        "URL",  # IOC -- threat data, not PII
+        "DOMAIN_NAME",  # IOC -- threat data, not PII
     }
 )
 
@@ -46,9 +46,9 @@ class PIIValidator:
     """Validates content for PII using Microsoft Presidio.
 
     Three actions:
-        ``log`` (default) — detect and warn, pass content through unchanged.
-        ``redact`` — replace detected PII with placeholders.
-        ``block`` — raise :class:`PIIBlockedError` if ANY PII is detected.
+        ``log`` (default) -- detect and warn, pass content through unchanged.
+        ``redact`` -- replace detected PII with placeholders.
+        ``block`` -- raise :class:`PIIBlockedError` if ANY PII is detected.
 
     Thread-safe. Lazily loads Presidio + spaCy model on first call.
     The model downloads automatically (matching fastembed download pattern).
@@ -66,10 +66,10 @@ class PIIValidator:
             raise ValueError(f"Unknown PII action: {action!r}")
         self._action = action
         self._placeholder = placeholder
-        # Filter out CTI allowlisted entities unless user explicitly included them
-        self._entities: list[str] | None = None
-        if entities is not None:
-            self._entities = [e for e in entities if e not in _CTI_ALLOWLIST]
+        # Presidio semantics: entities=[] means "detect none", entities=None
+        # means "detect all supported types". The PIIConfig default is []
+        # (meaning "all"), so convert empty list to None here.
+        self._entities: list[str] | None = entities if entities else None
         self._language = language
         self._nlp_model = nlp_model
         self._analyzer: object = None
@@ -112,31 +112,59 @@ class PIIValidator:
     def detect(self, text: str) -> list[PIIDetection]:
         """Analyze text and return detected PII entities.
 
-        Results are sorted by start position and deduplicated by span
-        (highest-score entity wins for overlapping positions).
+        Results are sorted by start position. Overlapping spans are
+        resolved: the longest span wins when one fully contains another;
+        otherwise the highest-score entity wins per exact position.
         """
         if not text or not text.strip():
             return []
         self._ensure_loaded()
+
+        # Apply CTI allowlist at detect time: when entities=None (detect
+        # all), exclude allowlisted types from results. When user explicitly
+        # provides entities, honour that list exactly.
+        passed_to_analyzer = self._entities
+
         results = self._analyzer.analyze(
             text=text,
-            entities=self._entities,
+            entities=passed_to_analyzer,
             language=self._language,
         )
-        # Deduplicate overlapping spans: keep highest score per (start, end)
-        span_map: dict[tuple[int, int], PIIDetection] = {}
+
+        # Resolve overlapping spans: longest span wins when one contains
+        # another (the longer span is more precise for redaction). For
+        # equal-length spans, highest score wins.
+        raw: list[PIIDetection] = []
         for r in results:
-            key = (r.start, r.end)
-            existing = span_map.get(key)
-            if existing is None or r.score > existing.score:
-                span_map[key] = PIIDetection(
+            # Filter CTI allowlist at detect time when in detect-all mode
+            if self._entities is None and r.entity_type in _CTI_ALLOWLIST:
+                continue
+            raw.append(
+                PIIDetection(
                     entity_type=r.entity_type,
                     text=text[r.start : r.end],
                     start=r.start,
                     end=r.end,
                     score=r.score,
                 )
-        return sorted(span_map.values(), key=lambda d: d.start)
+            )
+
+        # Span resolution: sort by length desc, then score desc.
+        # Take each non-overlapping span greedily.
+        raw.sort(key=lambda d: (d.end - d.start, d.score), reverse=True)
+
+        selected: list[PIIDetection] = []
+        for d in raw:
+            # Check if this span overlaps any already-selected span
+            overlaps = False
+            for s in selected:
+                if d.start < s.end and d.end > s.start:
+                    overlaps = True
+                    break
+            if not overlaps:
+                selected.append(d)
+
+        return sorted(selected, key=lambda d: d.start)
 
     def validate(self, content: str) -> tuple[bool, str, list[PIIDetection]]:
         """Validate content for PII.
@@ -158,10 +186,9 @@ class PIIValidator:
             "pii_detected",
             count=len(detections),
             action=self._action,
-            entities=[
-                {"type": d.entity_type, "text": d.text, "score": round(d.score, 2)}
-                for d in detections
-            ],
+            # Log entity types and scores only -- never log the actual
+            # detected text to avoid PII leakage into structured logs.
+            entities=[{"type": d.entity_type, "score": round(d.score, 2)} for d in detections],
         )
 
         if self._action == "redact":

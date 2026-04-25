@@ -228,7 +228,7 @@ class TestGovernanceValidatorPII:
         ``.content`` should fail GOV-011 input validation and raise."""
         gv = GovernanceValidator()
         with pytest.raises(GovernanceViolationError):
-            gv.enforce("remember", {"bad": "data"})
+            gv.enforce("remember", None)
 
     def test_remember_enforce_passes_through_no_pii(self):
         """enforce() must return original content when PII is disabled."""
@@ -241,14 +241,7 @@ class TestGovernanceValidatorPII:
         result = gv.enforce("remember", "test")
         assert isinstance(result, str)
 
-
-# ---- Mocked Presidio analyzer integration --------------------------------------
-
-
-def _make_mock_analyzer(detections=None):
-    """Build a mock AnalyzerEngine that returns preset results."""
-    if detections is None:
-        detections = []
+    # ---- Mocked Presidio analyzer integration --------------------------------------
 
     mock_analyzer = MagicMock()
     mock_analyzer.analyze.return_value = detections
@@ -271,7 +264,9 @@ def _patch_presidio():
 
     pkg.AnalyzerEngine = _StubAnalyzerEngine
 
-    # Stub NlpEngineProvider
+    # Stub NlpEngineProvider (nested module)
+    nlp_pkg = types.ModuleType("presidio_analyzer.nlp_engine")
+
     class _StubNlpProvider:
         def __init__(self, *a, **kw):
             pass
@@ -279,9 +274,10 @@ def _patch_presidio():
         def create_engine(self):
             return type("E", (), {})()
 
-    pkg.NlpEngineProvider = _StubNlpProvider
+    nlp_pkg.NlpEngineProvider = _StubNlpProvider
+    pkg.nlp_engine = nlp_pkg
 
-    # Stub recognizer result
+    # Stub RecognizerResult
     class _StubRecognizerResult:
         def __init__(self, entity_type, start, end, score, text):
             self.entity_type = entity_type
@@ -300,7 +296,7 @@ def _patch_presidio():
     nlp_engine_pkg.NlpEngineProvider = _StubNlpProvider
 
     sys.modules["presidio_analyzer"] = pkg
-    sys.modules["presidio_analyzer.nlp_engine"] = nlp_engine_pkg
+    sys.modules["presidio_analyzer.nlp_engine"] = nlp_pkg
     return pkg
 
 

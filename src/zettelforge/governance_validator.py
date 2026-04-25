@@ -119,6 +119,14 @@ class GovernanceValidator:
                     hint="Install with: pip install zettelforge[pii]",
                 )
                 return content
+            except GovernanceViolationError:
+                raise
+            except Exception as exc:
+                # PIIBlockedError and any other non-recoverable PII error
+                # is converted to GovernanceViolationError so the caller
+                # (memory_manager._remember_inner) catches it via its
+                # existing except GovernanceViolationError handler.
+                raise GovernanceViolationError(f"PII validation failed: {exc}") from exc
             if not passed:
                 raise GovernanceViolationError(
                     f"PII validation blocked content: {len(detections)} detections"
