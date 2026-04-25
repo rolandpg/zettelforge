@@ -103,7 +103,12 @@ disallow_untyped_defs = true
 line-length = 100
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "W", "N"]
+# GOV-003 §"Tooling and Automation" mandates the full set
+# {E, F, I, S, B, UP, SIM, RUF, N, ANN, T20}. We ratchet incrementally:
+# T20 (no print) added 2026-04-25 (audit H-1 partial). The remaining
+# rules (S, B, UP, SIM, RUF, ANN) will be added in subsequent batches
+# once the surfaced findings are triaged.
+select = ["E", "F", "I", "W", "N", "T20"]
 ignore = [
     "E501",   # line too long — handled by formatter
     "E402",   # module-level import not at top — needed for conditional imports
@@ -111,6 +116,15 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "src/zettelforge/__init__.py" = ["F401", "E402"]  # re-exports and conditional imports
+# T20 (print) is forbidden in production code (GOV-003), but every CLI
+# entrypoint legitimately uses print() for stdout output. The patterns
+# below scope T20 to library code only.
+"src/zettelforge/__main__.py" = ["T20"]
+"src/zettelforge/demo.py" = ["T20"]
+"src/zettelforge/scripts/*.py" = ["T20"]
+"src/zettelforge/sigma/cli.py" = ["T20"]
+"src/zettelforge/yara/cli.py" = ["T20"]
+"src/zettelforge/vector_memory.py" = ["T20"]  # has argparse CLI at module bottom
 
 [tool.ruff.format]
 quote-style = "double"
