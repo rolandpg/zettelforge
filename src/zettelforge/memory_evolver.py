@@ -96,14 +96,29 @@ class MemoryEvolver:
         output = generate(prompt, max_tokens=1024, temperature=0.2, json_mode=True)
         result = extract_json(output, expect="object")
 
-        # Single retry on parse failure (AD-2)
+        # Single retry on parse failure (AD-2). Capture what the model
+        # actually returned so we can diagnose schema/template mismatches
+        # without re-running the test.
         if result is None:
-            self._logger.warning("evolution_parse_retry", neighbor_id=neighbor.id)
+            self._logger.warning(
+                "evolution_parse_retry",
+                neighbor_id=neighbor.id,
+                new_note_id=new_note.id,
+                raw_preview=(output or "")[:240],
+                raw_chars=len(output or ""),
+                prompt_preview=prompt[:240],
+            )
             output = generate(prompt, max_tokens=1024, temperature=0.1, json_mode=True)
             result = extract_json(output, expect="object")
 
         if result is None:
-            self._logger.warning("evolution_parse_failed", neighbor_id=neighbor.id)
+            self._logger.warning(
+                "evolution_parse_failed",
+                neighbor_id=neighbor.id,
+                new_note_id=new_note.id,
+                raw_preview=(output or "")[:240],
+                raw_chars=len(output or ""),
+            )
             return None
 
         # Validate required fields

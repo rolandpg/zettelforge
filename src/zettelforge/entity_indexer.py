@@ -299,7 +299,14 @@ class EntityExtractor:
         empty = {t: [] for t in expected_types}
 
         if parsed is None:
-            _logger.warning("parse_failed", schema="ner_output", raw=(output or "")[:200])
+            raw = output or ""
+            _logger.warning(
+                "parse_failed",
+                schema="ner_output",
+                reason="empty_completion" if not raw.strip() else "json_decode",
+                raw=raw[:240],
+                raw_chars=len(raw),
+            )
             return empty
 
         # Normalize values
