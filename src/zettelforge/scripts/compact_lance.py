@@ -128,10 +128,7 @@ def _process_one(
 
     t0 = time.perf_counter()
     try:
-        if mode == "optimize":
-            metrics = table.optimize()
-        else:  # "compact"
-            metrics = table.compact_files()
+        metrics = table.optimize() if mode == "optimize" else table.compact_files()
         report.elapsed_seconds = round(time.perf_counter() - t0, 2)
         report.lance_metrics = _serialize_lance_metrics(metrics)
     except Exception as exc:

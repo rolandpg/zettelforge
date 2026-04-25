@@ -373,7 +373,7 @@ class KnowledgeGraph:
                     "to_type": to_node["entity_type"],
                     "to_value": to_node["entity_value"],
                 }
-                new_path = path + [step]
+                new_path = [*path, step]
                 results.append(new_path)
                 _dfs(to_id, depth + 1, new_path)
 

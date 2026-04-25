@@ -4,6 +4,7 @@ A-MEM Agentic Memory Architecture V1.0
 """
 
 import atexit
+import contextlib
 import fcntl
 import glob
 import hashlib
@@ -247,11 +248,10 @@ class MemoryStore:
                 activity = "Create"
             else:
                 tbl = self.lancedb.open_table(table_name)
-                # Remove existing row if present (prevents ghost duplicates)
-                try:
+                # Remove existing row if present (prevents ghost duplicates).
+                # Table may be empty or ID may not exist — both are fine.
+                with contextlib.suppress(Exception):
                     tbl.delete(f"id = '{note.id}'")
-                except Exception:
-                    pass  # Table may be empty or ID may not exist
                 tbl.add([note_data])
                 activity = "Update"
 

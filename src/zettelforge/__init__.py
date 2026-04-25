@@ -59,45 +59,45 @@ from zettelforge.vector_retriever import VectorRetriever
 
 __version__ = "2.4.3"
 __all__ = [
-    # Edition
-    "Edition",
-    "get_edition",
-    "is_enterprise",
-    "is_community",
-    "edition_name",
-    "EditionError",
-    # Core
-    "MemoryManager",
-    "get_memory_manager",
-    "MemoryNote",
-    "VectorRetriever",
-    "SynthesisGenerator",
-    "get_synthesis_generator",
-    "SynthesisValidator",
-    "get_synthesis_validator",
-    # Knowledge Graph
-    "KnowledgeGraph",
-    "get_knowledge_graph",
-    # Retrieval
-    "GraphRetriever",
-    "ScoredResult",
-    "BlendedRetriever",
     # Ontology reference tables (TypedEntityStore / OntologyValidator are
     # importable from zettelforge.ontology but are not part of the public API
     # — see the module comment above for details).
     "ENTITY_TYPES",
     "RELATION_TYPES",
-    # Intent Classification
-    "IntentClassifier",
-    "get_intent_classifier",
-    "QueryIntent",
-    # Note Constructor
-    "NoteConstructor",
+    "BlendedRetriever",
+    # Edition
+    "Edition",
+    "EditionError",
+    "ExtractedFact",
     # Two-Phase Pipeline
     "FactExtractor",
-    "ExtractedFact",
+    # Retrieval
+    "GraphRetriever",
+    # Intent Classification
+    "IntentClassifier",
+    # Knowledge Graph
+    "KnowledgeGraph",
+    # Core
+    "MemoryManager",
+    "MemoryNote",
     "MemoryUpdater",
+    # Note Constructor
+    "NoteConstructor",
+    "QueryIntent",
+    "ScoredResult",
+    "SynthesisGenerator",
+    "SynthesisValidator",
     "UpdateOperation",
+    "VectorRetriever",
+    "edition_name",
+    "get_edition",
+    "get_intent_classifier",
+    "get_knowledge_graph",
+    "get_memory_manager",
+    "get_synthesis_generator",
+    "get_synthesis_validator",
+    "is_community",
+    "is_enterprise",
 ]
 
 # ── Enterprise-only imports (conditional) ───────────────────────────────────

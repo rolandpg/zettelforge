@@ -14,7 +14,7 @@ class GovernanceValidator:
     Validates ZettelForge operations against governance rules.
     """
 
-    def __init__(self, governance_dir: Path = None):
+    def __init__(self, governance_dir: Path | None = None):
         self.governance_dir = governance_dir
         self.rules = self._load_governance_rules()
 
@@ -36,14 +36,8 @@ class GovernanceValidator:
         """
         violations = []
 
-        if operation == "remember":
-            if not isinstance(data, str) and not hasattr(data, "content"):
-                violations.append("GOV-011: Input validation required for memory storage")
-
-        if operation in ("remember", "synthesize"):
-            if "GOV-012" in self.rules:
-                # Should log operation
-                pass
+        if operation == "remember" and not isinstance(data, str) and not hasattr(data, "content"):
+            violations.append("GOV-011: Input validation required for memory storage")
 
         is_valid = len(violations) == 0
         return is_valid, violations

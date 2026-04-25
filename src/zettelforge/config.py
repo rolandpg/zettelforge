@@ -16,6 +16,7 @@ Usage:
     cfg.retrieval.default_k  # 10
 """
 
+import contextlib
 import os
 import re
 from dataclasses import dataclass, field
@@ -295,10 +296,8 @@ def _parse_simple_yaml(path: Path) -> dict:
                     try:
                         value = int(value)
                     except ValueError:
-                        try:
+                        with contextlib.suppress(ValueError):
                             value = float(value)
-                        except ValueError:
-                            pass
                 result[current_section][key] = value
             elif ":" in stripped and current_section is None:
                 key, _, value = stripped.partition(":")
