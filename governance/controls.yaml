@@ -81,3 +81,37 @@ controls:
       - id: operation_coverage
         description: "remember, recall, synthesize operations are logged"
         test: "tests/test_logging_compliance.py"
+
+  GOV-006:
+    # The 2026-04-25 audit (H-4) flagged that GOV-006 §"Approval
+    # Requirements" requires "the reviewer must not be the PR author,"
+    # which is physically impossible in a solo-maintainer project.
+    # Until a second human maintainer is added to CODEOWNERS, the
+    # compensating controls below are the project's good-faith
+    # equivalent of the two-person rule. They are listed here so an
+    # external auditor can see what's enforcing this control today
+    # and so the project's spec-drift validator records each as a
+    # tracked CI gate. The accompanying GOV-006 doc amendment lives
+    # in the separate `rolandpg/governance` repo.
+    name: Code Review (Solo-Maintainer Compensating Controls)
+    category: Change Control
+    enforcement: ci
+    rules:
+      - id: ci_green_required
+        description: "Every PR must pass the CI gate (lint, tests, governance, build, pip-audit) before merge"
+        ci_step: "Test with pytest"
+        tool: "GitHub branch protection on master (required status checks)"
+      - id: lint_gate
+        description: "Static analysis catches what a human reviewer would otherwise catch"
+        ci_step: "Lint with ruff"
+        tool: "ruff (full GOV-003 rule set)"
+      - id: governance_drift_gate
+        description: "Governance spec-drift check enforces controls.yaml ↔ workflows alignment"
+        ci_step: "Governance spec-drift check"
+        tool: "tests/test_governance_spec_drift.py"
+      # Secret scanning is provided by GitGuardian (GitHub App, named
+      # "GitGuardian Security Checks" in branch-protection required
+      # status checks) and is part of the GOV-006 compensating control
+      # set in spirit. It is not declared here because the spec-drift
+      # validator only inspects workflow YAML; GitGuardian runs as a
+      # GitHub-native check, not as a workflow step. See L-3 follow-up.
