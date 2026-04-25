@@ -415,7 +415,21 @@ Zero changes. The 7 call sites are unaffected.
 
 ## Decision
 
-**Decision**: [Pending review]
-**Date**: [Pending]
-**Decision Maker**: [Pending]
-**Rationale**: [Pending]
+**Decision**: Accepted -- shipped concurrently with RFC (owner override for rapid iteration)
+**Date**: 2026-04-24
+**Decision Maker**: Patrick Roland
+**Rationale**: Implementation shipped alongside the RFC document to minimize time-to-value. The design was reviewed as part of the PR process. RFC-002 provider infrastructure provides the necessary extension points; the changes are isolated to `local_provider.py` and `config.py` with zero caller impact.
+
+## Implementation Status
+
+| Component | Scope | Status | Shipped in |
+|-----------|-------|--------|------------|
+| Phase 1 | `LlamaCppBackend` extraction from `LocalProvider` | **Shipped** | 2026-04-24 (PR #104) |
+| Phase 1 | `OnnxGenAIBackend` class with `onnxruntime-genai` SDK integration | **Shipped** | 2026-04-24 (PR #104) |
+| Phase 1 | `LocalProvider` backend dispatching via `backend` parameter | **Shipped** | 2026-04-24 (PR #104) |
+| Phase 1 | `local_backend` field in `LLMConfig` dataclass + `__repr__` inclusion | **Shipped** | 2026-04-24 (PR #104) |
+| Phase 1 | `ZETTELFORGE_LLM_LOCAL_BACKEND` env override | **Shipped** | 2026-04-24 (PR #104) |
+| Phase 1 | `local-onnx` and `local-all` package extras in `pyproject.toml` | **Shipped** | 2026-04-24 (PR #104) |
+| Phase 1 | `config.default.yaml` documentation updates | **Shipped** | 2026-04-24 (PR #104) |
+| Phase 1 | Unit tests: 15 new tests covering backend dispatching, all backends, and fallback scenarios | **Shipped** | 2026-04-24 (PR #104) |
+| Phase 2 | Execution provider override testing (`extra: { provider: rocm }` plumbing) | Deferred | -- |

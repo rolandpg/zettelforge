@@ -120,6 +120,12 @@ def _provider_kwargs(provider_name: str) -> Dict[str, Any]:
             "ZETTELFORGE_LLM_FILENAME",
             kwargs.get("filename") or DEFAULT_LLM_FILENAME,
         )
+        # RFC-011: forward local_backend from config (env override handled
+        # in _apply_env, so llm_cfg already has the resolved value).
+        if llm_cfg is not None:
+            lb = getattr(llm_cfg, "local_backend", None)
+            if lb:
+                kwargs["backend"] = lb
     elif provider_name == "ollama":
         # ``ZETTELFORGE_OLLAMA_MODEL`` is deprecated in favour of
         # ``ZETTELFORGE_LLM_MODEL`` but still honoured through v2.x.

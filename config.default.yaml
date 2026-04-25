@@ -146,11 +146,15 @@ embedding:
 # extraction, and RAG synthesis.
 #
 # Provider selects the backend registered in zettelforge.llm_providers:
-#   local           — in-process llama-cpp-python (requires zettelforge[local])
+#   local           — in-process LLM inference (see local_backend below; requires zettelforge[local] or zettelforge[local-onnx])
 #   ollama          — Ollama HTTP API
 #   mock            — test-only canned responses
 #   openai_compat   — any /v1/chat/completions endpoint (Phase 2, upcoming)
 #   anthropic       — Anthropic native SDK (Phase 3, upcoming)
+#
+# local_backend selects the in-process inference engine when provider=local:
+#   llama-cpp-python     — GGUF models via llama-cpp-python (default; requires zettelforge[local])
+#   onnxruntime-genai    — ONNX models via ONNX Runtime GenAI (requires zettelforge[local-onnx])
 #
 # Examples:
 #   # Default — Ollama on localhost
@@ -159,7 +163,16 @@ embedding:
 #
 #   # In-process GGUF (fully offline)
 #   provider: local
+#   local_backend: llama-cpp-python
 #   model: Qwen/Qwen2.5-3B-Instruct-GGUF
+#
+#   # In-process ONNX (AMD GPU via ROCm)
+#   provider: local
+#   local_backend: onnxruntime-genai
+#   model: microsoft/Phi-3-mini-4k-instruct-onnx
+#   extra:
+#     filename: phi3-mini-4k-instruct-q4.onnx
+#     provider: rocm            # cpu, cuda, dml, rocm, openvino, coreml
 #
 # api_key supports ${ENV_VAR} references — never commit raw API keys.
 #   api_key: ${OPENAI_API_KEY}
@@ -177,10 +190,11 @@ embedding:
 #   ZETTELFORGE_LLM_PROVIDER=ollama
 #   ZETTELFORGE_LLM_MODEL=qwen2.5:7b
 #   ZETTELFORGE_LLM_URL=http://gpu-box:11434
-#   ZETTELFORGE_LLM_API_KEY=sk-...
+#   ZETTELFORGE_LLM_API_KEY=***
 #   ZETTELFORGE_LLM_TIMEOUT=60
 #   ZETTELFORGE_LLM_MAX_RETRIES=2
 #   ZETTELFORGE_LLM_FALLBACK=ollama
+#   ZETTELFORGE_LLM_LOCAL_BACKEND=onnxruntime-genai   # only when provider=local
 #
 llm:
   provider: ollama
@@ -191,6 +205,7 @@ llm:
   timeout: 60.0
   max_retries: 2
   fallback: ""
+  local_backend: llama-cpp-python  # used when provider=local (RFC-011)
   extra: {}
 
 

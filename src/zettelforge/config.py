@@ -84,11 +84,15 @@ class EmbeddingConfig:
 
 @dataclass
 class LLMConfig:
-    """LLM provider configuration (RFC-002).
+    """LLM provider configuration (RFC-002, extended by RFC-011).
 
     ``provider`` selects the backend registered in
     :mod:`zettelforge.llm_providers`. ``api_key`` supports ``${VAR}``
     env-reference syntax and is redacted from ``repr()``.
+
+    ``local_backend`` selects the in-process inference engine when
+    ``provider`` is ``"local"``. Options: ``"llama-cpp-python"`` (default)
+    or ``"onnxruntime-genai"``. Ignored for all other providers.
     """
 
     provider: str = "ollama"
@@ -99,6 +103,7 @@ class LLMConfig:
     timeout: float = 60.0
     max_retries: int = 2
     fallback: str = ""  # empty preserves implicit local→ollama fallback
+    local_backend: str = "llama-cpp-python"  # RFC-011: "llama-cpp-python" or "onnxruntime-genai"
     extra: Dict[str, Any] = field(default_factory=dict)
 
     # Keys under ``extra`` that are commonly used for secrets. Matched
@@ -127,6 +132,7 @@ class LLMConfig:
             f"url={self.url!r}, api_key={key_display}, "
             f"temperature={self.temperature}, timeout={self.timeout}, "
             f"max_retries={self.max_retries}, fallback={self.fallback!r}, "
+            f"local_backend={self.local_backend!r}, "
             f"extra={self._redact_extra()!r})"
         )
 
@@ -437,6 +443,10 @@ def _apply_env(cfg: ZettelForgeConfig):
             )
     if v := os.environ.get("ZETTELFORGE_LLM_FALLBACK"):
         cfg.llm.fallback = v
+
+    # RFC-011: local backend selection
+    if v := os.environ.get("ZETTELFORGE_LLM_LOCAL_BACKEND"):
+        cfg.llm.local_backend = v
 
     # LLM NER
     if v := os.environ.get("ZETTELFORGE_LLM_NER_ENABLED"):
