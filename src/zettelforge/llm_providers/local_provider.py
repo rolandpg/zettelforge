@@ -119,9 +119,7 @@ class LlamaCppBackend(_LocalBackend):
         messages: list[dict[str, str]] = []
         # llama-cpp-python has no response_format; steer via system prompt.
         if json_mode:
-            json_hint = (
-                "\n\nIMPORTANT: Respond with valid JSON only. No markdown, no commentary."
-            )
+            json_hint = "\n\nIMPORTANT: Respond with valid JSON only. No markdown, no commentary."
             system = (system + json_hint) if system else json_hint.strip()
         if system:
             messages.append({"role": "system", "content": system})
@@ -215,9 +213,7 @@ class OnnxGenAIBackend(_LocalBackend):
         if system:
             full_prompt = f"{system}\n\n{full_prompt}"
         if json_mode:
-            json_hint = (
-                "IMPORTANT: Respond with valid JSON only. No markdown, no commentary."
-            )
+            json_hint = "IMPORTANT: Respond with valid JSON only. No markdown, no commentary."
             full_prompt = f"{json_hint}\n\n{full_prompt}"
 
         input_ids = self._tokenizer.encode(full_prompt)
@@ -307,9 +303,7 @@ class LocalProvider:
         impl = self._get_impl()
         if hasattr(impl, "_llm"):
             return impl._llm
-        raise AttributeError(
-            f"Backend '{self._backend_name}' has no '_llm' attribute"
-        )
+        raise AttributeError(f"Backend '{self._backend_name}' has no '_llm' attribute")
 
     @_llm.setter
     def _llm(self, value: Any) -> None:
@@ -317,9 +311,7 @@ class LocalProvider:
         if hasattr(impl, "_llm"):
             impl._llm = value
         else:
-            raise AttributeError(
-                f"Backend '{self._backend_name}' has no '_llm' attribute"
-            )
+            raise AttributeError(f"Backend '{self._backend_name}' has no '_llm' attribute")
 
     # --- generate() ---
 
