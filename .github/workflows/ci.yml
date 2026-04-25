@@ -79,7 +79,11 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -e ".[dev]" || pip install -e "." && pip install pytest pytest-cov pytest-asyncio
+        # If [dev] install fails, fall back to bare install + manually
+        # add the pytest deps. Parenthesizing the fallback prevents shell
+        # precedence from running the "pytest pytest-cov pytest-asyncio"
+        # step when [dev] already succeeded (audit L-4).
+        pip install -e ".[dev]" || (pip install -e "." && pip install pytest pytest-cov pytest-asyncio)
 
     - name: Pre-download fastembed model
       run: |
@@ -117,7 +121,8 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -e ".[dev]" || pip install -e "." && pip install pytest pytest-cov
+        # See "Install dependencies" comment above (audit L-4).
+        pip install -e ".[dev]" || (pip install -e "." && pip install pytest pytest-cov)
 
     - name: GOV-012 — Logging compliance tests
       env:
