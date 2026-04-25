@@ -44,7 +44,7 @@ import time
 from collections import defaultdict, deque
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, List, Optional
+from typing import Any
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request, status
 from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
@@ -55,10 +55,10 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 os.environ.setdefault("ZETTELFORGE_BACKEND", "sqlite")
 
-from zettelforge import MemoryManager, __version__  # noqa: E402
-from zettelforge.config import get_config, reload_config  # noqa: E402
-from zettelforge.edition import edition_name, is_enterprise  # noqa: E402
-from web.auth import get_mm_for_request, register_auth_routes  # noqa: E402
+from zettelforge import MemoryManager, __version__
+from zettelforge.config import get_config
+from zettelforge.edition import edition_name, is_enterprise
+from web.auth import get_mm_for_request, register_auth_routes
 
 logger = logging.getLogger(__name__)
 
@@ -124,8 +124,8 @@ def _check_rate_limit(key: str) -> None:
 
 async def require_api_guard(
     request: Request,
-    x_api_key: Optional[str] = Header(default=None, alias="X-API-Key"),
-    authorization: Optional[str] = Header(default=None),
+    x_api_key: str | None = Header(default=None, alias="X-API-Key"),
+    authorization: str | None = Header(default=None),
 ) -> None:
     client_ip = _client_ip(request)
     supplied_key = x_api_key
@@ -157,7 +157,7 @@ def _get_memory_stats() -> dict:
         return {"total_notes": 0, "notes_created": 0, "retrievals": 0, "entity_index": {}}
 
 
-def _get_memory_mb() -> Optional[float]:
+def _get_memory_mb() -> float | None:
     """Get current memory usage in MB. Returns None if psutil not available."""
     try:
         import psutil
@@ -167,7 +167,7 @@ def _get_memory_mb() -> Optional[float]:
         return None
 
 
-def _get_data_dir_size_mb(data_dir: str = "~/.amem") -> Optional[float]:
+def _get_data_dir_size_mb(data_dir: str = "~/.amem") -> float | None:
     """Get the size of the data directory in MB."""
     try:
         path = Path(os.path.expanduser(data_dir))
@@ -185,7 +185,7 @@ def _get_data_dir_size_mb(data_dir: str = "~/.amem") -> Optional[float]:
 class RecallRequest(BaseModel):
     query: str = Field(min_length=1, max_length=MAX_QUERY_CHARS)
     k: int = Field(default=10, ge=1, le=MAX_K)
-    domain: Optional[str] = Field(default=None, max_length=100)
+    domain: str | None = Field(default=None, max_length=100)
 
 
 class RememberRequest(BaseModel):
@@ -204,7 +204,7 @@ class SynthesizeRequest(BaseModel):
 
 class SyncRequest(BaseModel):
     limit: int = Field(default=20, ge=1, le=MAX_SYNC_LIMIT)
-    entity_types: Optional[List[str]] = None
+    entity_types: List[str] | None = None
 
 
 # ── Pydantic models (RFC-015, new) ───────────────────────────────────────────
@@ -485,7 +485,6 @@ async def get_config_endpoint():
 async def put_config_endpoint(data: dict):
     """Apply configuration changes in-memory."""
     try:
-        from zettelforge.config import _apply_yaml
 
         cfg = get_config()
         applied = []
@@ -581,9 +580,9 @@ async def entities(
     request: Request,
     offset: int = Query(default=0, ge=0),
     limit: int = Query(default=50, ge=1, le=200),
-    entity_type: Optional[str] = Query(default=None, alias="type"),
-    tier: Optional[str] = Query(default=None),
-    q: Optional[str] = Query(default=None),
+    entity_type: str | None = Query(default=None, alias="type"),
+    tier: str | None = Query(default=None),
+    q: str | None = Query(default=None),
 ):
     """Paginated entity index with filters."""
     try:
@@ -832,7 +831,7 @@ async def storage(request: Request):
 # ── 11. Logs ─────────────────────────────────────────────────────────────────
 
 
-def _parse_log_line(line: str, level_filter: Optional[str] = None) -> Optional[dict]:
+def _parse_log_line(line: str, level_filter: str | None = None) -> dict | None:
     """Parse a structlog JSON line into a dict."""
     try:
         entry = json.loads(line)
@@ -846,7 +845,7 @@ def _parse_log_line(line: str, level_filter: Optional[str] = None) -> Optional[d
 @app.get("/api/logs", dependencies=[Depends(require_api_guard)])
 async def logs(
     lines: int = Query(default=100, ge=1, le=1000),
-    level: Optional[str] = Query(default=None),
+    level: str | None = Query(default=None),
 ):
     """Tail the structlog file with optional level filter."""
     try:
