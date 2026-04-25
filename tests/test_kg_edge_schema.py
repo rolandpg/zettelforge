@@ -51,6 +51,15 @@ def test_normalize_edge_schema_returns_none_when_unrecoverable():
         _normalize_edge_schema({"from_node_id": "a", "to_node_id": "b", "relationship": "R"})
         is None
     )
+    # Missing relationship (and no legacy relation_type to remap from).
+    # Downstream code does direct subscripting on edge["relationship"], so
+    # entries without it must be rejected at load time, not deferred.
+    assert (
+        _normalize_edge_schema(
+            {"edge_id": "edge_4", "from_node_id": "a", "to_node_id": "b"}
+        )
+        is None
+    )
 
 
 def test_normalize_edge_schema_handles_non_dict():
