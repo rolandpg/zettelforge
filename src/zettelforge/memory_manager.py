@@ -570,8 +570,13 @@ class MemoryManager:
             with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
                 future = pool.submit(
                     self._recall_inner,
-                    query, domain, k, include_links,
-                    exclude_superseded, include_expired, actor,
+                    query,
+                    domain,
+                    k,
+                    include_links,
+                    exclude_superseded,
+                    include_expired,
+                    actor,
                 )
                 try:
                     return future.result(timeout=timeout)
@@ -593,8 +598,13 @@ class MemoryManager:
                     )
                     return []
         return self._recall_inner(
-            query, domain, k, include_links,
-            exclude_superseded, include_expired, actor,
+            query,
+            domain,
+            k,
+            include_links,
+            exclude_superseded,
+            include_expired,
+            actor,
         )
 
     def _recall_inner(
