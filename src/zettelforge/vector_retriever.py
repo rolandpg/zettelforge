@@ -204,9 +204,7 @@ class VectorRetriever:
 
         return results  # List[Tuple[MemoryNote, float]]
 
-    def _apply_entity_boost_scored(
-        self, results: List[tuple], query: str
-    ) -> List[tuple]:
+    def _apply_entity_boost_scored(self, results: List[tuple], query: str) -> List[tuple]:
         """Apply entity boost to (note, score) tuples, multiplying score by boost factor."""
         raw_query_entities = self.extractor.extract_all(query)
         query_entities = set()
@@ -221,7 +219,7 @@ class VectorRetriever:
         for note, score in results:
             note_entities = set(note.semantic.entities)
             overlap = len(query_entities & note_entities)
-            boost = self.entity_boost ** overlap if overlap > 0 else 1.0
+            boost = self.entity_boost**overlap if overlap > 0 else 1.0
 
             # Exact match boost
             for qe in query_entities:

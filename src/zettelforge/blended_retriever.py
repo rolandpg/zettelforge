@@ -75,7 +75,7 @@ class BlendedRetriever:
             scores[note.id] = (blended, note)
 
         # Graph signal
-        for (note_id, norm_score) in norm_graph:
+        for note_id, norm_score in norm_graph:
             graph_score = norm_score * graph_weight
             if note_id in scores:
                 # Found by BOTH — additive combination
