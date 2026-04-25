@@ -254,6 +254,62 @@ class GovernanceConfig:
 | `governance.enabled` | `bool` | `True` | -- | Enable governance validation on `remember()` operations. Set `False` for benchmarks. |
 | `governance.min_content_length` | `int` | `1` | -- | Minimum character length for content passed to `remember()`. |
 
+#### governance.pii (RFC-013, optional)
+
+```python
+@dataclass
+class PIIConfig:
+    enabled: bool = False
+    action: str = "log"
+    redact_placeholder: str = "[REDACTED]"
+    entities: List[str] = field(default_factory=list)
+    language: str = "en"
+    nlp_model: str = "en_core_web_sm"
+```
+
+| Key | Type | Default | Env Override | Description |
+|:----|:-----|:--------|:-------------|:------------|
+| `governance.pii.enabled` | `bool` | `False` | `ZETTELFORGE_PII_ENABLED` | Enable PII detection via Microsoft Presidio. Requires `pip install zettelforge[pii]`. |
+| `governance.pii.action` | `str` | `log` | `ZETTELFORGE_PII_ACTION` | Action on PII detection: `log` (warn, pass through), `redact` (replace with placeholder), `block` (raise exception). |
+| `governance.pii.redact_placeholder` | `str` | `[REDACTED]` | -- | Placeholder text when `action` is `redact`. |
+| `governance.pii.entities` | `List[str]` | `[]` | -- | PII entity types to detect. Empty list = all supported types. IP_ADDRESS, URL, and DOMAIN_NAME are always excluded (legitimate CTI indicators). |
+
+#### governance.limits (RFC-014)
+
+```python
+@dataclass
+class LimitsConfig:
+    max_content_length: int = 52428800
+    recall_timeout_seconds: float = 30.0
+```
+
+| Key | Type | Default | Env Override | Description |
+|:----|:-----|:--------|:-------------|:------------|
+| `governance.limits.max_content_length` | `int` | `52428800` | `ZETTELFORGE_LIMITS_MAX_CONTENT_LENGTH` | Maximum content length in bytes for `remember()`. 0 = unlimited. 50 MB default. |
+| `governance.limits.recall_timeout_seconds` | `float` | `30.0` | `ZETTELFORGE_LIMITS_RECALL_TIMEOUT` | Maximum seconds for a recall() query. 0 = unlimited. |
+
+---
+
+### web (RFC-015)
+
+```python
+@dataclass
+class WebConfig:
+    enabled: bool = True
+    host: str = "0.0.0.0"
+    port: int = 8088
+    ui_dir: str = ""
+```
+
+| Key | Type | Default | Env Override | Description |
+|:----|:-----|:--------|:-------------|:------------|
+| `web.enabled` | `bool` | `True` | `ZETTELFORGE_WEB_ENABLED` | Enable the web management interface. Set `False` for library-only deployments. |
+| `web.host` | `str` | `0.0.0.0` | -- | Bind address for the FastAPI server. |
+| `web.port` | `int` | `8088` | `ZETTELFORGE_WEB_PORT` | Port for the FastAPI server. |
+| `web.ui_dir` | `str` | `""` | `ZETTELFORGE_WEB_UI_DIR` | Custom path to the SPA UI directory. Empty = `web/ui/` relative to project root. |
+
+See [Use the Web Management Interface](../how-to/use-web-interface.md) for setup steps and [Web API Reference](web-api.md) for endpoint documentation.
+
 ---
 
 ### cache
@@ -367,6 +423,14 @@ See [Configure OpenCTI Integration](../how-to/configure-opencti.md) for setup st
 | `ZETTELFORGE_LLM_FALLBACK` | `llm.fallback` | `ollama` |
 | `ZETTELFORGE_LLM_LOCAL_BACKEND` | `llm.local_backend` | `onnxruntime-genai` |
 
+### Web UI configuration (RFC-015)
+
+| Variable | Maps To | Example |
+|:---------|:--------|:--------|
+| `ZETTELFORGE_WEB_ENABLED` | `web.enabled` | `true` |
+| `ZETTELFORGE_WEB_PORT` | `web.port` | `8088` |
+| `ZETTELFORGE_WEB_UI_DIR` | `web.ui_dir` | `/opt/zettelforge/ui` |
+
 ### Enterprise-only (OpenCTI)
 
 | Variable | Maps To | Example |
@@ -474,9 +538,9 @@ llm:
 
 ZettelForge configuration uses a layered resolution system: environment variables override config.yaml, which overrides config.default.yaml, which overrides hardcoded dataclass defaults. Access configuration via `get_config()` which returns a cached `ZettelForgeConfig` singleton. Call `reload_config()` to force a re-read.
 
-**18 environment variables** are supported, covering storage (`AMEM_DATA_DIR`), TypeDB connection (`TYPEDB_HOST`, `TYPEDB_PORT`, `TYPEDB_DATABASE`, `TYPEDB_USERNAME`, `TYPEDB_PASSWORD`), backend selection (`ZETTELFORGE_BACKEND`), embedding provider (`ZETTELFORGE_EMBEDDING_PROVIDER`, `AMEM_EMBEDDING_URL`, `AMEM_EMBEDDING_MODEL`), LLM provider (`ZETTELFORGE_LLM_PROVIDER`, `ZETTELFORGE_LLM_MODEL`, `ZETTELFORGE_LLM_URL`, `ZETTELFORGE_LLM_API_KEY`, `ZETTELFORGE_LLM_TIMEOUT`, `ZETTELFORGE_LLM_MAX_RETRIES`, `ZETTELFORGE_LLM_FALLBACK`, `ZETTELFORGE_LLM_LOCAL_BACKEND`), and OpenCTI integration (`OPENCTI_URL`, `OPENCTI_TOKEN`, `OPENCTI_SYNC_INTERVAL`).
+**21 environment variables** are supported, covering storage (`AMEM_DATA_DIR`), TypeDB connection (`TYPEDB_HOST`, `TYPEDB_PORT`, `TYPEDB_DATABASE`, `TYPEDB_USERNAME`, `TYPEDB_PASSWORD`), backend selection (`ZETTELFORGE_BACKEND`), embedding provider (`ZETTELFORGE_EMBEDDING_PROVIDER`, `AMEM_EMBEDDING_URL`, `AMEM_EMBEDDING_MODEL`), LLM provider (`ZETTELFORGE_LLM_PROVIDER`, `ZETTELFORGE_LLM_MODEL`, `ZETTELFORGE_LLM_URL`, `ZETTELFORGE_LLM_API_KEY`, `ZETTELFORGE_LLM_TIMEOUT`, `ZETTELFORGE_LLM_MAX_RETRIES`, `ZETTELFORGE_LLM_FALLBACK`, `ZETTELFORGE_LLM_LOCAL_BACKEND`), web UI (`ZETTELFORGE_WEB_ENABLED`, `ZETTELFORGE_WEB_PORT`, `ZETTELFORGE_WEB_UI_DIR`), and OpenCTI integration (`OPENCTI_URL`, `OPENCTI_TOKEN`, `OPENCTI_SYNC_INTERVAL`).
 
-**13 config sections** exist: `storage` (data directory), `typedb` (Enterprise TypeDB connection parameters), `backend` (community default: sqlite), `embedding` (vector model and server), `llm` (language model for extraction/synthesis with provider, model, API key, timeout, retry, fallback, local_backend, and extra), `extraction` (two-phase pipeline settings), `retrieval` (vector search tuning), `synthesis` (RAG output control), `governance` (validation toggle), `cache` (query cache), `logging` (verbosity control), `lance` (LanceDB maintenance), and `opencti` (Enterprise only -- OpenCTI platform URL, token, and sync interval).
+**14 config sections** exist: `storage` (data directory), `typedb` (Enterprise TypeDB connection parameters), `backend` (community default: sqlite), `embedding` (vector model and server), `llm` (language model for extraction/synthesis with provider, model, API key, timeout, retry, fallback, local_backend, and extra), `extraction` (two-phase pipeline settings), `retrieval` (vector search tuning), `synthesis` (RAG output control), `governance` (validation toggle with pii and limits subsections), `cache` (query cache), `logging` (verbosity control), `lance` (LanceDB maintenance), `web` (web management interface host/port/ui_dir), and `opencti` (Enterprise only -- OpenCTI platform URL, token, and sync interval).
 
 **Key defaults:** Data stored in `~/.amem`. Backend is SQLite (TypeDB available via zettelforge-enterprise extension). Embedding via fastembed in-process with `nomic-embed-text-v1.5-Q` (768 dims, ONNX). LLM via Ollama at `http://localhost:11434` with `qwen3.5:9b` at temperature 0.1. The `local` provider uses `llama-cpp-python` in-process with `Qwen2.5-3B-Instruct-Q4_K_M.gguf`. Models download automatically on first use. The `litellm` provider (optional, `pip install zettelforge[litellm]`) routes to 100+ providers by model name prefix. Extraction produces up to 5 facts with importance >= 3. Retrieval returns 10 results with 0.25 similarity threshold and 2.5x entity boost. Synthesis uses `direct_answer` format with A+B tier notes and 3000 token context. Cache TTL is 300 seconds with 1024 max entries. Logging at INFO level.
 

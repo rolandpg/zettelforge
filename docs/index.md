@@ -18,6 +18,8 @@ It extracts CVEs, threat actors, IOCs, and ATT&CK techniques from analyst notes 
 
 **New here?** Start with the [5-minute Quickstart](tutorials/01-quickstart.md), or `pip install zettelforge`.
 
+**Prefer a GUI?** The [Web Management Interface](how-to/use-web-interface.md) provides a full browser-based dashboard with search, knowledge graph exploration, live logs and telemetry, bulk ingestion, and live configuration editing. Start it with `python web/app.py` (requires `pip install zettelforge[web]`).
+
 ## Architecture Overview
 
 ZettelForge uses a hybrid storage architecture with in-process AI. TypeDB stores structured CTI entities and their relationships using the STIX 2.1 ontology. LanceDB stores unstructured notes as 768-dimensional vectors with IVF_PQ indexing. Embeddings are generated in-process by fastembed (nomic-embed-text-v1.5-Q, ONNX runtime, ~7ms/embed). LLM inference runs through one of four backends selected by `llm.provider`: in-process GGUF via `llama-cpp-python`, in-process ONNX via `onnxruntime-genai`, Ollama HTTP, or LiteLLM routing to 100+ cloud providers. No external AI services are required by default. The BlendedRetriever fuses results from both stores at query time, weighting vector similarity against graph traversal based on the classified intent of the query.
