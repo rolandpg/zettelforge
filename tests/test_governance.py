@@ -30,3 +30,62 @@ def test_governance_in_memory_manager():
     mm = MemoryManager()
     assert hasattr(mm, "governance")
     assert isinstance(mm.governance, GovernanceValidator)
+
+
+# ── Content size limit (RFC-014) ──────────────────────────────────────────────
+
+
+def test_content_size_limit_within_bounds():
+    """Content under the default limit must pass through."""
+    from zettelforge.config import LimitsConfig
+
+    gv = GovernanceValidator(limits_config=LimitsConfig(max_content_length=1024))
+    result = gv.enforce("remember", "a" * 100)
+    assert result == "a" * 100
+
+
+def test_content_size_limit_exceeded():
+    """Content over the limit must raise."""
+    from zettelforge.config import LimitsConfig
+
+    gv = GovernanceValidator(limits_config=LimitsConfig(max_content_length=50))
+    with pytest.raises(GovernanceViolationError, match="max_content_length"):
+        gv.enforce("remember", "a" * 100)
+
+
+def test_content_size_limit_zero_disabled():
+    """limit=0 disables the check."""
+    from zettelforge.config import LimitsConfig
+
+    gv = GovernanceValidator(limits_config=LimitsConfig(max_content_length=0))
+    result = gv.enforce("remember", "a" * 10000)
+    assert result == "a" * 10000
+
+
+def test_content_size_limit_none_config():
+    """No limits_config means no limit check."""
+    gv = GovernanceValidator()
+    result = gv.enforce("remember", "a" * 100000)
+    assert result == "a" * 100000
+
+
+def test_limits_config_defaults():
+    """LimitsConfig has sane defaults."""
+    from zettelforge.config import LimitsConfig
+
+    lc = LimitsConfig()
+    assert lc.max_content_length == 52428800  # 50 MB
+    assert lc.recall_timeout_seconds == 30.0
+
+
+def test_content_limit_message_contains_value():
+    """Error message must include actual and max sizes for debugging."""
+    from zettelforge.config import LimitsConfig
+
+    gv = GovernanceValidator(limits_config=LimitsConfig(max_content_length=10))
+    try:
+        gv.enforce("remember", "x" * 100)
+    except GovernanceViolationError as e:
+        msg = str(e)
+        assert "100" in msg
+        assert "10" in msg

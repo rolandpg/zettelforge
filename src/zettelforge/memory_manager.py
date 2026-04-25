@@ -115,6 +115,7 @@ class MemoryManager:
         )
         self.governance = GovernanceValidator(
             pii_config=get_config().governance.pii,
+            limits_config=get_config().governance.limits,
         )
         self.resolver = AliasResolver()
         self.consolidation = ConsolidationMiddleware(self)

@@ -191,10 +191,22 @@ class PIIConfig:
 
 
 @dataclass
+class LimitsConfig:
+    """Operation limits for DoS mitigation (RFC-014).
+
+    Values of 0 disable the limit (unlimited).
+    """
+
+    max_content_length: int = 52428800  # bytes, 50 MB default
+    recall_timeout_seconds: float = 30.0
+
+
+@dataclass
 class GovernanceConfig:
     enabled: bool = True
     min_content_length: int = 1
     pii: PIIConfig = field(default_factory=PIIConfig)
+    limits: LimitsConfig = field(default_factory=LimitsConfig)
 
 
 @dataclass
@@ -396,6 +408,11 @@ def _apply_yaml(cfg: ZettelForgeConfig, data: dict):
                 for pk, pv in v.items():
                     if hasattr(cfg.governance.pii, pk):
                         setattr(cfg.governance.pii, pk, pv)
+            # RFC-014: limits is a nested dataclass (DoS mitigations)
+            elif k == "limits" and isinstance(v, dict):
+                for lk, lv in v.items():
+                    if hasattr(cfg.governance.limits, lk):
+                        setattr(cfg.governance.limits, lk, lv)
             else:
                 setattr(cfg.governance, k, v)
 
@@ -490,6 +507,12 @@ def _apply_env(cfg: ZettelForgeConfig):
         cfg.governance.pii.enabled = v.lower() in ("true", "1", "yes")
     if v := os.environ.get("ZETTELFORGE_PII_ACTION"):
         cfg.governance.pii.action = v
+
+    # RFC-014: Operation limits (DoS mitigation)
+    if v := os.environ.get("ZETTELFORGE_LIMITS_MAX_CONTENT_LENGTH"):
+        cfg.governance.limits.max_content_length = int(v)
+    if v := os.environ.get("ZETTELFORGE_LIMITS_RECALL_TIMEOUT"):
+        cfg.governance.limits.recall_timeout_seconds = float(v)
 
     # Extensions license key (used by zettelforge-enterprise fallback path)
     if v := os.environ.get("THREATENGRAM_LICENSE_KEY"):
