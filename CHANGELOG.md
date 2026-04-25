@@ -6,6 +6,26 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [2.4.3] - 2026-04-25
+
+Patch release preparing v2.4.3 for Growth Week 2 launch. Three
+instrumentation and developer-experience improvements.
+
+### Added
+
+- **OCSF version self-correct** (#96). The `ocsf_version` field in
+  `ocsf_api_activity` events is now dynamically resolved from the
+  installed `ocsf-schema` package at import time rather than hardcoded.
+  Eliminates the version skew that caused schema-validation errors after
+  OCSF package updates.
+- **`ZETTELFORGE_LOG_LEVEL` env var** (#96). `structlog` threshold now
+  respects the environment variable, consistent with other `ZETTELFORGE_*`
+  overrides. Useful for silencing DEBUG noise in production without
+  touching code.
+- **Fastembed preload** (#96). Embedding model is now loaded eagerly on
+  first `MemoryManager` init rather than on first recall, reducing
+  `remember()` latency on cold-start queries.
+
 ## [2.4.2] - 2026-04-24
 
 Patch release bundling the RFC-010 enrichment-pipeline hotfix with the
