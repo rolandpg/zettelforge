@@ -374,6 +374,8 @@ synthesis:
 # Env overrides:
 #   ZETTELFORGE_PII_ENABLED=true
 #   ZETTELFORGE_PII_ACTION=redact
+#   ZETTELFORGE_LIMITS_MAX_CONTENT_LENGTH=104857600
+#   ZETTELFORGE_LIMITS_RECALL_TIMEOUT=60
 #
 governance:
   enabled: true
@@ -385,6 +387,9 @@ governance:
     entities: []
     language: en
     nlp_model: en_core_web_sm
+  limits:
+    max_content_length: 52428800  # 50 MB, 0 = unlimited
+    recall_timeout_seconds: 30.0  # seconds, 0 = unlimited
 
 
 # ── LanceDB Maintenance (RFC-009 Phase 1.5) ─────────────────────────────────

@@ -17,7 +17,7 @@ from typing import TYPE_CHECKING, Any
 from zettelforge.log import get_logger
 
 if TYPE_CHECKING:
-    from zettelforge.config import PIIConfig
+    from zettelforge.config import LimitsConfig, PIIConfig
 
 _logger = get_logger("zettelforge.governance")
 
@@ -35,10 +35,13 @@ class GovernanceValidator:
         self,
         governance_dir: Path | None = None,
         pii_config: PIIConfig | None = None,
+        limits_config: LimitsConfig | None = None,
     ):
         self.governance_dir = governance_dir
         self.rules = self._load_governance_rules()
         self._pii = None
+        # RFC-014: operation limits (DoS mitigation)
+        self._limits = limits_config
 
         # RFC-013: Optional PII validator. If the config says enabled but
         # presidio-analyzer is not installed, log a warning and continue --
@@ -107,6 +110,19 @@ class GovernanceValidator:
         is_valid, violations = self.validate_operation("remember", content)
         if not is_valid:
             raise GovernanceViolationError(f"Governance violation in remember: {violations}")
+
+        # RFC-014: Content size limit (DoS mitigation)
+        if (
+            self._limits is not None
+            and self._limits.max_content_length > 0
+            and len(content) > self._limits.max_content_length
+        ):
+            raise GovernanceViolationError(
+                f"Content exceeds max_content_length "
+                f"({len(content)} > {self._limits.max_content_length} bytes). "
+                f"Increase governance.limits.max_content_length or "
+                f"reduce input size."
+            )
 
         # RFC-013: Optional PII validation
         if self._pii is not None:

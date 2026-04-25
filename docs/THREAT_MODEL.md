@@ -137,7 +137,7 @@ TB-1 ─────────────────────────
 
 | ID | Threat | Component | Risk | Mitigation |
 |----|--------|-----------|------|------------|
-| D-01 | Large content in `remember()` exhausts memory or blocks the enrichment queue | MemoryManager (P1) | **Medium** — degraded performance | `remember_report()` chunks long documents. No explicit size limit on `remember()` content. Enrichment queue has `maxsize=500` backpressure. |
+| D-01 | Large content in `remember()` exhausts memory or blocks the enrichment queue | MemoryManager (P1) | **Low** — gracefully rejected | `governance.limits.max_content_length` (RFC-014, default 50 MB) blocks oversized content with a clear error. `remember_report()` chunks long documents. Enrichment queue has `maxsize=500` backpressure. |
 | D-02 | LLM provider (ollama, litellm) hangs and blocks `remember()` | LLM Provider (TB-4) | **High** — operation blocks | OllamaProvider has timeout (RFC-010, default 60s). LitellmProvider has timeout + num_retries. `generate()` returns empty string on recoverable failure. Fallback provider (e.g., local -> ollama) gives alternative path. |
 | D-03 | Malicious query triggers deep graph traversal exhausting time/resources | BlendedRetriever | **Medium** — slow recall | `max_graph_depth` config (default 2) limits BFS hops. `default_k` (default 10) limits results. No timeout on recall queries. |
 | D-04 | spaCy model download blocks first `remember()` when PII is enabled | PIIValidator (lazy load) | **Low** — delayed first call (~2-3 seconds) | One-time download cost. Matching fastembed pattern. Can be pre-downloaded for air-gapped deployments. |
@@ -158,7 +158,7 @@ TB-1 ─────────────────────────
 |------------|-------|--------------|
 | **Critical** | 2 | T-01 (storage tampering), I-01 (unencrypted data at rest), E-02 (governance bypass via filesystem) |
 | **High** | 7 | S-01 (spoofed MCP client), S-03 (config tampering), T-02 (config security downgrade), R-01 (repudiation without audit), I-02 (PII in stored notes), D-02 (LLM provider hang), E-01 (cross-tenant data access) |
-| **Medium** | 9 | S-02 (fake LLM provider), T-04 (retrieval poisoning), R-02, R-03, I-04 (error message leakage), D-01, D-03, E-03 |
+| **Medium** | 8 | S-02 (fake LLM provider), T-04 (retrieval poisoning), R-02, R-03, I-04 (error message leakage), D-03, E-03 |
 | **Low** | 1 | D-04 (PII model download delay) |
 
 ### Top 5 Mitigations (Priority Order)
@@ -181,6 +181,7 @@ TB-1 ─────────────────────────
 | API key redaction | I-03 | `LLMConfig.__repr__` redacts api_key and sensitive extra keys | Unit tests in `test_llm_providers.py` |
 | PII detection + redaction | I-02 | PIIValidator (RFC-013): log/redact/block | Unit tests in `test_pii_validator.py` |
 | LLM provider timeout | D-02 | `OllamaProvider` timeout=60s, `LiteLLMProvider` timeout + num_retries | Unit tests (RFC-010, RFC-012) |
+| Content size limit | D-01 | `governance.limits.max_content_length` (RFC-014, default 50 MB) blocks oversized content | Unit tests in `test_governance.py` |
 | Config env-var resolution | I-03 | `${ENV_VAR}` syntax prevents raw secrets in YAML | Unit tests |
 | Configurable model provider | S-02, E-03 | `provider` key selects backend; no implicit unauthenticated outbound calls | Config validation |
 | Enrichment queue backpressure | D-01 | `maxsize=500` bounded queue | Code review |
@@ -189,7 +190,6 @@ TB-1 ─────────────────────────
 
 | Recommendation | Threat(s) | Effort | Priority |
 |---------------|-----------|--------|----------|
-| Add content size limit to `remember()` | D-01 | Small | P3 |
 | Add global exception handler that sanitizes error output | I-04 | Medium | P2 |
 | Add TLS verification option for self-hosted LLM endpoints | S-02 | Small | P2 |
 | Add config file integrity check (SHA-256 of default vs. loaded) | T-02, S-03 | Medium | P3 |
@@ -231,6 +231,7 @@ Per GOV-021, the following data types exist in the system:
 
 | Change | RFC/PR | Date | Threat Model Impact |
 |--------|--------|------|---------------------|
+| Content size limits + recall timeout | RFC-014 | 2026-04-25 | Mitigation for D-01 (content size limit, default 50 MB); partial mitigation for D-03 (timeout) |
 | PII detection and redaction | RFC-013 (PR #118) | 2026-04-25 | New control for I-02; new attack surface (D-04); PII text logging fixed |
 | LiteLLM unified provider | RFC-012 (PR #108) | 2026-04-25 | New provider for I-03 (API keys); new outbound traffic pattern (TB-4) |
 | Local LLM backend selection | RFC-011 (PR #104) | 2026-04-25 | No new threat surface — extends existing local provider |
