@@ -17,6 +17,8 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
 
+import structlog
+
 from zettelforge.alias_resolver import AliasResolver
 from zettelforge.backend_factory import get_storage_backend
 from zettelforge.config import get_config
@@ -176,6 +178,42 @@ class MemoryManager:
         request_id = uuid.uuid4().hex
         start = time.perf_counter()
 
+        # Bind request_id to structlog context so every downstream log line
+        # (fact extraction, entity indexing, evolution, LLM calls, KG writes)
+        # carries this trace_id automatically. Cleared at function exit so it
+        # doesn't leak across sequential remember() calls.
+        structlog.contextvars.bind_contextvars(
+            trace_id=request_id,
+            domain=domain,
+            source_type=source_type,
+        )
+
+        try:
+            return self._remember_inner(
+                content=content,
+                source_type=source_type,
+                source_ref=source_ref,
+                domain=domain,
+                evolve=evolve,
+                sync=sync,
+                request_id=request_id,
+                start=start,
+            )
+        finally:
+            structlog.contextvars.unbind_contextvars("trace_id", "domain", "source_type")
+
+    def _remember_inner(
+        self,
+        content: str,
+        source_type: str,
+        source_ref: str,
+        domain: str,
+        evolve: bool,
+        sync: bool,
+        request_id: str,
+        start: float,
+    ) -> Tuple[MemoryNote, str]:
+        """Inner body of remember(); split out so trace_id binding can wrap it."""
         # Governance validation
         try:
             self.governance.enforce("remember", content)

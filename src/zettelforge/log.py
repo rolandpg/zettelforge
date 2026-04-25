@@ -115,6 +115,15 @@ def configure_logging(
         force=True,
     )
 
+    # Suppress noisy DEBUG-level traffic loggers from HTTP transport stacks.
+    # Without this, when ZF runs at DEBUG (RFC-007 telemetry pilot), httpcore
+    # and httpx emit ~3 lines per LLM/embedding call (connect_tcp.started,
+    # send_request_headers, etc.), drowning the actual application events.
+    # In one 17-min test run these accounted for >1,600 log lines for zero
+    # diagnostic value.
+    for noisy in ("httpcore", "httpcore.http11", "httpcore.connection", "httpx"):
+        logging.getLogger(noisy).setLevel(logging.WARNING)
+
     # structlog: JSON to log file (not stdout/stderr)
     # Use stdlib integration so structlog events flow through the handlers above
     structlog.configure(
@@ -156,5 +165,15 @@ def get_logger(name: str) -> structlog.stdlib.BoundLogger:
         logs_dir = Path(data_dir) / "logs"
         log_file = str(logs_dir / "zettelforge.log")
         audit_log_file = str(logs_dir / "audit.log")
-        configure_logging(log_file=log_file, audit_log_file=audit_log_file)
+
+        # Load config to get logging level (RFC-007 telemetry support)
+        try:
+            from zettelforge.config import get_config
+
+            cfg = get_config()
+            log_level = cfg.logging.level if hasattr(cfg, "logging") else "INFO"
+        except Exception:
+            log_level = "INFO"
+
+        configure_logging(level=log_level, log_file=log_file, audit_log_file=audit_log_file)
     return structlog.get_logger(name)

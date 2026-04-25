@@ -7,10 +7,16 @@ registry can build instances from :class:`~zettelforge.config.LLMConfig`.
 
 from __future__ import annotations
 
+import time
 from typing import Any, Optional
+
+from zettelforge.log import get_logger
 
 _DEFAULT_MODEL = "qwen2.5:3b"
 _DEFAULT_URL = "http://localhost:11434"
+_PREVIEW_CHARS = 240
+
+_logger = get_logger("zettelforge.llm.ollama")
 
 
 class OllamaProvider:
@@ -65,5 +71,59 @@ class OllamaProvider:
         # targets the default localhost:11434, ignoring this provider's config.
         # ``timeout`` is now threaded through per RFC-010.
         client = ollama.Client(host=self._url, timeout=self._timeout)
-        response = client.generate(**kwargs)
-        return str(response.get("response", "")).strip()
+
+        prompt_chars = len(prompt)
+        system_chars = len(system) if system else 0
+        start = time.perf_counter()
+        try:
+            response = client.generate(**kwargs)
+        except Exception as exc:
+            duration_ms = (time.perf_counter() - start) * 1000
+            _logger.warning(
+                "llm_call_exception",
+                provider="ollama",
+                model=self._model,
+                duration_ms=round(duration_ms, 1),
+                prompt_chars=prompt_chars,
+                system_chars=system_chars,
+                max_tokens=max_tokens,
+                temperature=temperature,
+                json_mode=json_mode,
+                error=type(exc).__name__,
+                error_msg=str(exc)[:200],
+            )
+            raise
+
+        duration_ms = (time.perf_counter() - start) * 1000
+        raw_response = str(response.get("response", ""))
+        stripped = raw_response.strip()
+        response_chars = len(raw_response)
+        eval_count = response.get("eval_count")
+        prompt_eval_count = response.get("prompt_eval_count")
+        done_reason = response.get("done_reason")
+
+        # Empty completion is a distinct failure class — surface it loudly.
+        # Without this, callers like fact_extractor silently no-op on "" and
+        # the failure vanishes from the audit trail entirely.
+        is_empty = not stripped
+        log_event = "llm_call_empty_response" if is_empty else "llm_call_complete"
+        log_level = _logger.warning if is_empty else _logger.debug
+        log_kwargs: dict[str, Any] = {
+            "provider": "ollama",
+            "model": self._model,
+            "duration_ms": round(duration_ms, 1),
+            "prompt_chars": prompt_chars,
+            "response_chars": response_chars,
+            "system_chars": system_chars,
+            "max_tokens": max_tokens,
+            "temperature": temperature,
+            "json_mode": json_mode,
+            "eval_count": eval_count,
+            "prompt_eval_count": prompt_eval_count,
+            "done_reason": done_reason,
+        }
+        if is_empty:
+            log_kwargs["response_preview"] = raw_response[:_PREVIEW_CHARS]
+            log_kwargs["prompt_preview"] = prompt[:_PREVIEW_CHARS]
+        log_level(log_event, **log_kwargs)
+        return stripped

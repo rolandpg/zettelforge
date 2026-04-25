@@ -63,11 +63,25 @@ class FactExtractor:
 
     def _parse_extraction_response(self, raw: str) -> List[ExtractedFact]:
         if not raw:
+            # Was previously a silent return — empty completions vanished
+            # entirely from the audit trail, undercounting LLM failures.
+            _logger.warning(
+                "parse_failed",
+                schema="fact_extraction",
+                reason="empty_completion",
+                raw="",
+            )
             return []
 
         parsed = extract_json(raw, expect="array")
         if parsed is None:
-            _logger.warning("parse_failed", schema="fact_extraction", raw=raw[:200])
+            _logger.warning(
+                "parse_failed",
+                schema="fact_extraction",
+                reason="json_decode",
+                raw=raw[:240],
+                raw_chars=len(raw),
+            )
             return []
 
         facts = []
