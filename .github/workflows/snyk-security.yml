@@ -44,15 +44,22 @@ jobs:
             echo "has_token=true" >> "$GITHUB_OUTPUT"
           fi
 
+      # GOV-009 §"Vulnerability Response" + GOV-011 §"Testing Phase":
+      # HIGH/CRITICAL Snyk findings must fail the gate. Audit H-5 found
+      # both Snyk steps suffixed with `|| true`, so real findings shipped
+      # silently. Now: --severity-threshold=high so MEDIUM stays advisory
+      # and only HIGH/CRITICAL break the build. SARIF is still emitted via
+      # --sarif-file-output even when the test fails (snyk-code) so the
+      # subsequent Upload SARIF step has artifacts to publish.
       - name: Snyk Code test (SAST)
         if: steps.check_token.outputs.has_token == 'true'
-        run: snyk code test --sarif > snyk-code.sarif || true
+        run: snyk code test --sarif-file-output=snyk-code.sarif --severity-threshold=high
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
       - name: Snyk Open Source test (SCA)
         if: steps.check_token.outputs.has_token == 'true'
-        run: snyk test --all-projects || true
+        run: snyk test --all-projects --severity-threshold=high
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
