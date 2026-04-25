@@ -11,15 +11,13 @@ Tests run without presidio-analyzer installed -- they verify:
 
 from __future__ import annotations
 
-import importlib
 import sys
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 
 from zettelforge.config import PIIConfig
 from zettelforge.governance_validator import GovernanceValidator, GovernanceViolationError
-
 
 # ---- PIIValidator direct tests (no presidio installed) ------------------------
 
@@ -43,7 +41,7 @@ class TestPIIValidatorNoSDK:
 
     def test_redact_logic(self):
         """_redact is pure string manipulation; testable without presidio."""
-        from zettelforge.pii_validator import PIIValidator, PIIDetection
+        from zettelforge.pii_validator import PIIDetection, PIIValidator
 
         v = PIIValidator(action="redact", placeholder="[REDACTED]")
         detections = [
@@ -57,7 +55,7 @@ class TestPIIValidatorNoSDK:
         assert result == "Contact: [REDACTED] for info"
 
     def test_redact_multiple_detections(self):
-        from zettelforge.pii_validator import PIIValidator, PIIDetection
+        from zettelforge.pii_validator import PIIDetection, PIIValidator
 
         v = PIIValidator(action="redact", placeholder="[REDACTED]")
         detections = [
@@ -71,7 +69,7 @@ class TestPIIValidatorNoSDK:
 
     def test_redact_overlapping_keeps_longest(self):
         """reverse-order processing handles overlapping spans correctly."""
-        from zettelforge.pii_validator import PIIValidator, PIIDetection
+        from zettelforge.pii_validator import PIIDetection, PIIValidator
 
         v = PIIValidator(action="redact", placeholder="[X]")
         detections = [
@@ -129,7 +127,7 @@ class TestPIIValidatorNoSDK:
 
     def test_cti_allowlist_filters_entities(self):
         """Entities in CTI allowlist must be excluded from detection."""
-        from zettelforge.pii_validator import PIIValidator, _CTI_ALLOWLIST
+        from zettelforge.pii_validator import _CTI_ALLOWLIST, PIIValidator
 
         assert "IP_ADDRESS" in _CTI_ALLOWLIST
         assert "URL" in _CTI_ALLOWLIST

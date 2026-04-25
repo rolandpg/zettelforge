@@ -12,7 +12,7 @@ no new core dependencies. Requires ``pip install zettelforge[pii]`` and
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from zettelforge.log import get_logger
 
@@ -34,7 +34,7 @@ class GovernanceValidator:
     def __init__(
         self,
         governance_dir: Path | None = None,
-        pii_config: Optional["PIIConfig"] = None,
+        pii_config: PIIConfig | None = None,
     ):
         self.governance_dir = governance_dir
         self.rules = self._load_governance_rules()

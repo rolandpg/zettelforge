@@ -13,8 +13,7 @@ config. The core package never hard-depends on ``presidio-analyzer`` or
 from __future__ import annotations
 
 import threading
-from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Tuple
+from dataclasses import dataclass
 
 from zettelforge.log import get_logger
 
@@ -59,7 +58,7 @@ class PIIValidator:
         self,
         action: str = "log",
         placeholder: str = "[REDACTED]",
-        entities: Optional[List[str]] = None,
+        entities: list[str] | None = None,
         language: str = "en",
         nlp_model: str = "en_core_web_sm",
     ) -> None:
@@ -68,7 +67,7 @@ class PIIValidator:
         self._action = action
         self._placeholder = placeholder
         # Filter out CTI allowlisted entities unless user explicitly included them
-        self._entities: Optional[List[str]] = None
+        self._entities: list[str] | None = None
         if entities is not None:
             self._entities = [e for e in entities if e not in _CTI_ALLOWLIST]
         self._language = language
@@ -110,7 +109,7 @@ class PIIValidator:
                 language=self._language,
             )
 
-    def detect(self, text: str) -> List[PIIDetection]:
+    def detect(self, text: str) -> list[PIIDetection]:
         """Analyze text and return detected PII entities.
 
         Results are sorted by start position and deduplicated by span
@@ -125,7 +124,7 @@ class PIIValidator:
             language=self._language,
         )
         # Deduplicate overlapping spans: keep highest score per (start, end)
-        span_map: Dict[Tuple[int, int], PIIDetection] = {}
+        span_map: dict[tuple[int, int], PIIDetection] = {}
         for r in results:
             key = (r.start, r.end)
             existing = span_map.get(key)
@@ -139,7 +138,7 @@ class PIIValidator:
                 )
         return sorted(span_map.values(), key=lambda d: d.start)
 
-    def validate(self, content: str) -> Tuple[bool, str, List[PIIDetection]]:
+    def validate(self, content: str) -> tuple[bool, str, list[PIIDetection]]:
         """Validate content for PII.
 
         Args:
@@ -180,7 +179,7 @@ class PIIValidator:
         # action == "log": warn only, pass through unchanged
         return True, content, detections
 
-    def _redact(self, text: str, detections: List[PIIDetection]) -> str:
+    def _redact(self, text: str, detections: list[PIIDetection]) -> str:
         """Replace detected PII spans with placeholders (reverse-order safe)."""
         result = list(text)
         for d in reversed(detections):
