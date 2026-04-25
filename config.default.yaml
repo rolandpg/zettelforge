@@ -214,7 +214,7 @@ llm:
   url: http://localhost:11434
   api_key: ""
   temperature: 0.1
-  timeout: 60.0
+  timeout: 180.0  # v2.5.2: bumped from 60s for reasoning-model headroom
   max_retries: 2
   fallback: ""
   local_backend: llama-cpp-python  # used when provider=local (RFC-011)
@@ -392,7 +392,27 @@ governance:
     recall_timeout_seconds: 30.0  # seconds, 0 = unlimited
 
 
-# ── Cache ───────────────────────────────────────────────────────────────────
+# ── LanceDB Maintenance (RFC-009 Phase 1.5) ─────────────────────────────────
+# Background daemon that prunes stale LanceDB version-history per shard.
+#
+# Examples:
+#   # Default — clean up every hour, keep versions < 1 hour old
+#   cleanup_interval_minutes: 60
+#   cleanup_older_than_seconds: 3600
+#
+#   # Aggressive cleanup (high-ingestion environments)
+#   cleanup_interval_minutes: 15
+#   cleanup_older_than_seconds: 600
+#
+#   # Disable cleanup entirely
+#   cleanup_interval_minutes: 0
+#
+lance:
+  cleanup_interval_minutes: 60
+  cleanup_older_than_seconds: 3600
+
+
+# ── Cache
 # In-memory cache for TypeDB query results. Reduces round-trips for
 # frequently accessed entities and relationships.
 #

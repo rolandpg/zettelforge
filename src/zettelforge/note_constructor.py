@@ -122,7 +122,15 @@ JSON:"""
         try:
             from zettelforge.llm_client import generate
 
-            output = generate(prompt, max_tokens=300, temperature=0.1)
+            # 8000 tokens for causal extraction — the highest cap in the
+            # codebase. This prompt asks the model to enumerate every causal
+            # relation in a passage, which triggers the longest reasoning
+            # chains anywhere in the system. Empirical: qwen3.5:9b at
+            # num_predict=4000 was *stochastically* sufficient (~70% success
+            # rate), eval_count varied between 2.8k (success) and 4k+ (still
+            # in <think> tags when budget exhausted). 8000 keeps the
+            # success rate >95% on the same model. v2.5.2 CHANGELOG.
+            output = generate(prompt, max_tokens=8000, temperature=0.1)
 
             parsed = extract_json(output, expect="array")
             if parsed is None:

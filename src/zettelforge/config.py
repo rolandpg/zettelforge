@@ -103,7 +103,7 @@ class LLMConfig:
     url: str = "http://localhost:11434"
     api_key: str = ""  # supports ${ENV_VAR} references — never commit raw keys
     temperature: float = 0.1
-    timeout: float = 60.0
+    timeout: float = 180.0  # v2.5.2: bumped from 60s — reasoning models at higher num_predict (4000 for causal triples) routinely exceed 60s on a 9B at Q4_K_M
     max_retries: int = 2
     fallback: str = ""  # empty preserves implicit local→ollama fallback
     local_backend: str = "llama-cpp-python"  # RFC-011: "llama-cpp-python" or "onnxruntime-genai"
@@ -429,6 +429,11 @@ def _apply_yaml(cfg: ZettelForgeConfig, data: dict):
                         setattr(cfg.governance.limits, lk, lv)
             else:
                 setattr(cfg.governance, k, v)
+
+    if "lance" in data and isinstance(data["lance"], dict):
+        for k, v in data["lance"].items():
+            if hasattr(cfg.lance, k):
+                setattr(cfg.lance, k, v)
 
     if "cache" in data and isinstance(data["cache"], dict):
         for k, v in data["cache"].items():
