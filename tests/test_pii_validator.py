@@ -125,22 +125,27 @@ class TestPIIValidatorNoSDK:
             PIIValidator(action="delete")
 
     def test_cti_allowlist_filters_entities(self):
-        """Entities in CTI allowlist must be excluded from detection."""
+        '''Entities in CTI allowlist must be excluded from detection.'''
         from zettelforge.pii_validator import _CTI_ALLOWLIST, PIIValidator
 
-        assert "IP_ADDRESS" in _CTI_ALLOWLIST
-        assert "URL" in _CTI_ALLOWLIST
-        assert "DOMAIN_NAME" in _CTI_ALLOWLIST
+        assert 'IP_ADDRESS' in _CTI_ALLOWLIST
+        assert 'URL' in _CTI_ALLOWLIST
+        assert 'DOMAIN_NAME' in _CTI_ALLOWLIST
 
-        # When entities list includes allowlisted item, it should be filtered out
-        v = PIIValidator(entities=["EMAIL_ADDRESS", "IP_ADDRESS", "PHONE_NUMBER"])
-        assert "IP_ADDRESS" not in v._entities
-        assert "EMAIL_ADDRESS" in v._entities
-        assert "PHONE_NUMBER" in v._entities
+        # Constructor preserves explicit entities as-is (allowlist filtering
+        # happens in detect(), not constructor).
+        v = PIIValidator(entities=['EMAIL_ADDRESS', 'IP_ADDRESS', 'PHONE_NUMBER'])
+        assert 'IP_ADDRESS' in v._entities
+        assert 'EMAIL_ADDRESS' in v._entities
+        assert 'PHONE_NUMBER' in v._entities
 
-        # When entities is None (detect all), filter is not applied
+        # When entities is None (detect all)
         v2 = PIIValidator()
         assert v2._entities is None
+
+        # Empty list in PIIConfig becomes None (detect-all)
+        v3 = PIIValidator(entities=[])
+        assert v3._entities is None
 
 
 # ---- PIIBlockedError ---------------------------------------------------------
