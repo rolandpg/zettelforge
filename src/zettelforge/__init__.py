@@ -42,10 +42,10 @@ from zettelforge.note_schema import MemoryNote
 from zettelforge.ontology import (
     ENTITY_TYPES,
     RELATION_TYPES,
-    OntologyValidator,  # noqa: F401  (advanced/optional — not in __all__)
-    TypedEntityStore,  # noqa: F401   (advanced/optional — not in __all__)
-    get_ontology_store,  # noqa: F401 (advanced/optional — not in __all__)
-    get_ontology_validator,  # noqa: F401 (advanced/optional — not in __all__)
+    OntologyValidator,
+    TypedEntityStore,
+    get_ontology_store,
+    get_ontology_validator,
 )
 from zettelforge.synthesis_generator import SynthesisGenerator, get_synthesis_generator
 from zettelforge.synthesis_validator import SynthesisValidator, get_synthesis_validator

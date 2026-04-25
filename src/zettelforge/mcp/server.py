@@ -61,7 +61,7 @@ def handle_tool_call(name: str, arguments: dict) -> dict:
     elif name == "zettelforge_recall":
         query = arguments.get("query", "")
         k = arguments.get("k", 10)
-        domain = arguments.get("domain", None)
+        domain = arguments.get("domain")
         start = time.perf_counter()
         results = mm.recall(query, domain=domain, k=k, exclude_superseded=False)
         latency = time.perf_counter() - start

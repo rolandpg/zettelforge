@@ -40,7 +40,7 @@ def _read_telemetry(data_dir: str) -> List[Dict[str, Any]]:
 def _format_briefing(event: Dict[str, Any], index: int) -> str:
     """Format a single synthesis event as a reviewable briefing."""
     query = event.get("query", "(no query text)")
-    confidence = event.get("confidence", None)
+    confidence = event.get("confidence")
     sources_count = event.get("result_count", 0)
     duration_ms = event.get("duration_ms", 0)
     cited = event.get("cited_notes", [])

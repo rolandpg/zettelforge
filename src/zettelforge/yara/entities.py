@@ -266,4 +266,4 @@ def _split_mitre(value: Any) -> list[str]:
     return [t.upper() for t in tokens if t]
 
 
-__all__ = ["YaraRule", "rule_to_entities", "from_rule_dict"]
+__all__ = ["YaraRule", "from_rule_dict", "rule_to_entities"]
