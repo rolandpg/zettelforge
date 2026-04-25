@@ -416,6 +416,11 @@ def _apply_yaml(cfg: ZettelForgeConfig, data: dict):
             else:
                 setattr(cfg.governance, k, v)
 
+    if "lance" in data and isinstance(data["lance"], dict):
+        for k, v in data["lance"].items():
+            if hasattr(cfg.lance, k):
+                setattr(cfg.lance, k, v)
+
     if "cache" in data and isinstance(data["cache"], dict):
         for k, v in data["cache"].items():
             if hasattr(cfg.cache, k):

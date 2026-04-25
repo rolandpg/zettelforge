@@ -392,6 +392,41 @@ governance:
     recall_timeout_seconds: 30.0  # seconds, 0 = unlimited
 
 
+# ── LanceDB Maintenance (RFC-009 Phase 1.5) ─────────────────────────────────
+# Background daemon that prunes stale LanceDB version-history per shard.
+# Without it, every `remember()` write accumulates an immutable version
+# row; over weeks of writes this grows to multi-gigabyte version-chain
+# overhead that *quintuples* `remember()` p95 latency. The 2026-04-24
+# Vigil incident surfaced a 5.66 GB → 29 MB cleanup that collapsed
+# remember() p95 from 49.8s → 250ms. See RFC-009 Phase 1.5 + the
+# Phase 0.5 attribution doc for the empirical evidence.
+#
+# Operational impact:
+#   - cleanup_interval_minutes: how often the daemon wakes per table.
+#     0 disables the daemon entirely (use only for diagnostics or when
+#     you have an external compaction process).
+#   - cleanup_older_than_seconds: minimum age of a version before it
+#     becomes prune-eligible. Lower values reclaim disk faster but
+#     increase the chance of pruning a version a concurrent reader
+#     still references; the 3600s default is conservative.
+#
+# Examples:
+#   # Default — hourly, prune anything > 1 hour old
+#   cleanup_interval_minutes: 60
+#   cleanup_older_than_seconds: 3600
+#
+#   # Aggressive (high write volume, plenty of disk pressure)
+#   cleanup_interval_minutes: 15
+#   cleanup_older_than_seconds: 900
+#
+#   # Disabled (operator runs `compact_lance` manually)
+#   cleanup_interval_minutes: 0
+#
+lance:
+  cleanup_interval_minutes: 60
+  cleanup_older_than_seconds: 3600
+
+
 # ── Cache ───────────────────────────────────────────────────────────────────
 # In-memory cache for TypeDB query results. Reduces round-trips for
 # frequently accessed entities and relationships.

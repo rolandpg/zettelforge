@@ -9,7 +9,7 @@ tags:
   - settings
   - deployment
 last_updated: "2026-04-25"
-version: "2.5.0"
+version: "2.5.2"
 ---
 
 # Configuration Reference
@@ -125,7 +125,7 @@ class LLMConfig:
     url: str = "http://localhost:11434"
     api_key: str = ""              # supports ${ENV_VAR} references
     temperature: float = 0.1
-    timeout: float = 60.0
+    timeout: float = 180.0    # v2.5.2 — reasoning-model headroom
     max_retries: int = 2
     fallback: str = ""             # "" preserves implicit local->ollama fallback
     local_backend: str = "llama-cpp-python"  # RFC-011
@@ -139,7 +139,7 @@ class LLMConfig:
 | `llm.url` | `str` | `http://localhost:11434` | `ZETTELFORGE_LLM_URL` | Base URL. Meaning is provider-specific -- Ollama endpoint for `ollama`, `/v1/chat/completions` base for `openai_compat`, ignored for `local` and `litellm`. |
 | `llm.api_key` | `str` | `""` | `ZETTELFORGE_LLM_API_KEY` | API key for authenticated providers (`litellm`, `openai_compat`). Accepts `${ENV_VAR}` references -- never commit raw keys. Redacted from `repr(LLMConfig)`. For `litellm`, you may also rely on standard environment variables (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, etc.) instead of config. |
 | `llm.temperature` | `float` | `0.1` | -- | Sampling temperature. `0.0` = deterministic, `0.1` = near-deterministic (default), `0.7` = creative. |
-| `llm.timeout` | `float` | `60.0` | `ZETTELFORGE_LLM_TIMEOUT` | Request timeout in seconds. Applied by `ollama` (RFC-010) and `litellm` providers. |
+| `llm.timeout` | `float` | `180.0` | `ZETTELFORGE_LLM_TIMEOUT` | Request timeout in seconds. Applied by `ollama` (RFC-010) and `litellm` providers. **Bumped 60s → 180s in v2.5.2** because reasoning-model generations at the per-call-site `max_tokens` budgets routinely take 60–140s on a 9B-Q4_K_M model and the old default was firing `ReadTimeout` mid-generation. Lower this only on faster hardware where you've measured the 99th-percentile call duration. |
 | `llm.max_retries` | `int` | `2` | `ZETTELFORGE_LLM_MAX_RETRIES` | Number of retries on transient failure. Applied by `litellm` (via `num_retries` kwarg). |
 | `llm.fallback` | `str` | `""` | `ZETTELFORGE_LLM_FALLBACK` | Backup provider invoked when the primary fails with a non-configuration error. Empty string preserves the implicit `local -> ollama` fallback for backward compatibility; set explicitly to any other registered provider to route elsewhere. |
 | `llm.local_backend` | `str` | `llama-cpp-python` | `ZETTELFORGE_LLM_LOCAL_BACKEND` | In-process inference engine when `provider: local`. Options: `llama-cpp-python` (GGUF, default, requires `zettelforge[local]`), `onnxruntime-genai` (ONNX, requires `zettelforge[local-onnx]`). Ignored for all other providers. |
@@ -154,6 +154,22 @@ class LLMConfig:
 | `ollama` | core (no extra) | `provider: ollama` + `url: http://localhost:11434` | Ollama tag (`qwen3.5:9b`) | Requires `ollama serve` running. |
 | `litellm` | `pip install zettelforge[litellm]` | `provider: litellm` + `model: gpt-4o` | LiteLLM model name | Routes to 100+ providers by model prefix. |
 | `mock` | core (no extra) | `provider: mock` | N/A | Deterministic canned responses for testing. |
+
+#### Per-call-site `max_tokens` budgets (hardcoded, v2.5.2)
+
+`llm.timeout` is config-driven, but the `max_tokens` (Ollama `num_predict`) value passed to each LLM call site is currently a literal in the calling module. v2.5.2 raised these caps to give reasoning models (qwen3.5+, qwen3.6, nemotron-3) room to emit their hidden `<think>...</think>` tokens *and* a final answer; pre-2.5.2 caps were exhausted entirely by reasoning, leaving the JSON answer empty.
+
+| Call site | File | Budget | Why |
+|:----------|:-----|:-------|:----|
+| Causal triple extraction (`note_constructor.extract_causal_triples`) | `note_constructor.py` | **8000** | Highest in the codebase. Asks the model to enumerate *every* causal relation in a passage; reasoning chain is longest. |
+| Synthesis (`synthesis_generator._generate_synthesis`) | `synthesis_generator.py` | 2500 | Single-answer prompt; reasoning overhead is moderate. |
+| Fact extraction (`fact_extractor.extract`) | `fact_extractor.py` | 2500 | Multi-fact JSON enumeration. |
+| LLM NER (`entity_indexer._extract_via_llm`, retry path) | `entity_indexer.py` | 2500 | Conversational entity types only; regex covers CTI types separately. |
+| Memory evolution (`memory_evolver.evolve_neighbors` and retry) | `memory_evolver.py` | 2500 | Two-note comparison + decision JSON. |
+
+**Operational impact.** Causal extraction at 8000 tokens runs 60–140 s per call on a 9B-Q4_K_M reasoning model; `remember(sync=True)` therefore blocks 1–3 minutes per note. The default async path (background enrichment queue) is unaffected — these calls happen off the write hot path. If you're triggering `sync=True` or doing bulk ingestion you'll feel the latency; switch to async or scale up the model server.
+
+If you're on faster hardware or smaller non-reasoning models you can monkey-patch lower values, but the 2.5.2 defaults trade latency for correctness on the reference qwen3.5:9b setup. v2.6.0 (tracked in [issue #125](https://github.com/rolandpg/zettelforge/issues/125)) will move these to `LLMConfig` so you can override per call site without touching code.
 
 #### LiteLLM model prefix examples
 
@@ -247,12 +263,55 @@ class SynthesisConfig:
 class GovernanceConfig:
     enabled: bool = True
     min_content_length: int = 1
+    pii: PIIConfig = field(default_factory=PIIConfig)
 ```
 
 | Key | Type | Default | Env Override | Description |
 |:----|:-----|:--------|:-------------|:------------|
 | `governance.enabled` | `bool` | `True` | -- | Enable governance validation on `remember()` operations. Set `False` for benchmarks. |
 | `governance.min_content_length` | `int` | `1` | -- | Minimum character length for content passed to `remember()`. |
+
+#### governance.pii (RFC-013, optional)
+
+```python
+@dataclass
+class PIIConfig:
+    enabled: bool = False
+    action: str = "log"
+    redact_placeholder: str = "[REDACTED]"
+    entities: list[str] = field(default_factory=list)
+    language: str = "en"
+    nlp_model: str = "en_core_web_sm"
+```
+
+| Key | Type | Default | Env Override | Description |
+|:----|:-----|:--------|:-------------|:------------|
+| `governance.pii.enabled` | `bool` | `False` | `ZETTELFORGE_PII_ENABLED` | Enable Microsoft Presidio PII detection during `remember()`. Soft dependency — requires `pip install zettelforge[pii]` to activate. With `enabled=true` but the SDK missing, `GovernanceValidator` logs `pii_validator_unavailable` at WARNING and continues with `_pii=None` (every PII codepath becomes a no-op pass-through). If `pii_validator.PIIValidator` itself imports cleanly but `presidio_analyzer` is missing, the deferred import inside `_ensure_loaded` raises `ImportError` on first `detect()` call instead — same user-visible failure mode, different layer. Either way the rest of the pipeline keeps working. |
+| `governance.pii.action` | `str` | `log` | `ZETTELFORGE_PII_ACTION` | Policy when PII is detected: `log` (warn-only, content passes through unchanged), `redact` (replace each finding with `redact_placeholder` before storage), or `block` (raise `PIIBlockedError` and refuse the write). |
+| `governance.pii.redact_placeholder` | `str` | `[REDACTED]` | -- | String substituted for each PII span when `action=redact`. |
+| `governance.pii.entities` | `list[str]` | `[]` (= all) | -- | Entity types to detect. Empty list = detect every Presidio-supported type. CTI allowlist (`IP_ADDRESS`, `URL`, `DOMAIN_NAME`) is always filtered out automatically since these are legitimate threat-intel indicators, not personal data. |
+| `governance.pii.language` | `str` | `en` | -- | Two-letter language code passed to Presidio's analyzer. |
+| `governance.pii.nlp_model` | `str` | `en_core_web_sm` | -- | spaCy NLP model name. Larger models (`en_core_web_lg`) catch more entities at the cost of memory and warm-up time. |
+
+See [Configure PII Detection](../how-to/configure-pii.md) for the full Presidio setup guide.
+
+---
+
+### lance (RFC-009 Phase 1.5)
+
+```python
+@dataclass
+class LanceConfig:
+    cleanup_interval_minutes: int = 60
+    cleanup_older_than_seconds: int = 3600
+```
+
+| Key | Type | Default | Env Override | Description |
+|:----|:-----|:--------|:-------------|:------------|
+| `lance.cleanup_interval_minutes` | `int` | `60` | -- | How often the LanceDB version-prune daemon wakes per shard. **Set `0` to disable the daemon entirely** — use only for diagnostics or when an external compaction process owns the data dir. |
+| `lance.cleanup_older_than_seconds` | `int` | `3600` | -- | Minimum age of a LanceDB version before it becomes prune-eligible. Lower values reclaim disk faster but increase the chance of pruning a version a concurrent reader is still using. The 3600 s (1 h) default is the conservative value validated against the 2026-04-24 Vigil incident; **do not lower below 600 s** without measuring concurrent-reader behaviour first. |
+
+**Operational impact.** Without this daemon, every `remember()` write appends an immutable version row to LanceDB. Over weeks of writes the version chain grows to multi-gigabyte overhead that quintuples `remember()` p95 latency (Vigil 2026-04-24: 5.66 GB version-chain → `remember()` p95 = 49.8 s; one-shot `cleanup_old_versions` shrank to 29 MB → p95 = 250 ms). The daemon ships enabled by default — you only need to touch this section if you've moved compaction to an out-of-process job.
 
 ---
 
@@ -362,7 +421,7 @@ See [Configure OpenCTI Integration](../how-to/configure-opencti.md) for setup st
 | `ZETTELFORGE_LLM_MODEL` | `llm.model` | `gpt-4o` |
 | `ZETTELFORGE_LLM_URL` | `llm.url` | `http://gpu-box:11434` |
 | `ZETTELFORGE_LLM_API_KEY` | `llm.api_key` | `sk-...` |
-| `ZETTELFORGE_LLM_TIMEOUT` | `llm.timeout` | `60` |
+| `ZETTELFORGE_LLM_TIMEOUT` | `llm.timeout` | `180` |
 | `ZETTELFORGE_LLM_MAX_RETRIES` | `llm.max_retries` | `2` |
 | `ZETTELFORGE_LLM_FALLBACK` | `llm.fallback` | `ollama` |
 | `ZETTELFORGE_LLM_LOCAL_BACKEND` | `llm.local_backend` | `onnxruntime-genai` |
