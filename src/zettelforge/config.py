@@ -389,7 +389,14 @@ def _apply_yaml(cfg: ZettelForgeConfig, data: dict):
 
     if "governance" in data and isinstance(data["governance"], dict):
         for k, v in data["governance"].items():
-            if hasattr(cfg.governance, k):
+            if not hasattr(cfg.governance, k):
+                continue
+            # RFC-013: pii is a nested dataclass, not a flat value
+            if k == "pii" and isinstance(v, dict):
+                for pk, pv in v.items():
+                    if hasattr(cfg.governance.pii, pk):
+                        setattr(cfg.governance.pii, pk, pv)
+            else:
                 setattr(cfg.governance, k, v)
 
     if "cache" in data and isinstance(data["cache"], dict):
