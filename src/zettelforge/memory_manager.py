@@ -113,7 +113,9 @@ class MemoryManager:
             memory_store=self._lance_store,
             note_lookup=lambda nid: self.store.get_note_by_id(nid),
         )
-        self.governance = GovernanceValidator()
+        self.governance = GovernanceValidator(
+            pii_config=get_config().governance.pii,
+        )
         self.resolver = AliasResolver()
         self.consolidation = ConsolidationMiddleware(self)
 
@@ -220,9 +222,9 @@ class MemoryManager:
         start: float,
     ) -> tuple[MemoryNote, str]:
         """Inner body of remember(); split out so trace_id binding can wrap it."""
-        # Governance validation
+        # Governance validation (may return redacted content when PII is enabled)
         try:
-            self.governance.enforce("remember", content)
+            content = self.governance.enforce("remember", content)
             log_authorization(
                 actor="system",
                 resource="remember",

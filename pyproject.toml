@@ -71,6 +71,16 @@ litellm = [
     "litellm>=1.60.0",
 ]
 
+# PII detection via Microsoft Presidio (RFC-013, optional)
+# pip install zettelforge[pii]
+# Enables governance.pii section in config. Automatically downloads
+# a spaCy model (~12MB) on first use.
+pii = [
+    "presidio-analyzer>=2.2.0",
+    "presidio-anonymizer>=2.2.0",
+    "spacy>=3.5.0",
+]
+
 # Extensions: install the separate zettelforge-enterprise package
 # pip install zettelforge-enterprise
 extensions = [

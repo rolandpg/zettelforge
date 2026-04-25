@@ -165,9 +165,34 @@ class SynthesisConfig:
 
 
 @dataclass
+class PIIConfig:
+    """Presidio PII detection settings (RFC-013, optional).
+
+    Disabled by default -- no new core dependencies. Requires
+    ``pip install zettelforge[pii]`` to activate.
+
+    ``action`` can be ``"log"`` (warn only, pass through),
+    ``"redact"`` (replace PII with placeholders), or
+    ``"block"`` (raise exception before storage).
+    ``entities``: empty list = detect all supported PII types.
+    ``_CTI_ALLOWLIST`` in ``pii_validator.py`` excludes IP_ADDRESS,
+    URL, and DOMAIN_NAME from detection since these are legitimate
+    CTI indicators.
+    """
+
+    enabled: bool = False
+    action: str = "log"
+    redact_placeholder: str = "[REDACTED]"
+    entities: List[str] = field(default_factory=list)
+    language: str = "en"
+    nlp_model: str = "en_core_web_sm"
+
+
+@dataclass
 class GovernanceConfig:
     enabled: bool = True
     min_content_length: int = 1
+    pii: PIIConfig = field(default_factory=PIIConfig)
 
 
 @dataclass
@@ -450,6 +475,12 @@ def _apply_env(cfg: ZettelForgeConfig):
     # LLM NER
     if v := os.environ.get("ZETTELFORGE_LLM_NER_ENABLED"):
         cfg.llm_ner.enabled = v.lower() in ("true", "1", "yes")
+
+    # RFC-013: PII detection via Presidio
+    if v := os.environ.get("ZETTELFORGE_PII_ENABLED"):
+        cfg.governance.pii.enabled = v.lower() in ("true", "1", "yes")
+    if v := os.environ.get("ZETTELFORGE_PII_ACTION"):
+        cfg.governance.pii.action = v
 
     # Extensions license key (used by zettelforge-enterprise fallback path)
     if v := os.environ.get("THREATENGRAM_LICENSE_KEY"):
