@@ -156,8 +156,8 @@ starvation — see [Ollama backend returns empty strings](#ollama-backend-return
 You can confirm by grepping the OCSF log:
 
 ```bash
-grep '"schema":"synthesis","raw":""' ~/.amem/zettelforge.log | tail -5
-grep '"event":"llm_call_empty_response"' ~/.amem/zettelforge.log | tail -5
+grep '"schema":"synthesis","raw":""' ~/.amem/logs/zettelforge.log | tail -5
+grep '"event":"llm_call_empty_response"' ~/.amem/logs/zettelforge.log | tail -5
 ```
 
 Both events appear when synthesis is silently degrading.
@@ -192,13 +192,18 @@ because the 300-token budget at the call site was exhausted by
 If you're on 2.5.2+ and still seeing zero causal edges:
 
 1. Confirm the LLM is reachable and returns non-empty responses for
-   the synthesis prompt. If synthesis works and causal doesn't, the
-   model is plausibly returning the JSON inside a markdown code fence
-   that `json_parse.extract_json` doesn't handle for arrays — open an
-   issue with a sample of the raw response.
+   the synthesis prompt. (`json_parse.extract_json` already strips
+   markdown code fences and supports `expect="array"` via a
+   `\[.*\]` regex with DOTALL, so a fenced JSON-array reply is *not*
+   the cause.)
 2. Pass `sync=True` and watch the OCSF log for
    `event=parse_failed schema=causal_triples raw=...`. The `raw`
-   preview will show what the model actually returned.
+   preview will show what the model actually returned — usually
+   either an empty string (token starvation, see Ollama section
+   above) or relations outside the allowlist (`causes`, `enables`,
+   `targets`, `uses`, `exploits`, `attributed_to`, `related_to`); the
+   latter is logged as `event=invalid_causal_relation` with the
+   offending relation string.
 
 ## MCP
 
@@ -243,8 +248,8 @@ data directory (never to stdout by design — see GOV-012). Typical
 locations:
 
 ```bash
-tail -f ~/.amem/zettelforge.log        # OCSF structured events (API activity, auth, file I/O)
-tail -f ~/.amem/audit.log              # Security-relevant events only (GOV-012)
+tail -f ~/.amem/logs/zettelforge.log        # OCSF structured events (API activity, auth, file I/O)
+tail -f ~/.amem/logs/audit.log              # Security-relevant events only (GOV-012)
 tail -f ~/.amem/telemetry/telemetry_$(date +%F).jsonl  # Operational telemetry (RFC-007)
 ```
 

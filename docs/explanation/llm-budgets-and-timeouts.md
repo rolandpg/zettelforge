@@ -65,7 +65,7 @@ These don't emit `<think>` tokens. Your budgets only need to cover the actual an
 
 ### You're on a much larger model (70B, 120B, cloud)
 
-Reasoning depth often *increases* with model size. The 8000-token causal cap may not be enough on a 120B reasoning model. Watch the OCSF log for `event=llm_call_empty_response done_reason=length eval_count=8000` — if you see it, raise the literal in `note_constructor.py:130` and re-test.
+Reasoning depth often *increases* with model size. The 8000-token causal cap may not be enough on a 120B reasoning model. Watch the OCSF log for `event=llm_call_empty_response done_reason=length eval_count=8000` — if you see it, raise the `max_tokens=8000` literal inside `NoteConstructor.extract_causal_triples` (in `src/zettelforge/note_constructor.py`) and re-test.
 
 ### You're triggering `sync=True` or doing bulk ingestion
 
@@ -73,16 +73,22 @@ The default async path moves causal extraction off the write hot path; `remember
 
 ## Verifying your budgets are right
 
-The OCSF log at `~/.amem/zettelforge.log` carries every LLM call as a structured event:
+The OCSF log at `~/.amem/logs/zettelforge.log` carries every LLM call as a structured event. Two events to know:
+
+- **`llm_call_empty_response`** — `WARNING` level, fires whenever an Ollama call returns an empty `response`. Always visible at the default `INFO` log level.
+- **`llm_call_complete`** — `DEBUG` level, fires on every successful call with `eval_count`, `response_chars`, `max_tokens`, `duration_ms`, etc. Only visible when `logging.level: DEBUG` is set in `config.yaml` (or via `ZETTELFORGE_LOG_LEVEL=DEBUG`).
+
+To spot too-small budgets at the default log level:
 
 ```bash
-grep '"event":"llm_call_complete"' ~/.amem/zettelforge.log \
-  | jq -r 'select(.eval_count > 0) | "\(.model) eval=\(.eval_count) of max=\(.max_tokens) dur_ms=\(.duration_ms) chars=\(.response_chars)"' \
+grep '"event":"llm_call_empty_response"' ~/.amem/logs/zettelforge.log \
+  | jq -r '"\(.model) eval=\(.eval_count) of max=\(.max_tokens) dur_ms=\(.duration_ms)"' \
   | tail -20
 ```
 
-If you see `eval=<max_tokens>` with `chars=0`, your budget is too small — raise it.
-If you see `eval=<much-less-than-max>` with non-empty `chars`, you have headroom — you could lower the budget on faster hardware.
+`eval == max_tokens` with `done_reason: length` is the canonical token-starvation signature — raise the budget for that call site.
+
+To verify budgets aren't *too* generous (free wall-clock to claw back), enable DEBUG logging and grep `llm_call_complete` instead. `eval_count << max_tokens` with non-empty `response_chars` means you could safely lower the cap on faster hardware.
 
 ## Background
 
