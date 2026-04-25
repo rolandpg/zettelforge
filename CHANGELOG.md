@@ -6,6 +6,83 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [2.5.2] - 2026-04-25
+
+Hotfix release. Restores end-to-end functionality of synthesis, causal
+triple extraction, fact extraction, LLM NER, and neighbor evolution
+under any reasoning-style LLM (qwen3.5+, qwen3.6, nemotron-3, etc.).
+
+### Fixed
+
+- **Reasoning-model token starvation across every LLM call site**.
+  Reasoning models emit hidden `<think>...</think>` tokens that count
+  against `num_predict` but never appear in the final `response` field
+  Ollama returns. Pre-2.5.2 token caps (`max_tokens=300`/`400`/`800`/
+  `1024`) were exhausted entirely by the thinking phase on these
+  models, leaving the JSON answer empty. Symptoms: synthesis fell back
+  to `"No specific answer found for: …"` on every query; causal triple
+  extraction persisted **0 edges** despite rich CTI text; LLM NER
+  silently no-opped; neighbor evolution `parse_failed{schema=...,
+  raw=""}` warnings flooded the log.
+
+  Bumped every `generate(..., max_tokens=...)` call site to give
+  reasoning models room to think *and* emit a final answer. Affected
+  files:
+
+  | File | Old cap | New cap |
+  |---|---|---|
+  | `note_constructor.py` (causal triples) | 300 | **8000** |
+  | `synthesis_generator.py` | 800 | 2500 |
+  | `fact_extractor.py` | 400 | 2500 |
+  | `entity_indexer.py` (NER) | 300 | 2500 |
+  | `memory_evolver.py` (2 sites) | 1024 | 2500 |
+
+  Causal extraction needs the largest budget because the prompt asks
+  the model to enumerate *every* causal relation in a passage; this
+  triggers the longest reasoning chains anywhere in the system.
+  Empirical against `qwen3.5:9b`: at 4000 tokens the call was
+  *stochastically* sufficient (eval_count varied 2.8k–4k+, ~70%
+  success), so 8000 is the conservative cap that keeps the success
+  rate above 95% on the same model. Other call sites converge with
+  less reasoning overhead so 2500 suffices.
+
+- **LLM client timeout bumped 60s → 180s**. `LLMConfig.timeout` and
+  `OllamaProvider` constructor default were both 60 seconds — well
+  below the 60–120s wall-clock time of a 4000–8000 token reasoning
+  generation on a 9B-Q4_K_M model. `ReadTimeout` was firing during
+  causal extraction even when the model would have returned valid
+  JSON given another 30 seconds. Bumped both defaults plus
+  `config.default.yaml` to 180s.
+
+  Verified end-to-end on `qwen3.5:9b`:
+  - Synthesis: query "What CVE does DROPBEAR exploit?" returns
+    `"CVE-2024-3094"` with 1 source citation (was returning
+    `"No specific answer found for: …"` on every call pre-2.5.2).
+  - Causal extraction: corpus seeded with APT28/DROPBEAR/CVE-2024-3094
+    text yields a 4-triple JSON array in 137s wall time:
+    `APT28 → targets → manufacturing sector`,
+    `APT28 → uses → DROPBEAR`,
+    `DROPBEAR → exploits → CVE-2024-3094`,
+    `APT28 → attributed_to → Russian GRU Unit 26165`.
+
+### Operational note
+
+Slow models. With 8000 tokens of reasoning budget, single causal
+extraction calls now take 60–140s on a 9B model. `remember(sync=True)`
+in this configuration will block 1–3 minutes per note. The default
+async path (background enrichment queue) is the preferred mode.
+Operators on faster hardware or smaller models can lower the caps via
+config/env if needed, but the v2.5.2 defaults trade latency for
+end-to-end correctness on the reference model.
+
+### Notes
+
+This explains the `evolution_parse_failed` and `causal_triples
+parse_failed` cascades documented in the v2.4.x Vigil incident. The
+v2.4.2 PR #95 Tier 1/2 LLM observability surfaced the empty responses
+but the root-cause attribution to token-cap-vs-thinking-budget waited
+until the v2.5.1 perf-bench run made the failure reproducible end-to-end.
+
 ## [2.5.1] - 2026-04-25
 
 Hotfix release. Surfaced during the v2.5.0 perf benchmark run.
