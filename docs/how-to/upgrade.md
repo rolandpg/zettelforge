@@ -4,8 +4,8 @@ description: "Upgrade paths between ZettelForge releases, with required migratio
 diataxis_type: "how-to"
 audience: "Operator / Maintainer"
 tags: [upgrade, migration, release, breaking-changes]
-last_updated: "2026-04-16"
-version: "2.2.0"
+last_updated: "2026-04-25"
+version: "2.5.2"
 ---
 
 # Upgrade ZettelForge
@@ -18,11 +18,47 @@ the full list of changes per release see
 
 | From -> To | Required action | Data migration? |
 |-----------|-----------------|-----------------|
-| 2.4.x -> 2.5.x | `pip install -U zettelforge` | No |
+| 2.5.0 / 2.5.1 -> 2.5.2 | `pip install -U zettelforge` (read v2.5.2 notes below) | No |
+| 2.4.x -> 2.5.x | `pip install -U zettelforge` (read v2.5.0/2.5.1/2.5.2 notes below) | No |
 | 2.2.x -> 2.4.x | `pip install -U zettelforge` | No |
 | 2.1.x -> 2.2.x | `pip install -U zettelforge` + run JSONL -> SQLite migration | **Yes** |
 | 2.0.x -> 2.2.x | Upgrade in two hops via 2.1.x is recommended but not required | **Yes** |
 | < 2.0 | Not supported -- export notes manually, fresh-install 2.2.x |
+
+## 2.5.x -> 2.5.2 (recommended for everyone on a reasoning model)
+
+**Read first** if you're running ZettelForge against `qwen3.5+`, `qwen3.6`, `nemotron-3`, or any other model that emits `<think>...</think>` tokens. Pre-2.5.2 deployments with these models were silently failing every causal-extraction, synthesis, fact-extraction, and LLM-NER call — the per-call-site `max_tokens` budgets were too small for the reasoning phase, leaving the JSON answer empty.
+
+### What changed
+
+- **Per-call-site `max_tokens` budgets bumped** to give reasoning models headroom: causal extraction 300 → 8000, synthesis 800 → 2500, fact extraction 400 → 2500, LLM NER 300 → 2500, memory evolution 1024 → 2500. These are still hardcoded literals in source today; v2.6.0 ([issue #125](https://github.com/rolandpg/zettelforge/issues/125)) will move them to `LLMConfig`.
+- **`llm.timeout` default bumped 60 s -> 180 s** (`LLMConfig.timeout`, `OllamaProvider`, `config.default.yaml`). The 60 s default fired before causal extraction at 8000 tokens could complete on a 9B model.
+
+### Operational impact you should know about
+
+- **Causal extraction now takes 60-140 s per call on a 9B-Q4_K_M reasoning model.** `remember(sync=True)` blocks 1-3 minutes per note. Default async path (background enrichment queue) is unaffected — only `sync=True` and bulk-ingest workflows feel the latency. Switch to async if you weren't already.
+- **`llm_call_empty_response` warnings should disappear** from your OCSF log. If they don't, see [LLM budgets and timeouts](../explanation/llm-budgets-and-timeouts.md) for the verification recipe.
+
+### Steps
+
+1. `pip install -U 'zettelforge>=2.5.2'`
+2. If you have a custom `config.yaml` that explicitly sets `llm.timeout: 60.0`, raise it to `180.0` (or remove the override and inherit the new default).
+3. Read [LLM budgets and timeouts](../explanation/llm-budgets-and-timeouts.md) if you operate on faster hardware or a non-reasoning model and want to tune downward.
+
+## 2.4.x -> 2.5.1 (KG schema tolerance hotfix)
+
+If you have a long-running deployment with mixed-schema entries in `kg_edges.jsonl` (legacy `{source_id, target_id, relation_type}` rows alongside canonical `{from_node_id, to_node_id, relationship}` rows), pre-v2.5.1 versions hard-failed `KnowledgeGraph._cache_edge` on the legacy entries with `KeyError: 'from_node_id'` — taking down every `recall()` and `synthesize()` at construction time.
+
+The v2.5.1 hotfix added a normalize-on-load pass that remaps legacy keys and silently drops un-normalizable entries with a WARNING log. **No data migration required**; legacy rows continue to live in `kg_edges.jsonl` untouched, they just get translated in-memory.
+
+### Steps
+
+1. `pip install -U 'zettelforge>=2.5.1'`
+2. (Optional) After first start-up, grep the log for the skip count:
+   ```bash
+   grep '"event":"kg_edges_skipped_malformed"' ~/.amem/zettelforge.log
+   ```
+   If `count` is non-zero, those rows are un-normalizable (typically missing `edge_id` or both source/target ids); they were not contributing useful data anyway.
 
 ## 2.2.x -> 2.5.x
 
