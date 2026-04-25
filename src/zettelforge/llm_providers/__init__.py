@@ -15,6 +15,8 @@ Third-party packages can register additional providers via the
 
 from __future__ import annotations
 
+import contextlib
+
 from zettelforge.llm_providers.base import LLMProvider, LLMProviderConfigurationError
 from zettelforge.llm_providers.local_provider import LocalProvider
 from zettelforge.llm_providers.mock_provider import MockProvider
@@ -44,11 +46,9 @@ def _register_builtins() -> None:
         ("ollama", OllamaProvider),
         ("mock", MockProvider),
     ):
-        try:
+        # Already registered (re-import / test runtime); silently skip.
+        with contextlib.suppress(ValueError):
             register(name, cls)
-        except ValueError:
-            # Already registered (re-import / test runtime); silently skip.
-            pass
 
     # RFC-012: LiteLLM is an optional provider — installed via
     # pip install zettelforge[litellm]. Registration is conditional

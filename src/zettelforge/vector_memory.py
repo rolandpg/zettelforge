@@ -265,10 +265,7 @@ class VectorMemory:
             if existing:
                 return []
 
-        if chunk and len(text) > 2000:
-            chunks = self._chunk_text(text)
-        else:
-            chunks = [text]
+        chunks = self._chunk_text(text) if chunk and len(text) > 2000 else [text]
 
         ids = []
         for chunk_text in chunks:

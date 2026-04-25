@@ -417,9 +417,8 @@ class OntologyValidator:
                     "end >= start" in validate_expr
                     and "end" in properties
                     and "start" in properties
-                ):
-                    if properties["end"] < properties["start"]:
-                        errors.append("End time must be >= start time")
+                ) and properties["end"] < properties["start"]:
+                    errors.append("End time must be >= start time")
             except Exception as e:
                 errors.append(f"Validation error: {e}")
 
@@ -551,9 +550,8 @@ class TypedEntityStore:
 
         # Check acyclic if required
         rel_def = RELATION_TYPES.get(relation_type, {})
-        if rel_def.get("acyclic"):
-            if self._would_create_cycle(from_id, relation_type, to_id):
-                return False, [f"Relation {relation_type} would create cycle (acyclic constraint)"]
+        if rel_def.get("acyclic") and self._would_create_cycle(from_id, relation_type, to_id):
+            return False, [f"Relation {relation_type} would create cycle (acyclic constraint)"]
 
         relation = {
             "from": from_id,
@@ -601,26 +599,24 @@ class TypedEntityStore:
         """Query entities by property value."""
         results = []
         for entity in self._entities.values():
-            if entity["type"] == entity_type:
-                if entity["properties"].get(property_name) == value:
-                    results.append(entity)
+            if entity["type"] == entity_type and entity["properties"].get(property_name) == value:
+                results.append(entity)
         return results
 
     def get_related(self, entity_id: str, relation_type: str | None = None) -> list[dict]:
         """Get related entities."""
         results = []
         for rel in self._relations:
-            if rel["from"] == entity_id:
-                if relation_type is None or rel["rel"] == relation_type:
-                    target = self._entities.get(rel["to"])
-                    if target:
-                        results.append(
-                            {
-                                "relation": rel["rel"],
-                                "entity": target,
-                                "properties": rel.get("properties", {}),
-                            }
-                        )
+            if rel["from"] == entity_id and (relation_type is None or rel["rel"] == relation_type):
+                target = self._entities.get(rel["to"])
+                if target:
+                    results.append(
+                        {
+                            "relation": rel["rel"],
+                            "entity": target,
+                            "properties": rel.get("properties", {}),
+                        }
+                    )
         return results
 
     def list_types(self) -> list[str]:

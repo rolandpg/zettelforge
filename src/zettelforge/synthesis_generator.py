@@ -44,7 +44,7 @@ class SynthesisGenerator:
         memory_manager=None,
         format: str = "direct_answer",
         k: int = 10,
-        tier_filter: list[str] = None,
+        tier_filter: list[str] | None = None,
     ) -> dict:
         """
         Synthesize an answer from retrieved notes.

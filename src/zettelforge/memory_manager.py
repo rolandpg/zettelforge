@@ -567,7 +567,7 @@ class MemoryManager:
         from zettelforge.intent_classifier import get_intent_classifier
 
         classifier = get_intent_classifier()
-        intent, intent_meta = classifier.classify(query)
+        intent, _intent_meta = classifier.classify(query)
         policy = classifier.get_traversal_policy(intent)
 
         # Extract entities from query for graph traversal
@@ -592,11 +592,10 @@ class MemoryManager:
 
         # Temporal boost: for temporal queries, prioritize notes containing dates from the query
         if intent.value == "temporal":
-            try:
-                import re as _re
+            import importlib.util
+            import re as _re
 
-                import dateparser  # noqa: F401 — probe-import; raises ImportError when unavailable
-
+            if importlib.util.find_spec("dateparser") is not None:
                 # Extract date-like strings from query
                 date_patterns = _re.findall(
                     r"\b(?:january|february|march|april|may|june|july|august|september|"
@@ -617,8 +616,6 @@ class MemoryManager:
                         else:
                             rest.append((note, score))
                     vector_scored = boosted + rest
-            except ImportError:
-                pass
 
         # Blended retrieval: combine vector similarity with graph traversal
         from zettelforge.blended_retriever import BlendedRetriever
@@ -1388,7 +1385,7 @@ class MemoryManager:
         query: str,
         format: str = "direct_answer",
         k: int = 10,
-        tier_filter: list[str] = None,
+        tier_filter: list[str] | None = None,
         actor: str | None = None,
     ) -> dict[str, Any]:
         """

@@ -10,6 +10,7 @@ Causal Triple Extension (2026-04-06):
 
 import re
 from datetime import datetime
+from typing import ClassVar
 
 from zettelforge.alias_resolver import AliasResolver
 from zettelforge.json_parse import extract_json
@@ -92,7 +93,7 @@ class NoteConstructor:
 
     # ===== Causal Triple Extraction (MAGMA-style) =====
 
-    CAUSAL_RELATIONS = [
+    CAUSAL_RELATIONS: ClassVar[list[str]] = [
         "causes",
         "enables",
         "targets",

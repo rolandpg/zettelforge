@@ -10,6 +10,7 @@ Conversational Entity Extension (RFC-001):
 """
 
 import atexit
+import contextlib
 import fcntl
 import json
 import os
@@ -17,6 +18,7 @@ import re
 import tempfile
 import threading
 from pathlib import Path
+from typing import ClassVar
 
 from zettelforge.json_parse import extract_json
 from zettelforge.log import get_logger
@@ -28,7 +30,7 @@ class EntityExtractor:
     """Extract entities from text using regex (CTI) and LLM (conversational) patterns."""
 
     # Regex fast-path for CTI entities — deterministic, zero-latency
-    REGEX_PATTERNS: dict[str, re.Pattern] = {
+    REGEX_PATTERNS: ClassVar[dict[str, re.Pattern]] = {
         "cve": re.compile(r"(CVE-\d{4}-\d{4,})", re.IGNORECASE),
         "intrusion_set": re.compile(
             r"\b((?:apt|unc|ta|fin|temp)\s*-?\s*\d+)\b",
@@ -67,7 +69,7 @@ class EntityExtractor:
     }
 
     # All entity types the system recognizes
-    ENTITY_TYPES: list[str] = [
+    ENTITY_TYPES: ClassVar[list[str]] = [
         # CTI (regex)
         "cve",
         "intrusion_set",
@@ -127,7 +129,7 @@ class EntityExtractor:
     _PERSON_PATTERN = re.compile(r"(?:^|\n)\s*([A-Z][a-z]{2,15}):", re.MULTILINE)
 
     # Common words that match the person pattern but aren't names
-    _NAME_STOPWORDS = {
+    _NAME_STOPWORDS: ClassVar[set[str]] = {
         "the",
         "and",
         "but",
@@ -436,10 +438,8 @@ class EntityIndexer:
         except Exception:
             # Best-effort cleanup; raise so caller observes the failure.
             if os.path.exists(tmp_path):
-                try:
+                with contextlib.suppress(OSError):
                     os.unlink(tmp_path)
-                except OSError:
-                    pass
             raise
 
     def add_note(self, note_id: str, entities: dict[str, list[str]]) -> None:
@@ -523,7 +523,7 @@ class EntityIndexer:
         query_lower = query.lower()
         results: dict[str, list[str]] = {}
         for etype, entities in self.index.items():
-            matches = [ev for ev in entities.keys() if ev.startswith(query_lower)][:limit]
+            matches = [ev for ev in entities if ev.startswith(query_lower)][:limit]
             if matches:
                 results[etype] = matches
         return results

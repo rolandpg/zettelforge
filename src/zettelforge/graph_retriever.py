@@ -90,4 +90,4 @@ class GraphRetriever:
                 to_node = self.kg.get_node_by_id(to_id)
                 if to_node and to_id not in visited:
                     step_label = f"{to_node['entity_type']}:{to_node['entity_value']}"
-                    queue.append((to_id, depth + 1, path + [step_label]))
+                    queue.append((to_id, depth + 1, [*path, step_label]))

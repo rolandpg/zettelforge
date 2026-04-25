@@ -9,6 +9,7 @@ WARNING-3: synchronous=NORMAL means the last transaction before an OS crash
 (power failure, kernel panic) may be lost.  Application-level crashes are safe.
 """
 
+import contextlib
 import json
 import sqlite3
 import threading
@@ -323,10 +324,8 @@ class SQLiteBackend(StorageBackend):
             if conn is None:
                 return
             self._conn = None
-            try:
+            with contextlib.suppress(Exception):
                 conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
-            except Exception:
-                pass
             conn.close()
 
     def health_check(self) -> dict[str, Any]:
@@ -689,7 +688,7 @@ class SQLiteBackend(StorageBackend):
                     "to_type": erow["to_type"],
                     "to_value": erow["to_value"],
                 }
-                new_path = path + [step]
+                new_path = [*path, step]
                 results.append(new_path)
                 _dfs(erow["to_node_id"], depth + 1, new_path)
 

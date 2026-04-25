@@ -67,11 +67,10 @@ class VectorRetriever:
         # Check if all zeros or all identical (deterministic mock)
         if all(v == 0.0 for v in vector):
             return False
-        # Check variance - real embeddings have variance
+        # Check variance — real embeddings have variance.
+        # Suspiciously low variance ⇒ likely zero/mock vector.
         var = np.var(vector)
-        if var < 0.001:  # Suspiciously low variance
-            return False
-        return True
+        return var >= 0.001
 
     def _ensure_note_embedding(self, note: MemoryNote) -> list[float] | None:
         """Ensure note has valid embedding, regenerating if necessary."""
