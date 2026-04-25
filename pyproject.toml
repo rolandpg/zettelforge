@@ -91,6 +91,7 @@ extensions = [
 web = [
     "fastapi>=0.100.0",
     "uvicorn>=0.20.0",
+    "psutil>=5.9.0",
 ]
 
 # LangChain integration
@@ -105,6 +106,9 @@ dev = [
     "mypy>=1.0.0",
     "ruff>=0.4.0",
     "langchain-core>=0.2.0",
+    "fastapi>=0.100.0",     # for test_web_api.py
+    "uvicorn>=0.20.0",      # for test_web_api.py
+    "psutil>=5.9.0",        # for test_web_api.py
 ]
 
 [project.urls]
@@ -149,6 +153,8 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "src/zettelforge/__init__.py" = ["F401", "E402"]  # re-exports and conditional imports
+# S104: web host binding to 0.0.0.0 is intentional (RFC-015 web UI)
+"src/zettelforge/config.py" = ["S104"]
 # T20 (print) is forbidden in production code (GOV-003), but every CLI
 # entrypoint legitimately uses print() for stdout output. The patterns
 # below scope T20 to library code only.

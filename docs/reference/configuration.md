@@ -286,7 +286,7 @@ class PIIConfig:
 
 | Key | Type | Default | Env Override | Description |
 |:----|:-----|:--------|:-------------|:------------|
-| `governance.pii.enabled` | `bool` | `False` | `ZETTELFORGE_PII_ENABLED` | Enable Microsoft Presidio PII detection during `remember()`. Soft dependency — requires `pip install zettelforge[pii]` to activate. With `enabled=true` but the SDK missing, `GovernanceValidator` logs `pii_validator_unavailable` at WARNING and continues with `_pii=None` (every PII codepath becomes a no-op pass-through). If `pii_validator.PIIValidator` itself imports cleanly but `presidio_analyzer` is missing, the deferred import inside `_ensure_loaded` raises `ImportError` on first `detect()` call instead — same user-visible failure mode, different layer. Either way the rest of the pipeline keeps working. |
+| `governance.pii.enabled` | `bool` | `False` | `ZETTELFORGE_PII_ENABLED` | Enable Microsoft Presidio PII detection during `remember()`. Soft dependency -- requires `pip install zettelforge[pii]` to activate. With `enabled=true` but the SDK missing, `GovernanceValidator` logs `pii_validator_unavailable` at WARNING and continues with `_pii=None` (every PII codepath becomes a no-op pass-through). |
 | `governance.pii.action` | `str` | `log` | `ZETTELFORGE_PII_ACTION` | Policy when PII is detected: `log` (warn-only, content passes through unchanged), `redact` (replace each finding with `redact_placeholder` before storage), or `block` (raise `PIIBlockedError` and refuse the write). |
 | `governance.pii.redact_placeholder` | `str` | `[REDACTED]` | -- | String substituted for each PII span when `action=redact`. |
 | `governance.pii.entities` | `list[str]` | `[]` (= all) | -- | Entity types to detect. Empty list = detect every Presidio-supported type. CTI allowlist (`IP_ADDRESS`, `URL`, `DOMAIN_NAME`) is always filtered out automatically since these are legitimate threat-intel indicators, not personal data. |
@@ -295,7 +295,23 @@ class PIIConfig:
 
 See [Configure PII Detection](../how-to/configure-pii.md) for the full Presidio setup guide.
 
+#### governance.limits (RFC-014)
+
+```python
+@dataclass
+class LimitsConfig:
+    max_content_length: int = 52428800
+    recall_timeout_seconds: float = 30.0
+```
+
+| Key | Type | Default | Env Override | Description |
+|:----|:-----|:--------|:-------------|:------------|
+| `governance.limits.max_content_length` | `int` | `52428800` | `ZETTELFORGE_LIMITS_MAX_CONTENT_LENGTH` | Maximum content length in bytes for `remember()`. 0 = unlimited. 50 MB default. |
+| `governance.limits.recall_timeout_seconds` | `float` | `30.0` | `ZETTELFORGE_LIMITS_RECALL_TIMEOUT` | Maximum seconds for a recall() query. 0 = unlimited. |
+
 ---
+
+### web (RFC-015)
 
 ### lance (RFC-009 Phase 1.5)
 
@@ -308,10 +324,32 @@ class LanceConfig:
 
 | Key | Type | Default | Env Override | Description |
 |:----|:-----|:--------|:-------------|:------------|
-| `lance.cleanup_interval_minutes` | `int` | `60` | -- | How often the LanceDB version-prune daemon wakes per shard. **Set `0` to disable the daemon entirely** — use only for diagnostics or when an external compaction process owns the data dir. |
+| `lance.cleanup_interval_minutes` | `int` | `60` | -- | How often the LanceDB version-prune daemon wakes per shard. **Set `0` to disable the daemon entirely** -- use only for diagnostics or when an external compaction process owns the data dir. |
 | `lance.cleanup_older_than_seconds` | `int` | `3600` | -- | Minimum age of a LanceDB version before it becomes prune-eligible. Lower values reclaim disk faster but increase the chance of pruning a version a concurrent reader is still using. The 3600 s (1 h) default is the conservative value validated against the 2026-04-24 Vigil incident; **do not lower below 600 s** without measuring concurrent-reader behaviour first. |
 
-**Operational impact.** Without this daemon, every `remember()` write appends an immutable version row to LanceDB. Over weeks of writes the version chain grows to multi-gigabyte overhead that quintuples `remember()` p95 latency (Vigil 2026-04-24: 5.66 GB version-chain → `remember()` p95 = 49.8 s; one-shot `cleanup_old_versions` shrank to 29 MB → p95 = 250 ms). The daemon ships enabled by default — you only need to touch this section if you've moved compaction to an out-of-process job.
+**Operational impact.** Without this daemon, every `remember()` write appends an immutable version row to LanceDB. Over weeks of writes the version chain grows to multi-gigabyte overhead that quintuples `remember()` p95 latency (Vigil 2026-04-24: 5.66 GB version-chain -> `remember()` p95 = 49.8 s; one-shot `cleanup_old_versions` shrank to 29 MB -> p95 = 250 ms). The daemon ships enabled by default -- you only need to touch this section if you've moved compaction to an out-of-process job.
+
+---
+
+### web (RFC-015)
+
+```python
+@dataclass
+class WebConfig:
+    enabled: bool = True
+    host: str = "0.0.0.0"
+    port: int = 8088
+    ui_dir: str = ""
+```
+
+| Key | Type | Default | Env Override | Description |
+|:----|:-----|:--------|:-------------|:------------|
+| `web.enabled` | `bool` | `True` | `ZETTELFORGE_WEB_ENABLED` | Enable the web management interface. Set `False` for library-only deployments. |
+| `web.host` | `str` | `0.0.0.0` | -- | Bind address for the FastAPI server. |
+| `web.port` | `int` | `8088` | `ZETTELFORGE_WEB_PORT` | Port for the FastAPI server. |
+| `web.ui_dir` | `str` | `""` | `ZETTELFORGE_WEB_UI_DIR` | Custom path to the SPA UI directory. Empty = `web/ui/` relative to project root. |
+
+See [Use the Web Management Interface](../how-to/use-web-interface.md) for setup steps and [Web API Reference](web-api.md) for endpoint documentation.
 
 ---
 
@@ -426,6 +464,14 @@ See [Configure OpenCTI Integration](../how-to/configure-opencti.md) for setup st
 | `ZETTELFORGE_LLM_FALLBACK` | `llm.fallback` | `ollama` |
 | `ZETTELFORGE_LLM_LOCAL_BACKEND` | `llm.local_backend` | `onnxruntime-genai` |
 
+### Web UI configuration (RFC-015)
+
+| Variable | Maps To | Example |
+|:---------|:--------|:--------|
+| `ZETTELFORGE_WEB_ENABLED` | `web.enabled` | `true` |
+| `ZETTELFORGE_WEB_PORT` | `web.port` | `8088` |
+| `ZETTELFORGE_WEB_UI_DIR` | `web.ui_dir` | `/opt/zettelforge/ui` |
+
 ### Enterprise-only (OpenCTI)
 
 | Variable | Maps To | Example |
@@ -533,9 +579,9 @@ llm:
 
 ZettelForge configuration uses a layered resolution system: environment variables override config.yaml, which overrides config.default.yaml, which overrides hardcoded dataclass defaults. Access configuration via `get_config()` which returns a cached `ZettelForgeConfig` singleton. Call `reload_config()` to force a re-read.
 
-**18 environment variables** are supported, covering storage (`AMEM_DATA_DIR`), TypeDB connection (`TYPEDB_HOST`, `TYPEDB_PORT`, `TYPEDB_DATABASE`, `TYPEDB_USERNAME`, `TYPEDB_PASSWORD`), backend selection (`ZETTELFORGE_BACKEND`), embedding provider (`ZETTELFORGE_EMBEDDING_PROVIDER`, `AMEM_EMBEDDING_URL`, `AMEM_EMBEDDING_MODEL`), LLM provider (`ZETTELFORGE_LLM_PROVIDER`, `ZETTELFORGE_LLM_MODEL`, `ZETTELFORGE_LLM_URL`, `ZETTELFORGE_LLM_API_KEY`, `ZETTELFORGE_LLM_TIMEOUT`, `ZETTELFORGE_LLM_MAX_RETRIES`, `ZETTELFORGE_LLM_FALLBACK`, `ZETTELFORGE_LLM_LOCAL_BACKEND`), and OpenCTI integration (`OPENCTI_URL`, `OPENCTI_TOKEN`, `OPENCTI_SYNC_INTERVAL`).
+**21 environment variables** are supported, covering storage (`AMEM_DATA_DIR`), TypeDB connection (`TYPEDB_HOST`, `TYPEDB_PORT`, `TYPEDB_DATABASE`, `TYPEDB_USERNAME`, `TYPEDB_PASSWORD`), backend selection (`ZETTELFORGE_BACKEND`), embedding provider (`ZETTELFORGE_EMBEDDING_PROVIDER`, `AMEM_EMBEDDING_URL`, `AMEM_EMBEDDING_MODEL`), LLM provider (`ZETTELFORGE_LLM_PROVIDER`, `ZETTELFORGE_LLM_MODEL`, `ZETTELFORGE_LLM_URL`, `ZETTELFORGE_LLM_API_KEY`, `ZETTELFORGE_LLM_TIMEOUT`, `ZETTELFORGE_LLM_MAX_RETRIES`, `ZETTELFORGE_LLM_FALLBACK`, `ZETTELFORGE_LLM_LOCAL_BACKEND`), web UI (`ZETTELFORGE_WEB_ENABLED`, `ZETTELFORGE_WEB_PORT`, `ZETTELFORGE_WEB_UI_DIR`), and OpenCTI integration (`OPENCTI_URL`, `OPENCTI_TOKEN`, `OPENCTI_SYNC_INTERVAL`).
 
-**13 config sections** exist: `storage` (data directory), `typedb` (Enterprise TypeDB connection parameters), `backend` (community default: sqlite), `embedding` (vector model and server), `llm` (language model for extraction/synthesis with provider, model, API key, timeout, retry, fallback, local_backend, and extra), `extraction` (two-phase pipeline settings), `retrieval` (vector search tuning), `synthesis` (RAG output control), `governance` (validation toggle), `cache` (query cache), `logging` (verbosity control), `lance` (LanceDB maintenance), and `opencti` (Enterprise only -- OpenCTI platform URL, token, and sync interval).
+**14 config sections** exist: `storage` (data directory), `typedb` (Enterprise TypeDB connection parameters), `backend` (community default: sqlite), `embedding` (vector model and server), `llm` (language model for extraction/synthesis with provider, model, API key, timeout, retry, fallback, local_backend, and extra), `extraction` (two-phase pipeline settings), `retrieval` (vector search tuning), `synthesis` (RAG output control), `governance` (validation toggle with pii and limits subsections), `cache` (query cache), `logging` (verbosity control), `lance` (LanceDB maintenance), `web` (web management interface host/port/ui_dir), and `opencti` (Enterprise only -- OpenCTI platform URL, token, and sync interval).
 
 **Key defaults:** Data stored in `~/.amem`. Backend is SQLite (TypeDB available via zettelforge-enterprise extension). Embedding via fastembed in-process with `nomic-embed-text-v1.5-Q` (768 dims, ONNX). LLM via Ollama at `http://localhost:11434` with `qwen3.5:9b` at temperature 0.1. The `local` provider uses `llama-cpp-python` in-process with `Qwen2.5-3B-Instruct-Q4_K_M.gguf`. Models download automatically on first use. The `litellm` provider (optional, `pip install zettelforge[litellm]`) routes to 100+ providers by model name prefix. Extraction produces up to 5 facts with importance >= 3. Retrieval returns 10 results with 0.25 similarity threshold and 2.5x entity boost. Synthesis uses `direct_answer` format with A+B tier notes and 3000 token context. Cache TTL is 300 seconds with 1024 max entries. Logging at INFO level.
 

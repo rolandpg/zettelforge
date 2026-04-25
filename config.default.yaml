@@ -394,32 +394,17 @@ governance:
 
 # ── LanceDB Maintenance (RFC-009 Phase 1.5) ─────────────────────────────────
 # Background daemon that prunes stale LanceDB version-history per shard.
-# Without it, every `remember()` write accumulates an immutable version
-# row; over weeks of writes this grows to multi-gigabyte version-chain
-# overhead that *quintuples* `remember()` p95 latency. The 2026-04-24
-# Vigil incident surfaced a 5.66 GB → 29 MB cleanup that collapsed
-# remember() p95 from 49.8s → 250ms. See RFC-009 Phase 1.5 + the
-# Phase 0.5 attribution doc for the empirical evidence.
-#
-# Operational impact:
-#   - cleanup_interval_minutes: how often the daemon wakes per table.
-#     0 disables the daemon entirely (use only for diagnostics or when
-#     you have an external compaction process).
-#   - cleanup_older_than_seconds: minimum age of a version before it
-#     becomes prune-eligible. Lower values reclaim disk faster but
-#     increase the chance of pruning a version a concurrent reader
-#     still references; the 3600s default is conservative.
 #
 # Examples:
-#   # Default — hourly, prune anything > 1 hour old
+#   # Default — clean up every hour, keep versions < 1 hour old
 #   cleanup_interval_minutes: 60
 #   cleanup_older_than_seconds: 3600
 #
-#   # Aggressive (high write volume, plenty of disk pressure)
+#   # Aggressive cleanup (high-ingestion environments)
 #   cleanup_interval_minutes: 15
-#   cleanup_older_than_seconds: 900
+#   cleanup_older_than_seconds: 600
 #
-#   # Disabled (operator runs `compact_lance` manually)
+#   # Disable cleanup entirely
 #   cleanup_interval_minutes: 0
 #
 lance:
@@ -427,7 +412,7 @@ lance:
   cleanup_older_than_seconds: 3600
 
 
-# ── Cache ───────────────────────────────────────────────────────────────────
+# ── Cache
 # In-memory cache for TypeDB query results. Reduces round-trips for
 # frequently accessed entities and relationships.
 #
@@ -474,3 +459,32 @@ logging:
   level: INFO
   log_intents: true
   log_causal: true
+
+
+# ── Web UI (RFC-015) ─────────────────────────────────────────────────────────
+# ZettelForge Web Management Interface — SPA served at GET /.
+#
+# Examples:
+#   # Default — enabled on 0.0.0.0:8088
+#   enabled: true
+#   host: 0.0.0.0
+#   port: 8088
+#
+#   # Custom port (e.g., behind nginx reverse proxy)
+#   enabled: true
+#   host: 127.0.0.1
+#   port: 9000
+#
+#   # Disable web UI entirely (library-only mode)
+#   enabled: false
+#
+# Env overrides:
+#   ZETTELFORGE_WEB_ENABLED=true
+#   ZETTELFORGE_WEB_PORT=8088
+#   ZETTELFORGE_WEB_UI_DIR=/path/to/ui
+#
+web:
+  enabled: true
+  host: 0.0.0.0
+  port: 8088
+
