@@ -263,7 +263,7 @@ class ConsolidationEngine:
                 domain_groups.setdefault(domain, []).append(note)
 
             # Consolidate each domain group
-            for domain, notes in domain_groups.items():
+            for _domain, notes in domain_groups.items():
                 if len(notes) < 2:
                     continue
 
@@ -278,7 +278,7 @@ class ConsolidationEngine:
 
                 # Identify notes sharing 2+ entities (candidates for merge)
                 merge_candidates = set()
-                for entity_key, note_ids in entity_map.items():
+                for _entity_key, note_ids in entity_map.items():
                     if len(note_ids) >= 2:
                         for nid in note_ids:
                             merge_candidates.add(nid)

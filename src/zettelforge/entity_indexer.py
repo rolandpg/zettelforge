@@ -350,7 +350,7 @@ class EntityExtractor:
             llm_results = self.extract_llm(text)
             # Merge LLM results with regex results (extend, don't overwrite)
             for etype, values in llm_results.items():
-                if etype in results and results[etype]:
+                if results.get(etype):
                     # Deduplicate across regex + LLM
                     merged = set(results[etype])
                     merged.update(values)

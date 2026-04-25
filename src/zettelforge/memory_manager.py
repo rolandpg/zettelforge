@@ -595,7 +595,7 @@ class MemoryManager:
             try:
                 import re as _re
 
-                import dateparser  # noqa: F401
+                import dateparser  # noqa: F401 — probe-import; raises ImportError when unavailable
 
                 # Extract date-like strings from query
                 date_patterns = _re.findall(
@@ -696,7 +696,15 @@ class MemoryManager:
                 if reranker is not None:
                     docs = [n.content.raw[:512] for n in results]
                     scores = list(reranker.rerank(query, docs))
-                    paired = sorted(zip(scores, results), key=lambda x: x[0], reverse=True)
+                    # B905: strict=True — scores and results have identical
+                    # length by construction (one score per doc), so a length
+                    # mismatch would be a programming error, not a silent
+                    # truncation bug.
+                    paired = sorted(
+                        zip(scores, results, strict=True),
+                        key=lambda x: x[0],
+                        reverse=True,
+                    )
                     results = [note for _, note in paired]
             except Exception:
                 self._logger.warning("reranking_failed_using_original_order", exc_info=True)

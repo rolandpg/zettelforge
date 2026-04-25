@@ -28,11 +28,11 @@ __all__ = [
     "LLMProvider",
     "LLMProviderConfigurationError",
     "LocalProvider",
-    "OllamaProvider",
     "MockProvider",
-    "register",
-    "get",
+    "OllamaProvider",
     "available",
+    "get",
+    "register",
     "reset",
 ]
 
