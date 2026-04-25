@@ -8,8 +8,8 @@ tags:
   - environment-variables
   - settings
   - deployment
-last_updated: "2026-04-16"
-version: "2.2.0"
+last_updated: "2026-04-25"
+version: "2.5.0"
 ---
 
 # Configuration Reference
@@ -127,21 +127,48 @@ class LLMConfig:
     temperature: float = 0.1
     timeout: float = 60.0
     max_retries: int = 2
-    fallback: str = ""             # "" preserves implicit local→ollama fallback
+    fallback: str = ""             # "" preserves implicit local->ollama fallback
+    local_backend: str = "llama-cpp-python"  # RFC-011
     extra: dict = field(default_factory=dict)
 ```
 
 | Key | Type | Default | Env Override | Description |
 |:----|:-----|:--------|:-------------|:------------|
-| `llm.provider` | `str` | `ollama` | `ZETTELFORGE_LLM_PROVIDER` | LLM provider name. Values shipped in core: `local` (in-process llama-cpp-python via `zettelforge[local]`), `ollama` (HTTP), `mock` (tests only). `openai_compat` and `anthropic` land in RFC-002 Phase 2/3. Third-party providers register via the `zettelforge.llm_providers` entry point. |
-| `llm.model` | `str` | `qwen3.5:9b` | `ZETTELFORGE_LLM_MODEL` | Model identifier. Meaning is provider-specific: Ollama tag (`qwen2.5:3b`), HuggingFace repo for local (`Qwen/Qwen2.5-3B-Instruct-GGUF`), OpenAI-compatible model name, or Anthropic model ID. |
-| `llm.url` | `str` | `http://localhost:11434` | `ZETTELFORGE_LLM_URL` | Base URL. Meaning is provider-specific — Ollama endpoint for `ollama`, `/v1/chat/completions` base for `openai_compat`, ignored for `local` and `anthropic`. |
-| `llm.api_key` | `str` | `""` | `ZETTELFORGE_LLM_API_KEY` | API key for authenticated providers. Accepts `${ENV_VAR}` references — never commit raw keys. Redacted from `repr(LLMConfig)`. |
-| `llm.temperature` | `float` | `0.1` | — | Sampling temperature. `0.0` = deterministic, `0.1` = near-deterministic (default), `0.7` = creative. |
-| `llm.timeout` | `float` | `60.0` | `ZETTELFORGE_LLM_TIMEOUT` | **Reserved for Phase 2+ HTTP providers.** Configured and env-overridable today, but the Phase 1 `ollama` provider does not apply it. Set now so your config is ready for the `openai_compat` / `anthropic` providers shipping in Phase 2. |
-| `llm.max_retries` | `int` | `2` | `ZETTELFORGE_LLM_MAX_RETRIES` | **Reserved for Phase 2+ HTTP providers.** Same story as `timeout` — the Phase 1 `ollama` provider does not retry. Phase 2 will respect `Retry-After` headers on 429. |
-| `llm.fallback` | `str` | `""` | `ZETTELFORGE_LLM_FALLBACK` | Backup provider invoked when the primary fails with a non-configuration error. Empty string preserves the implicit `local → ollama` fallback for backward compatibility; set explicitly to any other registered provider to route elsewhere. |
-| `llm.extra` | `dict` | `{}` | — | Provider-specific kwargs forwarded to the constructor. Example for `local`: `{filename: qwen2.5-3b-instruct-q4_k_m.gguf, n_ctx: 4096}`. String values inside `extra` also honour `${ENV_VAR}` resolution. |
+| `llm.provider` | `str` | `ollama` | `ZETTELFORGE_LLM_PROVIDER` | LLM provider name. Values shipped in core: `local` (in-process inference), `ollama` (HTTP), `litellm` (LiteLLM router to 100+ providers via `zettelforge[litellm]`), `mock` (tests only). Third-party providers register via the `zettelforge.llm_providers` entry point. |
+| `llm.model` | `str` | `qwen3.5:9b` | `ZETTELFORGE_LLM_MODEL` | Model identifier. Meaning is provider-specific: Ollama tag (`qwen2.5:3b`), HuggingFace repo for local (`Qwen/Qwen2.5-3B-Instruct-GGUF`), LiteLLM model name (`gpt-4o`, `claude-sonnet-4-20250514`, `gemini/gemini-2.0-flash`), OpenAI-compatible model name, or Anthropic model ID. |
+| `llm.url` | `str` | `http://localhost:11434` | `ZETTELFORGE_LLM_URL` | Base URL. Meaning is provider-specific -- Ollama endpoint for `ollama`, `/v1/chat/completions` base for `openai_compat`, ignored for `local` and `litellm`. |
+| `llm.api_key` | `str` | `""` | `ZETTELFORGE_LLM_API_KEY` | API key for authenticated providers (`litellm`, `openai_compat`). Accepts `${ENV_VAR}` references -- never commit raw keys. Redacted from `repr(LLMConfig)`. For `litellm`, you may also rely on standard environment variables (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, etc.) instead of config. |
+| `llm.temperature` | `float` | `0.1` | -- | Sampling temperature. `0.0` = deterministic, `0.1` = near-deterministic (default), `0.7` = creative. |
+| `llm.timeout` | `float` | `60.0` | `ZETTELFORGE_LLM_TIMEOUT` | Request timeout in seconds. Applied by `ollama` (RFC-010) and `litellm` providers. |
+| `llm.max_retries` | `int` | `2` | `ZETTELFORGE_LLM_MAX_RETRIES` | Number of retries on transient failure. Applied by `litellm` (via `num_retries` kwarg). |
+| `llm.fallback` | `str` | `""` | `ZETTELFORGE_LLM_FALLBACK` | Backup provider invoked when the primary fails with a non-configuration error. Empty string preserves the implicit `local -> ollama` fallback for backward compatibility; set explicitly to any other registered provider to route elsewhere. |
+| `llm.local_backend` | `str` | `llama-cpp-python` | `ZETTELFORGE_LLM_LOCAL_BACKEND` | In-process inference engine when `provider: local`. Options: `llama-cpp-python` (GGUF, default, requires `zettelforge[local]`), `onnxruntime-genai` (ONNX, requires `zettelforge[local-onnx]`). Ignored for all other providers. |
+| `llm.extra` | `dict` | `{}` | -- | Provider-specific kwargs forwarded to the constructor. String values inside `extra` also honour `${ENV_VAR}` resolution. Common uses: `{filename: qwen2.5-3b-instruct-q4_k_m.gguf, n_ctx: 4096}` for `local` provider; `{provider: rocm}` for `onnxruntime-genai` execution provider selection; `{drop_params: true}` for `litellm`. |
+
+#### Provider quick-reference
+
+| Provider | Install | Config Example | Model Format | Notes |
+|:---------|:--------|:---------------|:-------------|:------|
+| `local` | `pip install zettelforge[local]` | `provider: local` + `local_backend: llama-cpp-python` | HuggingFace GGUF repo ID | In-process, fully offline. See `local_backend` for engine selection. |
+| `local` + onnx | `pip install zettelforge[local-onnx]` | `provider: local` + `local_backend: onnxruntime-genai` | HuggingFace ONNX repo ID | In-process, ROCm/DirectML/CoreML support. |
+| `ollama` | core (no extra) | `provider: ollama` + `url: http://localhost:11434` | Ollama tag (`qwen3.5:9b`) | Requires `ollama serve` running. |
+| `litellm` | `pip install zettelforge[litellm]` | `provider: litellm` + `model: gpt-4o` | LiteLLM model name | Routes to 100+ providers by model prefix. |
+| `mock` | core (no extra) | `provider: mock` | N/A | Deterministic canned responses for testing. |
+
+#### LiteLLM model prefix examples
+
+LiteLLM routes requests to the correct provider based on model name prefix. The `model` field determines the backend automatically -- no separate config needed.
+
+| Model Name | Routes To | Required Env Var |
+|:-----------|:----------|:-----------------|
+| `gpt-4o`, `gpt-4o-mini` | OpenAI | `OPENAI_API_KEY` |
+| `claude-sonnet-4-20250514` | Anthropic | `ANTHROPIC_API_KEY` |
+| `gemini/gemini-2.0-flash` | Google Gemini | `GOOGLE_API_KEY` |
+| `groq/llama-3.3-70b-versatile` | Groq | `GROQ_API_KEY` |
+| `together_ai/meta-llama/Llama-3.3-70B` | Together AI | `TOGETHER_API_KEY` |
+| `openrouter/anthropic/claude-3.5-sonnet` | OpenRouter | `OPENROUTER_API_KEY` |
+| `bedrock/anthropic.claude-3-sonnet-v1` | AWS Bedrock | `AWS_ACCESS_KEY_ID` + `AWS_SECRET_ACCESS_KEY` |
+| `vertex_ai/claude-3-sonnet@20240229` | Google Vertex | `GOOGLE_APPLICATION_CREDENTIALS` |
 
 ---
 
@@ -279,7 +306,7 @@ class OpenCTIConfig:
 | Key | Type | Default | Env Override | Description |
 |:----|:-----|:--------|:-------------|:------------|
 | `opencti.url` | `str` | `http://localhost:8080` | `OPENCTI_URL` | Base URL of the OpenCTI platform. Use `https://` for cloud deployments. |
-| `opencti.token` | `str` | `""` | `OPENCTI_TOKEN` | OpenCTI API token. **Always set via `OPENCTI_TOKEN` — never commit a token to `config.yaml`.** |
+| `opencti.token` | `str` | `""` | `OPENCTI_TOKEN` | OpenCTI API token. **Always set via `OPENCTI_TOKEN` -- never commit a token to `config.yaml`.** |
 | `opencti.sync_interval` | `int` | `0` | `OPENCTI_SYNC_INTERVAL` | Seconds between automatic pulls from OpenCTI. Set `0` to disable auto-sync and pull manually. |
 
 **Minimal opencti config.yaml block:**
@@ -311,6 +338,8 @@ See [Configure OpenCTI Integration](../how-to/configure-opencti.md) for setup st
 
 ## Environment Variables Summary
 
+### General configuration
+
 | Variable | Maps To | Example |
 |:---------|:--------|:--------|
 | `AMEM_DATA_DIR` | `storage.data_dir` | `/data/zettelforge` |
@@ -323,19 +352,31 @@ See [Configure OpenCTI Integration](../how-to/configure-opencti.md) for setup st
 | `ZETTELFORGE_EMBEDDING_PROVIDER` | `embedding.provider` | `ollama` |
 | `AMEM_EMBEDDING_URL` | `embedding.url` | `http://gpu-box:11434` |
 | `AMEM_EMBEDDING_MODEL` | `embedding.model` | `nomic-embed-text-v1.5-Q` |
-| `ZETTELFORGE_LLM_PROVIDER` | `llm.provider` | `ollama` |
-| `ZETTELFORGE_LLM_MODEL` | `llm.model` | `qwen2.5:7b` |
+| `ZETTELFORGE_LLM_NER_ENABLED` | `llm_ner.enabled` | `true` |
+
+### LLM configuration
+
+| Variable | Maps To | Example |
+|:---------|:--------|:--------|
+| `ZETTELFORGE_LLM_PROVIDER` | `llm.provider` | `litellm` |
+| `ZETTELFORGE_LLM_MODEL` | `llm.model` | `gpt-4o` |
 | `ZETTELFORGE_LLM_URL` | `llm.url` | `http://gpu-box:11434` |
-| `ZETTELFORGE_LLM_API_KEY` | `llm.api_key` | `sk-…` |
+| `ZETTELFORGE_LLM_API_KEY` | `llm.api_key` | `sk-...` |
 | `ZETTELFORGE_LLM_TIMEOUT` | `llm.timeout` | `60` |
 | `ZETTELFORGE_LLM_MAX_RETRIES` | `llm.max_retries` | `2` |
 | `ZETTELFORGE_LLM_FALLBACK` | `llm.fallback` | `ollama` |
-| `ZETTELFORGE_LLM_NER_ENABLED` | `llm_ner.enabled` | `true` |
-| `OPENCTI_URL` | `Enterprise only: opencti.url` | `https://opencti.corp.internal` |
-| `OPENCTI_TOKEN` | `Enterprise only: opencti.token` | `abc123...` |
-| `OPENCTI_SYNC_INTERVAL` | `Enterprise only: opencti.sync_interval` | `3600` |
+| `ZETTELFORGE_LLM_LOCAL_BACKEND` | `llm.local_backend` | `onnxruntime-genai` |
+
+### Enterprise-only (OpenCTI)
+
+| Variable | Maps To | Example |
+|:---------|:--------|:--------|
+| `OPENCTI_URL` | `opencti.url` | `https://opencti.corp.internal` |
+| `OPENCTI_TOKEN` | `opencti.token` | `abc123...` |
+| `OPENCTI_SYNC_INTERVAL` | `opencti.sync_interval` | `3600` |
 
 **Note:** The `opencti` configuration section and `OPENCTI_*` environment-variable mapping are implemented in the Enterprise package. In Community builds, these values are ignored by `src/zettelforge/config.py`.
+
 ---
 
 ## Minimal config.yaml
@@ -357,14 +398,88 @@ llm:
 
 ---
 
+## Example Configurations by Use Case
+
+### Local in-process (fully offline, default)
+
+```yaml
+llm:
+  provider: local
+  model: Qwen/Qwen2.5-3B-Instruct-GGUF
+  extra:
+    filename: qwen2.5-3b-instruct-q4_k_m.gguf
+    n_ctx: 4096
+```
+
+### Local in-process with ONNX (AMD GPU)
+
+```yaml
+llm:
+  provider: local
+  local_backend: onnxruntime-genai
+  model: microsoft/Phi-3-mini-4k-instruct-onnx
+  extra:
+    filename: phi3-mini-4k-instruct-q4.onnx
+    provider: rocm
+```
+
+### Ollama (default config)
+
+```yaml
+llm:
+  provider: ollama
+  model: qwen3.5:9b
+  url: http://localhost:11434
+```
+
+### LiteLLM -- OpenAI
+
+```yaml
+llm:
+  provider: litellm
+  model: gpt-4o
+  api_key: ${OPENAI_API_KEY}
+```
+
+### LiteLLM -- Anthropic
+
+```yaml
+llm:
+  provider: litellm
+  model: claude-sonnet-4-20250514
+  api_key: ${ANTHROPIC_API_KEY}
+```
+
+### LiteLLM -- multiple providers via environment variables
+
+```yaml
+llm:
+  provider: litellm
+  model: gpt-4o            # Switch model to change provider
+  # API keys read from env: OPENAI_API_KEY, ANTHROPIC_API_KEY, etc.
+```
+
+### LiteLLM -- Groq (fast inference)
+
+```yaml
+llm:
+  provider: litellm
+  model: groq/llama-3.3-70b-versatile
+  api_key: ${GROQ_API_KEY}
+```
+
+---
+
 ## LLM Quick Reference
 
 ZettelForge configuration uses a layered resolution system: environment variables override config.yaml, which overrides config.default.yaml, which overrides hardcoded dataclass defaults. Access configuration via `get_config()` which returns a cached `ZettelForgeConfig` singleton. Call `reload_config()` to force a re-read.
 
-**16 environment variables** are supported, covering storage (`AMEM_DATA_DIR`), TypeDB connection (`TYPEDB_HOST`, `TYPEDB_PORT`, `TYPEDB_DATABASE`, `TYPEDB_USERNAME`, `TYPEDB_PASSWORD`), backend selection (`ZETTELFORGE_BACKEND`), embedding provider (`ZETTELFORGE_EMBEDDING_PROVIDER`, `AMEM_EMBEDDING_URL`, `AMEM_EMBEDDING_MODEL`), LLM provider (`ZETTELFORGE_LLM_PROVIDER`, `ZETTELFORGE_LLM_MODEL`, `ZETTELFORGE_LLM_URL`), and OpenCTI integration (`OPENCTI_URL`, `OPENCTI_TOKEN`, `OPENCTI_SYNC_INTERVAL`).
+**18 environment variables** are supported, covering storage (`AMEM_DATA_DIR`), TypeDB connection (`TYPEDB_HOST`, `TYPEDB_PORT`, `TYPEDB_DATABASE`, `TYPEDB_USERNAME`, `TYPEDB_PASSWORD`), backend selection (`ZETTELFORGE_BACKEND`), embedding provider (`ZETTELFORGE_EMBEDDING_PROVIDER`, `AMEM_EMBEDDING_URL`, `AMEM_EMBEDDING_MODEL`), LLM provider (`ZETTELFORGE_LLM_PROVIDER`, `ZETTELFORGE_LLM_MODEL`, `ZETTELFORGE_LLM_URL`, `ZETTELFORGE_LLM_API_KEY`, `ZETTELFORGE_LLM_TIMEOUT`, `ZETTELFORGE_LLM_MAX_RETRIES`, `ZETTELFORGE_LLM_FALLBACK`, `ZETTELFORGE_LLM_LOCAL_BACKEND`), and OpenCTI integration (`OPENCTI_URL`, `OPENCTI_TOKEN`, `OPENCTI_SYNC_INTERVAL`).
 
-**12 config sections** exist: `storage` (data directory), `typedb` (Enterprise TypeDB connection parameters), `backend` (community default: sqlite), `embedding` (vector model and server), `llm` (language model for extraction/synthesis), `extraction` (two-phase pipeline settings), `retrieval` (vector search tuning), `synthesis` (RAG output control), `governance` (validation toggle), `cache` (query cache), `logging` (verbosity control), and `opencti` (Enterprise only — OpenCTI platform URL, token, and sync interval).
+**13 config sections** exist: `storage` (data directory), `typedb` (Enterprise TypeDB connection parameters), `backend` (community default: sqlite), `embedding` (vector model and server), `llm` (language model for extraction/synthesis with provider, model, API key, timeout, retry, fallback, local_backend, and extra), `extraction` (two-phase pipeline settings), `retrieval` (vector search tuning), `synthesis` (RAG output control), `governance` (validation toggle), `cache` (query cache), `logging` (verbosity control), `lance` (LanceDB maintenance), and `opencti` (Enterprise only -- OpenCTI platform URL, token, and sync interval).
 
-**Key defaults:** Data stored in `~/.amem`. Backend is SQLite (TypeDB available via zettelforge-enterprise extension). Embedding via fastembed in-process with `nomic-embed-text-v1.5-Q` (768 dims, ONNX). LLM via llama-cpp-python in-process with `Qwen2.5-3B-Instruct-Q4_K_M.gguf` at temperature 0.1. Models download automatically on first use. Extraction produces up to 5 facts with importance >= 3. Retrieval returns 10 results with 0.25 similarity threshold and 2.5x entity boost. Synthesis uses `direct_answer` format with A+B tier notes and 3000 token context. Cache TTL is 300 seconds with 1024 max entries. Logging at INFO level.
+**Key defaults:** Data stored in `~/.amem`. Backend is SQLite (TypeDB available via zettelforge-enterprise extension). Embedding via fastembed in-process with `nomic-embed-text-v1.5-Q` (768 dims, ONNX). LLM via Ollama at `http://localhost:11434` with `qwen3.5:9b` at temperature 0.1. The `local` provider uses `llama-cpp-python` in-process with `Qwen2.5-3B-Instruct-Q4_K_M.gguf`. Models download automatically on first use. The `litellm` provider (optional, `pip install zettelforge[litellm]`) routes to 100+ providers by model name prefix. Extraction produces up to 5 facts with importance >= 3. Retrieval returns 10 results with 0.25 similarity threshold and 2.5x entity boost. Synthesis uses `direct_answer` format with A+B tier notes and 3000 token context. Cache TTL is 300 seconds with 1024 max entries. Logging at INFO level.
 
-**For air-gapped deployments:** Keep `backend: sqlite` and pre-download embedding/LLM models before going offline. Legacy JSONL files are migration input, not the community default backend.
+**For air-gapped deployments:** Keep `backend: sqlite` and use `provider: local` with `llama-cpp-python` or `onnxruntime-genai`. Pre-download embedding and LLM models before going offline. Legacy JSONL files are migration input, not the community default backend.
+
+**For cloud-connected deployments:** Use `provider: litellm` with `pip install zettelforge[litellm]` to access OpenAI, Anthropic, Google, Groq, Together AI, AWS Bedrock, and 100+ other providers through a single interface. Set `api_key` in config or rely on standard environment variables.

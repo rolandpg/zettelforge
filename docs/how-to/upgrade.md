@@ -16,12 +16,52 @@ the full list of changes per release see
 
 ## Upgrade matrix
 
-| From → To | Required action | Data migration? |
+| From -> To | Required action | Data migration? |
 |-----------|-----------------|-----------------|
-| 2.2.x → 2.2.y (patch) | `pip install -U zettelforge` | No |
-| 2.1.x → 2.2.x | `pip install -U zettelforge` + run JSONL → SQLite migration | **Yes** |
-| 2.0.x → 2.2.x | Upgrade in two hops via 2.1.x is recommended but not required | **Yes** |
-| < 2.0 | Not supported — export notes manually, fresh-install 2.2.x |
+| 2.4.x -> 2.5.x | `pip install -U zettelforge` | No |
+| 2.2.x -> 2.4.x | `pip install -U zettelforge` | No |
+| 2.1.x -> 2.2.x | `pip install -U zettelforge` + run JSONL -> SQLite migration | **Yes** |
+| 2.0.x -> 2.2.x | Upgrade in two hops via 2.1.x is recommended but not required | **Yes** |
+| < 2.0 | Not supported -- export notes manually, fresh-install 2.2.x |
+
+## 2.2.x -> 2.5.x
+
+No data migration required. The following new features are available as optional extras:
+
+### Local LLM backend selection (RFC-011)
+
+`provider: local` now supports two in-process inference engines via `local_backend`:
+
+- **`llama-cpp-python`** (default) -- GGUF models. No config change needed if you already use `provider: local`.
+- **`onnxruntime-genai`** -- ONNX models with AMD ROCm, Intel OpenVINO, Apple CoreML support. Requires `pip install zettelforge[local-onnx]` and `local_backend: onnxruntime-genai` in config.
+
+The `LlamaCppBackend` code was extracted from `LocalProvider` into its own class. Behavior is identical for existing users. See the [Configuration Reference](reference/configuration.md#llm) for example configs.
+
+### LiteLLM unified provider (RFC-012)
+
+A new `provider: litellm` option routes to 100+ LLM providers through a single interface, replacing the need for separate `openai_compat`, `anthropic`, `bedrock`, and `vertex` providers.
+
+To use: `pip install zettelforge[litellm]`, then configure:
+
+```yaml
+llm:
+  provider: litellm
+  model: gpt-4o
+  api_key: ${OPENAI_API_KEY}
+```
+
+Model name prefix routing determines the backend automatically: `gpt-4o` -> OpenAI, `claude-sonnet-4-20250514` -> Anthropic, `groq/llama-3.3-70b-versatile` -> Groq, etc.
+
+### Steps
+
+1. `pip install -U 'zettelforge>=2.5.0'`
+2. (Optional) Install optional extras:
+   ```bash
+   pip install zettelforge[local-onnx]   # ONNX local inference
+   pip install zettelforge[litellm]      # LiteLLM cloud provider routing
+   pip install zettelforge[local-all]    # both local backends
+   ```
+3. Update `config.yaml` if you want to use new providers (existing configs continue to work unchanged).
 
 ## 2.1.x → 2.2.x
 
