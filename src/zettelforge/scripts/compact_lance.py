@@ -16,25 +16,28 @@ Usage::
         --data-dir ~/.openclaw/workspace-vigil/.zettelforge_vigil \\
         --dry-run
 
-    # Compact one shard only
+    # Compact one shard only — --force is required for any mutating mode
     python -m zettelforge.scripts.compact_lance \\
         --data-dir ~/.openclaw/workspace-vigil/.zettelforge_vigil \\
-        --table notes_cti
+        --table notes_cti --force
 
     # Compact every shard in the vectordb/ subtree
     python -m zettelforge.scripts.compact_lance \\
-        --data-dir ~/.openclaw/workspace-vigil/.zettelforge_vigil --all
+        --data-dir ~/.openclaw/workspace-vigil/.zettelforge_vigil --all --force
 
     # Use optimize() instead of compact_files() — also prunes old versions
     python -m zettelforge.scripts.compact_lance \\
         --data-dir ~/.openclaw/workspace-vigil/.zettelforge_vigil --all \\
-        --mode optimize
+        --mode optimize --force
 
 Safety notes
 ------------
 * ``compact_files()`` is safe alongside concurrent readers. Concurrent
   writers are in principle allowed by LanceDB but are not recommended
   for a one-shot run — prefer to quiesce agents writing to the table.
+* Any mutating mode requires the explicit ``--force`` flag. Without it
+  the script refuses to proceed and exits with code 2. Dry-run runs
+  freely.
 * ``optimize()`` with ``delete_unverified=True`` is NOT used here; that
   flag requires exclusive access and we don't assume it.
 * Dry-run never touches the data. It only measures.
@@ -46,6 +49,7 @@ Safety notes
 from __future__ import annotations
 
 import argparse
+import dataclasses
 import json
 import sys
 import time
@@ -129,13 +133,7 @@ def _process_one(
         else:  # "compact"
             metrics = table.compact_files()
         report.elapsed_seconds = round(time.perf_counter() - t0, 2)
-        # Lance returns a metrics object; best-effort serialize any public fields
-        if metrics is not None:
-            report.lance_metrics = {
-                k: getattr(metrics, k)
-                for k in dir(metrics)
-                if not k.startswith("_") and not callable(getattr(metrics, k, None))
-            }
+        report.lance_metrics = _serialize_lance_metrics(metrics)
     except Exception as exc:
         report.error = f"{mode} failed after {round(time.perf_counter() - t0, 2)}s: {exc}"
         return report
@@ -143,6 +141,36 @@ def _process_one(
     report.after_fragments = _count_fragments(lance_dir)
     report.after_bytes = _dir_size_bytes(lance_dir)
     return report
+
+
+def _serialize_lance_metrics(metrics: Any) -> Dict[str, Any]:
+    """Best-effort serialize a Lance metrics object.
+
+    Lance returns dataclass-shaped objects whose layout shifts between
+    minor versions. Use ``dataclasses.asdict`` when applicable for nested
+    fidelity, otherwise fall back to enumerating public attributes with a
+    per-attribute ``try``/``except`` so a single misbehaving property
+    cannot kill the script after compaction has already mutated the data.
+    """
+    if metrics is None:
+        return {}
+    if dataclasses.is_dataclass(metrics) and not isinstance(metrics, type):
+        try:
+            return dataclasses.asdict(metrics)
+        except Exception:
+            pass  # fall through to attribute enumeration
+    out: Dict[str, Any] = {}
+    for k in dir(metrics):
+        if k.startswith("_"):
+            continue
+        try:
+            v = getattr(metrics, k)
+        except Exception:
+            continue
+        if callable(v):
+            continue
+        out[k] = v
+    return out
 
 
 def _parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
@@ -172,6 +200,15 @@ def _parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         "--dry-run",
         action="store_true",
         help="Measure before-state and exit without touching the tables.",
+    )
+    p.add_argument(
+        "--force",
+        action="store_true",
+        help=(
+            "Required for any non-dry-run mutation. Acknowledges that "
+            "writers should be quiesced; without it, mutating modes refuse "
+            "to proceed."
+        ),
     )
     p.add_argument(
         "--output",
@@ -214,6 +251,18 @@ def main(argv: Optional[List[str]] = None) -> int:
         args.dry_run = True
 
     mode = "dry-run" if args.dry_run else args.mode
+
+    # Mutating runs require --force as an explicit safety acknowledgement.
+    # compact_files() / optimize() are safe alongside concurrent readers but
+    # not recommended alongside concurrent writers. Make the operator opt in.
+    if mode != "dry-run" and not args.force:
+        print(
+            f"refusing to run mode={mode!r} without --force; pass --force to "
+            "acknowledge that writers should be quiesced, or use --dry-run.",
+            file=sys.stderr,
+        )
+        return 2
+
     db = lancedb.connect(str(vectordb_dir))
 
     reports: List[TableReport] = []
@@ -227,18 +276,31 @@ def main(argv: Optional[List[str]] = None) -> int:
         "tables": [asdict(r) for r in reports],
         "totals": {
             "before_fragments": sum(r.before_fragments for r in reports),
-            "after_fragments": sum((r.after_fragments or r.before_fragments) for r in reports),
+            # Use ``is not None`` rather than truthiness — a successful
+            # compact-to-zero on an empty table would otherwise fall back
+            # to the before-state and silently misreport the result.
+            "after_fragments": sum(
+                r.after_fragments if r.after_fragments is not None else r.before_fragments
+                for r in reports
+            ),
             "before_bytes": sum(r.before_bytes for r in reports),
-            "after_bytes": sum((r.after_bytes or r.before_bytes) for r in reports),
+            "after_bytes": sum(
+                r.after_bytes if r.after_bytes is not None else r.before_bytes for r in reports
+            ),
             "elapsed_seconds": round(sum(r.elapsed_seconds or 0.0 for r in reports), 2),
-            "errors": [r.error for r in reports if r.error],
+            "errors": [{"table": r.table, "error": r.error} for r in reports if r.error],
         },
     }
 
     text = json.dumps(payload, indent=2, default=str)
     print(text)
     if args.output:
-        Path(args.output).expanduser().write_text(text, encoding="utf-8")
+        try:
+            Path(args.output).expanduser().write_text(text, encoding="utf-8")
+        except OSError as exc:
+            # Stdout already carries the report — surface the write failure
+            # without overriding the operation's success/failure exit code.
+            print(f"warning: could not write report to {args.output}: {exc}", file=sys.stderr)
 
     return 0 if not payload["totals"]["errors"] else 1
 
