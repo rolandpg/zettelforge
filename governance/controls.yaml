@@ -34,6 +34,23 @@ controls:
         ci_step: "Test with pytest"
         tool: "pytest-cov --cov-fail-under=67"
 
+  GOV-009:
+    name: Dependency Management
+    category: Supply Chain
+    enforcement: ci
+    rules:
+      - id: vulnerability_scanning
+        description: "Audit dependencies for known vulnerabilities on every PR"
+        ci_step: "Audit dependencies (any reported vuln blocks)"
+        tool: "pip-audit --strict --vulnerability-service=osv"
+      # Snyk Open Source / Code (SCA / SAST) live in a separate workflow
+      # (.github/workflows/snyk-security.yml) and are part of GOV-009
+      # in spirit. The spec-drift validator currently inspects ci.yml
+      # only, so they are not declared as ci_step rules here to avoid
+      # tripping test_ci_step_references_exist_in_workflow. Broadening
+      # the validator to walk all workflows is tracked as a separate
+      # follow-up.
+
   GOV-011:
     name: Access Control & Input Validation
     category: Security
