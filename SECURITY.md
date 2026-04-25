@@ -103,18 +103,41 @@ The following components are covered by this policy:
 
 ## Known Security Architecture
 
+See [THREAT_MODEL.md](docs/THREAT_MODEL.md) for the complete STRIDE threat model.
+
 ### Data at Rest
 
 - Notes, the knowledge graph, and the entity index are stored in a local
   SQLite database (WAL mode) under the configured data directory. No
-  encryption at rest is applied by ZettelForge itself — encrypt the
+  encryption at rest is applied by ZettelForge itself -- encrypt the
   filesystem or volume at the OS level for sensitive deployments.
 - LanceDB vector index files live alongside the SQLite database and
   carry the same recommendation.
 - Legacy v2.1.x deployments that still use JSONL (`notes.jsonl`,
   `kg_nodes.jsonl`, `kg_edges.jsonl`, `entity_index.json`) should run
-  `scripts/migrate_jsonl_to_sqlite.py` — the JSONL paths are no longer
+  `scripts/migrate_jsonl_to_sqlite.py` -- the JSONL paths are no longer
   the default but remain supported as a migration input.
+
+### PII Protection
+
+- As of v2.5.0 (RFC-013), optional PII detection via Microsoft Presidio
+  scans content before `remember()` storage. Three modes: log (discovery),
+  redact (compliance), block (strict). Disabled by default. Requires
+  `pip install zettelforge[pii]` to activate.
+- Raw PII text is never written to structured logs. Only entity type and
+  detection score are recorded.
+
+### LLM Provider Security
+
+- Four providers: `local` (in-process, no network), `ollama` (localhost
+  HTTP), `litellm` (cloud APIs), `mock` (testing). Each is configurable
+  via `llm.provider` in config.yaml.
+- `local` provider is fully offline. `ollama` runs on localhost only.
+  `litellm` makes outbound HTTPS calls to configured cloud APIs.
+- API keys use `${ENV_VAR}` resolution -- never committed to YAML.
+  Redacted from all log output via `LLMConfig.__repr__`.
+- Provider timeout is configurable (default 60s). LiteLLM provider
+  supports configurable retry count.
 
 ### Injection Defenses
 
