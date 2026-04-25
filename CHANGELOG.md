@@ -6,6 +6,22 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [2.4.3] - 2026-04-25
+
+Patch release. Three small but consequential fixes that landed during the post-v2.4.2 Vigil live-test session, plus the standalone `compact_lance` maintenance script and Nexus's Tier 0/1/2 LLM observability instrumentation.
+
+### Added
+
+- **OCSF `metadata.product.version` self-correct** (#96). `ocsf.py:_resolve_product_version()` now prefers the source `pyproject.toml` reachable from `__file__` and falls back to `importlib.metadata.version("zettelforge")`. Editable installs — where `git checkout vX.Y.Z` updates the source tree but not the installed-metadata record — no longer emit stale version strings. Observed live on Vigil 2026-04-24: v2.4.2 source was emitting `product.version=2.4.1` events because the editable-install metadata hadn't been refreshed.
+- **`ZETTELFORGE_LOG_LEVEL` env var honored** (#96). `log.py:get_logger()` now resolves the log level via env var → `config.yaml log.level` → INFO default. Operators can flip DEBUG without editing code or restarting agent boot order. Resolves the "config.yaml `log.level=DEBUG` was dead code" trap hit on Vigil 2026-04-24, where the auto-configure hardcoded INFO and locked `_configured=True` before any caller could read config.
+- **Fastembed preload** (#96). New `vector_memory.preload_embedding_model()` invoked from `MemoryManager.__init__`. Moves the ~800 ms fastembed model-load cost off the first `remember()` and onto agent startup. Best-effort, no-op when `provider != fastembed`. Phase 0.5 measurement: cold `construct=799ms` vs warm `construct=37ms`.
+- **`compact_lance` maintenance script** (#94). New `python -m zettelforge.scripts.compact_lance` for offline LanceDB shard maintenance. Discovers all `<name>.lance/` tables under `<data-dir>/vectordb/`, supports `--dry-run` / `--table` / `--all` / `--mode {compact,optimize}` / `--force`, emits a per-table JSON report with before/after fragment count, on-disk bytes, row count, and elapsed seconds. Operationalized the Phase 0.5 cleanup intervention (see "Vigil incident response" below).
+- **Tier 0/1/2 LLM observability** (#95, Nexus). `ollama_provider.py` now logs every LLM call (model, prompt_chars, response_chars, response_preview, prompt_preview, duration_ms, eval_count, prompt_eval_count, done_reason). `memory_evolver.py` retries log prompt and raw response previews instead of just `neighbor_id`. `fact_extractor.py` empty completions now emit `empty_completion_returned` instead of silently returning `[]`. `entity_indexer.py` LLM extractions log prompt previews. `structlog.contextvars`-based `trace_id` propagates through `remember()` so every event in a single note's pipeline shares one correlation key.
+
+### Operational notes
+
+The 2026-04-24/25 Vigil live-test session — driven by the v2.4.2 Phase 0.5 instrumentation — found and fixed a 5.66 GB LanceDB version-history bloat on Vigil's `notes_cti` shard. `cleanup_old_versions()` shrank it 5.69 GB → 29 MB and collapsed `remember()` p95 from 49.8 s → ~250 ms. Full evidence in `docs/superpowers/research/2026-04-25-phase-0.5-attribution.md`. The periodic-cleanup feature itself ships in v2.5.0 as RFC-009 Phase 1.5; the v2.4.3 `compact_lance` script supports the one-shot operator workflow until then.
+
 ## [2.4.2] - 2026-04-24
 
 Patch release bundling the RFC-010 enrichment-pipeline hotfix with the

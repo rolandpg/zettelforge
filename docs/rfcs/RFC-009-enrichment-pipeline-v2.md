@@ -108,6 +108,62 @@ Normative: no code path other than the worker pool and the sweeper SHALL call th
 
 ---
 
+## Section 1.5: LanceDB version cleanup
+
+**Added 2026-04-25 after Phase 0.5 confirmed end-to-end.** This section did not exist in v1.0/v1.1 of the RFC; the original draft assumed the LanceDB write was a black-box hot spot to be moved off the synchronous path via the F03 outbox extension. Phase 0.5 instrumentation (v2.4.2) and the post-cleanup workload retest (2026-04-25T02:34Z) established that the dominant cost is `LanceStore._index_in_lance()` walking an unbounded version chain, not anything intrinsic to vector indexing. Periodic `cleanup_old_versions()` is the targeted fix.
+
+### 1.5.1 Mechanism
+
+LanceDB persists every `INSERT` as a new dataset version, leaving previous-version data files in `<table>.lance/data/` until explicitly pruned. ZettelForge has never invoked `cleanup_old_versions()` since inception, so on a write-heavy shard the version chain grows unboundedly at ~2 versions per `remember()` (one for the row insert, one for the metadata `_rewrite_note` path). On Vigil's `notes_cti` shard the chain reached **thousands of versions before manifesting as 53–67 second tail events** on `remember()`. After a one-shot cleanup the chain dropped to 1 version and tail events disappeared (32× avg / 44× max latency improvement on a 44-call retest; full data in `docs/superpowers/research/2026-04-25-phase-0.5-attribution.md`).
+
+The active dataset was always 1 logical fragment via `Lance.to_lance().get_fragments()`. `compact_files()` was never the right operation; it correctly returns `fragments_added=0, fragments_removed=0` because there is no fragment merging to do. The 7,917 `.lance` files in the data directory were orphan version snapshots, not active fragments.
+
+### 1.5.2 Scope
+
+A new `LanceVersionMaintenance` daemon thread on `MemoryStore` (the existing wrapper around `lancedb.connect()`):
+
+1. On `MemoryStore.__init__`, start one thread per known table (`notes_<domain>`).
+2. The thread loops with `time.sleep(cleanup_interval_seconds)` and calls `table.cleanup_old_versions(older_than=timedelta(hours=1))` on each iteration.
+3. Each cleanup emits a structured event:
+   ```json
+   {
+     "event": "lance_cleanup_old_versions",
+     "table": "notes_cti",
+     "bytes_freed": 1234567,
+     "versions_pruned": 87,
+     "elapsed_seconds": 0.42,
+     "level": "info"
+   }
+   ```
+4. The thread is `daemon=True` and registered with the new `MemoryManager.shutdown()` orchestrator (Section 4) so `BackendState.DRAINING` stops further cleanups before the backend closes.
+
+### 1.5.3 Configuration
+
+```yaml
+# config.default.yaml
+lance:
+  cleanup_interval_minutes: 60      # null disables; 0 disables; >0 enables
+  cleanup_older_than_seconds: 3600  # passed to cleanup_old_versions(older_than=...)
+```
+
+Override via `ZETTELFORGE_LANCE_CLEANUP_INTERVAL_MINUTES` / `ZETTELFORGE_LANCE_CLEANUP_OLDER_THAN_SECONDS`. Both knobs follow the existing config-then-env pattern.
+
+### 1.5.4 Default cadence rationale
+
+60 minutes is conservative. Vigil's measured insert rate (~2 versions/insert) means a 60-min interval keeps the version count bounded at roughly `inserts_per_hour × 2 + buffer`, which on the observed Vigil rate of <100 inserts/hr stays at ~200 versions per shard — well below any plausible inflection point. Operators on hotter workloads can lower the interval; a future investigation will characterise the latency-vs-version-count curve to support a count-based trigger as an alternative or complement.
+
+### 1.5.5 Safety
+
+`cleanup_old_versions(older_than=timedelta(hours=1))` only prunes versions older than the threshold. The latest version is never deleted. Concurrent readers are unaffected. The operation does not require quiescing writers, but in the unlikely event of an exception (e.g. transient FS error) it MUST be caught and logged at `warning` — never propagated, since maintenance failure should not crash the agent. The thread continues with the next interval.
+
+### 1.5.6 Out of scope for v2.5.0
+
+- Count-based triggers (`lance.cleanup_threshold_versions`). Time-based is sufficient for v2.5.0 given Vigil's measured insert rate. Add later if a hotter-workload deployment needs it.
+- `compact_files()` / `optimize()` periodic invocation. Pass 4 of Phase 0.5 confirmed these are no-ops on the actual Vigil workload because the dataset is naturally 1 logical fragment. They remain useful as one-shot operator commands via the `compact_lance` script (#94) but do not need a periodic loop.
+- Cross-shard cleanup coordination. Each table runs its own thread independently; no global lock or schedule.
+
+---
+
 ## Section 2: Durable enrichment outbox
 
 The enrichment outbox is the durability boundary for the pipeline. Any enrichment job that cannot be handed to the in-memory queue MUST be persisted here instead of dropped.
@@ -584,8 +640,9 @@ Software Architect proposed that `remember()` return an `enrichment_pending` tok
 | Phase | Scope | Effort | Owner | Blocks | Ships in |
 |-------|-------|--------|-------|--------|----------|
 | **0** | Hotfix (RFC-010): OllamaProvider timeout + consolidation guard. Separate PR. | 1h | claude-code | nothing | **v2.4.2 (this week)** |
-| **0.5** | Profile one production `remember()` call (py-spy / cProfile) to attribute the 5.7s. Artifact: flame-graph + text attribution. This MUST land before Phase 3 so we know what we're actually optimizing. | 1h | claude-code | Phase 3 | v2.4.2 or v2.5.0 |
+| **0.5** | ~~Profile one production `remember()` call~~ — superseded by v2.4.2 `phase_timings_ms` instrumentation (PR #90), which produced first-party per-phase data without needing a profiler. **Status: complete; attribution confirmed end-to-end.** WHERE: 98%+ in `lance_index` (PR #93/#97). WHY: version-chain walking on insert (not fragment count). FIX: `cleanup_old_versions()` — verified 2026-04-25 with 32× avg / 44× max latency improvement and zero tail events on the post-cleanup retest. See `docs/superpowers/research/2026-04-25-phase-0.5-attribution.md`. | n/a | done | — | v2.4.2 (instrumentation), v2.4.3 (cleanup tooling) |
 | **1** | LLM provider hardening: new `errors.py`, `LLMError` base class, `LLMEmptyResponseError`, `LLMTimeoutError`, `LLMCircuitOpenError`; empty-body detection; circuit breaker with retuned thresholds (Section 3). Does NOT require outbox to be useful. | 5h | claude-code | Phase 2 | **v2.5.0** |
+| **1.5** | **Periodic LanceDB version cleanup** (Section 1.5 below). Background thread per `<domain>.lance` table runs `cleanup_old_versions(older_than=timedelta(hours=1))` on a configurable interval (`lance.cleanup_interval_minutes`, default 60). Per-cleanup telemetry event: `bytes_freed`, `versions_pruned`, `elapsed_seconds`. Prevents the 2-versions-per-insert bloat that produced the 5.69 GB / 55s-tail problem on Vigil's `notes_cti` shard. Independent of LLM hardening; can ship in parallel with Phases 1-4. | 3h | claude-code | — | **v2.5.0** |
 | **2** | Outbox schema (Section 2.1) + `write_note` transactional extension (Section 2.2) + backoff/poison policy (Section 2.3) | 5h | claude-code | Phase 3 | **v2.5.0** |
 | **3** | Outbox sweeper thread + observability events (Section 2.4-2.5) | 3h | claude-code | Phase 4 | **v2.5.0** |
 | **4** | Single `PriorityQueue` with `(priority, counter, job)` tuple contract; worker pool configurable via `LLMConfig.enrichment_workers` (default 1 until Vigil's Ollama parallelism is measured); delete three `_queue_full` log labels, unify to `outbox_enqueued{reason: "queue_full"}` (Section 1.2) | 3h | claude-code | Phase 5 | **v2.5.0** |
