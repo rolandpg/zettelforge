@@ -164,6 +164,17 @@ class GovernanceConfig:
 
 
 @dataclass
+class LanceConfig:
+    """LanceDB maintenance settings (RFC-009 Phase 1.5)."""
+
+    # Interval between version-cleanup passes per table. 0 disables cleanup.
+    cleanup_interval_minutes: int = 60
+    # Versions older than this are eligible for pruning. 0 skips a single
+    # iteration (operator-disabled without restarting).
+    cleanup_older_than_seconds: int = 3600
+
+
+@dataclass
 class CacheConfig:
     ttl_seconds: int = 300
     max_entries: int = 1024
@@ -215,6 +226,7 @@ class ZettelForgeConfig:
     synthesis: SynthesisConfig = field(default_factory=SynthesisConfig)
     governance: GovernanceConfig = field(default_factory=GovernanceConfig)
     cache: CacheConfig = field(default_factory=CacheConfig)
+    lance: LanceConfig = field(default_factory=LanceConfig)
     logging: LoggingConfig = field(default_factory=LoggingConfig)
     enterprise: ExtensionsConfig = field(default_factory=ExtensionsConfig)
     opencti: OpenCTIConfig = field(default_factory=OpenCTIConfig)

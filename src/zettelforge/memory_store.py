@@ -73,6 +73,37 @@ class MemoryStore:
         self._access_flush_lock = threading.Lock()
         atexit.register(self._flush_access)
 
+        # RFC-009 Phase 1.5: periodic LanceDB version cleanup.
+        # Lazy: the maintenance daemon binds to this MemoryStore but the
+        # threads themselves only start on first .start() call (deferred
+        # below). Importing `LanceVersionMaintenance` here is safe — it
+        # has no lancedb-at-import dependency.
+        from zettelforge.lance_maintenance import LanceVersionMaintenance
+
+        def _interval_min() -> int:
+            from zettelforge.config import get_config
+
+            try:
+                return int(get_config().lance.cleanup_interval_minutes)
+            except Exception:
+                return 60
+
+        def _older_than_s() -> int:
+            from zettelforge.config import get_config
+
+            try:
+                return int(get_config().lance.cleanup_older_than_seconds)
+            except Exception:
+                return 3600
+
+        self._lance_maintenance = LanceVersionMaintenance(
+            db=None,  # bound on first lancedb access
+            interval_minutes_provider=_interval_min,
+            older_than_seconds_provider=_older_than_s,
+            table_root=self.lance_path,
+        )
+        self._lance_maintenance_started = False
+
         # Clean orphaned temp files from crashed _rewrite_note() calls
         for tmp in glob.glob(str(self.jsonl_path.parent / "tmp*.jsonl")):
             try:
@@ -161,6 +192,11 @@ class MemoryStore:
         """Index note in LanceDB vector store"""
         start = time.perf_counter()
         table_name = f"notes_{note.metadata.domain}"
+        # RFC-009 Phase 1.5: bind the maintenance daemon to this lancedb
+        # connection on first use, then register the (possibly new) table
+        # idempotently. Late-bound so domains created lazily get coverage.
+        self._ensure_lance_maintenance_started()
+        self._lance_maintenance.register_table(table_name)
         try:
             import pyarrow as pa
 
@@ -354,6 +390,21 @@ class MemoryStore:
                     raise
             finally:
                 fcntl.flock(lock_fh, fcntl.LOCK_UN)
+
+    def _ensure_lance_maintenance_started(self) -> None:
+        """Bind the maintenance daemon to the live lancedb connection.
+
+        Deferred until the first ``_index_in_lance`` call so that
+        ``MemoryStore.__init__`` does not pay the lancedb-connect cost
+        for read-only stores.
+        """
+        if self._lance_maintenance_started:
+            return
+        if self.lancedb is None:
+            return
+        self._lance_maintenance._db = self.lancedb
+        self._lance_maintenance.start()
+        self._lance_maintenance_started = True
 
     def mark_access_dirty(self, note_id: str) -> None:
         """Mark a note's access stats as needing persistence."""
