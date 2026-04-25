@@ -348,7 +348,10 @@ class MemoryStore:
                     # Update cache
                     if self._note_cache is not None:
                         self._note_cache[note.id] = note
-                except:
+                except Exception:
+                    # GOV-003: never bare-except. Catches all real write
+                    # failures while letting KeyboardInterrupt / SystemExit
+                    # propagate normally.
                     if os.path.exists(tmp_path):
                         os.unlink(tmp_path)
                     raise
