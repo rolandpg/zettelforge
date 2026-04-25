@@ -42,7 +42,9 @@ class FactExtractor:
         try:
             from zettelforge.llm_client import generate
 
-            raw_output = generate(prompt, max_tokens=400, temperature=0.1)
+            # 2500-token budget for reasoning-model headroom (see v2.5.2
+            # CHANGELOG; pre-fix 400 was exhausted by qwen3.5+ <think> tokens).
+            raw_output = generate(prompt, max_tokens=2500, temperature=0.1)
             return self._parse_extraction_response(raw_output)
         except Exception:
             _logger.warning("llm_fact_extraction_failed", exc_info=True)

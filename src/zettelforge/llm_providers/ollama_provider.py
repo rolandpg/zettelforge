@@ -39,7 +39,7 @@ class OllamaProvider:
         self,
         model: str = "",
         url: str = "",
-        timeout: float = 60.0,
+        timeout: float = 180.0,  # see config.LLMConfig.timeout for rationale
         **_: Any,
     ) -> None:
         self._model = model or _DEFAULT_MODEL
