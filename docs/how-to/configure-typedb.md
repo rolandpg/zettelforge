@@ -118,7 +118,7 @@ backend: typedb
 export TYPEDB_HOST=localhost
 export TYPEDB_PORT=1729
 export TYPEDB_DATABASE=zettelforge
-export TYPEDB_USERNAME=admin
+export TYPEDB_USERNAME=<your-typedb-username>
 export TYPEDB_PASSWORD=<your-password>
 export ZETTELFORGE_BACKEND=typedb
 ```

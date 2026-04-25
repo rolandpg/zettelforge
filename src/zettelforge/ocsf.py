@@ -101,6 +101,11 @@ def _base_fields(
         "status_id": status_id,
         "status": "Success" if status_id == STATUS_SUCCESS else "Failure",
         "time": datetime.now(timezone.utc).isoformat(),
+        # GOV-012 §"Required OCSF Base Fields" lists timezone_offset alongside
+        # `time`. We always emit UTC, so this is constant; surfacing it lets
+        # OCSF-strict downstream validators (Sentinel custom-log tables) accept
+        # the events without an ingest-time transform.
+        "timezone_offset": 0,
         "metadata": {
             "version": "1.3.0",
             "product": {
