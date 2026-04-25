@@ -16,6 +16,8 @@ Usage:
     cfg.retrieval.default_k  # 10
 """
 
+from __future__ import annotations
+
 import contextlib
 import os
 import re
@@ -38,7 +40,7 @@ def _resolve_env_refs(value: str) -> str:
     rather than silently shipping the literal ``${...}`` token.
     """
 
-    def _replace(match: "re.Match[str]") -> str:
+    def _replace(match: re.Match[str]) -> str:
         var_name = match.group(1)
         env_value = os.environ.get(var_name)
         if env_value is None:
