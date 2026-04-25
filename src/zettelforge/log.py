@@ -169,8 +169,9 @@ def get_logger(name: str) -> structlog.stdlib.BoundLogger:
         # Load config to get logging level (RFC-007 telemetry support)
         try:
             from zettelforge.config import get_config
+
             cfg = get_config()
-            log_level = cfg.logging.level if hasattr(cfg, 'logging') else "INFO"
+            log_level = cfg.logging.level if hasattr(cfg, "logging") else "INFO"
         except Exception:
             log_level = "INFO"
 

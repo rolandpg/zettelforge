@@ -200,9 +200,7 @@ class MemoryManager:
                 start=start,
             )
         finally:
-            structlog.contextvars.unbind_contextvars(
-                "trace_id", "domain", "source_type"
-            )
+            structlog.contextvars.unbind_contextvars("trace_id", "domain", "source_type")
 
     def _remember_inner(
         self,
