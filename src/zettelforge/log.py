@@ -165,7 +165,7 @@ def get_logger(name: str) -> structlog.stdlib.BoundLogger:
         logs_dir = Path(data_dir) / "logs"
         log_file = str(logs_dir / "zettelforge.log")
         audit_log_file = str(logs_dir / "audit.log")
-        
+
         # Load config to get logging level (RFC-007 telemetry support)
         try:
             from zettelforge.config import get_config
