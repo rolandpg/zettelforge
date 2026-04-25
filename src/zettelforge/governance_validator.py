@@ -140,15 +140,15 @@ class GovernanceValidator:
         For other operations, returns the original data.
         Raises GovernanceViolationError on violations.
         """
-        if operation == "remember":
-            if isinstance(data, str):
-                return self.validate_remember(data)
-            return data
-
-        # Fallback for non-remember operations
+        # Always run the structural validation first so callers that pass
+        # invalid data (e.g. ``None``) get a GovernanceViolationError, not a
+        # silently-returned ``None`` or a ``TypeError`` deeper in the pipeline.
         is_valid, violations = self.validate_operation(operation, data)
         if not is_valid:
             raise GovernanceViolationError(f"Governance violation in {operation}: {violations}")
+
+        if operation == "remember" and isinstance(data, str):
+            return self.validate_remember(data)
         return data if isinstance(data, str) else ""
 
 

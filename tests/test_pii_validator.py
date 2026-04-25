@@ -223,10 +223,12 @@ class TestGovernanceValidatorPII:
         except ImportError:
             pass
 
-    def test_validate_remember_rejects_empty_string(self):
+    def test_validate_remember_rejects_invalid_data(self):
+        """``remember`` data that is neither a string nor an object with
+        ``.content`` should fail GOV-011 input validation and raise."""
         gv = GovernanceValidator()
         with pytest.raises(GovernanceViolationError):
-            gv.enforce("synthesize", {"bad": "data"})
+            gv.enforce("remember", {"bad": "data"})
 
     def test_remember_enforce_passes_through_no_pii(self):
         """enforce() must return original content when PII is disabled."""
@@ -288,14 +290,17 @@ def _patch_presidio():
             self.score = score
             self._text = text
 
-    class _StubNlpEngine:
-        class _StubNlpArtifacts:
-            pass
-
     pkg.RecognizerResult = _StubRecognizerResult
 
+    # The submodule `presidio_analyzer.nlp_engine` must be a Module so that
+    # `from presidio_analyzer.nlp_engine import NlpEngineProvider` resolves
+    # NlpEngineProvider as a module attribute. Using a class here breaks
+    # the import in pii_validator.py.
+    nlp_engine_pkg = types.ModuleType("presidio_analyzer.nlp_engine")
+    nlp_engine_pkg.NlpEngineProvider = _StubNlpProvider
+
     sys.modules["presidio_analyzer"] = pkg
-    sys.modules["presidio_analyzer.nlp_engine"] = _StubNlpEngine
+    sys.modules["presidio_analyzer.nlp_engine"] = nlp_engine_pkg
     return pkg
 
 
