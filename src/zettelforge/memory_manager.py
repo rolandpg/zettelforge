@@ -576,10 +576,17 @@ class MemoryManager:
         for etype, elist in query_entities.items():
             resolved[etype] = [self.resolver.resolve(etype, e) for e in elist]
 
-        # Vector retrieval (Community + Enterprise)
+        # Vector retrieval (Community + Enterprise).
+        # Request (note, score) tuples — BlendedRetriever's _normalize_scores
+        # requires real similarity scores for min-max fusion. Without this,
+        # commit 0e1c73 fails with ValueError: too many values to unpack.
         _vector_start = time.perf_counter()
-        vector_results = self.retriever.retrieve(
-            query=query, domain=domain, k=k, include_links=include_links
+        vector_scored: List[tuple] = self.retriever.retrieve(
+            query=query,
+            domain=domain,
+            k=k,
+            include_links=include_links,
+            return_scores=True,
         )
         _vector_latency_ms = (time.perf_counter() - _vector_start) * 1000
 
@@ -598,17 +605,18 @@ class MemoryManager:
                     _re.IGNORECASE,
                 )
                 if date_patterns:
-                    # Boost notes containing any of the extracted dates
+                    # Boost notes containing any of the extracted dates;
+                    # preserve the (note, score) shape for the blender.
                     date_lower = [d.lower() for d in date_patterns]
                     boosted = []
                     rest = []
-                    for note in vector_results:
+                    for note, score in vector_scored:
                         content_lower = note.content.raw.lower()
                         if any(d in content_lower for d in date_lower):
-                            boosted.append(note)
+                            boosted.append((note, score))
                         else:
-                            rest.append(note)
-                    vector_results = boosted + rest
+                            rest.append((note, score))
+                    vector_scored = boosted + rest
             except ImportError:
                 pass
 
@@ -625,16 +633,17 @@ class MemoryManager:
 
         blender = BlendedRetriever()
         results = blender.blend(
-            vector_results=vector_results,
+            vector_results=vector_scored,
             graph_results=graph_results,
             policy=policy,
             note_lookup=lambda nid: self.store.get_note_by_id(nid),
             k=k,
         )
 
-        # Fallback: if blending produced fewer results than vector alone, use vector
-        if len(results) < len(vector_results):
-            results = vector_results[:k]
+        # Fallback: if blending produced fewer results than vector alone, use
+        # the bare-note projection of the scored list.
+        if len(results) < len(vector_scored):
+            results = [note for note, _ in vector_scored[:k]]
 
         # Causal retrieval boost: traverse causal edges when intent is CAUSAL
         if intent.value == "causal":
