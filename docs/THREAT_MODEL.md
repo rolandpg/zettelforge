@@ -139,7 +139,7 @@ TB-1 ─────────────────────────
 |----|--------|-----------|------|------------|
 | D-01 | Large content in `remember()` exhausts memory or blocks the enrichment queue | MemoryManager (P1) | **Low** — gracefully rejected | `governance.limits.max_content_length` (RFC-014, default 50 MB) blocks oversized content with a clear error. `remember_report()` chunks long documents. Enrichment queue has `maxsize=500` backpressure. |
 | D-02 | LLM provider (ollama, litellm) hangs and blocks `remember()` | LLM Provider (TB-4) | **High** — operation blocks | OllamaProvider has timeout (RFC-010, default 60s). LitellmProvider has timeout + num_retries. `generate()` returns empty string on recoverable failure. Fallback provider (e.g., local -> ollama) gives alternative path. |
-| D-03 | Malicious query triggers deep graph traversal exhausting time/resources | BlendedRetriever | **Medium** — slow recall | `max_graph_depth` config (default 2) limits BFS hops. `default_k` (default 10) limits results. No timeout on recall queries. |
+| D-03 | Malicious query triggers deep graph traversal exhausting time/resources | BlendedRetriever | **Low** — gracefully timed out | `governance.limits.recall_timeout_seconds` (RFC-014, default 30s) wraps the recall pipeline in a `ThreadPoolExecutor` with wall-clock timeout. Exceeded queries return empty results and log `recall_timed_out`. `max_graph_depth` (default 2) limits BFS hops. `default_k` (default 10) limits results. |
 | D-04 | spaCy model download blocks first `remember()` when PII is enabled | PIIValidator (lazy load) | **Low** — delayed first call (~2-3 seconds) | One-time download cost. Matching fastembed pattern. Can be pre-downloaded for air-gapped deployments. |
 
 ### 2.6 Elevation of Privilege
@@ -158,8 +158,8 @@ TB-1 ─────────────────────────
 |------------|-------|--------------|
 | **Critical** | 2 | T-01 (storage tampering), I-01 (unencrypted data at rest), E-02 (governance bypass via filesystem) |
 | **High** | 7 | S-01 (spoofed MCP client), S-03 (config tampering), T-02 (config security downgrade), R-01 (repudiation without audit), I-02 (PII in stored notes), D-02 (LLM provider hang), E-01 (cross-tenant data access) |
-| **Medium** | 8 | S-02 (fake LLM provider), T-04 (retrieval poisoning), R-02, R-03, I-04 (error message leakage), D-03, E-03 |
-| **Low** | 1 | D-04 (PII model download delay) |
+| **Medium** | 7 | S-02 (fake LLM provider), T-04 (retrieval poisoning), R-02, R-03, I-04 (error message leakage), E-03 |
+| **Low** | 3 | D-01, D-03, D-04 (PII model download delay) |
 
 ### Top 5 Mitigations (Priority Order)
 
@@ -182,6 +182,7 @@ TB-1 ─────────────────────────
 | PII detection + redaction | I-02 | PIIValidator (RFC-013): log/redact/block | Unit tests in `test_pii_validator.py` |
 | LLM provider timeout | D-02 | `OllamaProvider` timeout=60s, `LiteLLMProvider` timeout + num_retries | Unit tests (RFC-010, RFC-012) |
 | Content size limit | D-01 | `governance.limits.max_content_length` (RFC-014, default 50 MB) blocks oversized content | Unit tests in `test_governance.py` |
+| Recall timeout | D-03 | `governance.limits.recall_timeout_seconds` (RFC-014, default 30s) wraps recall in ThreadPoolExecutor with wall-clock timeout | Unit tests in `test_governance.py` |
 | Config env-var resolution | I-03 | `${ENV_VAR}` syntax prevents raw secrets in YAML | Unit tests |
 | Configurable model provider | S-02, E-03 | `provider` key selects backend; no implicit unauthenticated outbound calls | Config validation |
 | Enrichment queue backpressure | D-01 | `maxsize=500` bounded queue | Code review |

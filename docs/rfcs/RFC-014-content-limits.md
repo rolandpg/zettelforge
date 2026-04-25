@@ -89,11 +89,17 @@ if self._limits.max_content_length > 0:
 ### recall() Timeout Integration
 
 ```python
-# In BlendedRetriever.retrieve() or MemoryManager.recall()
-# Wrap the retrieval call with a timeout
+# In MemoryManager.recall()
+# Wrap the entire recall pipeline with a ThreadPoolExecutor timeout
 timeout = get_config().governance.limits.recall_timeout_seconds
 if timeout > 0:
-    result = future_with_timeout(self._blended_retrieve, query, timeout=timeout)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+        future = pool.submit(self._recall_inner, ...)
+        try:
+            return future.result(timeout=timeout)
+        except concurrent.futures.TimeoutError:
+            log warning, return []
+return self._recall_inner(...)
 ```
 
 ### Environment Variables
