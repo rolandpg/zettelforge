@@ -44,7 +44,7 @@ import time
 from collections import defaultdict, deque
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any
+from typing import Any, List, Optional
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request, status
 from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
