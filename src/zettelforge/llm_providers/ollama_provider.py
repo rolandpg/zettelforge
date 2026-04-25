@@ -108,21 +108,22 @@ class OllamaProvider:
         is_empty = not stripped
         log_event = "llm_call_empty_response" if is_empty else "llm_call_complete"
         log_level = _logger.warning if is_empty else _logger.debug
-        log_level(
-            log_event,
-            provider="ollama",
-            model=self._model,
-            duration_ms=round(duration_ms, 1),
-            prompt_chars=prompt_chars,
-            response_chars=response_chars,
-            system_chars=system_chars,
-            max_tokens=max_tokens,
-            temperature=temperature,
-            json_mode=json_mode,
-            eval_count=eval_count,
-            prompt_eval_count=prompt_eval_count,
-            done_reason=done_reason,
-            response_preview=raw_response[:_PREVIEW_CHARS] if is_empty else None,
-            prompt_preview=prompt[:_PREVIEW_CHARS] if is_empty else None,
-        )
+        log_kwargs: dict[str, Any] = {
+            "provider": "ollama",
+            "model": self._model,
+            "duration_ms": round(duration_ms, 1),
+            "prompt_chars": prompt_chars,
+            "response_chars": response_chars,
+            "system_chars": system_chars,
+            "max_tokens": max_tokens,
+            "temperature": temperature,
+            "json_mode": json_mode,
+            "eval_count": eval_count,
+            "prompt_eval_count": prompt_eval_count,
+            "done_reason": done_reason,
+        }
+        if is_empty:
+            log_kwargs["response_preview"] = raw_response[:_PREVIEW_CHARS]
+            log_kwargs["prompt_preview"] = prompt[:_PREVIEW_CHARS]
+        log_level(log_event, **log_kwargs)
         return stripped
