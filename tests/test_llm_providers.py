@@ -380,6 +380,190 @@ class TestOnnxGenAIBackend:
         assert backend.name == "onnxruntime-genai"
 
 
+# ---- LiteLLMProvider (RFC-012) -------------------------------------------------
+
+
+class _FakeLiteLLM:
+    """Minimal stand-in for the litellm module used by LiteLLMProvider tests."""
+
+    @staticmethod
+    def completion(
+        model: str,
+        messages: list[dict[str, str]],
+        max_tokens: int,
+        temperature: float,
+        timeout: float,
+        num_retries: int,
+        **kwargs: object,
+    ) -> dict:
+        return {
+            "choices": [{"message": {"content": "  lorem ipsum  "}}],
+            "model": model,
+        }
+
+
+class TestLiteLLMProvider:
+    def test_constructs_with_defaults(self):
+        from zettelforge.llm_providers.litellm_provider import LiteLLMProvider
+
+        provider = LiteLLMProvider()
+        assert provider._model == "gpt-4o-mini"
+        assert provider._api_key == ""
+        assert provider._timeout == 60.0
+        assert provider._max_retries == 2
+
+    def test_constructs_with_custom_values(self):
+        from zettelforge.llm_providers.litellm_provider import LiteLLMProvider
+
+        provider = LiteLLMProvider(
+            model="claude-sonnet-4-20250514",
+            api_key="sk-test",
+            timeout=120.0,
+            max_retries=5,
+        )
+        assert provider._model == "claude-sonnet-4-20250514"
+        assert provider._api_key == "sk-test"
+        assert provider._timeout == 120.0
+        assert provider._max_retries == 5
+
+    def test_unknown_kwargs_ignored(self):
+        from zettelforge.llm_providers.litellm_provider import LiteLLMProvider
+
+        provider = LiteLLMProvider(
+            model="gpt-4o",
+            url="ignored",
+            filename="ignored",
+        )
+        assert provider.name == "litellm"
+
+    def test_name_property(self):
+        from zettelforge.llm_providers.litellm_provider import LiteLLMProvider
+
+        assert LiteLLMProvider().name == "litellm"
+
+    def test_import_error_raised_when_sdk_missing(self):
+        from zettelforge.llm_providers.litellm_provider import LiteLLMProvider
+
+        provider = LiteLLMProvider(model="gpt-4o")
+        with pytest.raises(ImportError, match="litellm"):
+            provider.generate("hello")
+
+    def test_generate_with_mock_completion(self, monkeypatch):
+        from zettelforge.llm_providers.litellm_provider import LiteLLMProvider
+
+        import types
+        mock_module = types.ModuleType("litellm")
+        mock_module.completion = _FakeLiteLLM.completion
+        monkeypatch.setitem(__import__("sys").modules, "litellm", mock_module)
+
+        provider = LiteLLMProvider(model="gpt-4o-mini")
+        result = provider.generate("hello")
+        assert result == "lorem ipsum"
+
+    def test_generate_passes_api_key(self, monkeypatch):
+        from zettelforge.llm_providers.litellm_provider import LiteLLMProvider
+
+        import types
+
+        calls: list[dict] = []
+
+        def _completion(**kwargs: object) -> dict:
+            calls.append(kwargs)
+            return {"choices": [{"message": {"content": "ok"}}]}
+
+        mock_module = types.ModuleType("litellm")
+        mock_module.completion = _completion
+        monkeypatch.setitem(__import__("sys").modules, "litellm", mock_module)
+
+        provider = LiteLLMProvider(model="gpt-4o", api_key="sk-test-key")
+        provider.generate("hello")
+        assert len(calls) == 1
+        assert calls[0]["api_key"] == "sk-test-key"
+
+    def test_generate_passes_system_prompt(self, monkeypatch):
+        from zettelforge.llm_providers.litellm_provider import LiteLLMProvider
+
+        import types
+
+        calls: list[dict] = []
+
+        def _completion(**kwargs: object) -> dict:
+            calls.append(kwargs)
+            return {"choices": [{"message": {"content": "ok"}}]}
+
+        mock_module = types.ModuleType("litellm")
+        mock_module.completion = _completion
+        monkeypatch.setitem(__import__("sys").modules, "litellm", mock_module)
+
+        provider = LiteLLMProvider(model="gpt-4o")
+        provider.generate("hello", system="You are a helpful assistant.")
+        assert len(calls) == 1
+        messages = calls[0]["messages"]
+        assert messages[0]["role"] == "system"
+        assert messages[0]["content"] == "You are a helpful assistant."
+        assert messages[1]["role"] == "user"
+        assert messages[1]["content"] == "hello"
+
+    def test_generate_passes_json_mode(self, monkeypatch):
+        from zettelforge.llm_providers.litellm_provider import LiteLLMProvider
+
+        import types
+
+        calls: list[dict] = []
+
+        def _completion(**kwargs: object) -> dict:
+            calls.append(kwargs)
+            return {"choices": [{"message": {"content": '{"key": "value"}'}}]}
+
+        mock_module = types.ModuleType("litellm")
+        mock_module.completion = _completion
+        monkeypatch.setitem(__import__("sys").modules, "litellm", mock_module)
+
+        provider = LiteLLMProvider(model="gpt-4o")
+        result = provider.generate("hello", json_mode=True)
+        assert len(calls) == 1
+        assert calls[0]["response_format"] == {"type": "json_object"}
+        assert result == '{"key": "value"}'
+
+    def test_generate_omits_api_key_when_empty(self, monkeypatch):
+        from zettelforge.llm_providers.litellm_provider import LiteLLMProvider
+
+        import types
+
+        calls: list[dict] = []
+
+        def _completion(**kwargs: object) -> dict:
+            calls.append(kwargs)
+            return {"choices": [{"message": {"content": "ok"}}]}
+
+        mock_module = types.ModuleType("litellm")
+        mock_module.completion = _completion
+        monkeypatch.setitem(__import__("sys").modules, "litellm", mock_module)
+
+        provider = LiteLLMProvider(model="gpt-4o")  # no api_key
+        provider.generate("hello")
+        assert "api_key" not in calls[0]
+
+    def test_satisfies_llm_provider_protocol(self):
+        from zettelforge.llm_providers.litellm_provider import LiteLLMProvider
+
+        assert isinstance(LiteLLMProvider(model="x"), LLMProvider)
+
+    def test_litellm_provider_registered(self):
+        # litellm may not be installed, but the registration attempt
+        # at import time in __init__.py should be graceful.
+        names = available()
+        # If SDK is available, litellm should be in the list.
+        # If not, it's silently skipped — no crash.
+        import importlib
+
+        try:
+            importlib.import_module("litellm")
+            assert "litellm" in names
+        except ImportError:
+            assert "litellm" not in names
+
+
 # ---- LocalProvider dispatching (RFC-011) --------------------------------------
 
 

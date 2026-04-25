@@ -148,9 +148,8 @@ embedding:
 # Provider selects the backend registered in zettelforge.llm_providers:
 #   local           — in-process LLM inference (see local_backend below; requires zettelforge[local] or zettelforge[local-onnx])
 #   ollama          — Ollama HTTP API
+#   litellm         — LiteLLM routing to 100+ providers (RFC-012; requires zettelforge[litellm])
 #   mock            — test-only canned responses
-#   openai_compat   — any /v1/chat/completions endpoint (Phase 2, upcoming)
-#   anthropic       — Anthropic native SDK (Phase 3, upcoming)
 #
 # local_backend selects the in-process inference engine when provider=local:
 #   llama-cpp-python     — GGUF models via llama-cpp-python (default; requires zettelforge[local])
@@ -173,6 +172,19 @@ embedding:
 #   extra:
 #     filename: phi3-mini-4k-instruct-q4.onnx
 #     provider: rocm            # cpu, cuda, dml, rocm, openvino, coreml
+#
+#   # LiteLLM — unified routing (requires pip install zettelforge[litellm])
+#   # Model name determines the provider. Examples:
+#   #   gpt-4o, gpt-4o-mini                      → OpenAI
+#   #   claude-sonnet-4-20250514, claude-3-opus   → Anthropic
+#   #   gemini/gemini-2.0-flash                   → Google Gemini
+#   #   groq/llama-3.3-70b-versatile              → Groq
+#   #   together_ai/meta-llama/Llama-3.3-70B      → Together AI
+#   #   openrouter/anthropic/claude-3.5-sonnet    → OpenRouter
+#   #   bedrock/anthropic.claude-3-sonnet         → AWS Bedrock
+#   provider: litellm
+#   model: gpt-4o
+#   api_key: ${OPENAI_API_KEY}
 #
 # api_key supports ${ENV_VAR} references — never commit raw API keys.
 #   api_key: ${OPENAI_API_KEY}
