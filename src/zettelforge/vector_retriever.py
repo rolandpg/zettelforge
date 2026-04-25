@@ -107,23 +107,34 @@ class VectorRetriever:
         domain: Optional[str] = None,
         k: int = 10,
         include_links: bool = True,
-        use_lancedb: bool = True,  # NEW: Enable LanceDB vector search
-    ) -> List[MemoryNote]:
+        use_lancedb: bool = True,
+        return_scores: bool = False,
+    ) -> List[MemoryNote] | List[tuple]:
         """
         Retrieve notes relevant to query using LanceDB vector search.
         Falls back to in-memory search if LanceDB unavailable.
+
+        Args:
+            return_scores: If True, returns List[Tuple[MemoryNote, float]] with
+                similarity scores. Enables proper score fusion in BlendedRetriever
+                instead of broken position-rank scoring.
         """
         # Try LanceDB first (IVF_FLAT index, no double-quantization)
         if use_lancedb and self.store.lancedb is not None:
             try:
                 results = self._retrieve_via_lancedb(query, domain, k, include_links)
                 if results:
-                    return results
+                    if return_scores:
+                        return results  # Already (note, score) tuples
+                    return [note for note, _ in results]
             except Exception:
                 _logger.warning("lancedb_retrieval_failed_fallback_memory", exc_info=True)
 
         # Fallback: In-memory cosine similarity (always works)
-        return self._retrieve_via_memory(query, domain, k, include_links)
+        results = self._retrieve_via_memory(query, domain, k, include_links)
+        if return_scores:
+            return results  # Already (note, score) tuples
+        return [note for note, _ in results]
 
     def _retrieve_via_lancedb(
         self, query: str, domain: Optional[str], k: int, include_links: bool
@@ -180,18 +191,66 @@ class VectorRetriever:
 
         # Sort by similarity score (higher is better)
         all_results.sort(key=lambda x: x[1], reverse=True)
-        results = [note for note, score in all_results[:k]]
+        results = all_results[:k]  # Keep (note, score) tuples
 
         # Apply entity boost post-retrieval
-        results = self._apply_entity_boost(results, query)
+        results = self._apply_entity_boost_scored(results, query)
 
         if include_links and results:
-            results = self._expand_via_links(results, k * 2)
+            results = self._expand_via_links_scored(results, k * 2)
 
-        for note in results:
+        for note, _ in results:
             note.increment_access()
 
-        return results
+        return results  # List[Tuple[MemoryNote, float]]
+
+    def _apply_entity_boost_scored(
+        self, results: List[tuple], query: str
+    ) -> List[tuple]:
+        """Apply entity boost to (note, score) tuples, multiplying score by boost factor."""
+        raw_query_entities = self.extractor.extract_all(query)
+        query_entities = set()
+        for etype, elist in raw_query_entities.items():
+            for e in elist:
+                query_entities.add(self.resolver.resolve(etype, e))
+
+        if not query_entities:
+            return results
+
+        boosted = []
+        for note, score in results:
+            note_entities = set(note.semantic.entities)
+            overlap = len(query_entities & note_entities)
+            boost = self.entity_boost ** overlap if overlap > 0 else 1.0
+
+            # Exact match boost
+            for qe in query_entities:
+                if qe.lower() in note.content.raw.lower():
+                    boost *= self.exact_match_boost
+
+            boosted.append((note, score * boost))
+
+        boosted.sort(key=lambda x: x[1], reverse=True)
+        return boosted
+
+    def _expand_via_links_scored(
+        self, initial_results: List[tuple], max_results: int
+    ) -> List[tuple]:
+        """Expand (note, score) results by including directly linked notes with decayed score."""
+        all_ids = set(n.id for n, _ in initial_results)
+        expanded = list(initial_results)
+
+        for note, score in initial_results:
+            for linked_id in note.links.related:
+                if len(expanded) >= max_results:
+                    break
+                linked_note = self._get_note(linked_id)
+                if linked_note and linked_note.id not in all_ids:
+                    # Linked notes get half the parent's score (hop decay)
+                    expanded.append((linked_note, score * 0.5))
+                    all_ids.add(linked_note.id)
+
+        return expanded[:max_results]
 
     def _apply_entity_boost(self, results: List[MemoryNote], query: str) -> List[MemoryNote]:
         """Apply entity boost to retrieved results."""
@@ -223,8 +282,8 @@ class VectorRetriever:
 
     def _retrieve_via_memory(
         self, query: str, domain: Optional[str], k: int, include_links: bool
-    ) -> List[MemoryNote]:
-        """Fallback: In-memory cosine similarity (original implementation)."""
+    ) -> List[tuple]:
+        """Fallback: In-memory cosine similarity. Returns List[Tuple[MemoryNote, float]]."""
         query_vector = get_embedding(query)
         candidates = self._get_candidates(domain)
 
@@ -270,15 +329,15 @@ class VectorRetriever:
             _logger.warning("invalid_embeddings_skipped", count=invalid_embeddings)
 
         scored.sort(key=lambda x: x[1], reverse=True)
-        results = [note for note, sim in scored[:k]]
+        results = scored[:k]  # Keep (note, score) tuples
 
         if include_links and results:
-            results = self._expand_via_links(results, k * 2)
+            results = self._expand_via_links_scored(results, k * 2)
 
-        for note in results:
+        for note, _ in results:
             note.increment_access()
 
-        return results
+        return results  # List[Tuple[MemoryNote, float]]
 
     def _expand_via_links(
         self, initial_results: List[MemoryNote], max_results: int
