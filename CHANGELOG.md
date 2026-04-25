@@ -6,6 +6,60 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+Targeting v2.5.0. Most of the work since v2.4.3 has been compliance-audit
+remediation (every CRITICAL and HIGH except H-3 mypy-strict and the ANN
+slice of H-1 closed) plus two new optional LLM backends.
+
+### Added
+
+- **RFC-011 — Local LLM backend selection** (#104). New `local_backend`
+  config knob picks between `llama-cpp-python` (GGUF) and
+  `onnxruntime-genai` (ONNX) at runtime. Both ship as optional extras
+  (`pip install zettelforge[local]` or `[local-onnx]`).
+- **RFC-012 — LiteLLM unified provider** (#108). Routes to 100+
+  upstream LLM providers via the LiteLLM SDK. Optional extra
+  (`pip install zettelforge[litellm]`); the base package never imports
+  it unless the SDK is present.
+- **GOV-009 Snyk SCA + SAST declared in `controls.yaml`** (#114). The
+  spec-drift validator now walks every `.github/workflows/*.yml` so
+  controls whose CI step lives outside `ci.yml` (Snyk's separate
+  workflow) can be honestly declared.
+
+### Changed
+
+- **Ruff rule set ratcheted to GOV-003 §"Tooling and Automation" minus
+  ANN** (#106 + #107 + #109 + #111 + #113). Active `select` list:
+  `{E, F, I, W, N, T20, B, UP, SIM, RUF, S}`. Per-line `# noqa: SXXX`
+  annotations document each accepted exception (best-effort fallbacks,
+  non-crypto RNG, `?`-bound SQL with constant column lists).
+  `RUF002`/`RUF003` ignored globally for stylistic en-dash and ×.
+- **CI install-step shell precedence fixed** (#112). The
+  `pip install -e ".[dev]" || pip install -e "." && pip install pytest...`
+  chain parsed as `(A || B) && C`, so the pytest install ran on
+  every success path including when `[dev]` already provided pytest.
+  Wrapped the fallback in parentheses.
+- **CONTRIBUTING.md accuracy** (#115). Documents `ruff format`
+  (project hasn't used black for a while) and lists what CI actually
+  enforces so new contributors have a green-build target.
+
+### Compliance audit closure (`tasks/compliance-audit-2026-04-25.md`)
+
+| Severity | Finding | Status |
+|---|---|---|
+| CRITICAL | C-1 branch protection | CLOSED (with required status checks) |
+| CRITICAL | C-2 fabricated `no_hardcoded_secrets` claim | CLOSED (#100) |
+| HIGH | H-1 ruff full select per GOV-003 | CLOSED for {E,F,I,W,N,T20,B,UP,SIM,RUF,S}; ANN ratcheting per-module |
+| HIGH | H-2 coverage threshold not enforced | CLOSED (#100) |
+| HIGH | H-5 SCA gate (pip-audit + Snyk fail-mode) | CLOSED (#102 + #114) |
+| MEDIUM | M-1 bare `except:` in production | CLOSED (#100) |
+| MEDIUM | M-3 OCSF `timezone_offset` field | CLOSED (#100) |
+| LOW | L-4 CI install-step shell precedence | CLOSED (#112) |
+
+Outstanding: H-3 (mypy --strict in CI; needs per-module ratchet plan
+for 393 errors across 38 files), H-4 (GOV-006 amendment for
+solo-maintainer mode + CODEOWNERS update), M-2 (rewrite GOV-016 to
+match the YAML-frontmatter practice already in use), M-4 (lock file).
+
 ## [2.4.3] - 2026-04-25
 
 Patch release. Three small but consequential fixes that landed during the post-v2.4.2 Vigil live-test session, plus the standalone `compact_lance` maintenance script and Nexus's Tier 0/1/2 LLM observability instrumentation.
