@@ -77,6 +77,25 @@ def _get_embed_model():
     return _embed_model
 
 
+def preload_embedding_model() -> None:
+    """Force the embedding model to load synchronously.
+
+    [RFC-009 Phase 0.5 / task #39] Without this, the model lazy-loads on the
+    first ``get_embedding()`` call, which on Vigil added ~800ms of
+    ``construct`` phase time to the first ``remember()`` after process start.
+    Calling this once at ``MemoryManager.__init__`` moves the cost off the
+    user-visible path. Idempotent; the underlying singleton check is unchanged.
+    No-op when the configured provider is not fastembed. Failures are logged
+    and swallowed — preload is best-effort, not a hard dependency.
+    """
+    if get_embedding_provider() != "fastembed":
+        return
+    try:
+        _get_embed_model()
+    except Exception:
+        _logger.warning("fastembed_preload_failed", exc_info=True)
+
+
 # ── Embedding ────────────────────────────────────────────────────────────────
 
 

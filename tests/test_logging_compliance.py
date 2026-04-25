@@ -120,6 +120,28 @@ class TestOCSFEventFields:
         assert "metadata" in event
         assert event["metadata"]["product"]["name"] == "zettelforge"
 
+    def test_product_version_matches_pyproject(self):
+        """[task #35] OCSF metadata version must track the source pyproject.toml,
+        not stale importlib.metadata. Vigil 2026-04-24 emitted v2.4.1 events
+        from v2.4.2 source because the editable-install metadata was stale."""
+        from pathlib import Path
+
+        from zettelforge.ocsf import _PRODUCT_VERSION
+
+        repo_root = Path(__file__).resolve().parent.parent
+        pyproject_text = (repo_root / "pyproject.toml").read_text(encoding="utf-8")
+        expected = None
+        for line in pyproject_text.splitlines():
+            stripped = line.strip()
+            if stripped.startswith("version") and "=" in stripped:
+                expected = stripped.split("=", 1)[1].strip().strip('"').strip("'")
+                break
+        assert expected is not None, "could not find version line in pyproject.toml"
+        assert _PRODUCT_VERSION == expected, (
+            f"OCSF product.version={_PRODUCT_VERSION!r} drifted from "
+            f"pyproject.toml version={expected!r}"
+        )
+
     def test_authorization_deny_fields(self):
         """log_authorization with deny emits correct status and severity."""
         with structlog.testing.capture_logs() as logs:
@@ -137,6 +159,72 @@ class TestOCSFEventFields:
         assert event["status_id"] == STATUS_FAILURE
         assert event["severity_id"] == SEVERITY_HIGH
         assert event["policy"] == "GOV-011"
+
+
+class TestLogLevelEnvVar:
+    """[task #41] ZETTELFORGE_LOG_LEVEL must reach configure_logging.
+
+    Before this fix, ``log.py:get_logger()`` always called ``configure_logging()``
+    with the hardcoded default ``level='INFO'``, then locked ``_configured=True``,
+    so ``config.yaml log.level=DEBUG`` was dead code. Vigil hit this on
+    2026-04-24 — DEBUG was set in config but every named logger inherited INFO.
+    """
+
+    def test_get_logger_threads_env_var_into_configure(self, monkeypatch):
+        import zettelforge.log as zlog
+
+        monkeypatch.setenv("ZETTELFORGE_LOG_LEVEL", "DEBUG")
+        monkeypatch.setattr(zlog, "_configured", False)
+
+        captured = {}
+
+        def fake_configure(level="INFO", **kwargs):
+            captured["level"] = level
+            zlog._configured = True
+
+        monkeypatch.setattr(zlog, "configure_logging", fake_configure)
+        zlog.get_logger("dummy.envvar")
+        assert captured.get("level") == "DEBUG"
+
+    def test_get_logger_default_level_when_env_unset(self, monkeypatch):
+        import zettelforge.log as zlog
+
+        monkeypatch.delenv("ZETTELFORGE_LOG_LEVEL", raising=False)
+        monkeypatch.setattr(zlog, "_configured", False)
+
+        captured = {}
+
+        def fake_configure(level="INFO", **kwargs):
+            captured["level"] = level
+            zlog._configured = True
+
+        monkeypatch.setattr(zlog, "configure_logging", fake_configure)
+        zlog.get_logger("dummy.noenv")
+        assert captured.get("level") == "INFO"
+
+
+class TestEmbeddingPreload:
+    """[task #39] MemoryManager.__init__ must preload fastembed.
+
+    Without preload, the first remember() pays ~800ms in its construct phase
+    while fastembed lazy-loads. RFC-009 Phase 0.5 data on Vigil showed first-call
+    construct=799ms vs warm construct=37ms; this test pins the wiring.
+    """
+
+    def test_memory_manager_init_calls_preload(self, monkeypatch):
+        import tempfile
+
+        import zettelforge.memory_manager as mm_mod
+
+        calls = []
+        monkeypatch.setattr(mm_mod, "preload_embedding_model", lambda: calls.append(1))
+
+        with tempfile.TemporaryDirectory() as tmp:
+            mm_mod.MemoryManager(jsonl_path=f"{tmp}/n.jsonl", lance_path=f"{tmp}/v")
+
+        assert len(calls) == 1, (
+            "MemoryManager.__init__ must invoke preload_embedding_model() exactly once"
+        )
 
 
 class TestPhaseTimingsInstrumentation:

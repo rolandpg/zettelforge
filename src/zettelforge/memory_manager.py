@@ -43,6 +43,7 @@ from zettelforge.storage_backend import BackendClosedError
 from zettelforge.synthesis_generator import get_synthesis_generator
 from zettelforge.synthesis_validator import get_synthesis_validator
 from zettelforge.telemetry import get_telemetry
+from zettelforge.vector_memory import preload_embedding_model
 from zettelforge.vector_retriever import VectorRetriever
 
 # ── Reranker singleton ───────────────────────────────────────────────────────
@@ -98,6 +99,11 @@ class MemoryManager:
 
         # LanceDB access: keep a MemoryStore for vector indexing only
         self._lance_store = MemoryStore(jsonl_path=jsonl_path, lance_path=lance_path)
+
+        # [RFC-009 Phase 0.5 / task #39] Force fastembed to load now so the
+        # first remember() doesn't pay the ~800ms model-load cost in its
+        # construct phase. Best-effort: failures are swallowed by preload.
+        preload_embedding_model()
 
         # Legacy EntityIndexer kept for extractor, stats(), and build() compatibility
         self.indexer = EntityIndexer()
