@@ -173,6 +173,6 @@ def get_logger(name: str) -> structlog.stdlib.BoundLogger:
             log_level = cfg.logging.level if hasattr(cfg, 'logging') else "INFO"
         except Exception:
             log_level = "INFO"
-        
+
         configure_logging(level=log_level, log_file=log_file, audit_log_file=audit_log_file)
     return structlog.get_logger(name)
