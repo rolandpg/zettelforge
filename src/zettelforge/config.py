@@ -183,7 +183,7 @@ class PIIConfig:
     enabled: bool = False
     action: str = "log"
     redact_placeholder: str = "[REDACTED]"
-    entities: List[str] = field(default_factory=list)
+    entities: list[str] = field(default_factory=list)
     language: str = "en"
     nlp_model: str = "en_core_web_sm"
 
