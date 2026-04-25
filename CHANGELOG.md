@@ -6,6 +6,29 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [2.5.1] - 2026-04-25
+
+Hotfix release. Surfaced during the v2.5.0 perf benchmark run.
+
+### Fixed
+
+- **`KnowledgeGraph._cache_edge` crashed on legacy-schema edges**.
+  Long-running deployments accumulated `kg_edges.jsonl` entries written
+  by a now-removed pre-v2.5.x writer that used
+  `{source_id, target_id, relation_type}` instead of the canonical
+  `{from_node_id, to_node_id, relationship}` keys. The loader hard-failed
+  with `KeyError: 'from_node_id'` on the first such row, taking down
+  every `recall()` and `synthesize()` that touches the KG. Affects any
+  workspace with mixed-schema edge history; observed locally with 189k
+  edges where ~80k were the legacy shape.
+  `_normalize_edge_schema()` now remaps legacy keys to canonical on load
+  and silently drops entries that are still un-normalizable, with a
+  count logged at WARNING so operators can see the skip volume.
+  Six new regression tests in `tests/test_kg_edge_schema.py` cover
+  pass-through, remap, missing-fields, non-dict, mixed-batch, and
+  corrupt-JSON cases. The previously-broken environment-dependent
+  `test_basic.py::test_ingest_relationship` now passes deterministically.
+
 ## [2.5.0] - 2026-04-25
 
 Compliance-driven minor release. Closes every CRITICAL and HIGH audit
