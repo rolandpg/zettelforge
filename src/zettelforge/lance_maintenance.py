@@ -1,13 +1,13 @@
 """Periodic LanceDB version-cleanup daemon (RFC-009 Phase 1.5).
 
-The 2026-04-25 Phase 0.5 attribution
-(`docs/superpowers/research/2026-04-25-phase-0.5-attribution.md`)
-established that the dominant cost of `MemoryStore._index_in_lance()`
-on a write-heavy shard is LanceDB walking an unbounded version chain
-on each insert. ``cleanup_old_versions()`` collapses the chain back
-to the latest manifest; without periodic invocation the bloat returns
-at ~2 versions per `remember()` and reproduces the 5.69 GB / 55s-tail
-condition observed on Vigil's `notes_cti` shard.
+On a write-heavy shard the dominant cost of
+`MemoryStore._index_in_lance()` is LanceDB walking an unbounded
+version chain on each insert. ``cleanup_old_versions()`` collapses
+the chain back to the latest manifest; without periodic invocation
+the chain grows at roughly two versions per ``remember()`` call,
+reproducing the multi-GB bloat / 55-second tail latency that
+motivated this RFC. See ``docs/rfcs/RFC-009-enrichment-pipeline-v2.md``
+§"Phase 1.5 — LanceDB version cleanup" for the full attribution.
 
 Design:
 
