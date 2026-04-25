@@ -6,7 +6,6 @@ Only the important facts proceed to storage, reducing redundancy and noise.
 """
 
 from dataclasses import dataclass
-from typing import List
 
 from zettelforge.json_parse import extract_json
 from zettelforge.log import get_logger
@@ -37,7 +36,7 @@ class FactExtractor:
         self,
         content: str,
         context: str = "",
-    ) -> List[ExtractedFact]:
+    ) -> list[ExtractedFact]:
         prompt = self._build_prompt(content, context)
 
         try:
@@ -61,7 +60,7 @@ class FactExtractor:
         parts.append("\nJSON:")
         return "\n".join(parts)
 
-    def _parse_extraction_response(self, raw: str) -> List[ExtractedFact]:
+    def _parse_extraction_response(self, raw: str) -> list[ExtractedFact]:
         if not raw:
             # Was previously a silent return — empty completions vanished
             # entirely from the audit trail, undercounting LLM failures.

@@ -9,7 +9,6 @@ Supports multiple response formats: direct_answer, synthesized_brief, timeline_a
 import hashlib
 import threading
 import time
-from typing import Dict, List, Optional
 
 from zettelforge.json_parse import extract_json
 from zettelforge.log import get_logger
@@ -45,8 +44,8 @@ class SynthesisGenerator:
         memory_manager=None,
         format: str = "direct_answer",
         k: int = 10,
-        tier_filter: List[str] = None,
-    ) -> Dict:
+        tier_filter: list[str] = None,
+    ) -> dict:
         """
         Synthesize an answer from retrieved notes.
 
@@ -92,7 +91,7 @@ class SynthesisGenerator:
             "sources": [self._note_to_source(n) for n in notes[:10]],
         }
 
-    def _retrieve_notes(self, query: str, memory_manager, k: int, tier_filter: List[str]):
+    def _retrieve_notes(self, query: str, memory_manager, k: int, tier_filter: list[str]):
         """Retrieve notes via hybrid search (entity + vector)."""
         if memory_manager is None:
             return []
@@ -125,7 +124,7 @@ class SynthesisGenerator:
 
         return unique_notes[:k]
 
-    def _build_context(self, notes: List) -> str:
+    def _build_context(self, notes: list) -> str:
         """Build context string for LLM."""
         context_parts = []
         for note in notes[:10]:
@@ -135,7 +134,7 @@ class SynthesisGenerator:
                 context_parts.append(f"Summary: {note.semantic.context}")
         return "\n".join(context_parts)
 
-    def _generate_synthesis(self, query: str, context: str, format: str) -> Dict:
+    def _generate_synthesis(self, query: str, context: str, format: str) -> dict:
         """Generate synthesis using LLM."""
         system_prompt = self._get_system_prompt(format)
         user_prompt = self._build_prompt(query, context, format)
@@ -162,7 +161,7 @@ class SynthesisGenerator:
         }
         return prompts.get(format, prompts["direct_answer"])
 
-    def _get_json_format(self, format: str) -> Dict:
+    def _get_json_format(self, format: str) -> dict:
         formats = {
             "direct_answer": {
                 "type": "object",
@@ -243,7 +242,7 @@ CONTEXT:
 
 Format as valid JSON matching the specified schema."""
 
-    def _fallback_synthesis(self, query: str, format: str) -> Dict:
+    def _fallback_synthesis(self, query: str, format: str) -> dict:
         if format == "direct_answer":
             return {
                 "answer": f"No specific answer found for: {query[:50]}...",
@@ -259,7 +258,7 @@ Format as valid JSON matching the specified schema."""
         else:
             return {"error": "No data available"}
 
-    def _note_to_source(self, note) -> Dict:
+    def _note_to_source(self, note) -> dict:
         return {
             "note_id": note.id,
             "relevance_score": min(1.0, note.metadata.confidence),
@@ -271,7 +270,7 @@ Format as valid JSON matching the specified schema."""
         return len(text) // 4
 
 
-_synthesis_gen: Optional[SynthesisGenerator] = None
+_synthesis_gen: SynthesisGenerator | None = None
 _synthesis_lock = threading.Lock()
 
 

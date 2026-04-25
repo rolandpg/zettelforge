@@ -124,13 +124,11 @@ line-length = 100
 [tool.ruff.lint]
 # GOV-003 §"Tooling and Automation" mandates the full set
 # {E, F, I, S, B, UP, SIM, RUF, N, ANN, T20}. We ratchet incrementally:
-# T20 (no print) + B (bugbear) added 2026-04-25 (audit H-1 partial).
-# The remaining rules (S, UP, SIM, RUF, ANN) will be added in
-# subsequent batches once the surfaced findings are triaged. Note:
-# this PR also opportunistically applied --fix for SIM/RUF auto-fixes
-# even though those rules aren't in select yet, so the codebase is
-# pre-clean for when they land next.
-select = ["E", "F", "I", "W", "N", "T20", "B"]
+# T20 + B added 2026-04-25; UP (pyupgrade — PEP 585/604 modernization)
+# added 2026-04-25 (audit H-1 partial). The remaining rules (S, SIM,
+# RUF, ANN) will be added in subsequent batches once the surfaced
+# findings are triaged.
+select = ["E", "F", "I", "W", "N", "T20", "B", "UP"]
 ignore = [
     "E501",   # line too long — handled by formatter
     "E402",   # module-level import not at top — needed for conditional imports

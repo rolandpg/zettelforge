@@ -20,7 +20,7 @@ import os
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from zettelforge.log import get_logger
 
@@ -104,16 +104,16 @@ class LLMConfig:
     max_retries: int = 2
     fallback: str = ""  # empty preserves implicit local→ollama fallback
     local_backend: str = "llama-cpp-python"  # RFC-011: "llama-cpp-python" or "onnxruntime-genai"
-    extra: Dict[str, Any] = field(default_factory=dict)
+    extra: dict[str, Any] = field(default_factory=dict)
 
     # Keys under ``extra`` that are commonly used for secrets. Matched
     # case-insensitively as substrings so ``openai_api_key``, ``client_secret``,
     # ``auth_token``, ``azure_ad_token``, ``credentials_json`` all redact.
     _SENSITIVE_EXTRA_KEYS = ("key", "token", "secret", "password", "credential", "auth")
 
-    def _redact_extra(self) -> Dict[str, Any]:
+    def _redact_extra(self) -> dict[str, Any]:
         """Return ``extra`` with sensitive-looking values replaced by ``'***'``."""
-        redacted: Dict[str, Any] = {}
+        redacted: dict[str, Any] = {}
         for k, v in self.extra.items():
             k_low = k.lower() if isinstance(k, str) else ""
             if isinstance(v, str) and v and any(s in k_low for s in self._SENSITIVE_EXTRA_KEYS):
@@ -160,7 +160,7 @@ class RetrievalConfig:
 class SynthesisConfig:
     max_context_tokens: int = 3000
     default_format: str = "direct_answer"
-    tier_filter: List[str] = field(default_factory=lambda: ["A", "B"])
+    tier_filter: list[str] = field(default_factory=lambda: ["A", "B"])
 
 
 @dataclass
@@ -238,7 +238,7 @@ class ZettelForgeConfig:
     opencti: OpenCTIConfig = field(default_factory=OpenCTIConfig)
 
 
-def _find_config_file() -> Optional[Path]:
+def _find_config_file() -> Path | None:
     """Find config.yaml in standard locations."""
     candidates = [
         Path("config.yaml"),
@@ -467,7 +467,7 @@ def _apply_env(cfg: ZettelForgeConfig):
 
 # ── Singleton ──────────────────────────────────────────────
 
-_config: Optional[ZettelForgeConfig] = None
+_config: ZettelForgeConfig | None = None
 
 
 def get_config() -> ZettelForgeConfig:

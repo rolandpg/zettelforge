@@ -6,7 +6,7 @@ Automatically validates operations against our governance documentation
 """
 
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 
 class GovernanceValidator:
@@ -18,7 +18,7 @@ class GovernanceValidator:
         self.governance_dir = governance_dir
         self.rules = self._load_governance_rules()
 
-    def _load_governance_rules(self) -> Dict:
+    def _load_governance_rules(self) -> dict:
         """Load key governance rules relevant to memory operations."""
         rules = {
             "GOV-003": {"python_standards": True, "type_hints": True, "naming": True},
@@ -28,7 +28,7 @@ class GovernanceValidator:
         }
         return rules
 
-    def validate_operation(self, operation: str, data: Any = None) -> Tuple[bool, List[str]]:
+    def validate_operation(self, operation: str, data: Any = None) -> tuple[bool, list[str]]:
         """
         Validate an operation against governance rules.
 

@@ -10,7 +10,6 @@ Causal Triple Extension (2026-04-06):
 
 import re
 from datetime import datetime
-from typing import Dict, List
 
 from zettelforge.alias_resolver import AliasResolver
 from zettelforge.json_parse import extract_json
@@ -26,7 +25,7 @@ from zettelforge.vector_memory import get_embedding
 class NoteConstructor:
     """Construct enriched memory notes from raw content"""
 
-    def extract_entities(self, text: str) -> Dict[str, List[str]]:
+    def extract_entities(self, text: str) -> dict[str, list[str]]:
         """Extract entities from text using the shared EntityExtractor."""
         from zettelforge.entity_indexer import EntityExtractor
 
@@ -79,7 +78,7 @@ class NoteConstructor:
             return context
         return text[:100]
 
-    def _extract_keywords(self, text: str) -> List[str]:
+    def _extract_keywords(self, text: str) -> list[str]:
         """Extract keywords from text."""
         # Simple keyword extraction
         words = re.findall(r"\b[a-zA-Z]{4,}\b", text.lower())
@@ -103,7 +102,7 @@ class NoteConstructor:
         "related_to",
     ]
 
-    def extract_causal_triples(self, text: str, note_id: str = "") -> List[Dict[str, str]]:
+    def extract_causal_triples(self, text: str, note_id: str = "") -> list[dict[str, str]]:
         """
         Use LLM to extract causal triples from text.  [Enterprise]
         Returns list of {subject, relation, object, note_id}
@@ -163,7 +162,7 @@ JSON:"""
             _logger.warning("causal_extraction_failed", error=str(e))
             return []
 
-    def store_causal_edges(self, triples: List[Dict], note_id: str = "", backend=None) -> int:
+    def store_causal_edges(self, triples: list[dict], note_id: str = "", backend=None) -> int:
         """
         Store causal triples as edges in KnowledgeGraph.
         Returns number of edges added.

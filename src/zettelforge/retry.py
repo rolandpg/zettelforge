@@ -5,8 +5,9 @@ Implements resilient patterns per GOV-011 (Security & Reliability)
 
 import random
 import time
+from collections.abc import Callable
 from functools import wraps
-from typing import Callable, TypeVar
+from typing import TypeVar
 
 from zettelforge.log import get_logger
 from zettelforge.observability import Observability

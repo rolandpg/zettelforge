@@ -5,7 +5,6 @@ import os
 import sys
 import threading
 import time
-from typing import Optional
 
 from zettelforge import MemoryManager, __version__
 
@@ -15,7 +14,7 @@ from zettelforge import MemoryManager, __version__
 # backend defaults to sqlite when the server actually runs.
 os.environ.setdefault("ZETTELFORGE_BACKEND", "sqlite")
 
-_mm: Optional[MemoryManager] = None
+_mm: MemoryManager | None = None
 _mm_lock = threading.Lock()
 
 
