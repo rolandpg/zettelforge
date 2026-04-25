@@ -12,7 +12,9 @@ Conversational Entity Extension (RFC-001):
 import atexit
 import fcntl
 import json
+import os
 import re
+import tempfile
 import threading
 from pathlib import Path
 from typing import Dict, List, Optional, Set
@@ -379,7 +381,12 @@ class EntityIndexer:
         self.extractor = EntityExtractor()
         self._dirty = False
         self._flush_timer: Optional[threading.Timer] = None
-        self._flush_lock = threading.Lock()
+        # RLock so that paths which already hold the lock (e.g. add_note →
+        # _schedule_flush) don't deadlock on the timer-coordination
+        # acquisition. Same lock guards all index reads/writes/serialize
+        # so the dict comprehension in save() cannot race with mutating
+        # callers (RFC-001 Warning 6).
+        self._flush_lock = threading.RLock()
         atexit.register(self._flush_sync)
         self.load()
 
@@ -388,7 +395,7 @@ class EntityIndexer:
         if not self.index_path.exists():
             return False
         try:
-            with open(self.index_path) as f:
+            with self._flush_lock, open(self.index_path) as f:
                 data = json.load(f)
                 for entity_type in self.index:
                     if entity_type in data:
@@ -399,38 +406,80 @@ class EntityIndexer:
             return False
 
     def save(self) -> None:
-        """Save index to disk."""
+        """Save index to disk atomically.
+
+        RFC-001 Warning 4: previous implementation opened ``index_path``
+        in ``"w"`` mode (truncating) BEFORE acquiring ``flock``, so a
+        concurrent reader / crash mid-write left the file empty or
+        partial. This implementation writes to a temp file in the same
+        directory under the in-process lock, then atomically renames
+        into place. ``flock`` is taken on the temp file to interlock
+        cross-process writers; the rename is atomic on POSIX.
+        """
         self.index_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(self.index_path, "w") as f:
-            fcntl.flock(f, fcntl.LOCK_EX)
+        # In-process critical section: serialize from a stable snapshot
+        # of self.index. This excludes concurrent add_note / remove_note
+        # via _flush_lock (RFC-001 Warning 6).
+        with self._flush_lock:
             data = {k: {kk: list(vv) for kk, vv in v.items()} for k, v in self.index.items()}
-            json.dump(data, f, indent=2)
-            fcntl.flock(f, fcntl.LOCK_UN)
+
+        fd, tmp_path = tempfile.mkstemp(
+            prefix=".entity_index.", suffix=".json.tmp", dir=str(self.index_path.parent)
+        )
+        try:
+            with os.fdopen(fd, "w") as f:
+                fcntl.flock(f, fcntl.LOCK_EX)
+                json.dump(data, f, indent=2)
+                f.flush()
+                os.fsync(f.fileno())
+                fcntl.flock(f, fcntl.LOCK_UN)
+            os.replace(tmp_path, self.index_path)  # atomic on POSIX
+        except Exception:
+            # Best-effort cleanup; raise so caller observes the failure.
+            if os.path.exists(tmp_path):
+                try:
+                    os.unlink(tmp_path)
+                except OSError:
+                    pass
+            raise
 
     def add_note(self, note_id: str, entities: Dict[str, List[str]]) -> None:
         """Add note to entity index."""
-        for entity_type, entity_list in entities.items():
-            if entity_type not in self.index:
-                self.index[entity_type] = {}
-            for entity in entity_list:
-                entity_lower = entity.lower()
-                if entity_lower not in self.index[entity_type]:
-                    self.index[entity_type][entity_lower] = set()
-                self.index[entity_type][entity_lower].add(note_id)
-        self._dirty = True
+        # Hold _flush_lock for the whole mutation so concurrent save() /
+        # remove_note() / load() can't observe a torn index. Same lock
+        # nests safely with _schedule_flush via RLock.
+        with self._flush_lock:
+            for entity_type, entity_list in entities.items():
+                if entity_type not in self.index:
+                    self.index[entity_type] = {}
+                for entity in entity_list:
+                    entity_lower = entity.lower()
+                    if entity_lower not in self.index[entity_type]:
+                        self.index[entity_type][entity_lower] = set()
+                    self.index[entity_type][entity_lower].add(note_id)
+            self._dirty = True
         self._schedule_flush()
 
     def remove_note(self, note_id: str) -> None:
-        """Remove a note ID from all entity sets in the index."""
-        for entity_type in list(self.index.keys()):
-            for entity_value in list(self.index[entity_type].keys()):
-                self.index[entity_type][entity_value].discard(note_id)
-                # Clean up empty sets
-                if not self.index[entity_type][entity_value]:
-                    del self.index[entity_type][entity_value]
-            if not self.index[entity_type]:
-                del self.index[entity_type]
-        self._dirty = True
+        """Remove a note ID from all entity sets in the index.
+
+        RFC-001 Warning 5: previous implementation deleted the entity-type
+        key when its dict emptied, breaking the 19-type invariant set up
+        in __init__ — code elsewhere (e.g. ``add_note`` re-checking
+        ``entity_type not in self.index``) relied on that invariant
+        existing. We now leave empty type-buckets in place; only the
+        per-value sets are pruned.
+        """
+        with self._flush_lock:
+            for entity_type in list(self.index.keys()):
+                for entity_value in list(self.index[entity_type].keys()):
+                    self.index[entity_type][entity_value].discard(note_id)
+                    # Clean up empty per-value sets only — preserve the
+                    # parent entity_type bucket so ENTITY_TYPES invariant
+                    # holds across the lifetime of the indexer.
+                    if not self.index[entity_type][entity_value]:
+                        del self.index[entity_type][entity_value]
+            self._dirty = True
         self._schedule_flush()
 
     def _schedule_flush(self) -> None:
@@ -442,10 +491,17 @@ class EntityIndexer:
                 self._flush_timer.start()
 
     def _flush_sync(self) -> None:
-        """Write index to disk if dirty."""
-        if self._dirty:
-            self.save()
-            self._dirty = False
+        """Write index to disk if dirty.
+
+        RFC-001 Warning 6: hold the lock across the dirty-check + save +
+        clear so the dirty flag and the on-disk state stay consistent
+        even if a concurrent add_note arrives between read and write.
+        RLock allows save() to re-enter for its own snapshot block.
+        """
+        with self._flush_lock:
+            if self._dirty:
+                self.save()
+                self._dirty = False
 
     def get_note_ids(self, entity_type: str, entity_value: str) -> List[str]:
         """Get note IDs for a specific entity."""
