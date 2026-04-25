@@ -329,6 +329,15 @@ synthesis:
 # Validation rules applied before remember() and recall() operations.
 # Enforces data classification, retention, access control, and audit logging.
 #
+# PII detection (RFC-013, optional) uses Microsoft Presidio to scan content
+# for personally identifiable information before storage. Disabled by default.
+# Requires: pip install zettelforge[pii]
+#
+# PII action options:
+#   log       — detect and warn, pass content through unchanged
+#   redact    — replace PII with [REDACTED] before storage
+#   block     — raise exception if any PII is detected
+#
 # Examples:
 #   # Production (default)
 #   enabled: true
@@ -341,9 +350,41 @@ synthesis:
 #   enabled: true
 #   min_content_length: 20
 #
+#   # PII log-only (see what PII flows through your pipeline)
+#   enabled: true
+#   min_content_length: 1
+#   pii:
+#     enabled: true
+#     action: log
+#
+#   # PII redact (automatically remove PII before storage)
+#   enabled: true
+#   min_content_length: 1
+#   pii:
+#     enabled: true
+#     action: redact
+#
+#   # PII block (strict — reject content with detected PII)
+#   enabled: true
+#   min_content_length: 1
+#   pii:
+#     enabled: true
+#     action: block
+#
+# Env overrides:
+#   ZETTELFORGE_PII_ENABLED=true
+#   ZETTELFORGE_PII_ACTION=redact
+#
 governance:
   enabled: true
   min_content_length: 1
+  pii:
+    enabled: false
+    action: log
+    redact_placeholder: "[REDACTED]"
+    entities: []
+    language: en
+    nlp_model: en_core_web_sm
 
 
 # ── Cache ───────────────────────────────────────────────────────────────────
