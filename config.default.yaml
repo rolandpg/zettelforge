@@ -439,3 +439,32 @@ logging:
   level: INFO
   log_intents: true
   log_causal: true
+
+
+# ── Web UI (RFC-015) ─────────────────────────────────────────────────────────
+# ZettelForge Web Management Interface — SPA served at GET /.
+#
+# Examples:
+#   # Default — enabled on 0.0.0.0:8088
+#   enabled: true
+#   host: 0.0.0.0
+#   port: 8088
+#
+#   # Custom port (e.g., behind nginx reverse proxy)
+#   enabled: true
+#   host: 127.0.0.1
+#   port: 9000
+#
+#   # Disable web UI entirely (library-only mode)
+#   enabled: false
+#
+# Env overrides:
+#   ZETTELFORGE_WEB_ENABLED=true
+#   ZETTELFORGE_WEB_PORT=8088
+#   ZETTELFORGE_WEB_UI_DIR=/path/to/ui
+#
+web:
+  enabled: true
+  host: 0.0.0.0
+  port: 8088
+

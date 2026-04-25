@@ -260,6 +260,19 @@ class OpenCTIConfig:
 
 
 @dataclass
+class WebConfig:
+    """Web UI configuration (RFC-015: ZettelForge Web Management Interface).
+
+    Controls the SPA management interface served at GET /.
+    """
+
+    enabled: bool = True
+    host: str = "0.0.0.0"
+    port: int = 8088
+    ui_dir: str = ""  # defaults to web/ui/ relative to project root at runtime
+
+
+@dataclass
 class ZettelForgeConfig:
     storage: StorageConfig = field(default_factory=StorageConfig)
     typedb: TypeDBConfig = field(default_factory=TypeDBConfig)
@@ -276,6 +289,7 @@ class ZettelForgeConfig:
     logging: LoggingConfig = field(default_factory=LoggingConfig)
     enterprise: ExtensionsConfig = field(default_factory=ExtensionsConfig)
     opencti: OpenCTIConfig = field(default_factory=OpenCTIConfig)
+    web: WebConfig = field(default_factory=WebConfig)
 
 
 def _find_config_file() -> Path | None:
@@ -436,6 +450,12 @@ def _apply_yaml(cfg: ZettelForgeConfig, data: dict):
             if hasattr(cfg.opencti, k):
                 setattr(cfg.opencti, k, v)
 
+    # RFC-015: web UI config
+    if "web" in data and isinstance(data["web"], dict):
+        for k, v in data["web"].items():
+            if hasattr(cfg.web, k):
+                setattr(cfg.web, k, v)
+
 
 def _apply_env(cfg: ZettelForgeConfig):
     """Apply environment variable overrides (highest priority)."""
@@ -525,6 +545,17 @@ def _apply_env(cfg: ZettelForgeConfig):
         cfg.opencti.token = os.environ["OPENCTI_TOKEN"]
     if os.environ.get("OPENCTI_SYNC_INTERVAL"):
         cfg.opencti.sync_interval = int(os.environ["OPENCTI_SYNC_INTERVAL"])
+
+    # RFC-015: Web UI
+    if v := os.environ.get("ZETTELFORGE_WEB_ENABLED"):
+        cfg.web.enabled = v.lower() in ("true", "1", "yes")
+    if v := os.environ.get("ZETTELFORGE_WEB_PORT"):
+        try:
+            cfg.web.port = int(v)
+        except ValueError:
+            get_logger("zettelforge.config").warning("invalid_web_port", value=v)
+    if v := os.environ.get("ZETTELFORGE_WEB_UI_DIR"):
+        cfg.web.ui_dir = v
 
 
 # ── Singleton ──────────────────────────────────────────────
