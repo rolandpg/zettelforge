@@ -214,7 +214,7 @@ llm:
   url: http://localhost:11434
   api_key: ""
   temperature: 0.1
-  timeout: 60.0
+  timeout: 180.0  # v2.5.2: bumped from 60s for reasoning-model headroom
   max_retries: 2
   fallback: ""
   local_backend: llama-cpp-python  # used when provider=local (RFC-011)
