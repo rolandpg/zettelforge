@@ -124,10 +124,12 @@ line-length = 100
 [tool.ruff.lint]
 # GOV-003 §"Tooling and Automation" mandates the full set
 # {E, F, I, S, B, UP, SIM, RUF, N, ANN, T20}. We ratchet incrementally:
-# T20 + B + UP added 2026-04-25; SIM + RUF added 2026-04-25 (audit H-1
-# partial). The remaining rules (S, ANN) will be added in subsequent
-# batches once the surfaced findings are triaged.
-select = ["E", "F", "I", "W", "N", "T20", "B", "UP", "SIM", "RUF"]
+# T20 + B + UP + SIM + RUF added earlier 2026-04-25; S (bandit-ish
+# security) added in this batch. Per-line `# noqa: SXXX` annotations
+# document each accepted exception (best-effort fallbacks, non-crypto
+# RNG, ?-bound SQL with constant column lists). Only ANN remains; it
+# will be ratcheted per-module to avoid a 1000+ finding flood.
+select = ["E", "F", "I", "W", "N", "T20", "B", "UP", "SIM", "RUF", "S"]
 ignore = [
     "E501",   # line too long — handled by formatter
     "E402",   # module-level import not at top — needed for conditional imports

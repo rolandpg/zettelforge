@@ -141,7 +141,9 @@ class MemoryStore:
         ts = datetime.now().strftime("%Y%m%d_%H%M%S")
         import random
 
-        suffix = str(random.randint(0, 9999)).zfill(4)
+        # Note IDs are not security-sensitive; collisions are tolerated
+        # (timestamp-prefixed → vanishing collision probability per second).
+        suffix = str(random.randint(0, 9999)).zfill(4)  # noqa: S311
         return f"note_{ts}_{suffix}"
 
     def _ensure_cache(self):
@@ -367,7 +369,7 @@ class MemoryStore:
                                 updated = True
                             else:
                                 notes.append(data)
-                        except Exception:
+                        except Exception:  # noqa: S110 — corrupt JSONL lines are dropped
                             pass
 
                 if not updated:

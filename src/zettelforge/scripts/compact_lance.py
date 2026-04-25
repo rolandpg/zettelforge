@@ -154,15 +154,15 @@ def _serialize_lance_metrics(metrics: Any) -> dict[str, Any]:
     if dataclasses.is_dataclass(metrics) and not isinstance(metrics, type):
         try:
             return dataclasses.asdict(metrics)
-        except Exception:
-            pass  # fall through to attribute enumeration
+        except Exception:  # noqa: S110 — fall through to attribute enumeration
+            pass
     out: dict[str, Any] = {}
     for k in dir(metrics):
         if k.startswith("_"):
             continue
         try:
             v = getattr(metrics, k)
-        except Exception:
+        except Exception:  # noqa: S112 — skip attrs that error on getattr
             continue
         if callable(v):
             continue

@@ -268,8 +268,9 @@ _NOTE_COLUMNS = [
     "vuln_meta",
 ]
 
+# _NOTE_COLUMNS is a module-level constant; row values are ?-bound. Safe.
 _INSERT_NOTE_SQL = (
-    f"INSERT OR REPLACE INTO notes ({', '.join(_NOTE_COLUMNS)}) "
+    f"INSERT OR REPLACE INTO notes ({', '.join(_NOTE_COLUMNS)}) "  # noqa: S608
     f"VALUES ({', '.join('?' for _ in _NOTE_COLUMNS)})"
 )
 

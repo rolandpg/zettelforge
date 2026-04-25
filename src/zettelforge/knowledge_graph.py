@@ -120,10 +120,10 @@ class KnowledgeGraph:
         if not ts_string:
             return None
 
-        # ISO format
+        # ISO format — try first, fall through to fmt list on parse failure
         try:
             return datetime.fromisoformat(ts_string.replace("Z", "+00:00"))
-        except Exception:
+        except Exception:  # noqa: S110 — best-effort parse; fall through to alt fmts
             pass
 
         # Common formats
@@ -131,7 +131,7 @@ class KnowledgeGraph:
         for fmt in formats:
             try:
                 return datetime.strptime(ts_string, fmt)
-            except Exception:
+            except Exception:  # noqa: S112 — best-effort parse; try next fmt
                 continue
         return None
 

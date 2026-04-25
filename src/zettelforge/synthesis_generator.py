@@ -80,7 +80,7 @@ class SynthesisGenerator:
             "format": format,
             "synthesis": synthesis,
             "metadata": {
-                "query_id": hashlib.md5(query.encode()).hexdigest()[:12],
+                "query_id": hashlib.md5(query.encode(), usedforsecurity=False).hexdigest()[:12],
                 "model_used": self.llm_model,
                 "tokens_used": tokens_used,
                 "latency_ms": latency_ms,
