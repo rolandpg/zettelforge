@@ -18,7 +18,7 @@ Example::
 from __future__ import annotations
 
 import os
-from typing import Any, Dict, Optional
+from typing import Any
 
 from zettelforge.llm_providers import LLMProviderConfigurationError, registry
 from zettelforge.log import get_logger
@@ -78,7 +78,7 @@ def get_ollama_url() -> str:
 # ── Provider kwargs ──────────────────────────────────────────────────────────
 
 
-def _provider_kwargs(provider_name: str) -> Dict[str, Any]:
+def _provider_kwargs(provider_name: str) -> dict[str, Any]:
     """Build constructor kwargs for a provider from current config + env.
 
     The registry caches instances keyed by name, so these kwargs are only
@@ -86,7 +86,7 @@ def _provider_kwargs(provider_name: str) -> Dict[str, Any]:
     config changes at runtime — it clears both the cached config and the
     cached provider instances.
     """
-    kwargs: Dict[str, Any] = {}
+    kwargs: dict[str, Any] = {}
 
     try:
         from zettelforge.config import get_config
@@ -157,7 +157,7 @@ def _provider_kwargs(provider_name: str) -> Dict[str, Any]:
     return {k: v for k, v in kwargs.items() if v != ""}
 
 
-def _fallback_provider(primary: str) -> Optional[str]:
+def _fallback_provider(primary: str) -> str | None:
     """Return the fallback provider name for ``primary`` (or ``None``)."""
     try:
         from zettelforge.config import get_config
@@ -183,7 +183,7 @@ def generate(
     prompt: str,
     max_tokens: int = 400,
     temperature: float = 0.1,
-    system: Optional[str] = None,
+    system: str | None = None,
     json_mode: bool = False,
 ) -> str:
     """Generate text from a prompt via the configured LLM provider.
@@ -286,7 +286,7 @@ def _generate_local(
     prompt: str,
     max_tokens: int,
     temperature: float,
-    system: Optional[str],
+    system: str | None,
     json_mode: bool = False,
 ) -> str:
     """Deprecated compat shim — prefer :func:`generate`."""
@@ -300,7 +300,7 @@ def _generate_ollama(
     prompt: str,
     max_tokens: int,
     temperature: float,
-    system: Optional[str] = None,
+    system: str | None = None,
     json_mode: bool = False,
 ) -> str:
     """Deprecated compat shim — prefer :func:`generate`."""

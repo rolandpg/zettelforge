@@ -55,7 +55,7 @@ import sys
 import time
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 
 @dataclass
@@ -65,13 +65,13 @@ class TableReport:
     table: str
     mode: str  # "compact" | "optimize" | "dry-run"
     before_fragments: int = 0
-    after_fragments: Optional[int] = None
+    after_fragments: int | None = None
     before_bytes: int = 0
-    after_bytes: Optional[int] = None
-    row_count: Optional[int] = None
-    elapsed_seconds: Optional[float] = None
-    error: Optional[str] = None
-    lance_metrics: Dict[str, Any] = field(default_factory=dict)
+    after_bytes: int | None = None
+    row_count: int | None = None
+    elapsed_seconds: float | None = None
+    error: str | None = None
+    lance_metrics: dict[str, Any] = field(default_factory=dict)
 
 
 def _dir_size_bytes(path: Path) -> int:
@@ -92,7 +92,7 @@ def _count_fragments(lance_dir: Path) -> int:
     return sum(1 for _ in data_dir.glob("*.lance"))
 
 
-def _discover_tables(vectordb_dir: Path) -> List[str]:
+def _discover_tables(vectordb_dir: Path) -> list[str]:
     """Return the list of ``<name>`` for every ``<name>.lance/`` directory."""
     if not vectordb_dir.is_dir():
         return []
@@ -143,7 +143,7 @@ def _process_one(
     return report
 
 
-def _serialize_lance_metrics(metrics: Any) -> Dict[str, Any]:
+def _serialize_lance_metrics(metrics: Any) -> dict[str, Any]:
     """Best-effort serialize a Lance metrics object.
 
     Lance returns dataclass-shaped objects whose layout shifts between
@@ -159,7 +159,7 @@ def _serialize_lance_metrics(metrics: Any) -> Dict[str, Any]:
             return dataclasses.asdict(metrics)
         except Exception:
             pass  # fall through to attribute enumeration
-    out: Dict[str, Any] = {}
+    out: dict[str, Any] = {}
     for k in dir(metrics):
         if k.startswith("_"):
             continue
@@ -173,7 +173,7 @@ def _serialize_lance_metrics(metrics: Any) -> Dict[str, Any]:
     return out
 
 
-def _parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
+def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p = argparse.ArgumentParser(
         description="Compact ZettelForge LanceDB shards to flatten insert-latency tails.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
@@ -217,7 +217,7 @@ def _parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     return p.parse_args(argv)
 
 
-def main(argv: Optional[List[str]] = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     args = _parse_args(argv)
 
     try:
@@ -268,12 +268,12 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     db = lancedb.connect(str(vectordb_dir))
 
-    reports: List[TableReport] = []
+    reports: list[TableReport] = []
     for name in tables:
         print(f"[{mode}] {name} ...", file=sys.stderr)
         reports.append(_process_one(db, vectordb_dir, name, mode))
 
-    payload: Dict[str, Any] = {
+    payload: dict[str, Any] = {
         "data_dir": str(data_dir),
         "mode": mode,
         "tables": [asdict(r) for r in reports],

@@ -13,7 +13,7 @@ inference engine via an internal ``LocalBackend`` protocol.
 from __future__ import annotations
 
 import threading
-from typing import Any, Optional
+from typing import Any
 
 from zettelforge.log import get_logger
 
@@ -45,7 +45,7 @@ class _LocalBackend:
         prompt: str,
         max_tokens: int = 400,
         temperature: float = 0.1,
-        system: Optional[str] = None,
+        system: str | None = None,
         json_mode: bool = False,
     ) -> str:
         """Generate text. Returns empty string on recoverable failure."""
@@ -111,7 +111,7 @@ class LlamaCppBackend(_LocalBackend):
         prompt: str,
         max_tokens: int = 400,
         temperature: float = 0.1,
-        system: Optional[str] = None,
+        system: str | None = None,
         json_mode: bool = False,
     ) -> str:
         llm = self._get_llm()
@@ -201,7 +201,7 @@ class OnnxGenAIBackend(_LocalBackend):
         prompt: str,
         max_tokens: int = 400,
         temperature: float = 0.1,
-        system: Optional[str] = None,
+        system: str | None = None,
         json_mode: bool = False,
     ) -> str:
         self._load()
@@ -320,7 +320,7 @@ class LocalProvider:
         prompt: str,
         max_tokens: int = 400,
         temperature: float = 0.1,
-        system: Optional[str] = None,
+        system: str | None = None,
         json_mode: bool = False,
     ) -> str:
         return self._get_impl().generate(

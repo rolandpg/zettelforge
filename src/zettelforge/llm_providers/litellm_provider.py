@@ -16,7 +16,7 @@ Usage::
 from __future__ import annotations
 
 import time
-from typing import Any, Optional
+from typing import Any
 
 from zettelforge.log import get_logger
 
@@ -67,7 +67,7 @@ class LiteLLMProvider:
         prompt: str,
         max_tokens: int = 400,
         temperature: float = 0.1,
-        system: Optional[str] = None,
+        system: str | None = None,
         json_mode: bool = False,
     ) -> str:
         try:

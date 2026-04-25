@@ -21,7 +21,6 @@ import uuid
 from collections import deque
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
 
 
 class KnowledgeGraph:
@@ -30,7 +29,7 @@ class KnowledgeGraph:
     Uses JSONL for append-only persistence.
     """
 
-    def __init__(self, data_dir: Optional[str] = None):
+    def __init__(self, data_dir: str | None = None):
         from zettelforge.memory_store import get_default_data_dir
 
         base_dir = Path(data_dir) if data_dir else get_default_data_dir()
@@ -38,16 +37,16 @@ class KnowledgeGraph:
         self.edges_file = base_dir / "kg_edges.jsonl"
 
         # In-memory caches
-        self._nodes: Dict[str, Dict] = {}  # node_id -> node data
-        self._node_index: Dict[str, Dict[str, str]] = {}  # entity_type -> entity_value -> node_id
-        self._edges: Dict[str, Dict] = {}  # edge_id -> edge data
-        self._edges_from: Dict[str, List[Dict]] = {}  # node_id -> outgoing edges
-        self._edges_to: Dict[str, List[Dict]] = {}  # node_id -> incoming edges
+        self._nodes: dict[str, dict] = {}  # node_id -> node data
+        self._node_index: dict[str, dict[str, str]] = {}  # entity_type -> entity_value -> node_id
+        self._edges: dict[str, dict] = {}  # edge_id -> edge data
+        self._edges_from: dict[str, list[dict]] = {}  # node_id -> outgoing edges
+        self._edges_to: dict[str, list[dict]] = {}  # node_id -> incoming edges
 
         # ===== Temporal Index (Task 2) =====
         # Temporal edges indexed by timestamp
-        self._temporal_index: Dict[str, List[Dict]] = {}  # timestamp -> temporal edges
-        self._entity_timeline: Dict[str, List[Dict]] = {}  # entity_value -> timeline of states
+        self._temporal_index: dict[str, list[dict]] = {}  # timestamp -> temporal edges
+        self._entity_timeline: dict[str, list[dict]] = {}  # entity_value -> timeline of states
 
         self._lock = threading.RLock()
         self._load_all()
@@ -55,7 +54,7 @@ class KnowledgeGraph:
     def _load_all(self):
         """Load nodes and edges from JSONL files."""
         if self.nodes_file.exists():
-            with open(self.nodes_file, "r") as f:
+            with open(self.nodes_file) as f:
                 for line in f:
                     if line.strip():
                         try:
@@ -65,7 +64,7 @@ class KnowledgeGraph:
                             continue
 
         if self.edges_file.exists():
-            with open(self.edges_file, "r") as f:
+            with open(self.edges_file) as f:
                 for line in f:
                     if line.strip():
                         try:
@@ -80,7 +79,7 @@ class KnowledgeGraph:
                         except json.JSONDecodeError:
                             continue
 
-    def _cache_node(self, node: Dict):
+    def _cache_node(self, node: dict):
         self._nodes[node["node_id"]] = node
         etype = node["entity_type"]
         evalue = node["entity_value"]
@@ -88,7 +87,7 @@ class KnowledgeGraph:
             self._node_index[etype] = {}
         self._node_index[etype][evalue] = node["node_id"]
 
-    def _cache_edge(self, edge: Dict):
+    def _cache_edge(self, edge: dict):
         self._edges[edge["edge_id"]] = edge
 
         from_id = edge["from_node_id"]
@@ -116,7 +115,7 @@ class KnowledgeGraph:
 
     # ===== Temporal Indexing (Task 2) =====
 
-    def _parse_timestamp(self, ts_string: str) -> Optional[datetime]:
+    def _parse_timestamp(self, ts_string: str) -> datetime | None:
         """Parse various timestamp formats."""
         if not ts_string:
             return None
@@ -136,7 +135,7 @@ class KnowledgeGraph:
                 continue
         return None
 
-    def _index_temporal_edge(self, edge: Dict):
+    def _index_temporal_edge(self, edge: dict):
         """Index a temporal edge in the temporal index."""
         ts = edge.get("properties", {}).get("timestamp") or edge.get("created_at", "")
         if ts:
@@ -168,7 +167,7 @@ class KnowledgeGraph:
         to_value: str,
         relationship: str,  # TEMPORAL_BEFORE, TEMPORAL_AFTER, SUPERSEDES
         timestamp: str,
-        properties: Optional[Dict] = None,
+        properties: dict | None = None,
     ) -> str:
         """Add a temporal edge with timestamp."""
         props = properties or {}
@@ -183,7 +182,7 @@ class KnowledgeGraph:
 
         return edge_id
 
-    def get_entity_timeline(self, entity_type: str, entity_value: str) -> List[Dict]:
+    def get_entity_timeline(self, entity_type: str, entity_value: str) -> list[dict]:
         """Get timeline of states for an entity."""
         entity_key = f"{entity_type}:{entity_value}"
         timeline = self._entity_timeline.get(entity_key, [])
@@ -192,7 +191,7 @@ class KnowledgeGraph:
         timeline.sort(key=lambda x: x["timestamp"] or "")
         return timeline
 
-    def get_changes_since(self, timestamp: str) -> List[Dict]:
+    def get_changes_since(self, timestamp: str) -> list[dict]:
         """Get all entity changes since a given timestamp."""
         changes = []
 
@@ -215,9 +214,7 @@ class KnowledgeGraph:
 
     # ===== Core Graph Operations =====
 
-    def add_node(
-        self, entity_type: str, entity_value: str, properties: Optional[Dict] = None
-    ) -> str:
+    def add_node(self, entity_type: str, entity_value: str, properties: dict | None = None) -> str:
         """Add or update a node. Returns node_id."""
         with self._lock:
             # Check if exists
@@ -251,7 +248,7 @@ class KnowledgeGraph:
         to_type: str,
         to_value: str,
         relationship: str,
-        properties: Optional[Dict] = None,
+        properties: dict | None = None,
     ) -> str:
         """Add or update a relationship edge between two entities. Auto-creates nodes."""
         with self._lock:
@@ -300,24 +297,24 @@ class KnowledgeGraph:
 
             return edge_id
 
-    def _append_jsonl(self, path: Path, data: Dict):
+    def _append_jsonl(self, path: Path, data: dict):
         """Append to JSONL file atomically-ish."""
         path.parent.mkdir(parents=True, exist_ok=True)
         with open(path, "a") as f:
             f.write(json.dumps(data) + "\n")
 
-    def get_node(self, entity_type: str, entity_value: str) -> Optional[Dict]:
+    def get_node(self, entity_type: str, entity_value: str) -> dict | None:
         """Get node by type and value."""
         node_id = self._node_index.get(entity_type, {}).get(entity_value)
         if node_id:
             return self._nodes.get(node_id)
         return None
 
-    def get_node_by_id(self, node_id: str) -> Optional[Dict]:
+    def get_node_by_id(self, node_id: str) -> dict | None:
         """Get node by its internal node_id."""
         return self._nodes.get(node_id)
 
-    def get_outgoing_edges(self, node_id: str) -> List[Dict]:
+    def get_outgoing_edges(self, node_id: str) -> list[dict]:
         """Return all outgoing edges for a node_id.
 
         Each edge dict contains at minimum: edge_id, from_node_id, to_node_id,
@@ -326,8 +323,8 @@ class KnowledgeGraph:
         return list(self._edges_from.get(node_id, []))
 
     def get_neighbors(
-        self, entity_type: str, entity_value: str, relationship: Optional[str] = None
-    ) -> List[Dict]:
+        self, entity_type: str, entity_value: str, relationship: str | None = None
+    ) -> list[dict]:
         """Get all adjacent nodes (outgoing edges) for a given node."""
         node_id = self._node_index.get(entity_type, {}).get(entity_value)
         if not node_id:
@@ -348,7 +345,7 @@ class KnowledgeGraph:
                 )
         return neighbors
 
-    def traverse(self, start_type: str, start_value: str, max_depth: int = 2) -> List[Dict]:
+    def traverse(self, start_type: str, start_value: str, max_depth: int = 2) -> list[dict]:
         """Traverse the graph up to max_depth."""
         start_node_id = self._node_index.get(start_type, {}).get(start_value)
         if not start_node_id:
@@ -385,7 +382,7 @@ class KnowledgeGraph:
 
     def get_causal_edges(
         self, entity_type: str, entity_value: str, max_depth: int = 3, max_visited: int = 50
-    ) -> List[Dict]:
+    ) -> list[dict]:
         """BFS over OUTGOING causal edges — traces forward from cause to effects."""
         node_id = self._node_index.get(entity_type, {}).get(entity_value.lower())
         if not node_id:
@@ -412,7 +409,7 @@ class KnowledgeGraph:
 
     def get_incoming_causal(
         self, entity_type: str, entity_value: str, max_depth: int = 3, max_visited: int = 50
-    ) -> List[Dict]:
+    ) -> list[dict]:
         """BFS over INCOMING causal edges — traces back to root causes ('why' queries)."""
         node_id = self._node_index.get(entity_type, {}).get(entity_value.lower())
         if not node_id:
@@ -437,7 +434,7 @@ class KnowledgeGraph:
 
         return causal_edges
 
-    def get_latest_state(self, entity_type: str, entity_value: str) -> Optional[Dict]:
+    def get_latest_state(self, entity_type: str, entity_value: str) -> dict | None:
         """Get the latest known state of an entity."""
         timeline = self.get_entity_timeline(entity_type, entity_value)
         if timeline:
@@ -446,7 +443,7 @@ class KnowledgeGraph:
 
 
 # Global singleton
-_kg_instance: Optional[KnowledgeGraph] = None
+_kg_instance: KnowledgeGraph | None = None
 _kg_lock = threading.Lock()
 
 
