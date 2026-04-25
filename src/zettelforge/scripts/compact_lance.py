@@ -223,7 +223,10 @@ def main(argv: Optional[List[str]] = None) -> int:
     try:
         import lancedb
     except ImportError:
-        print("lancedb is not installed; install zettelforge extras first.", file=sys.stderr)
+        print(
+            "lancedb is required but could not be imported; install or repair this environment.",
+            file=sys.stderr,
+        )
         return 2
 
     data_dir = Path(args.data_dir).expanduser().resolve()
