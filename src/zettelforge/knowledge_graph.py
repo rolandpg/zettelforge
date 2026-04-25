@@ -22,6 +22,44 @@ from collections import deque
 from datetime import datetime
 from pathlib import Path
 
+from zettelforge.log import get_logger
+
+_logger = get_logger("zettelforge.knowledge_graph")
+
+
+# Pre-v2.5.1 writers (now removed from the codebase, but persisted on disk
+# in older deployments) used {source_id, target_id, relation_type} instead of
+# {from_node_id, to_node_id, relationship}. _normalize_edge_schema() rewrites
+# legacy entries on load so both shapes are tolerated. Missing edge_id is
+# treated as terminal — we cannot index without one.
+_LEGACY_EDGE_KEY_MAP = {
+    "source_id": "from_node_id",
+    "target_id": "to_node_id",
+    "relation_type": "relationship",
+}
+
+
+def _normalize_edge_schema(edge: dict) -> dict | None:
+    """Return a copy of ``edge`` with legacy keys remapped, or ``None`` if
+    the entry is missing fields the cache requires.
+
+    Idempotent: edges already in the canonical shape pass through unchanged.
+
+    ``relationship`` is required because downstream code (``add_edge`` dedup
+    scan, ``get_neighbors``, traversal) does direct subscripting on it; a
+    legacy row without ``relation_type`` would otherwise survive load and
+    trigger a deferred KeyError on first read.
+    """
+    if not isinstance(edge, dict) or not edge.get("edge_id"):
+        return None
+    out = dict(edge)
+    for legacy, canonical in _LEGACY_EDGE_KEY_MAP.items():
+        if canonical not in out and legacy in out:
+            out[canonical] = out[legacy]
+    if "from_node_id" not in out or "to_node_id" not in out or "relationship" not in out:
+        return None
+    return out
+
 
 class KnowledgeGraph:
     """
@@ -64,20 +102,39 @@ class KnowledgeGraph:
                             continue
 
         if self.edges_file.exists():
+            skipped_malformed = 0
             with open(self.edges_file) as f:
                 for line in f:
-                    if line.strip():
-                        try:
-                            edge = json.loads(line)
-                            self._cache_edge(edge)
-                            # Index temporal edges
-                            if (
-                                edge.get("relationship", "").startswith("TEMPORAL_")
-                                or edge.get("relationship") == "SUPERSEDES"
-                            ):
-                                self._index_temporal_edge(edge)
-                        except json.JSONDecodeError:
-                            continue
+                    if not line.strip():
+                        continue
+                    try:
+                        edge = json.loads(line)
+                    except json.JSONDecodeError:
+                        skipped_malformed += 1
+                        continue
+                    edge = _normalize_edge_schema(edge)
+                    if edge is None:
+                        skipped_malformed += 1
+                        continue
+                    self._cache_edge(edge)
+                    # Index temporal edges
+                    if (
+                        edge.get("relationship", "").startswith("TEMPORAL_")
+                        or edge.get("relationship") == "SUPERSEDES"
+                    ):
+                        self._index_temporal_edge(edge)
+            if skipped_malformed:
+                # Pre-v2.5.1 deployments wrote edges under both
+                # {from_node_id, to_node_id, relationship} and
+                # {source_id, target_id, relation_type}; the loader now
+                # normalizes the latter to the former. Anything still
+                # un-normalizable is silently dropped here. Logged at
+                # warning so operators can see the count without crashing.
+                _logger.warning(
+                    "kg_edges_skipped_malformed",
+                    count=skipped_malformed,
+                    file=str(self.edges_file),
+                )
 
     def _cache_node(self, node: dict):
         self._nodes[node["node_id"]] = node
