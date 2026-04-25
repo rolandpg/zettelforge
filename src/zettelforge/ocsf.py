@@ -17,6 +17,7 @@ Event classes:
 
 from datetime import datetime, timezone
 from importlib.metadata import PackageNotFoundError, version
+from pathlib import Path
 from typing import Any, Optional
 
 from zettelforge.log import get_logger
@@ -25,11 +26,28 @@ logger = get_logger("zettelforge.ocsf")
 
 
 def _resolve_product_version() -> str:
-    """Read the installed package version so OCSF events don't drift on release bumps.
+    """Resolve the package version for OCSF event metadata.
 
-    Falls back to a known value only when the package isn't installed (e.g. running
-    directly from a source checkout without an editable install).
+    Editable installs hit a stale-metadata trap: ``git checkout vX.Y.Z`` updates
+    the source but not the ``importlib.metadata`` record (that only refreshes
+    when ``pip install -e .`` runs). Vigil exhibited this on 2026-04-24 — v2.4.2
+    code was emitting ``phase_timings_ms`` (proving the source was bumped) while
+    OCSF events still reported ``product.version=2.4.1``. We prefer the source
+    ``pyproject.toml`` when it's reachable from ``__file__`` and fall back to
+    installed metadata otherwise (the standard wheel-install case).
     """
+    try:
+        # zettelforge/ocsf.py → zettelforge/ → src/ → repo root
+        repo_root = Path(__file__).resolve().parent.parent.parent
+        pyproject = repo_root / "pyproject.toml"
+        if pyproject.is_file():
+            for line in pyproject.read_text(encoding="utf-8").splitlines():
+                stripped = line.strip()
+                if stripped.startswith("version") and "=" in stripped:
+                    return stripped.split("=", 1)[1].strip().strip('"').strip("'")
+    except Exception:  # pragma: no cover — defensive; fall through to metadata
+        pass
+
     try:
         return version("zettelforge")
     except PackageNotFoundError:

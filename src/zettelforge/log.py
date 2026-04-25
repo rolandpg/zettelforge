@@ -165,15 +165,18 @@ def get_logger(name: str) -> structlog.stdlib.BoundLogger:
         logs_dir = Path(data_dir) / "logs"
         log_file = str(logs_dir / "zettelforge.log")
         audit_log_file = str(logs_dir / "audit.log")
+        # Resolution order: ZETTELFORGE_LOG_LEVEL env var > config.yaml log
+        # level > INFO. Env var wins so operators can flip DEBUG without
+        # editing config or restarting agents. config.yaml is the persistent
+        # default (RFC-007 telemetry support).
+        level = os.environ.get("ZETTELFORGE_LOG_LEVEL", "").strip()
+        if not level:
+            try:
+                from zettelforge.config import get_config
 
-        # Load config to get logging level (RFC-007 telemetry support)
-        try:
-            from zettelforge.config import get_config
-
-            cfg = get_config()
-            log_level = cfg.logging.level if hasattr(cfg, "logging") else "INFO"
-        except Exception:
-            log_level = "INFO"
-
-        configure_logging(level=log_level, log_file=log_file, audit_log_file=audit_log_file)
+                cfg = get_config()
+                level = cfg.logging.level if hasattr(cfg, "logging") else "INFO"
+            except Exception:
+                level = "INFO"
+        configure_logging(level=level, log_file=log_file, audit_log_file=audit_log_file)
     return structlog.get_logger(name)
