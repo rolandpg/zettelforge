@@ -12,7 +12,6 @@ Tests run without presidio-analyzer installed -- they verify:
 from __future__ import annotations
 
 import sys
-from unittest.mock import MagicMock
 
 import pytest
 
@@ -241,11 +240,8 @@ class TestGovernanceValidatorPII:
         result = gv.enforce("remember", "test")
         assert isinstance(result, str)
 
-    # ---- Mocked Presidio analyzer integration --------------------------------------
 
-    mock_analyzer = MagicMock()
-    mock_analyzer.analyze.return_value = detections
-    return mock_analyzer
+# ---- Mocked Presidio analyzer integration --------------------------------------
 
 
 def _patch_presidio():
