@@ -34,6 +34,10 @@ DEFAULT_LLM_FILENAME = "qwen2.5-3b-instruct-q4_k_m.gguf"
 DEFAULT_OLLAMA_MODEL = "qwen2.5:3b"
 DEFAULT_OLLAMA_URL = "http://localhost:11434"
 
+# RFC-011: ONNX GenAI backend defaults
+_DEFAULT_ONNX_MODEL = "microsoft/Phi-3-mini-4k-instruct-onnx"
+_DEFAULT_ONNX_FILENAME = "phi3-mini-4k-instruct-q4.onnx"
+
 
 def get_llm_provider() -> str:
     """Return the configured provider name, honouring env var and config."""
@@ -108,18 +112,37 @@ def _provider_kwargs(provider_name: str) -> Dict[str, Any]:
         # The shared config's ``llm.model`` may be an Ollama tag like
         # ``qwen3.5:9b``. llama-cpp-python interprets that as a HuggingFace
         # repo id and fails. If the configured value looks like an Ollama tag
-        # (colon, no slash) we ignore it and fall back to ``DEFAULT_LLM_MODEL``
-        # unless the user explicitly set ``ZETTELFORGE_LLM_MODEL``.
+        # (colon, no slash) we ignore it and fall back to a backend-appropriate
+        # default unless the user explicitly set ``ZETTELFORGE_LLM_MODEL``.
         cfg_model = kwargs.get("model") or ""
         looks_like_ollama_tag = ":" in cfg_model and "/" not in cfg_model
-        local_default = "" if looks_like_ollama_tag else cfg_model
-        kwargs["model"] = os.environ.get(
-            "ZETTELFORGE_LLM_MODEL", local_default or DEFAULT_LLM_MODEL
-        )
-        kwargs["filename"] = os.environ.get(
-            "ZETTELFORGE_LLM_FILENAME",
-            kwargs.get("filename") or DEFAULT_LLM_FILENAME,
-        )
+
+        # RFC-011: determine local backend to select correct defaults
+        local_backend = "llama-cpp-python"
+        if llm_cfg is not None:
+            lb = getattr(llm_cfg, "local_backend", None)
+            if lb:
+                local_backend = lb
+                kwargs["backend"] = lb
+
+        if local_backend == "onnxruntime-genai":
+            kwargs["model"] = os.environ.get(
+                "ZETTELFORGE_LLM_MODEL",
+                ("" if looks_like_ollama_tag else (cfg_model or _DEFAULT_ONNX_MODEL)),
+            )
+            kwargs["filename"] = os.environ.get(
+                "ZETTELFORGE_LLM_FILENAME",
+                kwargs.get("filename") or _DEFAULT_ONNX_FILENAME,
+            )
+        else:
+            kwargs["model"] = os.environ.get(
+                "ZETTELFORGE_LLM_MODEL",
+                ("" if looks_like_ollama_tag else cfg_model) or DEFAULT_LLM_MODEL,
+            )
+            kwargs["filename"] = os.environ.get(
+                "ZETTELFORGE_LLM_FILENAME",
+                kwargs.get("filename") or DEFAULT_LLM_FILENAME,
+            )
     elif provider_name == "ollama":
         # ``ZETTELFORGE_OLLAMA_MODEL`` is deprecated in favour of
         # ``ZETTELFORGE_LLM_MODEL`` but still honoured through v2.x.

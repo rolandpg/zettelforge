@@ -52,6 +52,19 @@ local = [
     "llama-cpp-python>=0.3.0",
 ]
 
+# Local LLM: in-process ONNX Runtime GenAI (ONNX models, RFC-011)
+# pip install zettelforge[local-onnx]
+local-onnx = [
+    "onnxruntime-genai>=0.4.0",
+]
+
+# All local backends combined (convenience)
+# pip install zettelforge[local-all]
+local-all = [
+    "zettelforge[local]",
+    "zettelforge[local-onnx]",
+]
+
 # Extensions: install the separate zettelforge-enterprise package
 # pip install zettelforge-enterprise
 extensions = [
