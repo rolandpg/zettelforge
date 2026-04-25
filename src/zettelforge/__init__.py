@@ -57,7 +57,7 @@ from zettelforge.vector_retriever import VectorRetriever
 # importable for advanced use but are not part of the advertised public API
 # and are therefore excluded from __all__ below.
 
-__version__ = "2.4.2"
+__version__ = "2.4.3"
 __all__ = [
     # Edition
     "Edition",
