@@ -18,9 +18,15 @@ No external services (Ollama, TypeDB, Docker) are required for development. Zett
 2. Make your changes
 3. Run tests: `pytest tests/ -v`
 4. Run linting: `ruff check src/zettelforge/`
-5. Run formatting: `black src/zettelforge/`
-6. Commit with clear messages
+5. Run formatting: `ruff format src/zettelforge/`
+6. Commit with a Conventional Commits message (see "Commit Messages" below)
 7. Push and create a pull request
+
+CI enforces the same `ruff check` and `ruff format --check` invocations
+plus `pytest --cov-fail-under=67`, `pip-audit`, governance spec-drift,
+and Snyk SCA/SAST. The full active rule set is `{E, F, I, W, N, T20,
+B, UP, SIM, RUF, S}` per GOV-003 §"Tooling and Automation"; only ANN
+remains and is being ratcheted per-module.
 
 ## Where to contribute
 
