@@ -50,6 +50,17 @@ def _register_builtins() -> None:
             # Already registered (re-import / test runtime); silently skip.
             pass
 
+    # RFC-012: LiteLLM is an optional provider — installed via
+    # pip install zettelforge[litellm]. Registration is conditional
+    # on the SDK being importable so the core package never hard-requires it.
+    try:
+        from zettelforge.llm_providers.litellm_provider import LiteLLMProvider
+
+        register("litellm", LiteLLMProvider)
+        _logger.debug("litellm_provider_registered")
+    except ImportError:
+        _logger.debug("litellm_provider_unavailable")
+
 
 def _discover_entry_points() -> None:
     """Load third-party providers exposed via entry points.

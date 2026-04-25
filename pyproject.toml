@@ -65,6 +65,12 @@ local-all = [
     "zettelforge[local-onnx]",
 ]
 
+# LiteLLM — unified routing to 100+ LLM providers (RFC-012)
+# pip install zettelforge[litellm]
+litellm = [
+    "litellm>=1.60.0",
+]
+
 # Extensions: install the separate zettelforge-enterprise package
 # pip install zettelforge-enterprise
 extensions = [
