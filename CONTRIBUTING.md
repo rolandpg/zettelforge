@@ -37,6 +37,49 @@ If your contribution needs TypeDB or OpenCTI, open an issue to discuss.
 We keep the extension boundary clear so contributors know their work
 will always remain open source.
 
+### For major features: Start with an RFC
+
+If you're proposing a significant new feature (new subsystem, new backend,
+breaking API change), open an RFC before writing code. RFCs live in
+`docs/rfcs/` and follow the template from the existing RFCs in that
+directory. Open a Discussion first to socialize the idea, then file a
+draft RFC as a PR. This prevents wasted effort on work that won't be
+accepted.
+
+See [ROADMAP.md](ROADMAP.md) for the current priorities and what's
+planned for upcoming releases.
+
+### Good first issues
+
+Issues tagged [good first issue](https://github.com/rolandpg/zettelforge/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
+have structured acceptance criteria in the issue body. Check the issue
+for: which files to edit, test expectations, and example input/output.
+If an issue is unclear, ask in the issue comments.
+
+## Issue triage
+
+This project is maintained by a solo developer (per GOV-006). Here is
+what you can expect:
+
+- **New issues**: triaged within 7 days. You will get a response (even
+  if it's "not planned, closing").
+- **Bug reports**: severity assessed within 7 days. P0 (crash, data
+  loss, security) gets a same-day response.
+- **Feature requests**: tagged with `enhancement` on creation. The
+  maintainer will add `planned`, `deferred`, or `won't fix` within 7
+  days.
+- **PR reviews**: first review within 14 days of submission. Smaller
+  PRs get reviewed faster.
+- **Stale issues**: issues with no activity for 60 days are tagged
+  `stale` and closed after 14 more days without response. This keeps
+  the tracker manageable for a solo maintainer.
+
+## Contributor recognition
+
+Every contributor is listed in [CONTRIBUTORS.md](CONTRIBUTORS.md),
+regardless of contribution size. If you submit a PR that gets merged,
+you will be added. If your name is missing, open a PR.
+
 ## Code Style
 
 - Follow PEP 8
