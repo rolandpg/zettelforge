@@ -6,6 +6,44 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [2.6.0] - 2026-04-25
+
+Feature release. Adds configurable content-size limits for DoS mitigation
+(RFC-014) and moves per-call-site LLM token budgets out of hardcoded
+literals into `LLMConfig`, making them overridable at deploy time.
+
+### Added
+
+- **Configurable content size limits** (`GovernanceConfig.limits.max_content_length`,
+  default 50 MB). `remember()` calls with content exceeding the limit are
+  rejected with a clear error message. Set to `0` to disable the check.
+  Environment override: `ZETTELFORGE_LIMITS_MAX_CONTENT_LENGTH`.
+  (RFC-014, PR #123)
+- **Per-call-site `max_tokens` budgets configurable via `LLMConfig`**.
+  Five new fields: `max_tokens_causal` (8000), `max_tokens_synthesis` (2500),
+  `max_tokens_fact` (2500), `max_tokens_ner` (2500), `max_tokens_evolution` (2500).
+  Defaults match v2.5.2 values. No behavioral change for existing configs.
+  (PR #126, issue #125)
+
+### Changed
+
+- **Docs: config reconciliation for v2.5.2** — `config.default.yaml` gained
+  the `lance:` section (RFC-009 Phase 1.5), `docs/reference/configuration.md`
+  now covers all v2.5.2 knobs (`lance`, `pii`, per-call-site budgets), and
+  `docs/explanation/llm-budgets-and-timeouts.md` explains the reasoning-model
+  token-budget tradeoffs. (PR #126)
+- **`_apply_yaml()` now handles `lance:` section** — previously the
+  `lance.cleanup_interval_minutes` and `lance.cleanup_older_than_seconds` YAML
+  knobs were silently ignored (regression from RFC-009 Phase 1.5 landing in
+  v2.4.x without the `_apply_yaml` branch). (PR #126, code review finding)
+
+### Internal
+
+- **Removed `docs/superpowers/` from version control**. The directory holds
+  workspace scratch — internal research and notes with unredacted incident
+  detail. 18 files (7319 lines) untracked. No published content lost.
+  (PR #128)
+
 ## [2.5.2] - 2026-04-25
 
 Hotfix release. Restores end-to-end functionality of synthesis, causal

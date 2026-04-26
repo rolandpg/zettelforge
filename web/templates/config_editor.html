@@ -1,0 +1,455 @@
+{% extends "base.html" %}
+
+{% block title %}ZettelForge — Configuration{% endblock %}
+
+{% block content %}
+<div class="config-container">
+    <div class="config-header">
+        <h1>Configuration</h1>
+        <span class="config-path">{{ config_path }}</span>
+    </div>
+    
+    <div class="config-layout">
+        <!-- Left: Form-based editor -->
+        <div class="config-form-panel">
+            <h2>Quick Settings</h2>
+            <div id="config-form">
+                <div class="loading">Loading schema...</div>
+            </div>
+            <div class="form-actions">
+                <button onclick="saveConfigForm()" class="btn-primary">Save Changes</button>
+                <button onclick="reloadConfig()" class="btn-secondary">Reload from Disk</button>
+            </div>
+        </div>
+        
+        <!-- Right: YAML editor -->
+        <div class="config-yaml-panel">
+            <h2>YAML Editor</h2>
+            <div class="yaml-editor-wrapper">
+                <textarea 
+                    id="config-yaml" 
+                    class="yaml-editor"
+                    spellcheck="false"
+                >{{ config_yaml }}</textarea>
+            </div>
+            <div class="form-actions">
+                <button onclick="saveConfigYaml()" class="btn-primary">Save YAML</button>
+                <button onclick="validateYaml()" class="btn-secondary">Validate</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Status messages -->
+    <div id="config-status" class="config-status"></div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.config-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-6);
+}
+
+.config-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--border-default);
+}
+
+.config-header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--fg-primary);
+}
+
+.config-path {
+    color: var(--fg-tertiary);
+    font-family: var(--font-mono);
+    font-size: 13px;
+}
+
+.config-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+}
+
+@media (max-width: 900px) {
+    .config-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.config-form-panel,
+.config-yaml-panel {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+}
+
+.config-form-panel h2,
+.config-yaml-panel h2 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--fg-primary);
+    margin-bottom: var(--space-4);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.config-section {
+    margin-bottom: var(--space-5);
+}
+
+.config-section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--intent-factual);
+    margin-bottom: var(--space-3);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--border-default);
+}
+
+.form-group {
+    margin-bottom: var(--space-3);
+}
+
+.form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--fg-secondary);
+    margin-bottom: var(--space-1);
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: var(--space-2) var(--space-3);
+    background: var(--bg-input);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    color: var(--fg-primary);
+    font-size: 14px;
+    font-family: var(--font-body);
+    outline: none;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: var(--border-focus);
+    box-shadow: var(--shadow-focus);
+}
+
+.form-group input[type="checkbox"] {
+    width: auto;
+    margin-right: var(--space-2);
+}
+
+.yaml-editor-wrapper {
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.yaml-editor {
+    width: 100%;
+    min-height: 500px;
+    padding: var(--space-3);
+    background: var(--bg-input);
+    border: none;
+    color: var(--fg-primary);
+    font-size: 13px;
+    font-family: var(--font-mono);
+    line-height: 1.6;
+    resize: vertical;
+    outline: none;
+}
+
+.yaml-editor:focus {
+    box-shadow: inset 0 0 0 1px var(--border-focus);
+}
+
+.form-actions {
+    display: flex;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--border-default);
+}
+
+.btn-primary {
+    padding: var(--space-2) var(--space-4);
+    background: var(--signal-leaf-deep);
+    border: none;
+    border-radius: var(--radius-md);
+    color: var(--fog-0);
+    font-size: 13px;
+    font-family: var(--font-body);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background var(--transition-fast);
+}
+
+.btn-primary:hover {
+    background: var(--signal-leaf);
+}
+
+.btn-secondary {
+    padding: var(--space-2) var(--space-4);
+    background: transparent;
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    color: var(--fg-secondary);
+    font-size: 13px;
+    font-family: var(--font-body);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btn-secondary:hover {
+    border-color: var(--border-hover);
+    color: var(--fg-primary);
+}
+
+.config-status {
+    margin-top: var(--space-4);
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    display: none;
+}
+
+.config-status.success {
+    display: block;
+    background: var(--tier-a-bg);
+    color: var(--tier-a-fg);
+    border: 1px solid var(--tier-a-fg);
+}
+
+.config-status.error {
+    display: block;
+    background: rgba(248, 81, 73, 0.1);
+    color: var(--danger);
+    border: 1px solid var(--danger);
+}
+
+.loading {
+    color: var(--fg-tertiary);
+    font-size: 14px;
+    text-align: center;
+    padding: var(--space-8);
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let configSchema = null;
+let currentConfig = null;
+
+// Load config schema and build form
+async function loadConfigSchema() {
+    try {
+        const response = await fetch('/api/v1/config/schema');
+        const data = await response.json();
+        configSchema = data.data;  // GOV-005 envelope
+        
+        const configResponse = await fetch('/api/v1/config');
+        const configData = await configResponse.json();
+        currentConfig = configData.data;  // GOV-005 envelope
+        
+        buildConfigForm();
+    } catch (err) {
+        document.getElementById('config-form').innerHTML = 
+            `<div class="error">Failed to load config: ${err.message}</div>`;
+    }
+}
+
+function buildConfigForm() {
+    const container = document.getElementById('config-form');
+    if (!configSchema || !configSchema.sections) {
+        container.innerHTML = '<div class="error">Invalid schema</div>';
+        return;
+    }
+    
+    let html = '';
+    for (const section of configSchema.sections) {
+        const sectionData = currentConfig[section.name] || {};
+        
+        html += `<div class="config-section">`;
+        html += `<div class="config-section-title">${section.label}</div>`;
+        
+        for (const field of section.fields) {
+            const value = sectionData[field.name] !== undefined ? sectionData[field.name] : field.default;
+            const fieldId = `config-${section.name}-${field.name}`;
+            
+            html += `<div class="form-group">`;
+            html += `<label for="${fieldId}">${field.label}</label>`;
+            
+            if (field.type === 'select') {
+                html += `<select id="${fieldId}" data-section="${section.name}" data-field="${field.name}">`;
+                for (const option of field.options) {
+                    const selected = option === value ? 'selected' : '';
+                    html += `<option value="${option}" ${selected}>${option}</option>`;
+                }
+                html += `</select>`;
+            } else if (field.type === 'boolean') {
+                const checked = value ? 'checked' : '';
+                html += `<input type="checkbox" id="${fieldId}" data-section="${section.name}" data-field="${field.name}" ${checked}>`;
+            } else if (field.type === 'integer' || field.type === 'float') {
+                const step = field.type === 'integer' ? '1' : '0.1';
+                const min = field.min !== undefined ? `min="${field.min}"` : '';
+                const max = field.max !== undefined ? `max="${field.max}"` : '';
+                html += `<input type="number" id="${fieldId}" data-section="${section.name}" data-field="${field.name}" value="${value}" step="${step}" ${min} ${max}>`;
+            } else {
+                html += `<input type="text" id="${fieldId}" data-section="${section.name}" data-field="${field.name}" value="${value}">`;
+            }
+            
+            html += `</div>`;
+        }
+        
+        html += `</div>`;
+    }
+    
+    container.innerHTML = html;
+}
+
+async function saveConfigForm() {
+    // Build config object from form
+    const newConfig = {};
+    
+    document.querySelectorAll('#config-form [data-section]').forEach(el => {
+        const section = el.dataset.section;
+        const field = el.dataset.field;
+        
+        if (!newConfig[section]) {
+            newConfig[section] = {};
+        }
+        
+        if (el.type === 'checkbox') {
+            newConfig[section][field] = el.checked;
+        } else if (el.type === 'number') {
+            newConfig[section][field] = el.step === '1' ? parseInt(el.value) : parseFloat(el.value);
+        } else {
+            newConfig[section][field] = el.value;
+        }
+    });
+    
+    // Convert to YAML
+    const yamlText = objectToYaml(newConfig);
+    
+    await saveConfig(yamlText);
+}
+
+async function saveConfigYaml() {
+    const yamlText = document.getElementById('config-yaml').value;
+    await saveConfig(yamlText);
+}
+
+async function saveConfig(yamlText) {
+    try {
+        const response = await fetch('/api/v1/config', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: `config_yaml=${encodeURIComponent(yamlText)}`
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+            showStatus('success', result.data.message);
+            document.getElementById('config-yaml').value = yamlText;
+        } else {
+            showStatus('error', result.error.message || 'Failed to save config');
+        }
+    } catch (err) {
+        showStatus('error', 'Network error: ' + err.message);
+    }
+}
+
+async function reloadConfig() {
+    try {
+        const response = await fetch('/api/v1/config');
+        const data = await response.json();
+        document.getElementById('config-yaml').value = objectToYaml(data.data);
+        showStatus('success', 'Config reloaded from disk');
+    } catch (err) {
+        showStatus('error', 'Failed to reload: ' + err.message);
+    }
+}
+
+function validateYaml() {
+    try {
+        const yamlText = document.getElementById('config-yaml').value;
+        // Basic validation: check for valid YAML structure
+        const lines = yamlText.split('\n');
+        let indentLevel = 0;
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            if (line.trim() && !line.startsWith('#')) {
+                const currentIndent = line.match(/^(\s*)/)[1].length;
+                if (currentIndent % 2 !== 0) {
+                    showStatus('error', `Line ${i + 1}: Invalid indentation (must be multiples of 2)`);
+                    return;
+                }
+            }
+        }
+        showStatus('success', 'YAML structure looks valid');
+    } catch (err) {
+        showStatus('error', 'Validation error: ' + err.message);
+    }
+}
+
+function showStatus(type, message) {
+    const status = document.getElementById('config-status');
+    status.className = `config-status ${type}`;
+    status.textContent = message;
+    status.style.display = 'block';
+    
+    setTimeout(() => {
+        status.style.display = 'none';
+    }, 5000);
+}
+
+function objectToYaml(obj, indent = 0) {
+    let yaml = '';
+    const spaces = ' '.repeat(indent);
+    
+    for (const [key, value] of Object.entries(obj)) {
+        if (value === null || value === undefined) {
+            continue;
+        }
+        
+        if (Array.isArray(value)) {
+            yaml += `${spaces}${key}:\n`;
+            for (const item of value) {
+                yaml += `${spaces}  - ${item}\n`;
+            }
+        } else if (typeof value === 'object') {
+            yaml += `${spaces}${key}:\n`;
+            yaml += objectToYaml(value, indent + 2);
+        } else if (typeof value === 'boolean') {
+            yaml += `${spaces}${key}: ${value}\n`;
+        } else if (typeof value === 'number') {
+            yaml += `${spaces}${key}: ${value}\n`;
+        } else {
+            yaml += `${spaces}${key}: "${value}"\n`;
+        }
+    }
+    
+    return yaml;
+}
+
+// Initialize
+loadConfigSchema();
+</script>
+{% endblock %}

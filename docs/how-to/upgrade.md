@@ -5,7 +5,7 @@ diataxis_type: "how-to"
 audience: "Operator / Maintainer"
 tags: [upgrade, migration, release, breaking-changes]
 last_updated: "2026-04-25"
-version: "2.5.2"
+version: "2.6.0"
 ---
 
 # Upgrade ZettelForge
@@ -18,12 +18,40 @@ the full list of changes per release see
 
 | From -> To | Required action | Data migration? |
 |-----------|-----------------|-----------------|
-| 2.5.0 / 2.5.1 -> 2.5.2 | `pip install -U zettelforge` (read v2.5.2 notes below) | No |
+| 2.5.0 / 2.5.1 / 2.5.2 -> 2.6.0 | `pip install -U zettelforge` (read v2.6.0 notes above) | No |
 | 2.4.x -> 2.5.x | `pip install -U zettelforge` (read v2.5.0/2.5.1/2.5.2 notes below) | No |
 | 2.2.x -> 2.4.x | `pip install -U zettelforge` | No |
 | 2.1.x -> 2.2.x | `pip install -U zettelforge` + run JSONL -> SQLite migration | **Yes** |
 | 2.0.x -> 2.2.x | Upgrade in two hops via 2.1.x is recommended but not required | **Yes** |
 | < 2.0 | Not supported -- export notes manually, fresh-install 2.2.x |
+
+## 2.5.x -> 2.6.0 (content limits + config-driven token budgets)
+
+### What's new
+
+- **Configurable content size limits** (RFC-014). `GovernanceConfig.limits.max_content_length` (default 50 MB) prevents oversized content from exhausting memory or blocking the enrichment queue. Set to `0` to disable. Environment override: `ZETTELFORGE_LIMITS_MAX_CONTENT_LENGTH`.
+- **Per-call-site `max_tokens` budgets moved to config.** `LLMConfig` now exposes `max_tokens_causal`, `max_tokens_synthesis`, `max_tokens_fact`, `max_tokens_ner`, and `max_tokens_evolution` (defaults match v2.5.2 values). No more monkey-patching.
+- **`llm.timeout` default remains 180 s** (set in v2.5.2). Now symmetrically overridable alongside per-call-site budgets.
+
+### Steps
+
+1. `pip install -U 'zettelforge>=2.6.0'`
+2. If you had a custom `config.yaml` that overrode `llm.timeout`, it still works. No YAML changes required — existing configs are backward-compatible.
+3. (Optional) Override per-call-site budgets in your `config.yaml`:
+
+   ```yaml
+   llm:
+     max_tokens_causal: 12000     # default 8000
+     max_tokens_synthesis: 4000   # default 2500
+     max_tokens_fact: 4000        # default 2500
+   ```
+
+   See the [Configuration Reference](../reference/configuration.md#per-call-site-max_tokens-budgets-hardcoded-v252) for all knobs.
+
+### Operational impact
+
+- **None if you're on v2.5.2 defaults.** Budget values are unchanged. The only difference is they are now configurable instead of hardcoded.
+- **If you had v2.5.0/v2.5.1:** this upgrade includes the v2.5.2 reasoning-model fix. Apply the same steps listed below in the v2.5.2 section.
 
 ## 2.5.x -> 2.5.2 (recommended for everyone on a reasoning model)
 
@@ -31,7 +59,7 @@ the full list of changes per release see
 
 ### What changed
 
-- **Per-call-site `max_tokens` budgets bumped** to give reasoning models headroom: causal extraction 300 → 8000, synthesis 800 → 2500, fact extraction 400 → 2500, LLM NER 300 → 2500, memory evolution 1024 → 2500. These are still hardcoded literals in source today; v2.6.0 ([issue #125](https://github.com/rolandpg/zettelforge/issues/125)) will move them to `LLMConfig`.
+- **Per-call-site `max_tokens` budgets bumped** to give reasoning models headroom: causal extraction 300 → 8000, synthesis 800 → 2500, fact extraction 400 → 2500, LLM NER 300 → 2500, memory evolution 1024 → 2500. These were hardcoded literals until v2.6.0 moved them to `LLMConfig`.
 - **`llm.timeout` default bumped 60 s -> 180 s** (`LLMConfig.timeout`, `OllamaProvider`, `config.default.yaml`). The 60 s default fired before causal extraction at 8000 tokens could complete on a 9B model.
 
 ### Operational impact you should know about
