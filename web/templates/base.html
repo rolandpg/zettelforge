@@ -187,5 +187,15 @@
     </footer>
     
     {% block scripts %}{% endblock %}
+    
+    <script>
+    // Shared API helper — available across all SPA pages
+    function apiHeaders(extra) {
+        const headers = {...(extra || {})};
+        const key = localStorage.getItem('zettelforgeApiKey');
+        if (key) headers['X-API-Key'] = key;
+        return headers;
+    }
+    </script>
 </body>
 </html>

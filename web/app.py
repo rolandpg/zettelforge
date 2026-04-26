@@ -879,7 +879,16 @@ async def index(request: Request):
 @app.get("/config", response_class=HTMLResponse)
 async def config_page(request: Request):
     """Serve the config editor."""
-    return templates.TemplateResponse(request, "config_editor.html")
+    try:
+        cfg = get_config()
+        import yaml
+        config_yaml = yaml.dump(_to_dict(cfg), default_flow_style=False, sort_keys=False)
+    except Exception:
+        config_yaml = ""
+    return templates.TemplateResponse(
+        request, "config_editor.html",
+        {"config_yaml": config_yaml, "config_path": "config.yaml"}
+    )
 
 
 @app.get("/api/version", dependencies=[Depends(require_api_guard)])

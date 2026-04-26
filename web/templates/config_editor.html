@@ -253,203 +253,63 @@
 
 {% block scripts %}
 <script>
-let configSchema = null;
-let currentConfig = null;
-
-// Load config schema and build form
-async function loadConfigSchema() {
+// Load and display current config
+async function loadConfig() {
     try {
-        const response = await fetch('/api/v1/config/schema');
-        const data = await response.json();
-        configSchema = data.data;  // GOV-005 envelope
-        
-        const configResponse = await fetch('/api/v1/config');
-        const configData = await configResponse.json();
-        currentConfig = configData.data;  // GOV-005 envelope
-        
-        buildConfigForm();
+        const response = await fetch('/api/config', {
+            headers: apiHeaders()
+        });
+        if (response.ok) {
+            const config = await response.json();
+            document.getElementById('config-yaml').value = JSON.stringify(config, null, 2);
+        }
     } catch (err) {
-        document.getElementById('config-form').innerHTML = 
-            `<div class="error">Failed to load config: ${err.message}</div>`;
+        showStatus('error', 'Failed to load config: ' + err.message);
     }
-}
-
-function buildConfigForm() {
-    const container = document.getElementById('config-form');
-    if (!configSchema || !configSchema.sections) {
-        container.innerHTML = '<div class="error">Invalid schema</div>';
-        return;
-    }
-    
-    let html = '';
-    for (const section of configSchema.sections) {
-        const sectionData = currentConfig[section.name] || {};
-        
-        html += `<div class="config-section">`;
-        html += `<div class="config-section-title">${section.label}</div>`;
-        
-        for (const field of section.fields) {
-            const value = sectionData[field.name] !== undefined ? sectionData[field.name] : field.default;
-            const fieldId = `config-${section.name}-${field.name}`;
-            
-            html += `<div class="form-group">`;
-            html += `<label for="${fieldId}">${field.label}</label>`;
-            
-            if (field.type === 'select') {
-                html += `<select id="${fieldId}" data-section="${section.name}" data-field="${field.name}">`;
-                for (const option of field.options) {
-                    const selected = option === value ? 'selected' : '';
-                    html += `<option value="${option}" ${selected}>${option}</option>`;
-                }
-                html += `</select>`;
-            } else if (field.type === 'boolean') {
-                const checked = value ? 'checked' : '';
-                html += `<input type="checkbox" id="${fieldId}" data-section="${section.name}" data-field="${field.name}" ${checked}>`;
-            } else if (field.type === 'integer' || field.type === 'float') {
-                const step = field.type === 'integer' ? '1' : '0.1';
-                const min = field.min !== undefined ? `min="${field.min}"` : '';
-                const max = field.max !== undefined ? `max="${field.max}"` : '';
-                html += `<input type="number" id="${fieldId}" data-section="${section.name}" data-field="${field.name}" value="${value}" step="${step}" ${min} ${max}>`;
-            } else {
-                html += `<input type="text" id="${fieldId}" data-section="${section.name}" data-field="${field.name}" value="${value}">`;
-            }
-            
-            html += `</div>`;
-        }
-        
-        html += `</div>`;
-    }
-    
-    container.innerHTML = html;
-}
-
-async function saveConfigForm() {
-    // Build config object from form
-    const newConfig = {};
-    
-    document.querySelectorAll('#config-form [data-section]').forEach(el => {
-        const section = el.dataset.section;
-        const field = el.dataset.field;
-        
-        if (!newConfig[section]) {
-            newConfig[section] = {};
-        }
-        
-        if (el.type === 'checkbox') {
-            newConfig[section][field] = el.checked;
-        } else if (el.type === 'number') {
-            newConfig[section][field] = el.step === '1' ? parseInt(el.value) : parseFloat(el.value);
-        } else {
-            newConfig[section][field] = el.value;
-        }
-    });
-    
-    // Convert to YAML
-    const yamlText = objectToYaml(newConfig);
-    
-    await saveConfig(yamlText);
 }
 
 async function saveConfigYaml() {
     const yamlText = document.getElementById('config-yaml').value;
-    await saveConfig(yamlText);
-}
-
-async function saveConfig(yamlText) {
     try {
-        const response = await fetch('/api/v1/config', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: `config_yaml=${encodeURIComponent(yamlText)}`
+        // Parse as JSON and PUT to /api/config
+        const parsed = JSON.parse(yamlText);
+        const response = await fetch('/api/config', {
+            method: 'PUT',
+            headers: Object.assign(apiHeaders(), {'Content-Type': 'application/json'}),
+            body: JSON.stringify(parsed)
         });
-        
         const result = await response.json();
-        
         if (response.ok) {
-            showStatus('success', result.data.message);
-            document.getElementById('config-yaml').value = yamlText;
+            showStatus('success', 
+                'Applied ' + (result.applied || []).length + ' settings' +
+                (result.pending_restart?.length ? '. Restart required for: ' + result.pending_restart.join(', ') : ''));
         } else {
-            showStatus('error', result.error.message || 'Failed to save config');
+            showStatus('error', result.detail || result.error || 'Failed to save');
         }
     } catch (err) {
-        showStatus('error', 'Network error: ' + err.message);
-    }
-}
-
-async function reloadConfig() {
-    try {
-        const response = await fetch('/api/v1/config');
-        const data = await response.json();
-        document.getElementById('config-yaml').value = objectToYaml(data.data);
-        showStatus('success', 'Config reloaded from disk');
-    } catch (err) {
-        showStatus('error', 'Failed to reload: ' + err.message);
+        showStatus('error', 'Invalid JSON: ' + err.message);
     }
 }
 
 function validateYaml() {
     try {
-        const yamlText = document.getElementById('config-yaml').value;
-        // Basic validation: check for valid YAML structure
-        const lines = yamlText.split('\n');
-        let indentLevel = 0;
-        for (let i = 0; i < lines.length; i++) {
-            const line = lines[i];
-            if (line.trim() && !line.startsWith('#')) {
-                const currentIndent = line.match(/^(\s*)/)[1].length;
-                if (currentIndent % 2 !== 0) {
-                    showStatus('error', `Line ${i + 1}: Invalid indentation (must be multiples of 2)`);
-                    return;
-                }
-            }
-        }
-        showStatus('success', 'YAML structure looks valid');
+        const text = document.getElementById('config-yaml').value;
+        JSON.parse(text);
+        showStatus('success', 'Valid JSON');
     } catch (err) {
-        showStatus('error', 'Validation error: ' + err.message);
+        showStatus('error', 'Invalid JSON: ' + err.message);
     }
 }
 
 function showStatus(type, message) {
     const status = document.getElementById('config-status');
-    status.className = `config-status ${type}`;
+    status.className = 'config-status ' + type;
     status.textContent = message;
     status.style.display = 'block';
-    
-    setTimeout(() => {
-        status.style.display = 'none';
-    }, 5000);
-}
-
-function objectToYaml(obj, indent = 0) {
-    let yaml = '';
-    const spaces = ' '.repeat(indent);
-    
-    for (const [key, value] of Object.entries(obj)) {
-        if (value === null || value === undefined) {
-            continue;
-        }
-        
-        if (Array.isArray(value)) {
-            yaml += `${spaces}${key}:\n`;
-            for (const item of value) {
-                yaml += `${spaces}  - ${item}\n`;
-            }
-        } else if (typeof value === 'object') {
-            yaml += `${spaces}${key}:\n`;
-            yaml += objectToYaml(value, indent + 2);
-        } else if (typeof value === 'boolean') {
-            yaml += `${spaces}${key}: ${value}\n`;
-        } else if (typeof value === 'number') {
-            yaml += `${spaces}${key}: ${value}\n`;
-        } else {
-            yaml += `${spaces}${key}: "${value}"\n`;
-        }
-    }
-    
-    return yaml;
+    setTimeout(() => { status.style.display = 'none'; }, 5000);
 }
 
 // Initialize
-loadConfigSchema();
+loadConfig();
 </script>
 {% endblock %}

@@ -119,6 +119,16 @@ function apiHeaders(extra = {}) {
     return headers;
 }
 
+function escHtml(s) {
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+}
+
+function cssToken(s) {
+    return String(s || '').toLowerCase().replace(/[^a-z0-9_-]/g, '');
+}
+
 function setMode(m) {
     mode = m;
     document.querySelectorAll('.tab-button').forEach(btn => {

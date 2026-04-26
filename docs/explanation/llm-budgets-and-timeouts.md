@@ -61,7 +61,7 @@ You can lower `llm.timeout` to e.g. 60 s without losing correctness, since each 
 
 ### You're on a non-reasoning model (gemma4, llama-3.x base, qwen2.5)
 
-These don't emit `<think>` tokens. Your budgets only need to cover the actual answer length, not reasoning + answer. You can set `max_tokens` literals to ~25% of the v2.5.2 defaults if you patch the source (today the values are hardcoded; v2.6.0 — [issue #125](https://github.com/rolandpg/zettelforge/issues/125) — moved them to config). `llm.timeout: 60` is then enough.
+These don't emit ` thinking` tokens. Your budgets only need to cover the actual answer length, not reasoning + answer. You can set `max_tokens` values to ~25% of the v2.5.2 defaults in config (v2.6.0 moved them to `LLMConfig` — see [issue #125](https://github.com/rolandpg/zettelforge/issues/125)). `llm.timeout: 60` is then enough.
 
 ### You're on a much larger model (70B, 120B, cloud)
 

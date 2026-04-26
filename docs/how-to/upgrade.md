@@ -46,7 +46,7 @@ the full list of changes per release see
      max_tokens_fact: 4000        # default 2500
    ```
 
-   See the [Configuration Reference](../reference/configuration.md#per-call-site-max_tokens-budgets-hardcoded-v252) for all knobs.
+   See the [Configuration Reference](../reference/configuration.md#per-call-site-max_tokens-budgets-v260-config-driven) for all knobs.
 
 ### Operational impact
 
@@ -59,7 +59,7 @@ the full list of changes per release see
 
 ### What changed
 
-- **Per-call-site `max_tokens` budgets bumped** to give reasoning models headroom: causal extraction 300 → 8000, synthesis 800 → 2500, fact extraction 400 → 2500, LLM NER 300 → 2500, memory evolution 1024 → 2500. These were hardcoded literals until v2.6.0 moved them to `LLMConfig`.
+- **Per-call-site `max_tokens` budgets bumped** to give reasoning models headroom: causal extraction 300 → 8000, synthesis 800 → 2500, fact extraction 400 → 2500, LLM NER 300 → 2500, memory evolution 1024 → 2500. These were hardcoded until v2.6.0 moved them to `LLMConfig`.
 - **`llm.timeout` default bumped 60 s -> 180 s** (`LLMConfig.timeout`, `OllamaProvider`, `config.default.yaml`). The 60 s default fired before causal extraction at 8000 tokens could complete on a 9B model.
 
 ### Operational impact you should know about
