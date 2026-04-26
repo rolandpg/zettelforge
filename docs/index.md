@@ -5,7 +5,7 @@ diataxis_type: "navigation"
 audience: "all"
 tags: [overview, navigation]
 last_updated: "2026-04-25"
-version: "2.5.0"
+version: "2.6.0"
 ---
 
 # ZettelForge Documentation
@@ -148,7 +148,7 @@ Background context and design rationale for the system's architecture.
 
 ## LLM Quick Reference
 
-ZettelForge (v2.5.0, MIT license) is an agentic memory system for cyber threat intelligence. It requires Python 3.10+. By default, storage uses SQLite together with LanceDB for vector-indexed notes; TypeDB 3.x via Docker on port 1729 is an optional graph backend. Embeddings run in-process via fastembed (nomic-embed-text-v1.5-Q, 768-dim, ONNX). The default LLM provider is Ollama (`provider: ollama`, `model: qwen3.5:9b`).
+ZettelForge (v2.6.0, MIT license) is an agentic memory system for cyber threat intelligence. It requires Python 3.10+. By default, storage uses SQLite together with LanceDB for vector-indexed notes; TypeDB 3.x via Docker on port 1729 is an optional graph backend. Embeddings run in-process via fastembed (nomic-embed-text-v1.5-Q, 768-dim, ONNX). The default LLM provider is Ollama (`provider: ollama`, `model: qwen3.5:9b`).
 
 Three additional LLM providers are available as optional extras:
 

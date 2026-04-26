@@ -23,6 +23,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "web"))
 def client():
     """Create a TestClient for the ZettelForge web app."""
     os.environ.setdefault("ZETTELFORGE_BACKEND", "sqlite")
+    os.environ.setdefault("ZETTELFORGE_LLM_PROVIDER", "mock")
     from web.app import app
 
     with TestClient(app) as c:

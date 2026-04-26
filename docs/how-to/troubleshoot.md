@@ -5,7 +5,7 @@ diataxis_type: "how-to"
 audience: "Operator / Developer"
 tags: [troubleshooting, debugging, errors, performance]
 last_updated: "2026-04-25"
-version: "2.5.2"
+version: "2.6.0"
 ---
 
 # Troubleshoot ZettelForge
@@ -59,7 +59,7 @@ ollama pull qwen2.5:3b             # or whatever ZETTELFORGE_LLM_MODEL points to
 **2. Reasoning-model token starvation.** If you're on a reasoning model (qwen3.5+, qwen3.6, nemotron-3) and the OCSF log shows
 `event=llm_call_empty_response done_reason=length eval_count=<num_predict>`, the model used its entire token budget on hidden `<think>...</think>` tokens before emitting a final answer.
 
-Pre-2.5.2 budgets were too low (300–1024 tokens depending on call site) and silently failed every causal-extraction, synthesis, fact-extraction, and LLM-NER call. **Upgrade to 2.5.2+**; the per-call-site caps are now 2500–8000 tokens. See the [Configuration Reference §Per-call-site `max_tokens` budgets](../reference/configuration.md#per-call-site-max_tokens-budgets-hardcoded-v252) for the exact values and the v2.6.0 plan to make them config-overridable.
+Pre-2.5.2 budgets were too low (300–1024 tokens depending on call site) and silently failed every causal-extraction, synthesis, fact-extraction, and LLM-NER call. **Upgrade to 2.5.2+**; the per-call-site caps are now 2500–8000 tokens. See the [Configuration Reference §Per-call-site `max_tokens` budgets](../reference/configuration.md#per-call-site-max_tokens-budgets-v260-config-driven) for the exact values and now config-overridable in v2.6.0.
 
 If you can't upgrade and you're stuck on a reasoning model, switch to a non-reasoning model (e.g. `gemma4:e4b`, `qwen2.5:3b`) which doesn't emit `<think>` tokens.
 

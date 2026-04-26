@@ -9,7 +9,7 @@ tags:
   - settings
   - deployment
 last_updated: "2026-04-25"
-version: "2.5.2"
+version: "2.6.0"
 ---
 
 # Configuration Reference
@@ -155,9 +155,9 @@ class LLMConfig:
 | `litellm` | `pip install zettelforge[litellm]` | `provider: litellm` + `model: gpt-4o` | LiteLLM model name | Routes to 100+ providers by model prefix. |
 | `mock` | core (no extra) | `provider: mock` | N/A | Deterministic canned responses for testing. |
 
-#### Per-call-site `max_tokens` budgets (hardcoded, v2.5.2)
+#### Per-call-site `max_tokens` budgets (v2.6.0: config-driven)
 
-`llm.timeout` is config-driven, but the `max_tokens` (Ollama `num_predict`) value passed to each LLM call site is currently a literal in the calling module. v2.5.2 raised these caps to give reasoning models (qwen3.5+, qwen3.6, nemotron-3) room to emit their hidden `<think>...</think>` tokens *and* a final answer; pre-2.5.2 caps were exhausted entirely by reasoning, leaving the JSON answer empty.
+`llm.timeout` is config-driven. v2.6.0 moved `max_tokens` (Ollama `num_predict`) values to `LLMConfig`, making them config-overridable per call site. v2.5.2 raised these caps to give reasoning models (qwen3.5+, qwen3.6, nemotron-3) room to emit their hidden `<think>...</think>` tokens *and* a final answer; pre-2.5.2 caps were exhausted entirely by reasoning, leaving the JSON answer empty.
 
 | Call site | File | Budget | Why |
 |:----------|:-----|:-------|:----|
@@ -169,7 +169,7 @@ class LLMConfig:
 
 **Operational impact.** Causal extraction at 8000 tokens runs 60–140 s per call on a 9B-Q4_K_M reasoning model; `remember(sync=True)` therefore blocks 1–3 minutes per note. The default async path (background enrichment queue) is unaffected — these calls happen off the write hot path. If you're triggering `sync=True` or doing bulk ingestion you'll feel the latency; switch to async or scale up the model server.
 
-If you're on faster hardware or smaller non-reasoning models you can monkey-patch lower values, but the 2.5.2 defaults trade latency for correctness on the reference qwen3.5:9b setup. v2.6.0 (tracked in [issue #125](https://github.com/rolandpg/zettelforge/issues/125)) will move these to `LLMConfig` so you can override per call site without touching code.
+If you're on faster hardware or smaller non-reasoning models you can monkey-patch lower values, but the 2.5.2 defaults trade latency for correctness on the reference qwen3.5:9b setup. v2.6.0 moves these to `LLMConfig` so you can override per call site without touching code — see [issue #125](https://github.com/rolandpg/zettelforge/issues/125).
 
 #### LiteLLM model prefix examples
 

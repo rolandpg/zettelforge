@@ -1,4 +1,5 @@
-"""ZettelForge Web UI — FastAPI backend + SPA frontend (RFC-015).
+"""
+ZettelForge Web UI — FastAPI backend + minimal HTML frontend.
 
 A search-and-recall interface for ZettelForge's CTI memory system.
 
@@ -7,28 +8,13 @@ Usage:
     python web/app.py --port 9000        # Custom port
     uvicorn web.app:app --reload         # Dev mode
 
-Endpoints (existing):
-    GET  /                    -> Search UI (SPA HTML)
-    POST /api/recall          -> Blended recall (vector + graph)
-    POST /api/remember        -> Store a note
-    POST /api/synthesize      -> RAG synthesis
-    GET  /api/stats           -> Memory system stats
-    POST /api/sync            -> Trigger OpenCTI sync
-
-Endpoints (RFC-015, new):
-    GET  /api/health          -> System health
-    GET  /api/config          -> Current config (secrets redacted)
-    PUT  /api/config          -> Apply config changes
-    GET  /api/graph/nodes     -> KG entity nodes
-    GET  /api/graph/edges     -> KG relationship edges
-    GET  /api/entities        -> Paginated entity index
-    GET  /api/history         -> Recent activity
-    POST /api/ingest          -> Bulk ingestion
-    GET  /api/telemetry       -> Aggregated telemetry summary
-    GET  /api/storage         -> Storage stats
-    GET  /api/logs            -> Log file tailing
-    GET  /api/logs/stream     -> SSE log streaming
-    GET  /api/telemetry/stream -> SSE telemetry streaming
+Endpoints:
+    GET  /                    → Search UI (HTML)
+    POST /api/recall          → Blended recall (vector + graph)
+    POST /api/remember        → Store a note
+    POST /api/synthesize      → RAG synthesis
+    GET  /api/stats           → Memory system stats
+    POST /api/sync            → Trigger OpenCTI sync
 """
 
 # isort: skip_file
@@ -48,6 +34,8 @@ from typing import Any, List, Optional
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request, status
 from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, Field
 
 # Ensure zettelforge is importable
@@ -55,20 +43,30 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 os.environ.setdefault("ZETTELFORGE_BACKEND", "sqlite")
 
-from zettelforge import MemoryManager, __version__
-from zettelforge.config import get_config
-from zettelforge.edition import edition_name, is_enterprise
-from web.auth import get_mm_for_request, register_auth_routes
+from zettelforge import MemoryManager, __version__  # noqa: E402
+from zettelforge.config import get_config, reload_config, _apply_yaml  # noqa: E402
+from zettelforge.edition import edition_name, is_enterprise  # noqa: E402
+from zettelforge.knowledge_graph import get_knowledge_graph  # noqa: E402
+from web.auth import get_mm_for_request, register_auth_routes  # noqa: E402
+
+# ── Jinja2 + static files ──────────────────────────────────────────────────
+_web_dir = Path(__file__).parent
+templates = Jinja2Templates(directory=str(_web_dir / "templates"))
+templates.env.globals["version"] = __version__
 
 logger = logging.getLogger(__name__)
-
-_start_time = time.monotonic()
 
 app = FastAPI(
     title="ZettelForge",
     description=edition_name(),
     version=__version__,
 )
+
+# Mount static files after app is created
+app.mount("/static", StaticFiles(directory=str(_web_dir / "static")), name="static")
+
+# Uptime tracking (monotonic clock, reset on process restart)
+_start_time = time.monotonic()
 
 # Register OAuth/JWT auth routes (Enterprise: full OAuth, Community: pass-through)
 register_auth_routes(app)
@@ -94,7 +92,36 @@ _rate_lock = threading.Lock()
 _rate_windows = defaultdict(deque)
 _write_slots = threading.BoundedSemaphore(max(1, WRITE_CONCURRENCY))
 
-# ── Helper functions ─────────────────────────────────────────────────────────
+
+# ── Pydantic models ──────────────────────────────────────────────────────────
+
+
+class RecallRequest(BaseModel):
+    query: str = Field(min_length=1, max_length=MAX_QUERY_CHARS)
+    k: int = Field(default=10, ge=1, le=MAX_K)
+    domain: Optional[str] = Field(default=None, max_length=100)
+
+
+class RememberRequest(BaseModel):
+    content: str = Field(min_length=1, max_length=MAX_CONTENT_CHARS)
+    domain: str = Field(default="cti", min_length=1, max_length=100)
+    source_type: str = Field(default="manual", min_length=1, max_length=100)
+    source_ref: str = Field(default="", max_length=500)
+    evolve: bool = True
+
+
+class SynthesizeRequest(BaseModel):
+    query: str = Field(min_length=1, max_length=MAX_QUERY_CHARS)
+    format: str = Field(default="direct_answer", max_length=50)
+    k: int = Field(default=10, ge=1, le=MAX_K)
+
+
+class SyncRequest(BaseModel):
+    limit: int = Field(default=20, ge=1, le=MAX_SYNC_LIMIT)
+    entity_types: Optional[List[str]] = None
+
+
+# ── API endpoints ────────────────────────────────────────────────────────────
 
 
 def _client_ip(request: Request) -> str:
@@ -124,8 +151,8 @@ def _check_rate_limit(key: str) -> None:
 
 async def require_api_guard(
     request: Request,
-    x_api_key: str | None = Header(default=None, alias="X-API-Key"),
-    authorization: str | None = Header(default=None),
+    x_api_key: Optional[str] = Header(default=None, alias="X-API-Key"),
+    authorization: Optional[str] = Header(default=None),
 ) -> None:
     client_ip = _client_ip(request)
     supplied_key = x_api_key
@@ -147,87 +174,6 @@ async def require_api_guard(
         )
 
     _check_rate_limit(supplied_key or client_ip)
-
-
-def _get_memory_stats() -> dict:
-    """Get stats from the default MemoryManager."""
-    try:
-        return mm.get_stats()
-    except Exception:
-        return {"total_notes": 0, "notes_created": 0, "retrievals": 0, "entity_index": {}}
-
-
-def _get_memory_mb() -> float | None:
-    """Get current memory usage in MB. Returns None if psutil not available."""
-    try:
-        import psutil
-
-        return psutil.Process().memory_info().rss / (1024 * 1024)
-    except ImportError:
-        return None
-
-
-def _get_data_dir_size_mb(data_dir: str = "~/.amem") -> float | None:
-    """Get the size of the data directory in MB."""
-    try:
-        path = Path(os.path.expanduser(data_dir))
-        if not path.exists():
-            return None
-        total_bytes = sum(f.stat().st_size for f in path.rglob("*") if f.is_file())
-        return round(total_bytes / (1024 * 1024), 1)
-    except Exception:
-        return None
-
-
-# ── Pydantic models (existing) ───────────────────────────────────────────────
-
-
-class RecallRequest(BaseModel):
-    query: str = Field(min_length=1, max_length=MAX_QUERY_CHARS)
-    k: int = Field(default=10, ge=1, le=MAX_K)
-    domain: str | None = Field(default=None, max_length=100)
-
-
-class RememberRequest(BaseModel):
-    content: str = Field(min_length=1, max_length=MAX_CONTENT_CHARS)
-    domain: str = Field(default="cti", min_length=1, max_length=100)
-    source_type: str = Field(default="manual", min_length=1, max_length=100)
-    source_ref: str = Field(default="", max_length=500)
-    evolve: bool = True
-
-
-class SynthesizeRequest(BaseModel):
-    query: str = Field(min_length=1, max_length=MAX_QUERY_CHARS)
-    format: str = Field(default="direct_answer", max_length=50)
-    k: int = Field(default=10, ge=1, le=MAX_K)
-
-
-class SyncRequest(BaseModel):
-    limit: int = Field(default=20, ge=1, le=MAX_SYNC_LIMIT)
-    entity_types: List[str] | None = None
-
-
-# ── Pydantic models (RFC-015, new) ───────────────────────────────────────────
-
-
-class IngestItem(BaseModel):
-    content: str = Field(min_length=1, max_length=MAX_CONTENT_CHARS)
-    source_type: str = Field(default="manual")
-    source_ref: str = Field(default="")
-    domain: str = Field(default="cti")
-    evolve: bool = True
-
-
-class IngestRequest(BaseModel):
-    items: list[IngestItem] = Field(default_factory=list, max_length=100)
-
-
-class ConfigUpdateRequest(BaseModel):
-    # Accept arbitrary nested dict for config updates
-    pass
-
-
-# ── Existing API endpoints ───────────────────────────────────────────────────
 
 
 @app.post("/api/recall", dependencies=[Depends(require_api_guard)])
@@ -387,250 +333,201 @@ async def sync(request: Request, req: SyncRequest):
         return JSONResponse(status_code=500, content={"error": "Internal server error"})
 
 
-# ── RFC-015: New API Endpoints ───────────────────────────────────────────────
+# ── System Endpoints ────────────────────────────────────────────────────────────
 
 
-def _redact_secrets(obj: Any, depth: int = 0) -> Any:
-    """Recursively redact sensitive config fields."""
-    _SENSITIVE_KEYS = {"api_key", "password", "token", "secret", "license_key", "credentials"}
+def _redact_secrets(data: Any, depth: int = 0) -> Any:
+    """Recursively redact sensitive values (api_key, password, token, license_key)."""
+    SENSITIVE_KEYS = {"api_key", "password", "token", "license_key"}
     if depth > 10:
-        return obj
-    if isinstance(obj, dict):
+        return data
+    if isinstance(data, dict):
         return {
-            k: ("***" if k.lower() in _SENSITIVE_KEYS and isinstance(v, str) and v else _redact_secrets(v, depth + 1))
-            for k, v in obj.items()
+            k: ("***" if k.lower() in SENSITIVE_KEYS else _redact_secrets(v, depth + 1))
+            for k, v in data.items()
         }
-    if isinstance(obj, list):
-        return [_redact_secrets(item, depth + 1) for item in obj]
-    if hasattr(obj, "__dict__"):
-        return _redact_secrets(obj.__dict__, depth)
-    return obj
-
-
-_RESTART_REQUIRED_FIELDS = {
-    "backend", "storage.data_dir", "embedding.provider",
-    "llm.provider", "logging.log_file", "logging.level",
-}
-
-# ── 1. Health ────────────────────────────────────────────────────────────────
+    if isinstance(data, list):
+        return [_redact_secrets(item, depth + 1) for item in data]
+    return data
 
 
 @app.get("/api/health", dependencies=[Depends(require_api_guard)])
-async def health(request: Request):
-    """System health information."""
+async def health():
+    """System health endpoint — version, config, queue depths, uptime."""
     try:
         cfg = get_config()
-        s = _get_memory_stats()
-
+        kg = get_knowledge_graph()
+        uptime = time.monotonic() - _start_time
         enrichment_depth = 0
         try:
             enrichment_depth = mm._enrichment_queue.qsize()
         except Exception:
             pass
-
         return {
+            "status": "ok",
             "version": __version__,
             "edition": "enterprise" if is_enterprise() else "community",
-            "storage_backend": os.environ.get("ZETTELFORGE_BACKEND", "sqlite"),
+            "edition_name": edition_name(),
+            "storage_backend": cfg.backend,
             "embedding_provider": cfg.embedding.provider,
             "embedding_model": cfg.embedding.model,
-            "embedding_dimensions": cfg.embedding.dimensions,
             "llm_provider": cfg.llm.provider,
             "llm_model": cfg.llm.model,
             "llm_local_backend": cfg.llm.local_backend,
             "enrichment_queue_depth": enrichment_depth,
             "governance_enabled": cfg.governance.enabled,
             "pii_enabled": cfg.governance.pii.enabled,
-            "uptime_seconds": round(time.monotonic() - _start_time, 1),
+            "uptime_seconds": round(uptime, 1),
             "data_dir": cfg.storage.data_dir,
-            "memory_usage_mb": _get_memory_mb(),
-            "data_size_mb": _get_data_dir_size_mb(cfg.storage.data_dir),
-            "total_notes": s.get("total_notes", 0),
-            "retrievals": s.get("retrievals", 0),
+            "graph_node_count": len(kg._nodes),
+            "graph_edge_count": len(kg._edges),
         }
     except Exception as e:
-        logger.exception("Health endpoint failed")
+        logger.exception("health_check_failed")
         return JSONResponse(status_code=500, content={"error": str(e)})
-
-
-# ── 2. Config GET ────────────────────────────────────────────────────────────
 
 
 @app.get("/api/config", dependencies=[Depends(require_api_guard)])
 async def get_config_endpoint():
-    """Return the current configuration with secrets redacted."""
+    """Return current config as JSON with secrets redacted."""
     try:
         cfg = get_config()
-        config_dict = {}
-        for key in dir(cfg):
-            if key.startswith("_"):
-                continue
-            val = getattr(cfg, key)
-            if hasattr(val, "__dataclass_fields__"):
-                config_dict[key] = _redact_secrets(
-                    {f: getattr(val, f) for f in dir(val) if not f.startswith("_")}
-                )
-            else:
-                config_dict[key] = val
-        return config_dict
+
+        def _to_dict(obj):
+            """Convert dataclass to plain dict."""
+            if hasattr(obj, "__dataclass_fields__"):
+                return {k: _to_dict(v) for k, v in obj.__dict__.items()}
+            if isinstance(obj, dict):
+                return {k: _to_dict(v) for k, v in obj.items()}
+            if isinstance(obj, (list, tuple)):
+                return [_to_dict(item) for item in obj]
+            if isinstance(obj, (int, float, bool, str, type(None))):
+                return obj
+            return str(obj)
+
+        raw = _to_dict(cfg)
+        redacted = _redact_secrets(raw)
+        return redacted
     except Exception as e:
-        logger.exception("Config endpoint failed")
+        logger.exception("get_config_failed")
         return JSONResponse(status_code=500, content={"error": str(e)})
 
 
-# ── 3. Config PUT ────────────────────────────────────────────────────────────
+class ConfigUpdateRequest(BaseModel):
+    """Accepted fields: any config section key, value pairs."""
+    pass
 
 
 @app.put("/api/config", dependencies=[Depends(require_api_guard)])
-async def put_config_endpoint(data: dict):
-    """Apply configuration changes in-memory."""
+async def update_config(req: dict):
+    """Apply config changes in-memory. Returns applied + pending-restart fields."""
     try:
-
         cfg = get_config()
+        # Fields that require a restart to take effect
+        RESTART_REQUIRED = {"backend", "embedding.provider", "embedding.url",
+                            "llm.provider", "llm.model", "llm.url",
+                            "storage.data_dir", "logging.log_file"}
         applied = []
         pending_restart = []
 
-        def _find_changes(prefix: str, updates: dict, target: Any):
-            for k, v in updates.items():
-                full_key = f"{prefix}.{k}" if prefix else k
-                if isinstance(v, dict) and hasattr(target, k):
-                    sub = getattr(target, k)
-                    if hasattr(sub, "__dataclass_fields__"):
-                        _find_changes(full_key, v, sub)
-                        continue
-                if hasattr(target, k):
-                    setattr(target, k, v)
-                    applied.append(full_key)
-                    if full_key in _RESTART_REQUIRED_FIELDS or k in _RESTART_REQUIRED_FIELDS:
-                        pending_restart.append(full_key)
+        _apply_yaml(cfg, req)
 
-        _find_changes("", data, cfg)
+        # Determine which changes need restart
+        for key in req:
+            if key in RESTART_REQUIRED:
+                pending_restart.append(key)
+            else:
+                applied.append(key)
 
         return {
             "applied": applied,
             "pending_restart": pending_restart,
-            "message": "Configuration updated. Some changes require a restart."
-            if pending_restart
-            else "Configuration updated.",
+            "message": "Config updated in-memory. Some changes require a restart."
         }
     except Exception as e:
-        logger.exception("Config put endpoint failed")
+        logger.exception("update_config_failed")
         return JSONResponse(status_code=500, content={"error": str(e)})
-
-
-# ── 4. Graph Nodes ───────────────────────────────────────────────────────────
 
 
 @app.get("/api/graph/nodes", dependencies=[Depends(require_api_guard)])
-async def graph_nodes(request: Request):
-    """Return all knowledge graph entity nodes."""
+async def graph_nodes():
+    """Return all knowledge graph nodes."""
     try:
-        tenant_mm = get_mm_for_request(request)
-        kg = getattr(tenant_mm, "_knowledge_graph", None)
+        kg = get_knowledge_graph()
         nodes = []
-        if kg is not None:
-            raw_nodes = getattr(kg, "_nodes", {}) or {}
-            for nid, node in raw_nodes.items():
-                nodes.append({
-                    "id": nid,
-                    "label": node.get("name", nid),
-                    "type": node.get("entity_type", "unknown"),
-                    "tier": node.get("tier", "C"),
-                    "aliases": node.get("aliases", []),
-                    "confidence": node.get("confidence", 0.5),
-                    "created_at": node.get("created_at"),
-                })
+        for node_id, node in kg._nodes.items():
+            nodes.append({
+                "id": node.get("node_id", node_id),
+                "label": node.get("entity_value", ""),
+                "type": node.get("entity_type", ""),
+                "tier": node.get("properties", {}).get("tier", ""),
+                "aliases": node.get("properties", {}).get("aliases", []),
+                "confidence": node.get("properties", {}).get("confidence", 0.0),
+                "created_at": node.get("created_at", ""),
+            })
         return {"nodes": nodes, "count": len(nodes)}
     except Exception as e:
-        logger.exception("Graph nodes endpoint failed")
-        return JSONResponse(status_code=500, content={"error": str(e)})
-
-
-# ── 5. Graph Edges ───────────────────────────────────────────────────────────
+        logger.exception("graph_nodes_failed")
+        return JSONResponse(status_code=500, content={"error": str(e), "nodes": []})
 
 
 @app.get("/api/graph/edges", dependencies=[Depends(require_api_guard)])
-async def graph_edges(request: Request):
-    """Return all knowledge graph relationship edges."""
+async def graph_edges():
+    """Return all knowledge graph edges."""
     try:
-        tenant_mm = get_mm_for_request(request)
-        kg = getattr(tenant_mm, "_knowledge_graph", None)
+        kg = get_knowledge_graph()
         edges = []
-        if kg is not None:
-            raw_edges = getattr(kg, "_edges", {}) or {}
-            for eid, edge in raw_edges.items():
-                edges.append({
-                    "id": eid,
-                    "source": edge.get("source_id"),
-                    "target": edge.get("target_id"),
-                    "relationship": edge.get("relationship"),
-                    "created_at": edge.get("created_at"),
-                })
+        for edge_id, edge in kg._edges.items():
+            edges.append({
+                "id": edge.get("edge_id", edge_id),
+                "source": edge.get("from_node_id", ""),
+                "target": edge.get("to_node_id", ""),
+                "relationship": edge.get("relationship", ""),
+                "created_at": edge.get("created_at", ""),
+            })
         return {"edges": edges, "count": len(edges)}
     except Exception as e:
-        logger.exception("Graph edges endpoint failed")
-        return JSONResponse(status_code=500, content={"error": str(e)})
-
-
-# ── 6. Entities ──────────────────────────────────────────────────────────────
+        logger.exception("graph_edges_failed")
+        return JSONResponse(status_code=500, content={"error": str(e), "edges": []})
 
 
 @app.get("/api/entities", dependencies=[Depends(require_api_guard)])
 async def entities(
-    request: Request,
     offset: int = Query(default=0, ge=0),
-    limit: int = Query(default=50, ge=1, le=200),
-    entity_type: str | None = Query(default=None, alias="type"),
-    tier: str | None = Query(default=None),
-    q: str | None = Query(default=None),
+    limit: int = Query(default=50, ge=1, le=500),
+    type: Optional[str] = Query(default=None),
+    tier: Optional[str] = Query(default=None),
+    q: Optional[str] = Query(default=None),
 ):
-    """Paginated entity index with filters."""
+    """Paginated entity index query."""
     try:
-        tenant_mm = get_mm_for_request(request)
-        kg = getattr(tenant_mm, "_knowledge_graph", None)
+        # Use entity indexer from memory manager if available
+        idx = getattr(mm, "indexer", None)
+        if idx is None:
+            return {"entities": [], "total": 0, "offset": offset, "limit": limit}
 
         all_entities = []
-        if kg is not None:
-            raw_nodes = getattr(kg, "_nodes", {}) or {}
-            for nid, node in raw_nodes.items():
+        for etype, entities in idx.index.items():
+            if type and etype != type:
+                continue
+            for evalue, note_ids in entities.items():
+                if q and q.lower() not in evalue.lower():
+                    continue
+                # Look up tier from earliest note if possible
+                ent_tier = tier if tier else ""
                 all_entities.append({
-                    "id": nid,
-                    "name": node.get("name", nid),
-                    "type": node.get("entity_type", "unknown"),
-                    "tier": node.get("tier", "C"),
-                    "confidence": node.get("confidence", 0.5),
-                    "aliases": node.get("aliases", []),
-                    "first_seen": node.get("created_at"),
-                    "last_seen": node.get("updated_at"),
-                    "connected_count": len(
-                        getattr(kg, "_edges_from", {}).get(nid, [])
-                    ),
+                    "entity_type": etype,
+                    "entity_value": evalue,
+                    "note_count": len(note_ids),
+                    "tier": ent_tier,
                 })
 
-        # Apply filters
-        if entity_type:
-            all_entities = [e for e in all_entities if e["type"] == entity_type]
-        if tier:
-            all_entities = [e for e in all_entities if e["tier"] == tier]
-        if q:
-            q_lower = q.lower()
-            all_entities = [
-                e
-                for e in all_entities
-                if q_lower in e["name"].lower()
-                or any(q_lower in a.lower() for a in e["aliases"])
-            ]
-
         total = len(all_entities)
-        page = all_entities[offset : offset + limit]
-
+        page = all_entities[offset:offset + limit]
         return {"entities": page, "total": total, "offset": offset, "limit": limit}
     except Exception as e:
-        logger.exception("Entities endpoint failed")
-        return JSONResponse(status_code=500, content={"error": str(e)})
-
-
-# ── 7. History ───────────────────────────────────────────────────────────────
+        logger.exception("entities_failed")
+        return JSONResponse(status_code=500, content={"error": str(e), "entities": [], "total": 0, "offset": offset, "limit": limit})
 
 
 @app.get("/api/history", dependencies=[Depends(require_api_guard)])
@@ -652,7 +549,6 @@ async def history(
         for telemetry_file in sorted(telemetry_dir.glob("telemetry_*.jsonl"), reverse=True):
             if len(entries) >= limit:
                 break
-            # Parse date from filename
             try:
                 file_date_str = telemetry_file.stem.split("_")[1]
                 file_date = datetime.strptime(file_date_str, "%Y-%m-%d")
@@ -680,298 +576,334 @@ async def history(
         return JSONResponse(status_code=500, content={"error": str(e)})
 
 
-# ── 8. Ingest ────────────────────────────────────────────────────────────────
+class BulkIngestItem(BaseModel):
+    content: str = Field(min_length=1, max_length=MAX_CONTENT_CHARS)
+    source_type: str = "manual"
+    domain: str = "cti"
+    evolve: bool = True
+
+
+class BulkIngestRequest(BaseModel):
+    items: list[BulkIngestItem] = Field(min_length=1, max_length=100)
 
 
 @app.post("/api/ingest", dependencies=[Depends(require_api_guard)])
-async def ingest(request: Request, req: IngestRequest):
-    """Bulk ingestion endpoint."""
+async def ingest(request: Request, req: BulkIngestRequest):
+    """Bulk ingestion — remember multiple items."""
     tenant_mm = get_mm_for_request(request)
+    total = len(req.items)
+    succeeded = 0
+    failed = 0
     results = []
 
     for item in req.items:
         if not _write_slots.acquire(blocking=False):
             results.append({
-                "status": "error",
-                "error": "Write capacity exhausted; retry shortly",
+                "note_id": None,
+                "status": "skipped",
+                "entities": [],
                 "success": False,
+                "error": "Write capacity exhausted",
             })
+            failed += 1
             continue
         try:
             note, status_text = tenant_mm.remember(
                 content=item.content,
                 source_type=item.source_type,
-                source_ref=item.source_ref,
                 domain=item.domain,
                 evolve=item.evolve,
             )
+            succeeded += 1
             results.append({
                 "note_id": note.id,
                 "status": status_text,
                 "entities": note.semantic.entities[:10],
                 "success": True,
+                "error": None,
             })
         except Exception as e:
+            failed += 1
             results.append({
+                "note_id": None,
                 "status": "error",
-                "error": str(e),
+                "entities": [],
                 "success": False,
+                "error": str(e),
             })
         finally:
             _write_slots.release()
 
     return {
-        "total": len(results),
-        "succeeded": sum(1 for r in results if r.get("success")),
-        "failed": sum(1 for r in results if not r.get("success")),
+        "total": total,
+        "succeeded": succeeded,
+        "failed": failed,
         "results": results,
     }
 
 
-# ── 9. Telemetry ─────────────────────────────────────────────────────────────
-
-
 @app.get("/api/telemetry", dependencies=[Depends(require_api_guard)])
-async def telemetry():
-    """Aggregated telemetry summary from today's data."""
+async def telemetry_summary():
+    """Aggregated telemetry summary from today's telemetry JSONL."""
     try:
         cfg = get_config()
         data_dir = Path(os.path.expanduser(cfg.storage.data_dir))
         telemetry_dir = data_dir / "telemetry"
-        today_str = datetime.now().strftime("%Y-%m-%d")
-        telemetry_file = telemetry_dir / f"telemetry_{today_str}.jsonl"
+        today = datetime.now().strftime("%Y-%m-%d")
+        fpath = telemetry_dir / f"telemetry_{today}.jsonl"
 
-        if not telemetry_file.exists():
+        if not fpath.exists():
             return {
                 "total_queries": 0,
                 "recall_count": 0,
                 "synthesis_count": 0,
-                "avg_latency_ms": None,
-                "p50_ms": None,
-                "p95_ms": None,
+                "avg_latency_ms": 0,
+                "p50_ms": 0,
+                "p95_ms": 0,
                 "top_intents": {},
             }
 
         latencies = []
-        intents: dict[str, int] = {}
         recall_count = 0
         synthesis_count = 0
+        top_intents = {}
 
-        with open(telemetry_file) as f:
+        with open(fpath) as f:
             for line in f:
                 line = line.strip()
                 if not line:
                     continue
                 try:
-                    event = json.loads(line)
-                    event_type = event.get("event_type", "")
-                    if event_type == "recall":
-                        recall_count += 1
-                    elif event_type == "synthesis":
-                        synthesis_count += 1
-
-                    duration = event.get("duration_ms")
-                    if duration is not None:
-                        latencies.append(duration)
-
-                    intent = event.get("intent")
-                    if intent:
-                        intents[intent] = intents.get(intent, 0) + 1
-                except (json.JSONDecodeError, KeyError):
+                    ev = json.loads(line)
+                except json.JSONDecodeError:
                     continue
 
-        total = len(latencies)
-        avg_latency = round(sum(latencies) / total, 1) if total > 0 else None
-        sorted_lat = sorted(latencies)
-        p50 = sorted_lat[len(sorted_lat) // 2] if total > 0 else None
-        p95 = sorted_lat[int(len(sorted_lat) * 0.95)] if total > 0 else None
+                ev_type = ev.get("event_type", "")
+                if ev_type == "recall":
+                    recall_count += 1
+                elif ev_type == "synthesis":
+                    synthesis_count += 1
 
-        # Sort intents by count descending
-        sorted_intents = dict(sorted(intents.items(), key=lambda x: -x[1]))
+                dms = ev.get("duration_ms", 0)
+                if isinstance(dms, (int, float)) and dms > 0:
+                    latencies.append(dms)
+
+                intent = ev.get("intent", "")
+                if intent:
+                    top_intents[intent] = top_intents.get(intent, 0) + 1
+
+        total_queries = recall_count + synthesis_count
+        avg_latency = round(sum(latencies) / len(latencies)) if latencies else 0
+
+        # Percentiles
+        sorted_lat = sorted(latencies)
+        p50 = sorted_lat[len(sorted_lat) // 2] if sorted_lat else 0
+        p95 = sorted_lat[int(len(sorted_lat) * 0.95)] if sorted_lat else 0
 
         return {
-            "total_queries": recall_count + synthesis_count,
+            "total_queries": total_queries,
             "recall_count": recall_count,
             "synthesis_count": synthesis_count,
             "avg_latency_ms": avg_latency,
             "p50_ms": p50,
             "p95_ms": p95,
-            "top_intents": sorted_intents,
+            "top_intents": top_intents,
         }
     except Exception as e:
-        logger.exception("Telemetry endpoint failed")
+        logger.exception("telemetry_summary_failed")
         return JSONResponse(status_code=500, content={"error": str(e)})
-
-
-# ── 10. Storage ─────────────────────────────────────────────────────────────
 
 
 @app.get("/api/storage", dependencies=[Depends(require_api_guard)])
-async def storage(request: Request):
-    """Storage statistics."""
+async def storage_stats():
+    """Storage statistics — notes, entities, graph counts."""
     try:
-        tenant_mm = get_mm_for_request(request)
-        s = tenant_mm.get_stats()
-        kg = getattr(tenant_mm, "_knowledge_graph", None)
-
-        graph_node_count = len(getattr(kg, "_nodes", {})) if kg else 0
-        graph_edge_count = len(getattr(kg, "_edges", {})) if kg else 0
-
+        s = mm.get_stats()
+        kg = get_knowledge_graph()
         return {
             "total_notes": s.get("total_notes", 0),
-            "entity_count": len(s.get("entity_index", {})),
-            "graph_node_count": graph_node_count,
-            "graph_edge_count": graph_edge_count,
+            "entity_count": sum(
+                stats.get("unique_entities", 0)
+                for stats in s.get("entity_index", {}).values()
+            ),
+            "graph_node_count": len(kg._nodes),
+            "graph_edge_count": len(kg._edges),
         }
     except Exception as e:
-        logger.exception("Storage endpoint failed")
+        logger.exception("storage_stats_failed")
         return JSONResponse(status_code=500, content={"error": str(e)})
-
-
-# ── 11. Logs ─────────────────────────────────────────────────────────────────
-
-
-def _parse_log_line(line: str, level_filter: str | None = None) -> dict | None:
-    """Parse a structlog JSON line into a dict."""
-    try:
-        entry = json.loads(line)
-        if level_filter and entry.get("level", "").upper() != level_filter.upper():
-            return None
-        return entry
-    except (json.JSONDecodeError, KeyError):
-        return None
 
 
 @app.get("/api/logs", dependencies=[Depends(require_api_guard)])
 async def logs(
-    lines: int = Query(default=100, ge=1, le=1000),
-    level: str | None = Query(default=None),
+    lines: int = Query(default=100, ge=1, le=10000),
+    level: Optional[str] = Query(default=None),
 ):
-    """Tail the structlog file with optional level filter."""
+    """Read last N lines from the structlog file. Optionally filter by level."""
     try:
         cfg = get_config()
-        log_file = cfg.logging.log_file
-        if not log_file:
-            # Default log path
-            data_dir = Path(os.path.expanduser(cfg.storage.data_dir))
-            log_file = str(data_dir / "zettelforge.log")
+        log_path = cfg.logging.log_file
+        if not log_path:
+            return {"logs": [], "truncated": False, "error": "No log file configured"}
 
-        log_path = Path(os.path.expanduser(log_file))
-        if not log_path.exists():
-            return {"logs": [], "truncated": False}
+        log_path = os.path.expanduser(log_path) if log_path.startswith("~") else log_path
+        log_file = Path(log_path)
+        if not log_file.exists():
+            return {"logs": [], "truncated": False, "error": f"Log file not found: {log_path}"}
 
         # Read last N lines
-        with open(log_path) as f:
+        with open(log_file) as f:
             all_lines = f.readlines()
 
-        # Parse and filter
-        parsed: list[dict] = []
-        for line in reversed(all_lines):
-            entry = _parse_log_line(line.strip(), level)
-            if entry is not None:
-                parsed.append(entry)
-                if len(parsed) >= lines:
-                    break
+        truncated = len(all_lines) > lines
+        tail = all_lines[-lines:]
 
-        parsed.reverse()
-        return {"logs": parsed, "truncated": len(parsed) < len(all_lines)}
+        parsed_logs = []
+        for line in tail:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                entry = json.loads(line)
+            except json.JSONDecodeError:
+                entry = {"message": line}
+
+            log_level = entry.get("level", entry.get("event", "")).upper()
+            if level and level.upper() != log_level:
+                continue
+
+            parsed_logs.append(entry)
+
+        return {"logs": parsed_logs, "truncated": truncated}
     except Exception as e:
-        logger.exception("Logs endpoint failed")
-        return JSONResponse(status_code=500, content={"error": str(e)})
-
-
-# ── 12. Logs SSE Stream ─────────────────────────────────────────────────────
+        logger.exception("logs_failed")
+        return JSONResponse(status_code=500, content={"error": str(e), "logs": [], "truncated": False})
 
 
 @app.get("/api/logs/stream", dependencies=[Depends(require_api_guard)])
 async def log_stream():
-    """SSE endpoint for live log streaming."""
+    """SSE endpoint that tails the structlog file."""
     cfg = get_config()
-    log_file = cfg.logging.log_file
-    if not log_file:
-        data_dir = Path(os.path.expanduser(cfg.storage.data_dir))
-        log_file = str(data_dir / "zettelforge.log")
-    log_path = Path(os.path.expanduser(log_file))
+    log_path = cfg.logging.log_file
+    if not log_path:
+        return JSONResponse(status_code=400, content={"error": "No log file configured"})
+
+    log_path = os.path.expanduser(log_path) if log_path.startswith("~") else log_path
+    log_file = Path(log_path)
 
     async def event_generator():
-        if not log_path.exists():
-            yield f"data: {json.dumps({'event': 'log stream started', 'level': 'INFO'})}\n\n"
-            return
-
+        seen_inodes = 0
+        last_size = 0
         try:
-            with open(log_path) as f:
+            if log_file.exists():
+                stat = log_file.stat()
+                seen_inodes = stat.st_ino
+                last_size = stat.st_size
                 # Seek to end
-                f.seek(0, 2)
-                while True:
-                    line = f.readline()
-                    if line:
-                        line = line.strip()
-                        if line:
-                            try:
-                                event = json.loads(line)
-                                yield f"data: {json.dumps(event)}\n\n"
-                            except json.JSONDecodeError:
-                                yield f"data: {json.dumps({'message': line, 'level': 'RAW'})}\n\n"
-                    else:
-                        await asyncio.sleep(0.1)
         except Exception:
-            yield f"data: {json.dumps({'event': 'Log stream ended', 'level': 'WARNING'})}\n\n"
+            pass
+
+        while True:
+            try:
+                if not log_file.exists():
+                    await asyncio.sleep(0.1)
+                    continue
+
+                stat = log_file.stat()
+                current_inode = stat.st_ino
+
+                # Handle log rotation (new inode)
+                if current_inode != seen_inodes:
+                    seen_inodes = current_inode
+                    last_size = 0
+
+                current_size = stat.st_size
+                if current_size > last_size:
+                    with open(log_file) as f:
+                        f.seek(last_size)
+                        new_data = f.read()
+                        last_size = f.tell()
+                        if new_data:
+                            for line in new_data.splitlines():
+                                if line.strip():
+                                    yield f"data: {line}\n\n"
+
+                await asyncio.sleep(0.1)
+            except Exception:
+                await asyncio.sleep(0.1)
 
     return StreamingResponse(event_generator(), media_type="text/event-stream")
-
-
-# ── 13. Telemetry SSE Stream ────────────────────────────────────────────────
 
 
 @app.get("/api/telemetry/stream", dependencies=[Depends(require_api_guard)])
 async def telemetry_stream():
-    """SSE endpoint for live telemetry streaming."""
+    """SSE endpoint for live telemetry. Watches today's telemetry JSONL file."""
     cfg = get_config()
     data_dir = Path(os.path.expanduser(cfg.storage.data_dir))
     telemetry_dir = data_dir / "telemetry"
-    today_str = datetime.now().strftime("%Y-%m-%d")
-    telemetry_path = telemetry_dir / f"telemetry_{today_str}.jsonl"
+    today = datetime.now().strftime("%Y-%m-%d")
+    fpath = telemetry_dir / f"telemetry_{today}.jsonl"
 
     async def event_generator():
-        if not telemetry_path.exists():
-            yield f"data: {json.dumps({'event': 'telemetry stream started', 'level': 'INFO'})}\n\n"
-            return
-
-        try:
-            with open(telemetry_path) as f:
-                f.seek(0, 2)
-                while True:
-                    line = f.readline()
-                    if line:
-                        line = line.strip()
-                        if line:
-                            try:
-                                event = json.loads(line)
-                                yield f"data: {json.dumps(event)}\n\n"
-                            except json.JSONDecodeError:
-                                pass
-                    else:
-                        await asyncio.sleep(0.1)
-        except Exception:
-            yield f"data: {json.dumps({'event': 'Telemetry stream ended', 'level': 'WARNING'})}\n\n"
+        last_size = 0
+        while True:
+            try:
+                telemetry_dir.mkdir(parents=True, exist_ok=True)
+                if fpath.exists():
+                    current_size = fpath.stat().st_size
+                    if current_size > last_size:
+                        with open(fpath) as f:
+                            f.seek(last_size)
+                            new_data = f.read()
+                            last_size = f.tell()
+                            if new_data:
+                                for line in new_data.splitlines():
+                                    if line.strip():
+                                        yield f"data: {line}\n\n"
+                await asyncio.sleep(0.1)
+            except Exception:
+                await asyncio.sleep(0.1)
 
     return StreamingResponse(event_generator(), media_type="text/event-stream")
 
 
-# ── HTML Frontend (SPA) ──────────────────────────────────────────────────────
-# RFC-015: ZettelForge Web Management Interface served from web/ui/
+# ── HTML Frontend ────────────────────────────────────────────────────────────
 
 
 @app.get("/", response_class=HTMLResponse)
-async def index():
-    ui_dir = Path(__file__).parent / "ui"
-    index_path = ui_dir / "index.html"
-    if index_path.exists():
-        return index_path.read_text(encoding="utf-8")
-    return HTMLResponse(
-        content="<html><body><h1>ZettelForge</h1><p>Web UI not found. Run from the project root.</p></body></html>",
-        status_code=200,
+async def index(request: Request):
+    """Serve the SPA."""
+    return templates.TemplateResponse(request, "index.html")
+
+
+@app.get("/config", response_class=HTMLResponse)
+async def config_page(request: Request):
+    """Serve the config editor."""
+    try:
+        cfg = get_config()
+        import yaml
+        config_yaml = yaml.dump(_to_dict(cfg), default_flow_style=False, sort_keys=False)
+    except Exception:
+        config_yaml = ""
+    return templates.TemplateResponse(
+        request, "config_editor.html",
+        {"config_yaml": config_yaml, "config_path": "config.yaml"}
     )
+
+
+@app.get("/api/version", dependencies=[Depends(require_api_guard)])
+async def version_info():
+    """Return version and basic stats for the SPA header."""
+    try:
+        s = mm.get_stats()
+        return {
+            "version": __version__,
+            "notes": s.get("total_notes", 0),
+            "edition": "enterprise" if is_enterprise() else "community",
+        }
+    except Exception as e:
+        logger.exception("version_info_failed")
+        return JSONResponse(status_code=500, content={"error": str(e)})
 
 
 if __name__ == "__main__":
