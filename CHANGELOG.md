@@ -6,6 +6,37 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [2.6.1] - 2026-04-25
+
+Hotfix release. Resolves three blockers found in code review of the
+RFC-015 web GUI shipped in v2.6.0. No data migration. No config changes.
+
+### Fixed
+
+- **`/config` HTML page now renders.** `_to_dict` was defined as a closure
+  inside `get_config_endpoint`, so every render of `/config` raised
+  `NameError`, was silently swallowed by a bare `except`, and left the
+  YAML body blank on initial server-side render. Promoted to a module-level
+  `_config_to_dict` helper used by both routes. (PR #131)
+- **`PUT /api/config` correctly reports nested restart-required fields.**
+  The check compared top-level payload keys against a set of dotted-path
+  fields, so payloads like `{"embedding": {"provider": "x"}}` were
+  reported as `applied: ["embedding"]`, `pending_restart: []`, telling
+  operators a restart-required change had taken effect when it had not.
+  Added `_flatten_keys` to walk nested payloads to dotted leaf paths;
+  `applied` and `pending_restart` now contain accurate dotted paths.
+  (PR #131)
+- **`/config` HTML route is now auth-gated.** `/api/config` was protected,
+  but the HTML shell (and once the `_to_dict` bug was fixed, its
+  server-rendered YAML body) was reachable without an API key. Added
+  `Depends(require_api_guard)` and made the YAML body redact secrets
+  before serialization. (PR #131)
+
+### Tests
+
+- Added four regression tests in `tests/test_web_api.py` covering all
+  three fixes. 24 passed, 2 skipped (was 20 + 2).
+
 ## [2.6.0] - 2026-04-25
 
 Feature release. Adds configurable content-size limits for DoS mitigation
