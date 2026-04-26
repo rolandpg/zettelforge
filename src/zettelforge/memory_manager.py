@@ -9,6 +9,7 @@ With zettelforge-enterprise: TypeDB backend, deeper traversal, extended synthesi
 """
 
 import atexit
+import concurrent.futures
 import queue
 import threading
 import time
@@ -557,7 +558,65 @@ class MemoryManager:
         Uses intent classifier to determine retrieval strategy weights,
         then combines vector similarity and graph traversal results
         with cross-encoder reranking.
+
+        If governance.limits.recall_timeout_seconds is set (> 0), the
+        retrieval pipeline is capped by a wall-clock timeout. Exceeding
+        the timeout logs a warning and returns an empty list. This is a
+        defense-in-depth control for D-03 (deep graph traversal DoS) per
+        RFC-014.
         """
+        timeout = get_config().governance.limits.recall_timeout_seconds
+        if timeout > 0:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+                future = pool.submit(
+                    self._recall_inner,
+                    query,
+                    domain,
+                    k,
+                    include_links,
+                    exclude_superseded,
+                    include_expired,
+                    actor,
+                )
+                try:
+                    return future.result(timeout=timeout)
+                except concurrent.futures.TimeoutError:
+                    self._logger.warning(
+                        "recall_timed_out",
+                        timeout_seconds=timeout,
+                        query=query[:100],
+                    )
+                    log_api_activity(
+                        operation="recall",
+                        status_id=STATUS_FAILURE,
+                        query=query[:200],
+                        domain=domain,
+                        k=k,
+                        result_count=0,
+                        duration_ms=timeout * 1000,
+                        request_id=uuid.uuid4().hex,
+                    )
+                    return []
+        return self._recall_inner(
+            query,
+            domain,
+            k,
+            include_links,
+            exclude_superseded,
+            include_expired,
+            actor,
+        )
+
+    def _recall_inner(
+        self,
+        query: str,
+        domain: str | None = None,
+        k: int = 10,
+        include_links: bool = True,
+        exclude_superseded: bool = True,
+        include_expired: bool = False,
+        actor: str | None = None,
+    ) -> list[MemoryNote]:
         request_id = uuid.uuid4().hex
         start = time.perf_counter()
         self.stats["retrievals"] += 1
