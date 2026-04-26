@@ -351,6 +351,44 @@ def _redact_secrets(data: Any, depth: int = 0) -> Any:
     return data
 
 
+def _config_to_dict(obj: Any) -> Any:
+    """Convert nested dataclass config to plain dict for JSON/YAML serialization."""
+    if hasattr(obj, "__dataclass_fields__"):
+        return {k: _config_to_dict(v) for k, v in obj.__dict__.items()}
+    if isinstance(obj, dict):
+        return {k: _config_to_dict(v) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [_config_to_dict(item) for item in obj]
+    if isinstance(obj, (int, float, bool, str, type(None))):
+        return obj
+    return str(obj)
+
+
+def _flatten_keys(data: dict, prefix: str = "") -> list[str]:
+    """Flatten a nested dict to dotted paths (leaves only)."""
+    out: list[str] = []
+    for k, v in data.items():
+        path = f"{prefix}.{k}" if prefix else k
+        if isinstance(v, dict):
+            out.extend(_flatten_keys(v, path))
+        else:
+            out.append(path)
+    return out
+
+
+_RESTART_REQUIRED_FIELDS = {
+    "backend",
+    "embedding.provider",
+    "embedding.url",
+    "llm.provider",
+    "llm.model",
+    "llm.url",
+    "storage.data_dir",
+    "logging.log_file",
+    "logging.level",
+}
+
+
 @app.get("/api/health", dependencies=[Depends(require_api_guard)])
 async def health():
     """System health endpoint — version, config, queue depths, uptime."""
@@ -392,22 +430,7 @@ async def get_config_endpoint():
     """Return current config as JSON with secrets redacted."""
     try:
         cfg = get_config()
-
-        def _to_dict(obj):
-            """Convert dataclass to plain dict."""
-            if hasattr(obj, "__dataclass_fields__"):
-                return {k: _to_dict(v) for k, v in obj.__dict__.items()}
-            if isinstance(obj, dict):
-                return {k: _to_dict(v) for k, v in obj.items()}
-            if isinstance(obj, (list, tuple)):
-                return [_to_dict(item) for item in obj]
-            if isinstance(obj, (int, float, bool, str, type(None))):
-                return obj
-            return str(obj)
-
-        raw = _to_dict(cfg)
-        redacted = _redact_secrets(raw)
-        return redacted
+        return _redact_secrets(_config_to_dict(cfg))
     except Exception as e:
         logger.exception("get_config_failed")
         return JSONResponse(status_code=500, content={"error": str(e)})
@@ -423,26 +446,26 @@ async def update_config(req: dict):
     """Apply config changes in-memory. Returns applied + pending-restart fields."""
     try:
         cfg = get_config()
-        # Fields that require a restart to take effect
-        RESTART_REQUIRED = {"backend", "embedding.provider", "embedding.url",
-                            "llm.provider", "llm.model", "llm.url",
-                            "storage.data_dir", "logging.log_file"}
-        applied = []
-        pending_restart = []
 
         _apply_yaml(cfg, req)
 
-        # Determine which changes need restart
-        for key in req:
-            if key in RESTART_REQUIRED:
-                pending_restart.append(key)
-            else:
-                applied.append(key)
+        # Flatten the nested payload to dotted leaf paths so we can compare
+        # against _RESTART_REQUIRED_FIELDS (also dotted). A top-level key like
+        # "embedding" must not match a restart-required leaf like
+        # "embedding.provider".
+        leaves = _flatten_keys(req)
+        applied = [k for k in leaves if k not in _RESTART_REQUIRED_FIELDS]
+        pending_restart = [k for k in leaves if k in _RESTART_REQUIRED_FIELDS]
+
+        if pending_restart:
+            message = "Config updated in-memory. Some changes require a restart."
+        else:
+            message = "Config updated in-memory."
 
         return {
             "applied": applied,
             "pending_restart": pending_restart,
-            "message": "Config updated in-memory. Some changes require a restart."
+            "message": message,
         }
     except Exception as e:
         logger.exception("update_config_failed")
@@ -876,14 +899,23 @@ async def index(request: Request):
     return templates.TemplateResponse(request, "index.html")
 
 
-@app.get("/config", response_class=HTMLResponse)
+@app.get(
+    "/config",
+    response_class=HTMLResponse,
+    dependencies=[Depends(require_api_guard)],
+)
 async def config_page(request: Request):
-    """Serve the config editor."""
+    """Serve the config editor (auth-gated; SPA also fetches /api/config)."""
     try:
-        cfg = get_config()
         import yaml
-        config_yaml = yaml.dump(_to_dict(cfg), default_flow_style=False, sort_keys=False)
+        cfg = get_config()
+        config_yaml = yaml.dump(
+            _redact_secrets(_config_to_dict(cfg)),
+            default_flow_style=False,
+            sort_keys=False,
+        )
     except Exception:
+        logger.exception("config_page_render_failed")
         config_yaml = ""
     return templates.TemplateResponse(
         request, "config_editor.html",

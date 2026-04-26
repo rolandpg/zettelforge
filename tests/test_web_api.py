@@ -106,6 +106,33 @@ class TestConfigEndpoint:
         assert "pending_restart" in data
         assert any("backend" in str(item).lower() for item in data["pending_restart"])
 
+    def test_put_config_nested_restart_required_is_flagged(self, client, api_key):
+        """Regression: nested {"embedding": {"provider": ...}} must report
+        embedding.provider in pending_restart, not silently appear in applied.
+        """
+        resp = client.put(
+            "/api/config",
+            headers={**_headers(api_key), "Content-Type": "application/json"},
+            json={"embedding": {"provider": "fastembed"}},
+        )
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "embedding.provider" in data["pending_restart"]
+        assert "embedding.provider" not in data["applied"]
+        assert "embedding" not in data["applied"]  # bare top-level key is not a leaf
+
+    def test_put_config_nested_non_restart_is_applied(self, client, api_key):
+        """Nested non-restart leaf must appear in applied (not pending_restart)."""
+        resp = client.put(
+            "/api/config",
+            headers={**_headers(api_key), "Content-Type": "application/json"},
+            json={"retrieval": {"default_k": 5}},
+        )
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "retrieval.default_k" in data["applied"]
+        assert "retrieval.default_k" not in data["pending_restart"]
+
 
 # ── Graph Nodes / Edges ──────────────────────────────────────────────────────
 
@@ -317,3 +344,33 @@ class TestFrontendEndpoint:
         assert resp.headers.get("content-type", "").startswith("text/html")
         html = resp.text
         assert "ZettelForge" in html
+
+
+class TestConfigPage:
+    """GET /config — auth-gated config editor HTML."""
+
+    def test_config_page_requires_auth_when_key_set(self, client, monkeypatch):
+        """When an API key is configured, /config rejects unauthenticated requests.
+
+        require_api_guard reads API_KEY at module-import time, so we patch the
+        module attribute directly rather than the env var.
+        """
+        from web import app as web_app
+
+        monkeypatch.setattr(web_app, "API_KEY", "test-api-key-12345")
+        resp = client.get("/config")
+        assert resp.status_code == 401
+
+    def test_config_page_renders_yaml_body_when_authenticated(self, client, api_key):
+        """Regression: server-side render of config_editor.html must not silently
+        fail with NameError on _to_dict and leave config_yaml blank.
+        """
+        resp = client.get("/config", headers=_headers(api_key))
+        assert resp.status_code == 200
+        assert resp.headers.get("content-type", "").startswith("text/html")
+        html = resp.text
+        # The textarea is server-populated; verify it is non-empty and contains
+        # at least one expected top-level config key dumped as YAML.
+        assert "<textarea" in html
+        assert 'id="config-yaml"' in html
+        assert ("llm:" in html) or ("embedding:" in html) or ("storage:" in html)
