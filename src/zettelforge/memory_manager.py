@@ -561,9 +561,9 @@ class MemoryManager:
 
         If governance.limits.recall_timeout_seconds is set (> 0), the
         retrieval pipeline is capped by a wall-clock timeout. Exceeding
-        the timeout returns results gathered so far (or an empty list)
-        and logs a warning. This is a defense-in-depth control for D-03
-        (deep graph traversal DoS) per RFC-014.
+        the timeout logs a warning and returns an empty list. This is a
+        defense-in-depth control for D-03 (deep graph traversal DoS) per
+        RFC-014.
         """
         timeout = get_config().governance.limits.recall_timeout_seconds
         if timeout > 0:
