@@ -531,51 +531,49 @@ async def entities(
 
 
 @app.get("/api/history", dependencies=[Depends(require_api_guard)])
-async def history():
-    """Recent activity from telemetry JSONL files (last 5 days)."""
+async def history(
+    limit: int = Query(default=100, ge=1, le=500),
+    days: int = Query(default=5, ge=1, le=30),
+):
+    """Recent activity from telemetry JSONL files."""
     try:
-        from zettelforge.config import get_config as _get_cfg
-        cfg = _get_cfg()
+        cfg = get_config()
         data_dir = Path(os.path.expanduser(cfg.storage.data_dir))
         telemetry_dir = data_dir / "telemetry"
-        now = datetime.now()
+        if not telemetry_dir.exists():
+            return []
+
         entries = []
+        cutoff = datetime.now() - timedelta(days=days)
 
-        for day_offset in range(5):
-            day = datetime(now.year, now.month, now.day) - timedelta(days=day_offset)
-            fname = f"telemetry_{day.strftime('%Y-%m-%d')}.jsonl"
-            fpath = telemetry_dir / fname
-            if not fpath.exists():
-                continue
+        for telemetry_file in sorted(telemetry_dir.glob("telemetry_*.jsonl"), reverse=True):
+            if len(entries) >= limit:
+                break
             try:
-                with open(fpath) as f:
-                    for line in f:
-                        line = line.strip()
-                        if not line:
-                            continue
-                        try:
-                            ev = json.loads(line)
-                        except json.JSONDecodeError:
-                            continue
-                        entries.append({
-                            "query_id": ev.get("query_id", ""),
-                            "query": ev.get("query", "")[:200],
-                            "event_type": ev.get("event_type", ""),
-                            "timestamp": ev.get("timestamp", 0),
-                            "result_count": ev.get("result_count", 0),
-                            "duration_ms": ev.get("duration_ms", 0),
-                            "actor": ev.get("actor"),
-                            "intent": ev.get("intent", ""),
-                        })
-            except Exception:
+                file_date_str = telemetry_file.stem.split("_")[1]
+                file_date = datetime.strptime(file_date_str, "%Y-%m-%d")
+                if file_date < cutoff:
+                    continue
+            except (IndexError, ValueError):
                 continue
 
-        # Sort newest first
-        entries.sort(key=lambda e: e.get("timestamp", 0), reverse=True)
-        return {"entries": entries[:200], "total": len(entries)}
+            with open(telemetry_file) as f:
+                for line in f:
+                    if len(entries) >= limit:
+                        break
+                    line = line.strip()
+                    if not line:
+                        continue
+                    try:
+                        entry = json.loads(line)
+                        entries.append(entry)
+                    except json.JSONDecodeError:
+                        continue
+
+        return entries
     except Exception as e:
-        logger.exception("history_failed")
-        return JSONResponse(status_code=500, content={"error": str(e), "entries": [], "total": 0})
+        logger.exception("History endpoint failed")
+        return JSONResponse(status_code=500, content={"error": str(e)})
 
 
 class BulkIngestItem(BaseModel):
@@ -875,13 +873,13 @@ async def telemetry_stream():
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
     """Serve the SPA."""
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse(request, "index.html")
 
 
 @app.get("/config", response_class=HTMLResponse)
 async def config_page(request: Request):
     """Serve the config editor."""
-    return templates.TemplateResponse("config_editor.html", {"request": request})
+    return templates.TemplateResponse(request, "config_editor.html")
 
 
 @app.get("/api/version", dependencies=[Depends(require_api_guard)])
