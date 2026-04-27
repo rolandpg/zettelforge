@@ -180,6 +180,45 @@ class TestConfigEndpoint:
         assert "llm.temperature" in data["applied"]
         assert not any(p in data["pending_restart"] for p in ("retrieval.default_k", "llm.temperature"))
 
+    def test_get_config_meta_exposes_restart_fields(self, client, api_key):
+        """v2.6.2: /api/config/meta is the single source of truth for the UI's
+        "restart required" badge — eliminates server/UI drift on _RESTART_REQUIRED_FIELDS.
+        """
+        resp = client.get("/api/config/meta", headers=_headers(api_key))
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "restart_required_fields" in data
+        fields = data["restart_required_fields"]
+        assert isinstance(fields, list)
+        assert fields == sorted(fields), "should be sorted for deterministic UI ordering"
+        # Spot-check known restart-required leaves
+        for expected in ("backend", "embedding.provider", "llm.provider", "logging.level"):
+            assert expected in fields, f"missing expected restart-required field: {expected}"
+
+    def test_get_config_meta_requires_auth_when_key_set(self, client, monkeypatch):
+        """The meta endpoint reveals server-side internals (restart-required
+        leaf names) — it must be auth-gated identically to /api/config."""
+        from web import app as web_app
+        monkeypatch.setattr(web_app, "API_KEY", "test-api-key-12345")
+        resp = client.get("/api/config/meta")
+        assert resp.status_code == 401
+
+    def test_put_config_with_list_value_round_trips(self, client, api_key):
+        """Regression for the YAML-list parser bug: lists like
+        synthesis.tier_filter must survive PUT and read back identically.
+        The frontend YAML parser previously dropped list values into empty
+        objects when the YAML used the indented `key:\\n  - item` form."""
+        resp = client.put(
+            "/api/config",
+            headers={**_headers(api_key), "Content-Type": "application/json"},
+            json={"synthesis": {"tier_filter": ["A", "C"]}},
+        )
+        assert resp.status_code == 200
+        get_resp = client.get("/api/config", headers=_headers(api_key))
+        assert get_resp.status_code == 200
+        cfg = get_resp.json()
+        assert cfg["synthesis"]["tier_filter"] == ["A", "C"]
+
 
 # ── Graph Nodes / Edges ──────────────────────────────────────────────────────
 

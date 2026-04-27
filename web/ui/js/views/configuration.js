@@ -14,8 +14,11 @@ window.ConfigurationView = (function() {
     'governance.pii.action':      ['log', 'redact', 'block']
   };
 
-  // Dotted leaf paths the server flags as restart-required. Mirrors
-  // _RESTART_REQUIRED_FIELDS in web/app.py so the UI can warn before Apply.
+  // Dotted leaf paths the server flags as restart-required. The defaults
+  // below mirror _RESTART_REQUIRED_FIELDS in web/app.py and are used until
+  // GET /api/config/meta returns the authoritative server-side set on first
+  // load. Hardcoded fallbacks survive an offline server and the server set
+  // wins to prevent UI/server drift.
   var RESTART_PATHS = {
     'backend': true,
     'embedding.provider': true,
@@ -124,8 +127,12 @@ window.ConfigurationView = (function() {
 
   function coerce(originalValue, raw) {
     if (typeof originalValue === 'number') {
-      var n = parseFloat(raw);
-      return isNaN(n) ? 0 : n;
+      var trimmed = typeof raw === 'string' ? raw.trim() : raw;
+      // Empty / unparseable input reverts to the original value rather than
+      // silently coercing to 0, which would overwrite a real numeric setting.
+      if (trimmed === '' || trimmed === null || trimmed === undefined) return originalValue;
+      var n = parseFloat(trimmed);
+      return isNaN(n) ? originalValue : n;
     }
     if (typeof originalValue === 'boolean') {
       return raw === true || raw === 'true';
@@ -202,7 +209,19 @@ window.ConfigurationView = (function() {
 
     loadFlags: function(contentEl) {
       var self = this;
-      window.API.get('/api/config').then(function(config) {
+      // Fetch config + meta in parallel; meta failure is non-fatal — fall back
+      // to the hardcoded RESTART_PATHS defaults.
+      Promise.all([
+        window.API.get('/api/config'),
+        window.API.get('/api/config/meta').catch(function() { return null; })
+      ]).then(function(results) {
+        var config = results[0];
+        var meta = results[1];
+        if (meta && Array.isArray(meta.restart_required_fields)) {
+          var fresh = {};
+          meta.restart_required_fields.forEach(function(p) { fresh[p] = true; });
+          RESTART_PATHS = fresh;
+        }
         self._config = config;
         self._changes = {};
         self.renderFlags(contentEl, config);
@@ -690,10 +709,21 @@ window.ConfigurationView = (function() {
       var listMatch = stripped.match(/^\s*-\s+(.*)$/);
       if (listMatch) {
         while (stack.length > 1 && stack[stack.length - 1].indent >= indent) stack.pop();
-        var parent = stack[stack.length - 1];
-        if (parent.lastKey) {
-          if (!Array.isArray(parent.obj[parent.lastKey])) parent.obj[parent.lastKey] = [];
-          parent.obj[parent.lastKey].push(coerceYamlScalar(listMatch[1]));
+        var frame = stack[stack.length - 1];
+        // Case A: this frame was opened by `key:` with empty value, optimistically
+        // initialized to {}. The first child is a list item, so convert {} → [].
+        if (frame.parentObj && frame.parentKey && !frame.lastKey) {
+          if (!Array.isArray(frame.parentObj[frame.parentKey])) {
+            frame.parentObj[frame.parentKey] = [];
+            frame.obj = frame.parentObj[frame.parentKey];
+          }
+          frame.obj.push(coerceYamlScalar(listMatch[1]));
+          return;
+        }
+        // Case B: list items belong to the previous mapping key in this frame.
+        if (frame.lastKey) {
+          if (!Array.isArray(frame.obj[frame.lastKey])) frame.obj[frame.lastKey] = [];
+          frame.obj[frame.lastKey].push(coerceYamlScalar(listMatch[1]));
         }
         return;
       }
@@ -709,7 +739,16 @@ window.ConfigurationView = (function() {
       if (value === '') {
         ctx.obj[key] = {};
         ctx.lastKey = key;
-        stack.push({ indent: indent, obj: ctx.obj[key] });
+        // parentObj/parentKey let a `- item` first-child convert this {} into []
+        // so YAML lists round-trip correctly. lastKey starts null so the list
+        // handler can distinguish "deferred container" from "real mapping".
+        stack.push({
+          indent: indent,
+          obj: ctx.obj[key],
+          parentObj: ctx.obj,
+          parentKey: key,
+          lastKey: null
+        });
       } else {
         // Skip redacted secret placeholders so we never PUT '***' back.
         if (value.replace(/['"]/g, '').trim() === '***' && isSecretKey(key)) return;
