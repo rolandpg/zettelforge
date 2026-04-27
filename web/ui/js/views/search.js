@@ -56,9 +56,10 @@ window.SearchView = {
     formatRow.appendChild(formatLabel);
 
     var formats = [
+      { value: 'direct_answer', label: 'Direct' },
       { value: 'synthesized_brief', label: 'Brief' },
-      { value: 'synthesized_detailed', label: 'Detailed' },
-      { value: 'synthesized_narrative', label: 'Narrative' }
+      { value: 'timeline_analysis', label: 'Timeline' },
+      { value: 'relationship_map', label: 'Relationships' }
     ];
     var self = this;
     formats.forEach(function(f) {
@@ -182,8 +183,12 @@ window.SearchView = {
         format: this._state.format
       }).then(function(data) {
         self._state.loading = false;
-        self._state.synthesis = data;
-        self._state.status = 'synthesis complete \u00B7 ' + (data.latency_ms || '---') + 'ms \u00B7 ' + (data.sources ? data.sources.length : 0) + ' sources';
+        var synthesis = data.synthesis || data;
+        synthesis.format = data.format || self._state.format;
+        synthesis.latency_ms = data.latency_ms;
+        synthesis.sources_count = data.sources_count || 0;
+        self._state.synthesis = synthesis;
+        self._state.status = 'synthesis complete \u00B7 ' + (data.latency_ms || '---') + 'ms \u00B7 ' + (data.sources_count || 0) + ' sources';
         self.renderResults();
       }).catch(function(err) {
         self._state.loading = false;
@@ -241,18 +246,19 @@ window.SearchView = {
       head.appendChild(title);
 
       var meta = document.createElement('span');
-      var srcCount = synth.sources ? synth.sources.length : 0;
+      var sources = synth.sources || synth.source_ids || synth.citations || [];
+      var srcCount = synth.sources_count !== undefined ? synth.sources_count : sources.length;
       meta.textContent = (synth.format || this._state.format) + ' \u00B7 ' + (synth.latency_ms || '---') + 'ms \u00B7 ' + srcCount + ' sources';
       meta.style.cssText = 'font-family:var(--font-mono);font-size:var(--text-xs,11px);color:var(--fg-2,#8B949E);';
       head.appendChild(meta);
       block.appendChild(head);
 
       var answer = document.createElement('div');
-      answer.textContent = synth.answer || synth.content || 'No synthesis content returned.';
+      answer.textContent = synth.answer || synth.summary || synth.content || (Array.isArray(synth.citations) ? synth.citations.map(function(c) { return c.text || c.id || String(c); }).join('\n') : '') || 'No synthesis content returned.';
       answer.style.cssText = 'font-size:var(--text-base,14px);line-height:var(--lh-relaxed,1.7);color:var(--fg-1,#C9D1D9);white-space:pre-wrap;';
       block.appendChild(answer);
 
-      if (synth.sources && synth.sources.length) {
+      if (sources && sources.length) {
         var srcSection = document.createElement('div');
         srcSection.style.cssText = 'margin-top:14px;padding-top:12px;border-top:1px solid var(--bg-surface-hi,#21262D);display:flex;gap:var(--sp-2,8px);flex-wrap:wrap;font-family:var(--font-mono);font-size:var(--text-xs,11px);color:var(--fg-2,#8B949E);align-items:center;';
 
@@ -260,9 +266,9 @@ window.SearchView = {
         srcLabel.textContent = 'sources:';
         srcSection.appendChild(srcLabel);
 
-        synth.sources.forEach(function(s) {
+        sources.forEach(function(s) {
           var src = document.createElement('span');
-          src.textContent = s;
+          src.textContent = typeof s === 'string' ? s : (s.id || s.note_id || s.text || JSON.stringify(s));
           src.style.cssText = 'color:var(--intent-factual,#58A6FF);';
           srcSection.appendChild(src);
         });
@@ -317,11 +323,16 @@ window.SearchView = {
     if (!content) return;
 
     var self = this;
-    window.API.post('/api/notes', { content: content }).then(function(data) {
+    window.API.post('/api/remember', {
+      content: content,
+      domain: 'cti',
+      source_type: 'manual',
+      evolve: true
+    }).then(function(data) {
       self._state.rememberValue = '';
       var ta = document.getElementById('remember-textarea');
       if (ta) ta.value = '';
-      window.ToastComponent.show('Stored: ' + (data.id || 'ok'), 'success');
+      window.ToastComponent.show('Stored: ' + (data.note_id || 'ok'), 'success');
 
       var statusEl = document.getElementById('search-status');
       if (statusEl) statusEl.textContent = 'Stored note successfully';

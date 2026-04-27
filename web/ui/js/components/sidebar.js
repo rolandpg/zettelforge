@@ -47,7 +47,9 @@ window.SidebarComponent = {
     bottom.style.cssText = 'margin-top:auto;padding:var(--sp-4,16px);border-top:1px solid var(--border,#30363D);font-size:var(--text-xs,11px);color:var(--fg-3,#484F58);font-family:var(--font-mono);';
     var s = window.store.getState();
     var stats = s.stats || {};
-    bottom.textContent = 'v' + (stats.version || '2.3.0') + ' \u00B7 ' + (stats.edition || 'Community');
+    var versionLabel = stats.version ? 'v' + stats.version : 'version loading';
+    var editionLabel = stats.edition_name || stats.edition || '';
+    bottom.textContent = editionLabel ? versionLabel + ' \u00B7 ' + editionLabel : versionLabel;
     sidebar.appendChild(bottom);
 
     return sidebar;

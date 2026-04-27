@@ -172,7 +172,7 @@ window.DashboardView = {
 
   renderTelemetry: function(container, telemetry) {
     if (!container) return;
-    if (!telemetry || !telemetry.queries_today) {
+    if (!telemetry || (telemetry.queries_today === undefined && telemetry.total_queries === undefined)) {
       container.innerHTML = '<div style="grid-column:1/-1;color:var(--fg-3,#484F58);padding:var(--sp-4,16px);font-size:var(--text-sm,12px);font-family:var(--font-mono);">telemetry data unavailable</div>';
       return;
     }
@@ -180,8 +180,8 @@ window.DashboardView = {
     container.innerHTML = '';
 
     var items = [
-      { label: 'queries today', value: (telemetry.queries_today || 0).toLocaleString() },
-      { label: 'syntheses today', value: (telemetry.syntheses_today || 0).toLocaleString() },
+      { label: 'queries today', value: (telemetry.queries_today || telemetry.total_queries || 0).toLocaleString() },
+      { label: 'syntheses today', value: (telemetry.syntheses_today || telemetry.synthesis_count || 0).toLocaleString() },
       { label: 'avg latency', value: telemetry.avg_latency_ms ? telemetry.avg_latency_ms + 'ms' : '---' }
     ];
 
@@ -206,6 +206,11 @@ window.DashboardView = {
   renderIntents: function(container, telemetry) {
     if (!container) return;
     var intents = telemetry.top_intents || [];
+    if (!Array.isArray(intents)) {
+      intents = Object.keys(intents).map(function(name) {
+        return { name: name, count: intents[name] };
+      });
+    }
     if (!intents.length) {
       container.innerHTML = '<div style="color:var(--fg-3,#484F58);font-size:var(--text-sm,12px);font-family:var(--font-mono);">no intent data yet</div>';
       return;

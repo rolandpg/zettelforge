@@ -1,7 +1,7 @@
 """
-ZettelForge Web UI — FastAPI backend + minimal HTML frontend.
+ZettelForge Web UI — FastAPI backend + RFC-015 management SPA.
 
-A search-and-recall interface for ZettelForge's CTI memory system.
+A management interface for ZettelForge's CTI memory system.
 
 Usage:
     python web/app.py                    # Start on port 8088
@@ -9,7 +9,7 @@ Usage:
     uvicorn web.app:app --reload         # Dev mode
 
 Endpoints:
-    GET  /                    → Search UI (HTML)
+    GET  /                    → Management SPA (HTML)
     POST /api/recall          → Blended recall (vector + graph)
     POST /api/remember        → Store a note
     POST /api/synthesize      → RAG synthesis
@@ -33,13 +33,16 @@ from pathlib import Path
 from typing import Any, List, Optional
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request, status
-from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, Field
 
-# Ensure zettelforge is importable
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
+# Ensure both the package and the web namespace are importable when this file is
+# launched directly as `python web/app.py`.
+_repo_root = Path(__file__).parent.parent
+sys.path.insert(0, str(_repo_root))
+sys.path.insert(0, str(_repo_root / "src"))
 
 os.environ.setdefault("ZETTELFORGE_BACKEND", "sqlite")
 
@@ -64,6 +67,7 @@ app = FastAPI(
 
 # Mount static files after app is created
 app.mount("/static", StaticFiles(directory=str(_web_dir / "static")), name="static")
+app.mount("/ui", StaticFiles(directory=str(_web_dir / "ui")), name="ui")
 
 # Uptime tracking (monotonic clock, reset on process restart)
 _start_time = time.monotonic()
@@ -376,6 +380,27 @@ def _flatten_keys(data: dict, prefix: str = "") -> list[str]:
     return out
 
 
+def _expand_dotted_keys(data: dict) -> dict:
+    """Convert {"retrieval.default_k": 5} to {"retrieval": {"default_k": 5}}."""
+    expanded: dict[str, Any] = {}
+    for key, value in data.items():
+        if "." not in key:
+            if isinstance(value, dict):
+                expanded[key] = _expand_dotted_keys(value)
+            else:
+                expanded[key] = value
+            continue
+
+        cursor = expanded
+        parts = [part for part in key.split(".") if part]
+        if not parts:
+            continue
+        for part in parts[:-1]:
+            cursor = cursor.setdefault(part, {})
+        cursor[parts[-1]] = value
+    return expanded
+
+
 _RESTART_REQUIRED_FIELDS = {
     "backend",
     "embedding.provider",
@@ -413,6 +438,7 @@ async def health():
             "llm_model": cfg.llm.model,
             "llm_local_backend": cfg.llm.local_backend,
             "enrichment_queue_depth": enrichment_depth,
+            "queue_status": "idle" if enrichment_depth == 0 else "active",
             "governance_enabled": cfg.governance.enabled,
             "pii_enabled": cfg.governance.pii.enabled,
             "uptime_seconds": round(uptime, 1),
@@ -446,6 +472,7 @@ async def update_config(req: dict):
     """Apply config changes in-memory. Returns applied + pending-restart fields."""
     try:
         cfg = get_config()
+        req = _expand_dotted_keys(req)
 
         _apply_yaml(cfg, req)
 
@@ -539,10 +566,16 @@ async def entities(
                 # Look up tier from earliest note if possible
                 ent_tier = tier if tier else ""
                 all_entities.append({
+                    "id": f"{etype}:{evalue}",
+                    "name": evalue,
+                    "type": etype,
+                    "aliases": [],
+                    "confidence": None,
+                    "connected_count": len(note_ids),
                     "entity_type": etype,
                     "entity_value": evalue,
                     "note_count": len(note_ids),
-                    "tier": ent_tier,
+                    "tier": ent_tier or "b",
                 })
 
         total = len(all_entities)
@@ -678,8 +711,10 @@ async def telemetry_summary():
         if not fpath.exists():
             return {
                 "total_queries": 0,
+                "queries_today": 0,
                 "recall_count": 0,
                 "synthesis_count": 0,
+                "syntheses_today": 0,
                 "avg_latency_ms": 0,
                 "p50_ms": 0,
                 "p95_ms": 0,
@@ -725,8 +760,10 @@ async def telemetry_summary():
 
         return {
             "total_queries": total_queries,
+            "queries_today": total_queries,
             "recall_count": recall_count,
             "synthesis_count": synthesis_count,
+            "syntheses_today": synthesis_count,
             "avg_latency_ms": avg_latency,
             "p50_ms": p50,
             "p95_ms": p95,
@@ -896,7 +933,7 @@ async def telemetry_stream():
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
     """Serve the SPA."""
-    return templates.TemplateResponse(request, "index.html")
+    return FileResponse(_web_dir / "ui" / "index.html", media_type="text/html")
 
 
 @app.get(
