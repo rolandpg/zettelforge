@@ -4,8 +4,14 @@ window.KnowledgeGraphView = {
   _filteredIds: null,
   _selectedNode: null,
   _simulation: null,
+  _canvasBound: false,
+  _dragging: false,
+  _dragMoved: false,
+  _lastPointer: null,
+  _view: { rotX: -0.45, rotY: 0.65, zoom: 560 },
 
   render: function() {
+    this._canvasBound = false;
     var container = document.createElement('div');
     container.id = 'knowledge-graph-view';
     container.style.cssText = 'max-width:960px;';
@@ -17,7 +23,7 @@ window.KnowledgeGraphView = {
 
     var note = document.createElement('div');
     note.style.cssText = 'background:var(--bg-surface,#161B22);border:1px solid var(--border,#30363D);border-radius:var(--r-sm,6px);padding:8px 12px;font-size:var(--text-xs,11px);color:var(--fg-2,#8B949E);font-family:var(--font-mono);margin-bottom:var(--sp-4,16px);';
-    note.textContent = '3D rendering with Three.js coming in v2.6.0 - 2D force graph shown here';
+    note.textContent = 'Interactive 3D orbital graph - drag to rotate, wheel to zoom, click a node for detail.';
     container.appendChild(note);
 
     // Search bar
@@ -54,6 +60,13 @@ window.KnowledgeGraphView = {
     loading.style.cssText = 'display:flex;align-items:center;justify-content:center;height:500px;gap:8px;color:var(--fg-2,#8B949E);font-size:var(--text-sm,12px);';
     loading.innerHTML = '<div class="pulse" style="width:16px;height:16px;border-radius:50%;border:2px solid var(--border,#30363D);border-top-color:var(--signal-neon,#00FFA3);"></div> Loading graph data...';
     graphWrap.appendChild(loading);
+
+    var canvas = document.createElement('canvas');
+    canvas.id = 'kg-canvas';
+    canvas.width = 960;
+    canvas.height = 500;
+    canvas.style.cssText = 'display:none;width:100%;height:500px;cursor:grab;';
+    graphWrap.appendChild(canvas);
 
     var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.id = 'kg-svg';
@@ -134,13 +147,17 @@ window.KnowledgeGraphView = {
       if (loading) loading.style.display = 'none';
 
       if (self._nodes.length === 0) {
+        var canvas = document.getElementById('kg-canvas');
+        if (canvas) canvas.style.display = 'none';
         svg.style.display = 'none';
         empty.style.display = 'block';
         if (statsSpan) statsSpan.textContent = '0 nodes, 0 edges';
         return;
       }
 
-      svg.style.display = 'block';
+      var canvas = document.getElementById('kg-canvas');
+      if (canvas) canvas.style.display = 'block';
+      svg.style.display = 'none';
       empty.style.display = 'none';
       if (statsSpan) statsSpan.textContent = self._nodes.length + ' nodes, ' + self._edges.length + ' edges';
 
@@ -184,7 +201,206 @@ window.KnowledgeGraphView = {
     return map[type] || '#8B949E';
   },
 
+  getProjectedNode: function(node, w, h) {
+    var rx = this._view.rotX;
+    var ry = this._view.rotY;
+    var x = node.x3 || 0;
+    var y = node.y3 || 0;
+    var z = node.z3 || 0;
+
+    var cosY = Math.cos(ry);
+    var sinY = Math.sin(ry);
+    var x1 = x * cosY - z * sinY;
+    var z1 = x * sinY + z * cosY;
+
+    var cosX = Math.cos(rx);
+    var sinX = Math.sin(rx);
+    var y1 = y * cosX - z1 * sinX;
+    var z2 = y * sinX + z1 * cosX;
+
+    var zoom = this._view.zoom;
+    var scale = zoom / (zoom + z2 + 260);
+    scale = Math.max(0.25, Math.min(2.2, scale));
+
+    return {
+      x: w / 2 + x1 * scale,
+      y: h / 2 + y1 * scale,
+      z: z2,
+      scale: scale
+    };
+  },
+
+  init3DPositions: function() {
+    var count = Math.max(this._nodes.length, 1);
+    var radius = Math.min(230, 60 + count * 5);
+    this._nodes.forEach(function(n, i) {
+      if (n.x3 !== undefined && n.y3 !== undefined && n.z3 !== undefined) return;
+      var t = count === 1 ? 0 : i / (count - 1);
+      var inclination = Math.acos(1 - 2 * t);
+      var azimuth = i * Math.PI * (3 - Math.sqrt(5));
+      n.x3 = radius * Math.sin(inclination) * Math.cos(azimuth);
+      n.y3 = radius * Math.sin(inclination) * Math.sin(azimuth);
+      n.z3 = radius * Math.cos(inclination);
+    });
+  },
+
+  bindCanvasControls: function(canvas) {
+    if (this._canvasBound || !canvas) return;
+    var self = this;
+    this._canvasBound = true;
+
+    canvas.addEventListener('pointerdown', function(e) {
+      self._dragging = true;
+      self._dragMoved = false;
+      self._lastPointer = { x: e.clientX, y: e.clientY };
+      canvas.style.cursor = 'grabbing';
+      canvas.setPointerCapture(e.pointerId);
+    });
+
+    canvas.addEventListener('pointermove', function(e) {
+      if (!self._dragging || !self._lastPointer) return;
+      var dx = e.clientX - self._lastPointer.x;
+      var dy = e.clientY - self._lastPointer.y;
+      if (Math.abs(dx) + Math.abs(dy) > 3) self._dragMoved = true;
+      self._view.rotY += dx * 0.006;
+      self._view.rotX += dy * 0.006;
+      self._view.rotX = Math.max(-1.45, Math.min(1.45, self._view.rotX));
+      self._lastPointer = { x: e.clientX, y: e.clientY };
+      self.renderGraph();
+    });
+
+    canvas.addEventListener('pointerup', function(e) {
+      canvas.style.cursor = 'grab';
+      self._dragging = false;
+      self._lastPointer = null;
+      try { canvas.releasePointerCapture(e.pointerId); } catch (err) {}
+      if (self._dragMoved) return;
+      self.pickCanvasNode(e);
+    });
+
+    canvas.addEventListener('wheel', function(e) {
+      e.preventDefault();
+      self._view.zoom += e.deltaY * -0.45;
+      self._view.zoom = Math.max(240, Math.min(1200, self._view.zoom));
+      self.renderGraph();
+    }, { passive: false });
+  },
+
+  pickCanvasNode: function(e) {
+    var canvas = document.getElementById('kg-canvas');
+    if (!canvas) return;
+    var rect = canvas.getBoundingClientRect();
+    var px = e.clientX - rect.left;
+    var py = e.clientY - rect.top;
+    var best = null;
+    var bestDist = Infinity;
+    var self = this;
+    this._nodes.forEach(function(n) {
+      var p = self.getProjectedNode(n, rect.width, 500);
+      var radius = (8 + Math.min(n.confidence || 0.5, 1) * 8) * p.scale;
+      var dist = Math.hypot(px - p.x, py - p.y);
+      if (dist < Math.max(12, radius + 4) && dist < bestDist) {
+        best = n;
+        bestDist = dist;
+      }
+    });
+    if (best) this.selectNode(best.id);
+    else this.deselectNode();
+  },
+
+  renderCanvasGraph: function() {
+    var canvas = document.getElementById('kg-canvas');
+    if (!canvas || !canvas.getContext) return false;
+
+    this.init3DPositions();
+    this.bindCanvasControls(canvas);
+
+    var rect = canvas.getBoundingClientRect();
+    var w = rect.width || 960;
+    var h = 500;
+    var dpr = window.devicePixelRatio || 1;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+
+    var ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+
+    var bg = ctx.createRadialGradient(w / 2, h / 2, 20, w / 2, h / 2, Math.max(w, h) / 1.2);
+    bg.addColorStop(0, 'rgba(88,166,255,0.08)');
+    bg.addColorStop(1, 'rgba(10,14,23,0.98)');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, w, h);
+
+    var self = this;
+    var nodeMap = {};
+    var projected = {};
+    this._nodes.forEach(function(n) {
+      nodeMap[n.id] = n;
+      projected[n.id] = self.getProjectedNode(n, w, h);
+    });
+
+    this._edges.forEach(function(e) {
+      var s = projected[e.source];
+      var t = projected[e.target];
+      if (!s || !t) return;
+      var visible = !self._filteredIds || (self._filteredIds[e.source] && self._filteredIds[e.target]);
+      var edgeColor = '48,54,61';
+      if (e.relationship === 'uses') edgeColor = '163,113,247';
+      else if (e.relationship === 'targets') edgeColor = '248,81,73';
+      else if (e.relationship === 'related_to') edgeColor = '88,166,255';
+      else if (e.relationship === 'attributed_to') edgeColor = '210,153,34';
+      ctx.strokeStyle = 'rgba(' + edgeColor + ',' + (visible ? 0.52 : 0.08) + ')';
+      ctx.lineWidth = visible ? 1.2 : 0.6;
+      ctx.beginPath();
+      ctx.moveTo(s.x, s.y);
+      ctx.lineTo(t.x, t.y);
+      ctx.stroke();
+    });
+
+    var sortedNodes = this._nodes.slice().sort(function(a, b) {
+      return projected[a.id].z - projected[b.id].z;
+    });
+
+    sortedNodes.forEach(function(n) {
+      var p = projected[n.id];
+      var visible = !self._filteredIds || !!self._filteredIds[n.id];
+      var selected = self._selectedNode === n.id;
+      var radius = (7 + Math.min(n.confidence || 0.5, 1) * 7) * p.scale;
+      var color = self.getNodeColor(n.type);
+
+      ctx.globalAlpha = visible ? 1 : 0.16;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.lineWidth = selected ? 3 : 1;
+      ctx.strokeStyle = selected ? '#00FFA3' : 'rgba(255,255,255,0.18)';
+      ctx.stroke();
+
+      if (selected) {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, radius + 8, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(0,255,163,0.28)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+
+      if (visible && p.scale > 0.45) {
+        ctx.font = '11px JetBrains Mono, monospace';
+        ctx.fillStyle = '#8B949E';
+        ctx.textAlign = 'center';
+        ctx.fillText(n.label || n.id, p.x, p.y + radius + 13);
+      }
+      ctx.globalAlpha = 1;
+    });
+
+    return true;
+  },
+
   renderGraph: function() {
+    if (this.renderCanvasGraph()) return;
+
     var svg = document.getElementById('kg-svg');
     if (!svg) return;
 
@@ -346,6 +562,7 @@ window.KnowledgeGraphView = {
 
     panel.innerHTML = html;
     panel.style.display = 'block';
+    this.renderGraph();
 
     // Highlight node
     var allNodes = document.getElementById('kg-nodes');
@@ -384,5 +601,6 @@ window.KnowledgeGraphView = {
         }
       });
     }
+    this.renderGraph();
   }
 };

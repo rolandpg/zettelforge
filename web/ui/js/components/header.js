@@ -66,7 +66,9 @@ window.HeaderComponent = {
 
     var ver = document.createElement('span');
     ver.style.cssText = 'color:var(--fg-2,#8B949E);font-size:var(--text-sm,12px);font-family:var(--font-mono);';
-    ver.textContent = 'v' + (stats.version || '0.0.0') + ' \u00B7 ' + (stats.edition || 'Community');
+    var versionLabel = stats.version ? 'v' + stats.version : 'version loading';
+    var editionLabel = stats.edition_name || stats.edition || '';
+    ver.textContent = editionLabel ? versionLabel + ' \u00B7 ' + editionLabel : versionLabel;
     brand.appendChild(ver);
 
     header.appendChild(brand);

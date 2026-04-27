@@ -7,10 +7,13 @@
 
       // Listen for hash changes
       window.addEventListener('hashchange', this.route.bind(this));
+      window.store.subscribe(function(_state, key) {
+        if (key === 'stats') APP.refreshChrome();
+      });
 
       // Initial load
-      this.loadHeader();
       this.route();
+      this.loadAppInfo();
     },
 
     loadHeader: function() {
@@ -21,9 +24,35 @@
       }
     },
 
+    refreshChrome: function() {
+      this.loadHeader();
+      var sidebarRoot = document.getElementById('sidebar-root');
+      if (sidebarRoot) {
+        var active = window.store.get('view') || window.location.hash.slice(1) || 'dashboard';
+        sidebarRoot.innerHTML = '';
+        sidebarRoot.appendChild(window.SidebarComponent.render(active));
+        if (window.lucide) window.lucide.createIcons();
+      }
+    },
+
+    loadAppInfo: function() {
+      window.API.get('/api/stats')
+        .then(function(stats) {
+          window.store.set('stats', stats || {});
+        })
+        .catch(function() {
+          return window.API.get('/api/version').then(function(info) {
+            window.store.set('stats', info || {});
+          });
+        })
+        .catch(function() {});
+    },
+
     route: function() {
       var hash = window.location.hash.slice(1) || 'dashboard';
       window.store.set('view', hash);
+
+      this.loadHeader();
 
       var sidebarRoot = document.getElementById('sidebar-root');
       if (sidebarRoot) {

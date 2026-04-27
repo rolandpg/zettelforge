@@ -4,6 +4,21 @@ window.ConfigurationView = {
   _activeTab: 'flags',
   _editorContent: '',
 
+  flattenConfig: function(input, prefix, out) {
+    out = out || {};
+    prefix = prefix || '';
+    Object.keys(input || {}).forEach(function(key) {
+      var value = input[key];
+      var path = prefix ? prefix + '.' + key : key;
+      if (value && typeof value === 'object' && !Array.isArray(value)) {
+        window.ConfigurationView.flattenConfig(value, path, out);
+      } else {
+        out[path] = value;
+      }
+    });
+    return out;
+  },
+
   render: function() {
     var container = document.createElement('div');
     container.id = 'configuration-view';
@@ -71,6 +86,7 @@ window.ConfigurationView = {
 
   renderFlags: function(container, config) {
     container.innerHTML = '';
+    config = this.flattenConfig(config);
 
     if (!config || Object.keys(config).length === 0) {
       container.innerHTML = '<div style="padding:var(--sp-6,24px);text-align:center;color:var(--fg-3,#484F58);font-size:var(--text-sm,12px);font-family:var(--font-mono);">No configuration data available</div>';
@@ -79,13 +95,16 @@ window.ConfigurationView = {
 
     // Group config into sections
     var groups = {
-      'Core': ['version', 'edition', 'data_dir', 'log_level', 'log_file', 'max_content_length', 'max_file_size'],
-      'LLM': ['llm_provider', 'llm_model', 'llm_local_backend', 'llm_temperature', 'llm_max_tokens', 'llm_api_key'],
-      'Embedding': ['embedding_provider', 'embedding_model', 'embedding_dimensions', 'embedding_api_key'],
-      'Retrieval': ['top_k', 'min_score', 'recall_rerank', 'recall_hybrid_search'],
-      'Synthesis': ['synthesis_enabled', 'synthesis_default_format', 'synthesis_max_sources'],
-      'Governance': ['governance_enabled', 'governance_policy'],
-      'Logging': ['log_level', 'log_file', 'log_format', 'telemetry_enabled']
+      'Core': ['backend', 'storage.data_dir', 'web.enabled', 'web.host', 'web.port'],
+      'LLM': ['llm.provider', 'llm.model', 'llm.url', 'llm.local_backend', 'llm.temperature', 'llm.timeout', 'llm.max_retries', 'llm.api_key'],
+      'Embedding': ['embedding.provider', 'embedding.model', 'embedding.url', 'embedding.dimensions'],
+      'Extraction': ['llm_ner.enabled', 'extraction.max_facts', 'extraction.min_importance'],
+      'Retrieval': ['retrieval.default_k', 'retrieval.similarity_threshold', 'retrieval.entity_boost', 'retrieval.max_graph_depth'],
+      'Synthesis': ['synthesis.default_format', 'synthesis.max_context_tokens', 'synthesis.tier_filter'],
+      'Governance': ['governance.enabled', 'governance.min_content_length', 'governance.pii.enabled', 'governance.pii.action', 'governance.limits.max_content_length', 'governance.limits.recall_timeout_seconds'],
+      'Storage Maintenance': ['lance.cleanup_interval_minutes', 'lance.cleanup_older_than_seconds', 'cache.ttl_seconds', 'cache.max_entries'],
+      'Logging': ['logging.level', 'logging.log_file', 'logging.audit_log_file', 'logging.log_to_stdout', 'logging.max_bytes', 'logging.backup_count'],
+      'Enterprise / Integrations': ['enterprise.blended_retrieval', 'enterprise.cross_encoder_reranking', 'enterprise.report_ingestion', 'enterprise.multi_tenant', 'enterprise.license_key', 'opencti.url', 'opencti.token', 'opencti.sync_interval']
     };
 
     var self = this;
