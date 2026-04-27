@@ -6,6 +6,47 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [2.6.2] - 2026-04-27
+
+UI/UX release. Fixes the `/config` page so the Apply button actually works
+and surfaces enum-style settings as dropdowns instead of free-text inputs.
+No data migration. No config changes. No API contract changes.
+
+### Fixed
+
+- **`/config` "Save Changes" button is no longer dead.** The Quick Settings
+  panel called `saveConfigForm()` and `reloadConfig()` — neither function
+  was defined anywhere, so the button silently no-op'd and the panel
+  rendered "Loading schema..." forever. Replaced with a real form-based
+  editor whose Apply button PUTs a nested payload to `/api/config` and
+  reloads from server on success.
+
+### Added
+
+- **Form-based config editor with dropdowns.** `/config` now renders a
+  grouped settings form alongside the YAML editor. Known enum fields
+  (`backend`, `embedding.provider`, `llm.provider`, `llm.local_backend`,
+  `logging.level`, `synthesis.default_format`, `governance.pii.action`)
+  render as `<select>` controls instead of free-text inputs. Restart-
+  required leaves get a "restart required" badge sourced from the same
+  set the server uses, so the UI warning is never out of sync with the
+  server's classification.
+- **Pending-changes counter and Revert button.** The form tracks dirty
+  fields by dotted path, builds a single nested payload on Apply, and
+  shows `N pending change(s) (M need restart)` next to the buttons.
+- **YAML editor accepts both YAML and JSON** (was JSON-only despite the
+  label) and skips redacted `***` secrets so they aren't PUT back as
+  literal strings.
+
+### Tests
+
+- 4 new tests in `tests/test_web_api.py`: dropdown enum round-trip for
+  `logging.level` (restart-required) and `synthesis.default_format` (live);
+  multi-section nested payload from a single Apply; and a regression guard
+  on the `/config` HTML structure (form tab, dropdown enum declarations,
+  restart-leaf flags, and proof the dead `saveConfigForm`/`reloadConfig`
+  handlers are gone). 28 passed, 2 skipped (was 24 + 2).
+
 ## [2.6.1] - 2026-04-25
 
 Hotfix release. Resolves three blockers found in code review of the

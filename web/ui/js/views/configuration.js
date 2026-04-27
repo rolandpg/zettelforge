@@ -1,607 +1,742 @@
-window.ConfigurationView = {
-  _config: null,
-  _changes: {},
-  _activeTab: 'flags',
-  _editorContent: '',
+window.ConfigurationView = (function() {
+  'use strict';
 
-  flattenConfig: function(input, prefix, out) {
-    out = out || {};
-    prefix = prefix || '';
-    Object.keys(input || {}).forEach(function(key) {
-      var value = input[key];
-      var path = prefix ? prefix + '.' + key : key;
-      if (value && typeof value === 'object' && !Array.isArray(value)) {
-        window.ConfigurationView.flattenConfig(value, path, out);
+  // Known enum fields rendered as <select>. Keyed by dotted path.
+  // When the live value is not in the option list, it is added so we never
+  // silently drop an admin-set value.
+  var ENUMS = {
+    'backend':                    ['sqlite', 'lance'],
+    'embedding.provider':         ['fastembed', 'ollama'],
+    'llm.provider':               ['ollama', 'local', 'mock', 'litellm'],
+    'llm.local_backend':          ['llama-cpp-python', 'onnxruntime-genai'],
+    'logging.level':              ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
+    'synthesis.default_format':   ['direct_answer', 'synthesized_brief'],
+    'governance.pii.action':      ['log', 'redact', 'block']
+  };
+
+  // Dotted leaf paths the server flags as restart-required. Mirrors
+  // _RESTART_REQUIRED_FIELDS in web/app.py so the UI can warn before Apply.
+  var RESTART_PATHS = {
+    'backend': true,
+    'embedding.provider': true,
+    'embedding.url': true,
+    'llm.provider': true,
+    'llm.model': true,
+    'llm.url': true,
+    'storage.data_dir': true,
+    'logging.log_file': true,
+    'logging.level': true
+  };
+
+  // Display order + grouping for known sections. Keys not listed here fall
+  // through to an "Other" group at the bottom so nothing is hidden.
+  var GROUPS = [
+    { name: 'Core',                       sections: ['backend', 'storage', 'web'] },
+    { name: 'LLM',                        sections: ['llm', 'llm_ner'] },
+    { name: 'Embedding',                  sections: ['embedding'] },
+    { name: 'Extraction & Retrieval',     sections: ['extraction', 'retrieval'] },
+    { name: 'Synthesis',                  sections: ['synthesis'] },
+    { name: 'Governance',                 sections: ['governance'] },
+    { name: 'Storage Maintenance',        sections: ['lance', 'cache'] },
+    { name: 'Logging',                    sections: ['logging'] },
+    { name: 'Enterprise & Integrations',  sections: ['enterprise', 'opencti', 'typedb'] }
+  ];
+
+  var DESCRIPTIONS = {
+    'backend':                            'Storage backend (sqlite or lance)',
+    'storage.data_dir':                   'Data storage directory path',
+    'embedding.provider':                 'Embedding service provider',
+    'embedding.model':                    'Embedding model identifier',
+    'embedding.url':                      'Ollama URL (used when provider=ollama)',
+    'embedding.dimensions':               'Vector dimension count',
+    'llm.provider':                       'LLM backend provider',
+    'llm.model':                          'Model identifier',
+    'llm.url':                            'Provider URL (used by ollama/local)',
+    'llm.api_key':                        'API key (env-resolved; redacted)',
+    'llm.temperature':                    'Sampling temperature (0.0 - 2.0)',
+    'llm.timeout':                        'Per-call timeout in seconds',
+    'llm.max_retries':                    'Max retries on transient failures',
+    'llm.local_backend':                  'In-process backend when provider=local',
+    'logging.level':                      'Log verbosity',
+    'logging.log_file':                   'Log output file path',
+    'logging.log_to_stdout':              'Mirror logs to stdout',
+    'governance.enabled':                 'Enforce governance policies',
+    'governance.min_content_length':      'Minimum accepted content length',
+    'governance.pii.enabled':             'Run Presidio PII detection',
+    'governance.pii.action':              'PII handling: log, redact, or block',
+    'governance.limits.max_content_length': 'Max content body size in bytes',
+    'governance.limits.recall_timeout_seconds': 'Recall timeout in seconds',
+    'retrieval.default_k':                'Default top-K results',
+    'retrieval.similarity_threshold':     'Minimum similarity score',
+    'synthesis.default_format':           'Default synthesis output format',
+    'synthesis.max_context_tokens':       'Max tokens packed into a synthesis prompt',
+    'web.enabled':                        'Serve the web management interface',
+    'web.host':                           'Bind host for the web interface',
+    'web.port':                           'Bind port for the web interface',
+    'opencti.url':                        'OpenCTI instance URL',
+    'opencti.token':                      'OpenCTI API token (redacted)',
+    'opencti.sync_interval':              'OpenCTI sync interval (seconds; 0 disables)',
+    'enterprise.license_key':             'Enterprise license key (redacted)'
+  };
+
+  function isSecretKey(name) {
+    var n = (name || '').toLowerCase();
+    return n.indexOf('api_key') !== -1 ||
+           n.indexOf('password') !== -1 ||
+           n.indexOf('secret') !== -1 ||
+           n.indexOf('token') !== -1 ||
+           n.indexOf('license_key') !== -1;
+  }
+
+  // Walk nested config to produce a list of {path, value} leaves in order.
+  function flattenLeaves(obj, prefix, out) {
+    out = out || [];
+    Object.keys(obj || {}).forEach(function(k) {
+      var v = obj[k];
+      var path = prefix ? prefix + '.' + k : k;
+      if (v && typeof v === 'object' && !Array.isArray(v)) {
+        flattenLeaves(v, path, out);
       } else {
-        out[path] = value;
+        out.push({ path: path, value: v });
       }
     });
     return out;
-  },
+  }
 
-  render: function() {
-    var container = document.createElement('div');
-    container.id = 'configuration-view';
-    container.style.cssText = 'max-width:960px;';
-
-    var heading = document.createElement('h2');
-    heading.textContent = 'Configuration';
-    heading.style.cssText = 'margin:0 0 var(--sp-4,16px);font-size:var(--text-xl,20px);font-weight:var(--fw-semibold,600);color:var(--fg-1,#C9D1D9);';
-    container.appendChild(heading);
-
-    // Tab bar
-    var tabContainer = document.createElement('div');
-    tabContainer.id = 'config-tabs';
-    tabContainer.style.cssText = 'display:flex;gap:6px;margin-bottom:var(--sp-4,16px);';
-    var tabs = ['flags', 'yaml'];
-    var labels = { flags: 'Feature Flags', yaml: 'YAML Editor' };
-    var self = this;
-
-    tabs.forEach(function(t) {
-      var active = self._activeTab === t;
-      var btn = document.createElement('button');
-      btn.textContent = labels[t] || t;
-      btn.style.cssText = 'padding:8px 16px;background:' + (active ? 'var(--bg-surface-hi,#21262D)' : 'transparent') + ';border:1px solid ' + (active ? 'var(--border-focus,#58A6FF)' : 'var(--border,#30363D)') + ';border-radius:var(--r-sm,6px);color:' + (active ? 'var(--fg-1,#C9D1D9)' : 'var(--fg-2,#8B949E)') + ';cursor:pointer;font-size:var(--text-sm,12px);font-family:var(--font-sans);transition:color 120ms,background 120ms,border-color 120ms;';
-      btn.addEventListener('mouseenter', function() { if (!active) btn.style.color = 'var(--fg-1,#C9D1D9)'; });
-      btn.addEventListener('mouseleave', function() { if (!active) btn.style.color = 'var(--fg-2,#8B949E)'; });
-      btn.addEventListener('click', function() {
-        self._activeTab = t;
-        container.innerHTML = '';
-        container.appendChild(self.render().firstChild);
-        // Re-render entire view
-        var newContainer = self.render();
-        container.parentNode.replaceChild(newContainer, container);
-      });
-      tabContainer.appendChild(btn);
+  // Build a nested object payload from a flat {dotted.path: value} map so the
+  // server-side _apply_yaml() handler receives the structure it expects.
+  function buildNestedPayload(changes) {
+    var out = {};
+    Object.keys(changes).forEach(function(path) {
+      var parts = path.split('.');
+      var cursor = out;
+      for (var i = 0; i < parts.length - 1; i++) {
+        var key = parts[i];
+        if (typeof cursor[key] !== 'object' || cursor[key] === null) {
+          cursor[key] = {};
+        }
+        cursor = cursor[key];
+      }
+      cursor[parts[parts.length - 1]] = changes[path];
     });
+    return out;
+  }
 
-    container.appendChild(tabContainer);
+  function coerce(originalValue, raw) {
+    if (typeof originalValue === 'number') {
+      var n = parseFloat(raw);
+      return isNaN(n) ? 0 : n;
+    }
+    if (typeof originalValue === 'boolean') {
+      return raw === true || raw === 'true';
+    }
+    return raw;
+  }
 
-    // Content area
-    var content = document.createElement('div');
-    content.id = 'config-content';
-    container.appendChild(content);
+  function el(tag, css, text) {
+    var node = document.createElement(tag);
+    if (css) node.style.cssText = css;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
 
-    if (this._activeTab === 'flags') {
+  // ── Public view ─────────────────────────────────────────────────────────────
+
+  var View = {
+    _config: null,
+    _changes: {},
+    _activeTab: 'flags',
+    _editorContent: '',
+
+    render: function() {
+      var self = this;
+      var container = el('div', 'max-width:960px;');
+      container.id = 'configuration-view';
+
+      var heading = el('h2', 'margin:0 0 var(--sp-4,16px);font-size:var(--text-xl,20px);font-weight:var(--fw-semibold,600);color:var(--fg-1,#C9D1D9);', 'Configuration');
+      container.appendChild(heading);
+
+      var subhead = el('div', 'margin:-8px 0 var(--sp-4,16px);font-size:var(--text-xs,11px);color:var(--fg-3,#484F58);font-family:var(--font-mono);', 'Edit settings live. Restart-flagged fields take effect on next process start.');
+      container.appendChild(subhead);
+
+      var tabBar = el('div', 'display:flex;gap:6px;margin-bottom:var(--sp-4,16px);');
+      tabBar.id = 'config-tabs';
+      var tabs = [{ id: 'flags', label: 'Settings' }, { id: 'yaml', label: 'YAML Editor' }];
+
+      tabs.forEach(function(t) {
+        var active = self._activeTab === t.id;
+        var btn = el('button',
+          'padding:8px 16px;background:' + (active ? 'var(--bg-surface-hi,#21262D)' : 'transparent') +
+          ';border:1px solid ' + (active ? 'var(--border-focus,#58A6FF)' : 'var(--border,#30363D)') +
+          ';border-radius:var(--r-sm,6px);color:' + (active ? 'var(--fg-1,#C9D1D9)' : 'var(--fg-2,#8B949E)') +
+          ';cursor:pointer;font-size:var(--text-sm,12px);font-family:var(--font-sans);transition:color 120ms,background 120ms,border-color 120ms;',
+          t.label);
+        if (!active) {
+          btn.addEventListener('mouseenter', function() { btn.style.color = 'var(--fg-1,#C9D1D9)'; });
+          btn.addEventListener('mouseleave', function() { btn.style.color = 'var(--fg-2,#8B949E)'; });
+        }
+        btn.addEventListener('click', function() {
+          if (self._activeTab === t.id) return;
+          self._activeTab = t.id;
+          var fresh = self.render();
+          if (container.parentNode) container.parentNode.replaceChild(fresh, container);
+        });
+        tabBar.appendChild(btn);
+      });
+      container.appendChild(tabBar);
+
+      var content = el('div');
+      content.id = 'config-content';
+      container.appendChild(content);
+
       content.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;padding:var(--sp-8,32px);gap:8px;color:var(--fg-2,#8B949E);font-size:var(--text-sm,12px);"><div class="pulse" style="width:16px;height:16px;border-radius:50%;border:2px solid var(--border,#30363D);border-top-color:var(--signal-neon,#00FFA3);"></div> Loading configuration...</div>';
-      this.loadFlags(content);
-    } else {
-      this.loadYamlEditor(content);
-    }
 
-    return container;
-  },
-
-  loadFlags: function(contentEl) {
-    var self = this;
-
-    window.API.get('/api/config').then(function(config) {
-      self._config = config;
-      self._changes = {};
-      self.renderFlags(contentEl, config);
-    }).catch(function(err) {
-      contentEl.innerHTML = '<div style="padding:var(--sp-4,16px);background:var(--bg-surface,#161B22);border:1px solid var(--danger,#F85149);border-radius:var(--r-md,8px);color:var(--danger,#F85149);font-size:var(--text-sm,12px);font-family:var(--font-mono);">Failed to load configuration: ' + (err.message || 'unknown error') + '</div>';
-    });
-  },
-
-  renderFlags: function(container, config) {
-    container.innerHTML = '';
-    config = this.flattenConfig(config);
-
-    if (!config || Object.keys(config).length === 0) {
-      container.innerHTML = '<div style="padding:var(--sp-6,24px);text-align:center;color:var(--fg-3,#484F58);font-size:var(--text-sm,12px);font-family:var(--font-mono);">No configuration data available</div>';
-      return;
-    }
-
-    // Group config into sections
-    var groups = {
-      'Core': ['backend', 'storage.data_dir', 'web.enabled', 'web.host', 'web.port'],
-      'LLM': ['llm.provider', 'llm.model', 'llm.url', 'llm.local_backend', 'llm.temperature', 'llm.timeout', 'llm.max_retries', 'llm.api_key'],
-      'Embedding': ['embedding.provider', 'embedding.model', 'embedding.url', 'embedding.dimensions'],
-      'Extraction': ['llm_ner.enabled', 'extraction.max_facts', 'extraction.min_importance'],
-      'Retrieval': ['retrieval.default_k', 'retrieval.similarity_threshold', 'retrieval.entity_boost', 'retrieval.max_graph_depth'],
-      'Synthesis': ['synthesis.default_format', 'synthesis.max_context_tokens', 'synthesis.tier_filter'],
-      'Governance': ['governance.enabled', 'governance.min_content_length', 'governance.pii.enabled', 'governance.pii.action', 'governance.limits.max_content_length', 'governance.limits.recall_timeout_seconds'],
-      'Storage Maintenance': ['lance.cleanup_interval_minutes', 'lance.cleanup_older_than_seconds', 'cache.ttl_seconds', 'cache.max_entries'],
-      'Logging': ['logging.level', 'logging.log_file', 'logging.audit_log_file', 'logging.log_to_stdout', 'logging.max_bytes', 'logging.backup_count'],
-      'Enterprise / Integrations': ['enterprise.blended_retrieval', 'enterprise.cross_encoder_reranking', 'enterprise.report_ingestion', 'enterprise.multi_tenant', 'enterprise.license_key', 'opencti.url', 'opencti.token', 'opencti.sync_interval']
-    };
-
-    var self = this;
-    var matchedKeys = {};
-
-    for (var groupName in groups) {
-      if (!groups.hasOwnProperty(groupName)) continue;
-      var keys = groups[groupName];
-      var groupConfig = {};
-
-      keys.forEach(function(k) {
-        if (config[k] !== undefined) {
-          groupConfig[k] = config[k];
-          matchedKeys[k] = true;
-        }
-      });
-
-      // Add any remaining unmapped keys
-      if (Object.keys(groupConfig).length === 0) continue;
-
-      var card = document.createElement('div');
-      card.style.cssText = 'background:var(--bg-surface,#161B22);border:1px solid var(--border,#30363D);border-radius:var(--r-md,8px);padding:var(--sp-4,16px);margin-bottom:var(--sp-4,16px);';
-
-      var cardTitle = document.createElement('h3');
-      cardTitle.textContent = groupName;
-      cardTitle.style.cssText = 'margin:0 0 var(--sp-3,12px);font-size:var(--text-base,14px);font-weight:var(--fw-semibold,600);color:var(--fg-1,#C9D1D9);';
-      card.appendChild(cardTitle);
-
-      for (var key in groupConfig) {
-        if (!groupConfig.hasOwnProperty(key)) continue;
-        var val = groupConfig[key];
-        var row = document.createElement('div');
-        row.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border,#30363D);';
-        row.style.borderBottom = '1px solid var(--border,#30363D)';
-
-        var labelDiv = document.createElement('div');
-        labelDiv.style.cssText = 'flex:1;';
-
-        var nameSpan = document.createElement('div');
-        nameSpan.textContent = key;
-        nameSpan.style.cssText = 'font-size:var(--text-xs,11px);font-family:var(--font-mono);color:var(--fg-1,#C9D1D9);';
-        labelDiv.appendChild(nameSpan);
-
-        var descHint = document.createElement('div');
-        descHint.style.cssText = 'font-size:10px;color:var(--fg-3,#484F58);margin-top:2px;';
-        descHint.textContent = self.getDescriptionHint(key);
-        labelDiv.appendChild(descHint);
-
-        row.appendChild(labelDiv);
-
-        var controlDiv = document.createElement('div');
-        controlDiv.style.cssText = 'flex-shrink:0;margin-left:12px;';
-
-        var isSecret = key.indexOf('api_key') !== -1 || key.indexOf('secret') !== -1 || key.indexOf('password') !== -1 || key.indexOf('token') !== -1;
-        var isBool = typeof val === 'boolean';
-        var isNum = typeof val === 'number';
-
-        if (isSecret) {
-          var secretSpan = document.createElement('span');
-          secretSpan.textContent = '***';
-          secretSpan.style.cssText = 'font-size:var(--text-xs,11px);font-family:var(--font-mono);color:var(--fg-3,#484F58);padding:4px 8px;background:var(--bg-input,#0D1117);border:1px solid var(--border,#30363D);border-radius:var(--r-sm,6px);';
-          secretSpan.setAttribute('readonly', 'true');
-          controlDiv.appendChild(secretSpan);
-        } else if (isBool) {
-          var toggleLabel = document.createElement('label');
-          toggleLabel.style.cssText = 'display:flex;align-items:center;gap:6px;cursor:pointer;';
-          var toggle = document.createElement('input');
-          toggle.type = 'checkbox';
-          toggle.checked = val;
-          toggle.style.cssText = 'accent-color:var(--signal-neon,#00FFA3);';
-          toggle.setAttribute('data-config-key', key);
-          toggle.addEventListener('change', function() {
-            var k = this.getAttribute('data-config-key');
-            self._changes[k] = this.checked;
-            self.updateApplyButton();
-          });
-          toggleLabel.appendChild(toggle);
-          var toggleText = document.createElement('span');
-          toggleText.textContent = val ? 'enabled' : 'disabled';
-          toggleText.style.cssText = 'font-size:var(--text-xs,11px);color:var(--fg-2,#8B949E);font-family:var(--font-mono);';
-          toggleLabel.appendChild(toggleText);
-
-          // Update text on change
-          toggle.addEventListener('change', function() {
-            this.nextSibling.textContent = this.checked ? 'enabled' : 'disabled';
-          });
-
-          controlDiv.appendChild(toggleLabel);
-        } else {
-          var input = document.createElement('input');
-          input.type = isNum ? 'number' : 'text';
-          input.value = val !== null && val !== undefined ? String(val) : '';
-          input.style.cssText = 'width:160px;padding:4px 8px;background:var(--bg-input,#0D1117);border:1px solid var(--border,#30363D);border-radius:var(--r-sm,6px);color:var(--fg-1,#C9D1D9);font-size:var(--text-xs,11px);font-family:var(--font-mono);outline:none;text-align:right;';
-          input.setAttribute('data-config-key', key);
-          input.addEventListener('change', function() {
-            var k = this.getAttribute('data-config-key');
-            var original = config[k];
-            var newVal = this.value;
-            if (typeof original === 'number') newVal = parseFloat(newVal) || 0;
-            self._changes[k] = newVal;
-            self.updateApplyButton();
-          });
-          controlDiv.appendChild(input);
-        }
-
-        row.appendChild(controlDiv);
-        card.appendChild(row);
-      }
-
-      container.appendChild(card);
-    }
-
-    // Handle any remaining unmapped keys
-    var unmapped = {};
-    for (var k in config) {
-      if (config.hasOwnProperty(k) && !matchedKeys[k]) {
-        unmapped[k] = config[k];
-      }
-    }
-    if (Object.keys(unmapped).length > 0) {
-      var otherCard = document.createElement('div');
-      otherCard.style.cssText = 'background:var(--bg-surface,#161B22);border:1px solid var(--border,#30363D);border-radius:var(--r-md,8px);padding:var(--sp-4,16px);margin-bottom:var(--sp-4,16px);';
-      var otherTitle = document.createElement('h3');
-      otherTitle.textContent = 'Other';
-      otherTitle.style.cssText = 'margin:0 0 var(--sp-3,12px);font-size:var(--text-base,14px);font-weight:var(--fw-semibold,600);color:var(--fg-1,#C9D1D9);';
-      otherCard.appendChild(otherTitle);
-
-      for (var uk in unmapped) {
-        if (!unmapped.hasOwnProperty(uk)) continue;
-        var uv = unmapped[uk];
-        var orow = document.createElement('div');
-        orow.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border,#30363D);';
-
-        var olabel = document.createElement('span');
-        olabel.textContent = uk;
-        olabel.style.cssText = 'font-size:var(--text-xs,11px);font-family:var(--font-mono);color:var(--fg-1,#C9D1D9);';
-        orow.appendChild(olabel);
-
-        var oval = document.createElement('span');
-        oval.textContent = typeof uv === 'object' ? JSON.stringify(uv) : String(uv);
-        oval.style.cssText = 'font-size:var(--text-xs,11px);color:var(--fg-2,#8B949E);font-family:var(--font-mono);';
-        orow.appendChild(oval);
-
-        otherCard.appendChild(orow);
-      }
-
-      container.appendChild(otherCard);
-    }
-
-    // Apply button
-    var applyRow = document.createElement('div');
-    applyRow.id = 'config-apply-row';
-    applyRow.style.cssText = 'display:flex;gap:var(--sp-3,12px);align-items:center;margin-top:var(--sp-4,16px);';
-
-    var applyBtn = document.createElement('button');
-    applyBtn.id = 'config-apply-btn';
-    applyBtn.textContent = 'Apply Changes';
-    applyBtn.style.cssText = 'padding:8px 20px;background:#238636;border:none;border-radius:var(--r-sm,6px);color:#fff;cursor:pointer;font-size:var(--text-sm,12px);font-family:var(--font-sans);transition:background 120ms;';
-    applyBtn.addEventListener('mouseenter', function() { applyBtn.style.background = '#2EA043'; });
-    applyBtn.addEventListener('mouseleave', function() { applyBtn.style.background = '#238636'; });
-    applyBtn.addEventListener('click', function() { window.ConfigurationView.applyChanges(); });
-
-    var pendingCount = Object.keys(this._changes).length;
-    if (pendingCount === 0) {
-      applyBtn.disabled = true;
-      applyBtn.style.opacity = '0.4';
-      applyBtn.style.cursor = 'default';
-    }
-
-    applyRow.appendChild(applyBtn);
-
-    var pendingSpan = document.createElement('span');
-    pendingSpan.id = 'config-pending-count';
-    pendingSpan.textContent = pendingCount > 0 ? pendingCount + ' pending change(s)' : '';
-    pendingSpan.style.cssText = 'font-size:var(--text-xs,11px);color:var(--fg-2,#8B949E);font-family:var(--font-mono);';
-    applyRow.appendChild(pendingSpan);
-
-    container.appendChild(applyRow);
-
-    // Result area
-    var resultArea = document.createElement('div');
-    resultArea.id = 'config-result';
-    resultArea.style.cssText = 'margin-top:var(--sp-3,12px);';
-    container.appendChild(resultArea);
-  },
-
-  updateApplyButton: function() {
-    var btn = document.getElementById('config-apply-btn');
-    var span = document.getElementById('config-pending-count');
-    var count = Object.keys(this._changes).length;
-    if (btn) {
-      btn.disabled = count === 0;
-      btn.style.opacity = count === 0 ? '0.4' : '1';
-      btn.style.cursor = count === 0 ? 'default' : 'pointer';
-    }
-    if (span) {
-      span.textContent = count > 0 ? count + ' pending change(s)' : '';
-    }
-  },
-
-  applyChanges: function() {
-    var self = this;
-    var btn = document.getElementById('config-apply-btn');
-    var resultArea = document.getElementById('config-result');
-    if (!resultArea) return;
-
-    var changes = this._changes;
-    if (Object.keys(changes).length === 0) {
-      window.ToastComponent.show('No changes to apply', 'info');
-      return;
-    }
-
-    if (btn) {
-      btn.disabled = true;
-      btn.textContent = 'Applying...';
-    }
-
-    resultArea.innerHTML = '<div style="display:flex;align-items:center;gap:8px;padding:12px 0;color:var(--fg-2,#8B949E);font-size:var(--text-sm,12px);"><div class="pulse" style="width:16px;height:16px;border-radius:50%;border:2px solid var(--border,#30363D);border-top-color:var(--signal-neon,#00FFA3);"></div> Applying configuration changes...</div>';
-
-    window.API.put('/api/config', changes).then(function(data) {
-      self._changes = {};
-      if (btn) {
-        btn.disabled = true;
-        btn.textContent = 'Apply Changes';
-        btn.style.opacity = '0.4';
-      }
-      self.updateApplyButton();
-
-      var html = '<div style="background:var(--bg-input,#0D1117);border:1px solid var(--border,#30363D);border-radius:var(--r-sm,6px);padding:var(--sp-3,12px);">';
-
-      if (data.applied && data.applied.length) {
-        html += '<div style="margin-bottom:8px;"><span style="font-size:var(--text-xs,11px);color:var(--success,#3FB950);font-family:var(--font-mono);font-weight:600;">Applied:</span></div>';
-        data.applied.forEach(function(k) {
-          html += '<div style="padding:2px 0;font-size:var(--text-xs,11px);font-family:var(--font-mono);color:var(--success,#3FB950);">\u2713 ' + k + '</div>';
-        });
-      }
-
-      if (data.pending_restart && data.pending_restart.length) {
-        html += '<div style="margin-top:8px;margin-bottom:4px;">';
-        html += '<span style="font-size:var(--text-xs,11px);color:var(--warning,#D29922);font-family:var(--font-mono);font-weight:600;">Pending Restart:</span>';
-        html += '<span style="display:inline-block;margin-left:6px;padding:1px 6px;border-radius:var(--r-pill,9999px);font-size:10px;font-family:var(--font-mono);background:var(--tier-c-bg,#3A2A0F);color:var(--warning,#D29922);">Restart Required</span>';
-        html += '</div>';
-        data.pending_restart.forEach(function(k) {
-          html += '<div style="padding:2px 0;font-size:var(--text-xs,11px);font-family:var(--font-mono);color:var(--warning,#D29922);">\u26A0 ' + k + '</div>';
-        });
-      }
-
-      html += '</div>';
-      resultArea.innerHTML = html;
-
-      window.ToastComponent.show('Configuration applied', 'success');
-    }).catch(function(err) {
-      if (btn) {
-        btn.disabled = false;
-        btn.textContent = 'Apply Changes';
-        btn.style.opacity = '1';
-      }
-      resultArea.innerHTML = '<div style="padding:12px;color:var(--danger,#F85149);font-size:var(--text-sm,12px);font-family:var(--font-mono);background:var(--bg-input,#0D1117);border:1px solid var(--danger,#F85149);border-radius:var(--r-sm,6px);">Failed to apply: ' + (err.message || 'unknown error') + '</div>';
-      window.ToastComponent.show('Apply failed: ' + err.message, 'error');
-    });
-  },
-
-  loadYamlEditor: function(contentEl) {
-    var self = this;
-
-    contentEl.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;padding:var(--sp-8,32px);gap:8px;color:var(--fg-2,#8B949E);font-size:var(--text-sm,12px);"><div class="pulse" style="width:16px;height:16px;border-radius:50%;border:2px solid var(--border,#30363D);border-top-color:var(--signal-neon,#00FFA3);"></div> Loading configuration...</div>';
-
-    window.API.get('/api/config').then(function(config) {
-      self._config = config;
-      self._editorContent = self.configToYaml(config);
-      self.renderYamlEditor(contentEl, config);
-    }).catch(function(err) {
-      contentEl.innerHTML = '<div style="padding:var(--sp-4,16px);background:var(--bg-surface,#161B22);border:1px solid var(--danger,#F85149);border-radius:var(--r-md,8px);color:var(--danger,#F85149);font-size:var(--text-sm,12px);font-family:var(--font-mono);">Failed to load configuration: ' + (err.message || 'unknown error') + '</div>';
-    });
-  },
-
-  configToYaml: function(config, indent) {
-    if (indent === undefined) indent = '';
-    var yaml = '';
-    for (var k in config) {
-      if (!config.hasOwnProperty(k)) continue;
-      var v = config[k];
-      if (typeof v === 'object' && v !== null && !Array.isArray(v)) {
-        yaml += indent + k + ':\n';
-        yaml += this.configToYaml(v, indent + '  ');
-      } else if (Array.isArray(v)) {
-        yaml += indent + k + ':\n';
-        v.forEach(function(item) {
-          yaml += indent + '  - ' + item + '\n';
-        });
-      } else if (typeof v === 'boolean') {
-        yaml += indent + k + ': ' + (v ? 'true' : 'false') + '\n';
-      } else if (typeof v === 'number') {
-        yaml += indent + k + ': ' + v + '\n';
-      } else if (v === null) {
-        yaml += indent + k + ': null\n';
+      if (this._activeTab === 'flags') {
+        this.loadFlags(content);
       } else {
-        var strVal = String(v);
-        var isSecret = k.indexOf('api_key') !== -1 || k.indexOf('secret') !== -1 || k.indexOf('password') !== -1 || k.indexOf('token') !== -1;
-        if (isSecret) strVal = '***';
-        if (strVal.indexOf('#') !== -1 || strVal.indexOf(':') !== -1 || strVal.indexOf('\n') !== -1 || strVal === '') {
-          yaml += indent + k + ': "' + strVal.replace(/"/g, '\\"') + '"\n';
-        } else {
-          yaml += indent + k + ': ' + strVal + '\n';
-        }
+        this.loadYamlEditor(content);
       }
-    }
-    return yaml;
-  },
 
-  renderYamlEditor: function(container, config) {
-    container.innerHTML = '';
+      return container;
+    },
 
-    // Warning banner
-    var warning = document.createElement('div');
-    warning.style.cssText = 'background:rgba(210,153,34,0.08);border:1px solid var(--warning,#D29922);border-radius:var(--r-sm,6px);padding:8px 12px;font-size:var(--text-xs,11px);color:var(--warning,#D29922);font-family:var(--font-mono);margin-bottom:var(--sp-3,12px);display:flex;align-items:center;gap:8px;';
-    warning.innerHTML = '<span style="flex-shrink:0;">\u26A0</span> Some changes require a restart. API keys and secrets are shown as "***" and are not editable.';
-    container.appendChild(warning);
+    loadFlags: function(contentEl) {
+      var self = this;
+      window.API.get('/api/config').then(function(config) {
+        self._config = config;
+        self._changes = {};
+        self.renderFlags(contentEl, config);
+      }).catch(function(err) {
+        contentEl.innerHTML = '';
+        contentEl.appendChild(el('div',
+          'padding:var(--sp-4,16px);background:var(--bg-surface,#161B22);border:1px solid var(--danger,#F85149);border-radius:var(--r-md,8px);color:var(--danger,#F85149);font-size:var(--text-sm,12px);font-family:var(--font-mono);',
+          'Failed to load configuration: ' + (err.message || 'unknown error')));
+      });
+    },
 
-    // Editor
-    var editor = document.createElement('textarea');
-    editor.id = 'config-yaml-editor';
-    editor.value = this._editorContent;
-    editor.style.cssText = 'width:100%;min-height:400px;padding:var(--sp-4,16px);background:#0D1117;border:1px solid var(--border,#30363D);border-radius:var(--r-sm,6px);color:var(--fg-1,#C9D1D9);font-size:var(--text-xs,11px);font-family:var(--font-mono, "JetBrains Mono");resize:vertical;outline:none;box-sizing:border-box;tab-size:2;line-height:1.5;';
-    editor.addEventListener('input', function() {
-      window.ConfigurationView._editorContent = this.value;
-    });
-    container.appendChild(editor);
+    renderFlags: function(container, config) {
+      var self = this;
+      container.innerHTML = '';
 
-    // Action buttons
-    var actionRow = document.createElement('div');
-    actionRow.style.cssText = 'display:flex;gap:var(--sp-2,8px);margin-top:var(--sp-3,12px);';
-
-    var applyYamlBtn = document.createElement('button');
-    applyYamlBtn.textContent = 'Apply';
-    applyYamlBtn.style.cssText = 'padding:8px 20px;background:#238636;border:none;border-radius:var(--r-sm,6px);color:#fff;cursor:pointer;font-size:var(--text-sm,12px);font-family:var(--font-sans);transition:background 120ms;';
-    applyYamlBtn.addEventListener('mouseenter', function() { applyYamlBtn.style.background = '#2EA043'; });
-    applyYamlBtn.addEventListener('mouseleave', function() { applyYamlBtn.style.background = '#238636'; });
-    applyYamlBtn.addEventListener('click', function() { window.ConfigurationView.applyYaml(); });
-    actionRow.appendChild(applyYamlBtn);
-
-    var resetYamlBtn = document.createElement('button');
-    resetYamlBtn.textContent = 'Reset to Default';
-    resetYamlBtn.style.cssText = 'padding:8px 20px;background:var(--bg-surface,#161B22);border:1px solid var(--border,#30363D);border-radius:var(--r-sm,6px);color:var(--fg-2,#8B949E);cursor:pointer;font-size:var(--text-sm,12px);font-family:var(--font-sans);transition:border-color 120ms,color 120ms;';
-    resetYamlBtn.addEventListener('mouseenter', function() { resetYamlBtn.style.borderColor = 'var(--danger,#F85149)'; resetYamlBtn.style.color = 'var(--fg-1,#C9D1D9)'; });
-    resetYamlBtn.addEventListener('mouseleave', function() { resetYamlBtn.style.borderColor = 'var(--border,#30363D)'; resetYamlBtn.style.color = 'var(--fg-2,#8B949E)'; });
-    resetYamlBtn.addEventListener('click', function() { window.ConfigurationView.resetYaml(); });
-    actionRow.appendChild(resetYamlBtn);
-
-    container.appendChild(actionRow);
-
-    // Result area
-    var resultArea = document.createElement('div');
-    resultArea.id = 'config-yaml-result';
-    resultArea.style.cssText = 'margin-top:var(--sp-3,12px);';
-    container.appendChild(resultArea);
-  },
-
-  applyYaml: function() {
-    var self = this;
-    var btn = document.querySelector('#config-content button:first-child');
-    var resultArea = document.getElementById('config-yaml-result');
-    if (!resultArea) return;
-
-    if (btn) {
-      btn.disabled = true;
-      btn.textContent = 'Applying...';
-    }
-
-    resultArea.innerHTML = '<div style="display:flex;align-items:center;gap:8px;padding:12px 0;color:var(--fg-2,#8B949E);font-size:var(--text-sm,12px);"><div class="pulse" style="width:16px;height:16px;border-radius:50%;border:2px solid var(--border,#30363D);border-top-color:var(--signal-neon,#00FFA3);"></div> Applying YAML configuration...</div>';
-
-    // Simple YAML parser for flat key: value pairs
-    var yamlText = this._editorContent;
-    var configObj = {};
-    var lines = yamlText.split('\n');
-    var currentKey = null;
-    var currentIndent = 0;
-
-    lines.forEach(function(line) {
-      var trimmed = line.trim();
-      if (!trimmed || trimmed.charAt(0) === '#') return;
-
-      var indent = line.search(/\S/);
-      if (indent === -1) return;
-
-      // Check if it's a key: value pair
-      var colonIdx = trimmed.indexOf(':');
-      if (colonIdx === -1) return;
-
-      var key = trimmed.slice(0, colonIdx).trim();
-      var value = trimmed.slice(colonIdx + 1).trim();
-
-      if (value === '') {
-        // It's a parent key with children — skip for flat submission
+      var leaves = flattenLeaves(config);
+      if (leaves.length === 0) {
+        container.appendChild(el('div',
+          'padding:var(--sp-6,24px);text-align:center;color:var(--fg-3,#484F58);font-size:var(--text-sm,12px);font-family:var(--font-mono);',
+          'No configuration data available'));
         return;
       }
 
-      // Parse YAML value types
-      if (value === 'true') value = true;
-      else if (value === 'false') value = false;
-      else if (value === 'null' || value === '~') value = null;
-      else if (value.match(/^-?\d+\.?\d*$/) && !isNaN(parseFloat(value))) {
-        if (value.indexOf('.') !== -1) value = parseFloat(value);
-        else value = parseInt(value, 10);
-      } else if ((value.charAt(0) === '"' && value.charAt(value.length - 1) === '"') ||
-                 (value.charAt(0) === "'" && value.charAt(value.length - 1) === "'")) {
-        value = value.slice(1, -1);
+      // Bucket leaves by top-level section
+      var bySection = {};
+      leaves.forEach(function(leaf) {
+        var section = leaf.path.indexOf('.') === -1 ? leaf.path : leaf.path.split('.')[0];
+        if (!bySection[section]) bySection[section] = [];
+        bySection[section].push(leaf);
+      });
+
+      var rendered = {};
+      GROUPS.forEach(function(group) {
+        var groupLeaves = [];
+        group.sections.forEach(function(s) {
+          if (bySection[s]) {
+            groupLeaves = groupLeaves.concat(bySection[s]);
+            rendered[s] = true;
+          }
+        });
+        if (groupLeaves.length === 0) return;
+        container.appendChild(self.renderGroupCard(group.name, groupLeaves));
+      });
+
+      // Catch-all for unmapped sections so nothing gets dropped silently.
+      var leftovers = [];
+      Object.keys(bySection).forEach(function(s) {
+        if (!rendered[s]) leftovers = leftovers.concat(bySection[s]);
+      });
+      if (leftovers.length > 0) {
+        container.appendChild(self.renderGroupCard('Other', leftovers));
       }
 
-      configObj[key] = value;
-    });
+      // Apply control row
+      container.appendChild(self.renderApplyRow());
 
-    window.API.put('/api/config', configObj).then(function(data) {
-      if (btn) { btn.disabled = false; btn.textContent = 'Apply'; }
+      // Result area
+      var resultArea = el('div', 'margin-top:var(--sp-3,12px);');
+      resultArea.id = 'config-result';
+      container.appendChild(resultArea);
+    },
 
-      var html = '<div style="background:var(--bg-input,#0D1117);border:1px solid var(--border,#30363D);border-radius:var(--r-sm,6px);padding:var(--sp-3,12px);">';
+    renderGroupCard: function(title, leaves) {
+      var self = this;
+      var card = el('div', 'background:var(--bg-surface,#161B22);border:1px solid var(--border,#30363D);border-radius:var(--r-md,8px);padding:var(--sp-4,16px);margin-bottom:var(--sp-4,16px);');
+      var heading = el('h3', 'margin:0 0 var(--sp-3,12px);font-size:var(--text-base,14px);font-weight:var(--fw-semibold,600);color:var(--fg-1,#C9D1D9);', title);
+      card.appendChild(heading);
+
+      leaves.forEach(function(leaf, idx) {
+        card.appendChild(self.renderRow(leaf, idx === leaves.length - 1));
+      });
+      return card;
+    },
+
+    renderRow: function(leaf, isLast) {
+      var self = this;
+      var path = leaf.path;
+      var value = leaf.value;
+
+      var row = el('div',
+        'display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 0;' +
+        (isLast ? '' : 'border-bottom:1px solid var(--border,#30363D);'));
+
+      var labelDiv = el('div', 'flex:1;min-width:0;');
+      var name = el('div', 'font-size:var(--text-xs,11px);font-family:var(--font-mono);color:var(--fg-1,#C9D1D9);word-break:break-all;', path);
+      labelDiv.appendChild(name);
+
+      var hint = DESCRIPTIONS[path];
+      if (hint) {
+        labelDiv.appendChild(el('div', 'font-size:10px;color:var(--fg-3,#484F58);margin-top:2px;', hint));
+      }
+      if (RESTART_PATHS[path]) {
+        var badge = el('span',
+          'display:inline-block;margin-top:4px;padding:1px 6px;border-radius:var(--r-pill,9999px);font-size:10px;font-family:var(--font-mono);background:var(--tier-c-bg,#3A2A0F);color:var(--warning,#D29922);',
+          'restart required');
+        labelDiv.appendChild(badge);
+      }
+      row.appendChild(labelDiv);
+
+      var controlDiv = el('div', 'flex-shrink:0;');
+      controlDiv.appendChild(self.renderControl(path, value));
+      row.appendChild(controlDiv);
+      return row;
+    },
+
+    renderControl: function(path, value) {
+      var self = this;
+
+      if (isSecretKey(path)) {
+        var secret = el('span',
+          'font-size:var(--text-xs,11px);font-family:var(--font-mono);color:var(--fg-3,#484F58);padding:4px 8px;background:var(--bg-input,#0D1117);border:1px solid var(--border,#30363D);border-radius:var(--r-sm,6px);display:inline-block;',
+          '***');
+        secret.title = 'Secrets are redacted server-side. Edit via env vars or YAML editor.';
+        return secret;
+      }
+
+      // Dropdown for known enum paths
+      if (ENUMS[path]) {
+        var options = ENUMS[path].slice();
+        var current = String(value);
+        if (current && options.indexOf(current) === -1) {
+          options.unshift(current);
+        }
+        var select = document.createElement('select');
+        select.style.cssText = 'min-width:180px;padding:5px 8px;background:var(--bg-input,#0D1117);border:1px solid var(--border,#30363D);border-radius:var(--r-sm,6px);color:var(--fg-1,#C9D1D9);font-size:var(--text-xs,11px);font-family:var(--font-mono);outline:none;cursor:pointer;';
+        options.forEach(function(opt) {
+          var optEl = document.createElement('option');
+          optEl.value = opt;
+          optEl.textContent = opt;
+          if (opt === current) optEl.selected = true;
+          select.appendChild(optEl);
+        });
+        select.addEventListener('change', function() {
+          if (this.value === current) {
+            delete self._changes[path];
+          } else {
+            self._changes[path] = this.value;
+          }
+          self.updateApplyButton();
+        });
+        return select;
+      }
+
+      if (typeof value === 'boolean') {
+        var label = el('label', 'display:flex;align-items:center;gap:6px;cursor:pointer;');
+        var toggle = document.createElement('input');
+        toggle.type = 'checkbox';
+        toggle.checked = value;
+        toggle.style.cssText = 'accent-color:var(--signal-neon,#00FFA3);cursor:pointer;';
+        var stateText = el('span', 'font-size:var(--text-xs,11px);color:var(--fg-2,#8B949E);font-family:var(--font-mono);min-width:54px;text-align:right;', value ? 'enabled' : 'disabled');
+        toggle.addEventListener('change', function() {
+          stateText.textContent = this.checked ? 'enabled' : 'disabled';
+          if (this.checked === value) {
+            delete self._changes[path];
+          } else {
+            self._changes[path] = this.checked;
+          }
+          self.updateApplyButton();
+        });
+        label.appendChild(toggle);
+        label.appendChild(stateText);
+        return label;
+      }
+
+      if (Array.isArray(value)) {
+        var arrInput = document.createElement('input');
+        arrInput.type = 'text';
+        arrInput.value = value.join(', ');
+        arrInput.style.cssText = 'width:220px;padding:5px 8px;background:var(--bg-input,#0D1117);border:1px solid var(--border,#30363D);border-radius:var(--r-sm,6px);color:var(--fg-1,#C9D1D9);font-size:var(--text-xs,11px);font-family:var(--font-mono);outline:none;';
+        arrInput.placeholder = 'comma-separated';
+        arrInput.addEventListener('change', function() {
+          var parts = this.value.split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+          var same = parts.length === value.length && parts.every(function(p, i) { return p === value[i]; });
+          if (same) delete self._changes[path];
+          else self._changes[path] = parts;
+          self.updateApplyButton();
+        });
+        return arrInput;
+      }
+
+      var input = document.createElement('input');
+      input.type = (typeof value === 'number') ? 'number' : 'text';
+      if (typeof value === 'number' && !Number.isInteger(value)) {
+        input.step = 'any';
+      }
+      input.value = (value === null || value === undefined) ? '' : String(value);
+      input.style.cssText = 'width:200px;padding:5px 8px;background:var(--bg-input,#0D1117);border:1px solid var(--border,#30363D);border-radius:var(--r-sm,6px);color:var(--fg-1,#C9D1D9);font-size:var(--text-xs,11px);font-family:var(--font-mono);outline:none;text-align:right;';
+      input.addEventListener('change', function() {
+        var coerced = coerce(value, this.value);
+        if (coerced === value) {
+          delete self._changes[path];
+        } else {
+          self._changes[path] = coerced;
+        }
+        self.updateApplyButton();
+      });
+      return input;
+    },
+
+    renderApplyRow: function() {
+      var self = this;
+      var row = el('div', 'display:flex;gap:var(--sp-3,12px);align-items:center;margin-top:var(--sp-4,16px);');
+      row.id = 'config-apply-row';
+
+      var apply = el('button', 'padding:8px 20px;background:#238636;border:none;border-radius:var(--r-sm,6px);color:#fff;cursor:pointer;font-size:var(--text-sm,12px);font-family:var(--font-sans);transition:background 120ms,opacity 120ms;', 'Apply Changes');
+      apply.id = 'config-apply-btn';
+      apply.addEventListener('mouseenter', function() { if (!apply.disabled) apply.style.background = '#2EA043'; });
+      apply.addEventListener('mouseleave', function() { apply.style.background = '#238636'; });
+      apply.addEventListener('click', function() { self.applyChanges(); });
+
+      var revert = el('button', 'padding:8px 16px;background:transparent;border:1px solid var(--border,#30363D);border-radius:var(--r-sm,6px);color:var(--fg-2,#8B949E);cursor:pointer;font-size:var(--text-sm,12px);font-family:var(--font-sans);transition:color 120ms,border-color 120ms;', 'Revert');
+      revert.id = 'config-revert-btn';
+      revert.addEventListener('mouseenter', function() { revert.style.color = 'var(--fg-1,#C9D1D9)'; revert.style.borderColor = 'var(--fg-2,#8B949E)'; });
+      revert.addEventListener('mouseleave', function() { revert.style.color = 'var(--fg-2,#8B949E)'; revert.style.borderColor = 'var(--border,#30363D)'; });
+      revert.addEventListener('click', function() { self.revertChanges(); });
+
+      var pending = el('span', 'font-size:var(--text-xs,11px);color:var(--fg-2,#8B949E);font-family:var(--font-mono);');
+      pending.id = 'config-pending-count';
+
+      row.appendChild(apply);
+      row.appendChild(revert);
+      row.appendChild(pending);
+
+      // Initial state
+      setTimeout(function() { self.updateApplyButton(); }, 0);
+      return row;
+    },
+
+    updateApplyButton: function() {
+      var btn = document.getElementById('config-apply-btn');
+      var revert = document.getElementById('config-revert-btn');
+      var pending = document.getElementById('config-pending-count');
+      var count = Object.keys(this._changes).length;
+      var disabled = count === 0;
+
+      if (btn) {
+        btn.disabled = disabled;
+        btn.style.opacity = disabled ? '0.4' : '1';
+        btn.style.cursor = disabled ? 'default' : 'pointer';
+      }
+      if (revert) {
+        revert.disabled = disabled;
+        revert.style.opacity = disabled ? '0.4' : '1';
+        revert.style.cursor = disabled ? 'default' : 'pointer';
+      }
+      if (pending) {
+        if (count === 0) {
+          pending.textContent = '';
+        } else {
+          var restartCount = Object.keys(this._changes).filter(function(k) { return RESTART_PATHS[k]; }).length;
+          var msg = count + ' pending change' + (count === 1 ? '' : 's');
+          if (restartCount > 0) msg += ' (' + restartCount + ' need restart)';
+          pending.textContent = msg;
+        }
+      }
+    },
+
+    revertChanges: function() {
+      var contentEl = document.getElementById('config-content');
+      if (!contentEl) return;
+      this._changes = {};
+      this.renderFlags(contentEl, this._config);
+      window.ToastComponent.show('Reverted to last loaded values', 'info');
+    },
+
+    applyChanges: function() {
+      var self = this;
+      var btn = document.getElementById('config-apply-btn');
+      var resultArea = document.getElementById('config-result');
+      if (!resultArea) return;
+
+      var changes = this._changes;
+      if (Object.keys(changes).length === 0) {
+        window.ToastComponent.show('No changes to apply', 'info');
+        return;
+      }
+
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Applying...';
+      }
+
+      resultArea.innerHTML = '<div style="display:flex;align-items:center;gap:8px;padding:12px 0;color:var(--fg-2,#8B949E);font-size:var(--text-sm,12px);"><div class="pulse" style="width:16px;height:16px;border-radius:50%;border:2px solid var(--border,#30363D);border-top-color:var(--signal-neon,#00FFA3);"></div> Applying configuration changes...</div>';
+
+      var payload = buildNestedPayload(changes);
+
+      window.API.put('/api/config', payload).then(function(data) {
+        // Clear pending changes and reload from server so the form reflects
+        // truth (server may coerce or reject silently for unknown leaves).
+        self._changes = {};
+        if (btn) btn.textContent = 'Apply Changes';
+        self.renderResult(resultArea, data);
+        window.ToastComponent.show('Configuration applied', 'success');
+
+        // Refresh flags from /api/config so toggles/dropdowns show new state
+        var contentEl = document.getElementById('config-content');
+        if (contentEl) self.loadFlags(contentEl);
+      }).catch(function(err) {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = 'Apply Changes';
+          btn.style.opacity = '1';
+        }
+        resultArea.innerHTML = '';
+        resultArea.appendChild(el('div',
+          'padding:12px;color:var(--danger,#F85149);font-size:var(--text-sm,12px);font-family:var(--font-mono);background:var(--bg-input,#0D1117);border:1px solid var(--danger,#F85149);border-radius:var(--r-sm,6px);',
+          'Failed to apply: ' + (err.message || 'unknown error')));
+        window.ToastComponent.show('Apply failed: ' + (err.message || 'unknown'), 'error');
+      });
+    },
+
+    renderResult: function(area, data) {
+      area.innerHTML = '';
+      var box = el('div', 'background:var(--bg-input,#0D1117);border:1px solid var(--border,#30363D);border-radius:var(--r-sm,6px);padding:var(--sp-3,12px);');
 
       if (data.applied && data.applied.length) {
-        html += '<div style="margin-bottom:6px;"><span style="font-size:var(--text-xs,11px);color:var(--success,#3FB950);font-family:var(--font-mono);font-weight:600;">Applied:</span></div>';
+        box.appendChild(el('div', 'margin-bottom:6px;font-size:var(--text-xs,11px);color:var(--success,#3FB950);font-family:var(--font-mono);font-weight:600;', 'Applied:'));
         data.applied.forEach(function(k) {
-          html += '<div style="padding:2px 0;font-size:var(--text-xs,11px);font-family:var(--font-mono);color:var(--success,#3FB950);">\u2713 ' + k + '</div>';
+          box.appendChild(el('div', 'padding:2px 0;font-size:var(--text-xs,11px);font-family:var(--font-mono);color:var(--success,#3FB950);', '✓ ' + k));
         });
       }
-
       if (data.pending_restart && data.pending_restart.length) {
-        html += '<div style="margin-top:6px;margin-bottom:4px;">';
-        html += '<span style="font-size:var(--text-xs,11px);color:var(--warning,#D29922);font-family:var(--font-mono);font-weight:600;">Pending Restart:</span>';
-        html += '<span style="display:inline-block;margin-left:6px;padding:1px 6px;border-radius:var(--r-pill,9999px);font-size:10px;font-family:var(--font-mono);background:var(--tier-c-bg,#3A2A0F);color:var(--warning,#D29922);">Restart Required</span>';
-        html += '</div>';
+        var head = el('div', 'margin-top:8px;margin-bottom:4px;');
+        head.appendChild(el('span', 'font-size:var(--text-xs,11px);color:var(--warning,#D29922);font-family:var(--font-mono);font-weight:600;', 'Pending Restart:'));
+        head.appendChild(el('span', 'display:inline-block;margin-left:6px;padding:1px 6px;border-radius:var(--r-pill,9999px);font-size:10px;font-family:var(--font-mono);background:var(--tier-c-bg,#3A2A0F);color:var(--warning,#D29922);', 'restart required'));
+        box.appendChild(head);
         data.pending_restart.forEach(function(k) {
-          html += '<div style="padding:2px 0;font-size:var(--text-xs,11px);font-family:var(--font-mono);color:var(--warning,#D29922);">\u26A0 ' + k + '</div>';
+          box.appendChild(el('div', 'padding:2px 0;font-size:var(--text-xs,11px);font-family:var(--font-mono);color:var(--warning,#D29922);', '⚠ ' + k));
         });
       }
+      if ((!data.applied || !data.applied.length) && (!data.pending_restart || !data.pending_restart.length)) {
+        box.appendChild(el('div', 'font-size:var(--text-xs,11px);color:var(--fg-2,#8B949E);font-family:var(--font-mono);', 'Server accepted the request but reported no leaf-level changes.'));
+      }
+      area.appendChild(box);
+    },
 
-      html += '</div>';
-      resultArea.innerHTML = html;
-      window.ToastComponent.show('YAML configuration applied', 'success');
-    }).catch(function(err) {
-      if (btn) { btn.disabled = false; btn.textContent = 'Apply'; }
-      resultArea.innerHTML = '<div style="padding:12px;color:var(--danger,#F85149);font-size:var(--text-sm,12px);font-family:var(--font-mono);background:var(--bg-input,#0D1117);border:1px solid var(--danger,#F85149);border-radius:var(--r-sm,6px);">Failed to apply: ' + (err.message || 'unknown error') + '</div>';
-      window.ToastComponent.show('Apply failed: ' + err.message, 'error');
-    });
-  },
+    // ── YAML editor (unchanged behavior, refactored for clarity) ──────────────
 
-  resetYaml: function() {
-    var self = this;
-    var resultArea = document.getElementById('config-yaml-result');
-    var editor = document.getElementById('config-yaml-editor');
+    loadYamlEditor: function(contentEl) {
+      var self = this;
+      window.API.get('/api/config').then(function(config) {
+        self._config = config;
+        self._editorContent = self.configToYaml(config);
+        self.renderYamlEditor(contentEl);
+      }).catch(function(err) {
+        contentEl.innerHTML = '';
+        contentEl.appendChild(el('div',
+          'padding:var(--sp-4,16px);background:var(--bg-surface,#161B22);border:1px solid var(--danger,#F85149);border-radius:var(--r-md,8px);color:var(--danger,#F85149);font-size:var(--text-sm,12px);font-family:var(--font-mono);',
+          'Failed to load configuration: ' + (err.message || 'unknown error')));
+      });
+    },
 
-    if (editor) {
-      editor.value = 'Loading configuration...';
+    configToYaml: function(config, indent) {
+      indent = indent || '';
+      var yaml = '';
+      var self = this;
+      Object.keys(config || {}).forEach(function(k) {
+        var v = config[k];
+        if (v && typeof v === 'object' && !Array.isArray(v)) {
+          yaml += indent + k + ':\n';
+          yaml += self.configToYaml(v, indent + '  ');
+        } else if (Array.isArray(v)) {
+          yaml += indent + k + ':\n';
+          v.forEach(function(item) { yaml += indent + '  - ' + item + '\n'; });
+        } else if (typeof v === 'boolean') {
+          yaml += indent + k + ': ' + (v ? 'true' : 'false') + '\n';
+        } else if (typeof v === 'number') {
+          yaml += indent + k + ': ' + v + '\n';
+        } else if (v === null) {
+          yaml += indent + k + ': null\n';
+        } else {
+          var s = String(v);
+          if (isSecretKey(k)) s = '***';
+          if (s.indexOf('#') !== -1 || s.indexOf(':') !== -1 || s === '') {
+            yaml += indent + k + ': "' + s.replace(/"/g, '\\"') + '"\n';
+          } else {
+            yaml += indent + k + ': ' + s + '\n';
+          }
+        }
+      });
+      return yaml;
+    },
+
+    renderYamlEditor: function(container) {
+      var self = this;
+      container.innerHTML = '';
+
+      var warn = el('div', 'background:rgba(210,153,34,0.08);border:1px solid var(--warning,#D29922);border-radius:var(--r-sm,6px);padding:8px 12px;font-size:var(--text-xs,11px);color:var(--warning,#D29922);font-family:var(--font-mono);margin-bottom:var(--sp-3,12px);display:flex;align-items:center;gap:8px;');
+      warn.appendChild(el('span', 'flex-shrink:0;', '⚠'));
+      warn.appendChild(el('span', '', 'Some changes require a restart. Secrets shown as "***" are redacted and not editable here.'));
+      container.appendChild(warn);
+
+      var editor = document.createElement('textarea');
+      editor.id = 'config-yaml-editor';
+      editor.value = this._editorContent;
+      editor.style.cssText = 'width:100%;min-height:400px;padding:var(--sp-4,16px);background:#0D1117;border:1px solid var(--border,#30363D);border-radius:var(--r-sm,6px);color:var(--fg-1,#C9D1D9);font-size:var(--text-xs,11px);font-family:var(--font-mono);resize:vertical;outline:none;box-sizing:border-box;tab-size:2;line-height:1.5;';
+      editor.addEventListener('input', function() { self._editorContent = this.value; });
+      container.appendChild(editor);
+
+      var actions = el('div', 'display:flex;gap:var(--sp-2,8px);margin-top:var(--sp-3,12px);');
+      var apply = el('button', 'padding:8px 20px;background:#238636;border:none;border-radius:var(--r-sm,6px);color:#fff;cursor:pointer;font-size:var(--text-sm,12px);font-family:var(--font-sans);transition:background 120ms;', 'Apply');
+      apply.id = 'config-yaml-apply-btn';
+      apply.addEventListener('mouseenter', function() { if (!apply.disabled) apply.style.background = '#2EA043'; });
+      apply.addEventListener('mouseleave', function() { apply.style.background = '#238636'; });
+      apply.addEventListener('click', function() { self.applyYaml(); });
+      actions.appendChild(apply);
+
+      var reset = el('button', 'padding:8px 20px;background:var(--bg-surface,#161B22);border:1px solid var(--border,#30363D);border-radius:var(--r-sm,6px);color:var(--fg-2,#8B949E);cursor:pointer;font-size:var(--text-sm,12px);font-family:var(--font-sans);transition:border-color 120ms,color 120ms;', 'Reset to Server');
+      reset.addEventListener('mouseenter', function() { reset.style.borderColor = 'var(--danger,#F85149)'; reset.style.color = 'var(--fg-1,#C9D1D9)'; });
+      reset.addEventListener('mouseleave', function() { reset.style.borderColor = 'var(--border,#30363D)'; reset.style.color = 'var(--fg-2,#8B949E)'; });
+      reset.addEventListener('click', function() { self.resetYaml(); });
+      actions.appendChild(reset);
+
+      container.appendChild(actions);
+
+      var resultArea = el('div', 'margin-top:var(--sp-3,12px);');
+      resultArea.id = 'config-yaml-result';
+      container.appendChild(resultArea);
+    },
+
+    applyYaml: function() {
+      var self = this;
+      var btn = document.getElementById('config-yaml-apply-btn');
+      var resultArea = document.getElementById('config-yaml-result');
+      if (!resultArea) return;
+
+      if (btn) { btn.disabled = true; btn.textContent = 'Applying...'; }
+      resultArea.innerHTML = '<div style="display:flex;align-items:center;gap:8px;padding:12px 0;color:var(--fg-2,#8B949E);font-size:var(--text-sm,12px);"><div class="pulse" style="width:16px;height:16px;border-radius:50%;border:2px solid var(--border,#30363D);border-top-color:var(--signal-neon,#00FFA3);"></div> Applying YAML configuration...</div>';
+
+      var payload = parseFlatYaml(this._editorContent);
+
+      window.API.put('/api/config', payload).then(function(data) {
+        if (btn) { btn.disabled = false; btn.textContent = 'Apply'; }
+        self.renderResult(resultArea, data);
+        window.ToastComponent.show('YAML configuration applied', 'success');
+      }).catch(function(err) {
+        if (btn) { btn.disabled = false; btn.textContent = 'Apply'; }
+        resultArea.innerHTML = '';
+        resultArea.appendChild(el('div',
+          'padding:12px;color:var(--danger,#F85149);font-size:var(--text-sm,12px);font-family:var(--font-mono);background:var(--bg-input,#0D1117);border:1px solid var(--danger,#F85149);border-radius:var(--r-sm,6px);',
+          'Failed to apply: ' + (err.message || 'unknown error')));
+        window.ToastComponent.show('Apply failed: ' + (err.message || 'unknown'), 'error');
+      });
+    },
+
+    resetYaml: function() {
+      var self = this;
+      var resultArea = document.getElementById('config-yaml-result');
+      var editor = document.getElementById('config-yaml-editor');
+      if (editor) editor.value = 'Loading configuration...';
+
+      window.API.get('/api/config').then(function(config) {
+        self._config = config;
+        self._editorContent = self.configToYaml(config);
+        if (editor) editor.value = self._editorContent;
+        if (resultArea) {
+          resultArea.innerHTML = '';
+          resultArea.appendChild(el('div', 'padding:12px;color:var(--success,#3FB950);font-size:var(--text-xs,11px);font-family:var(--font-mono);', 'Configuration reset to current server state'));
+        }
+        window.ToastComponent.show('Reset to server state', 'info');
+      }).catch(function(err) {
+        if (resultArea) {
+          resultArea.innerHTML = '';
+          resultArea.appendChild(el('div', 'padding:12px;color:var(--danger,#F85149);font-size:var(--text-sm,12px);font-family:var(--font-mono);', 'Failed to fetch config: ' + (err.message || 'unknown error')));
+        }
+      });
     }
+  };
 
-    window.API.get('/api/config').then(function(config) {
-      self._config = config;
-      self._editorContent = self.configToYaml(config);
-      if (editor) {
-        editor.value = self._editorContent;
+  // Minimal indented-YAML parser sufficient for the editor's two-level layout.
+  // Produces a nested object so it round-trips cleanly through PUT /api/config.
+  function parseFlatYaml(text) {
+    var root = {};
+    var stack = [{ indent: -1, obj: root }];
+    text.split('\n').forEach(function(line) {
+      var stripped = line.replace(/\s+$/, '');
+      if (!stripped || /^\s*#/.test(stripped)) return;
+      var indent = line.search(/\S/);
+      if (indent === -1) return;
+
+      // List item under the previous parent
+      var listMatch = stripped.match(/^\s*-\s+(.*)$/);
+      if (listMatch) {
+        while (stack.length > 1 && stack[stack.length - 1].indent >= indent) stack.pop();
+        var parent = stack[stack.length - 1];
+        if (parent.lastKey) {
+          if (!Array.isArray(parent.obj[parent.lastKey])) parent.obj[parent.lastKey] = [];
+          parent.obj[parent.lastKey].push(coerceYamlScalar(listMatch[1]));
+        }
+        return;
       }
-      if (resultArea) {
-        resultArea.innerHTML = '<div style="padding:12px;color:var(--success,#3FB950);font-size:var(--text-xs,11px);font-family:var(--font-mono);">Configuration reset to current server state</div>';
-      }
-      window.ToastComponent.show('Configuration reset to server state', 'info');
-    }).catch(function(err) {
-      if (resultArea) {
-        resultArea.innerHTML = '<div style="padding:12px;color:var(--danger,#F85149);font-size:var(--text-sm,12px);font-family:var(--font-mono);">Failed to fetch config: ' + (err.message || 'unknown error') + '</div>';
+
+      var kvMatch = stripped.match(/^\s*([^:#]+?)\s*:\s*(.*)$/);
+      if (!kvMatch) return;
+      var key = kvMatch[1].trim();
+      var value = kvMatch[2];
+
+      while (stack.length > 1 && stack[stack.length - 1].indent >= indent) stack.pop();
+      var ctx = stack[stack.length - 1];
+
+      if (value === '') {
+        ctx.obj[key] = {};
+        ctx.lastKey = key;
+        stack.push({ indent: indent, obj: ctx.obj[key] });
+      } else {
+        // Skip redacted secret placeholders so we never PUT '***' back.
+        if (value.replace(/['"]/g, '').trim() === '***' && isSecretKey(key)) return;
+        ctx.obj[key] = coerceYamlScalar(value);
+        ctx.lastKey = key;
       }
     });
-  },
-
-  getDescriptionHint: function(key) {
-    var hints = {
-      log_level: 'Log verbosity (DEBUG, INFO, WARNING, ERROR)',
-      log_file: 'Path to log output file',
-      data_dir: 'Data storage directory path',
-      top_k: 'Number of results to retrieve',
-      min_score: 'Minimum relevance score threshold',
-      llm_provider: 'LLM backend provider',
-      llm_model: 'Model identifier string',
-      llm_temperature: 'Response creativity (0.0 - 2.0)',
-      llm_max_tokens: 'Maximum tokens per response',
-      llm_api_key: 'API key for LLM provider',
-      embedding_provider: 'Embedding service provider',
-      embedding_model: 'Embedding model identifier',
-      embedding_dimensions: 'Vector dimension count',
-      embedding_api_key: 'API key for embedding service',
-      synthesis_enabled: 'Enable synthesis pipeline',
-      synthesis_default_format: 'Default synthesis output format',
-      synthesis_max_sources: 'Maximum sources per synthesis',
-      governance_enabled: 'Enforce governance policies',
-      governance_policy: 'Governance policy ruleset',
-      telemetry_enabled: 'Collect and report telemetry',
-      recall_rerank: 'Enable reranking of results',
-      recall_hybrid_search: 'Combine vector and keyword search',
-      max_content_length: 'Maximum content body size',
-      max_file_size: 'Maximum uploaded file size'
-    };
-    return hints[key] || '';
+    return root;
   }
-};
+
+  function coerceYamlScalar(raw) {
+    var v = raw.trim();
+    if (v === 'true') return true;
+    if (v === 'false') return false;
+    if (v === 'null' || v === '~' || v === '') return null;
+    if (/^-?\d+$/.test(v)) return parseInt(v, 10);
+    if (/^-?\d+\.\d+$/.test(v)) return parseFloat(v);
+    if ((v.charAt(0) === '"' && v.charAt(v.length - 1) === '"') ||
+        (v.charAt(0) === "'" && v.charAt(v.length - 1) === "'")) {
+      return v.slice(1, -1);
+    }
+    return v;
+  }
+
+  // Test/debug hooks — exposed but not part of the user-facing API surface.
+  View._buildNestedPayload = buildNestedPayload;
+  View._flattenLeaves = flattenLeaves;
+  View._parseFlatYaml = parseFlatYaml;
+  View._ENUMS = ENUMS;
+  View._RESTART_PATHS = RESTART_PATHS;
+
+  return View;
+})();

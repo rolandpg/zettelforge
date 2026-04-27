@@ -133,6 +133,53 @@ class TestConfigEndpoint:
         assert "retrieval.default_k" in data["applied"]
         assert "retrieval.default_k" not in data["pending_restart"]
 
+    def test_put_config_dropdown_enum_log_level_applies(self, client, api_key):
+        """Logging level — surfaced in the UI as a dropdown — round-trips and
+        is correctly flagged restart-required."""
+        resp = client.put(
+            "/api/config",
+            headers={**_headers(api_key), "Content-Type": "application/json"},
+            json={"logging": {"level": "DEBUG"}},
+        )
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "logging.level" in data["pending_restart"]
+        assert "logging.level" not in data["applied"]
+
+    def test_put_config_dropdown_enum_synthesis_format_applies(self, client, api_key):
+        """Synthesis format dropdown — non-restart enum, must appear in applied."""
+        resp = client.put(
+            "/api/config",
+            headers={**_headers(api_key), "Content-Type": "application/json"},
+            json={"synthesis": {"default_format": "synthesized_brief"}},
+        )
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "synthesis.default_format" in data["applied"]
+
+        # Confirm the change is now visible via GET
+        get_resp = client.get("/api/config", headers=_headers(api_key))
+        assert get_resp.status_code == 200
+        cfg = get_resp.json()
+        assert cfg["synthesis"]["default_format"] == "synthesized_brief"
+
+    def test_put_config_multi_section_nested_payload(self, client, api_key):
+        """The Apply button builds a single nested payload across sections.
+        Both leaves must be acknowledged in their respective buckets."""
+        resp = client.put(
+            "/api/config",
+            headers={**_headers(api_key), "Content-Type": "application/json"},
+            json={
+                "retrieval": {"default_k": 7},
+                "llm": {"temperature": 0.25},
+            },
+        )
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "retrieval.default_k" in data["applied"]
+        assert "llm.temperature" in data["applied"]
+        assert not any(p in data["pending_restart"] for p in ("retrieval.default_k", "llm.temperature"))
+
 
 # ── Graph Nodes / Edges ──────────────────────────────────────────────────────
 
@@ -374,3 +421,34 @@ class TestConfigPage:
         assert "<textarea" in html
         assert 'id="config-yaml"' in html
         assert ("llm:" in html) or ("embedding:" in html) or ("storage:" in html)
+
+    def test_config_page_has_form_tab_with_apply_button(self, client, api_key):
+        """v2.6.2: /config now ships a form-based editor with a working
+        Apply button alongside the YAML editor. Regression-guard that:
+          - Both tabs render (Form + YAML)
+          - The Apply button exists and is wired (not just a dead onclick)
+          - At least one known dropdown enum is declared in the schema
+          - Restart-required leaves are tagged for the UI badge
+        """
+        resp = client.get("/config", headers=_headers(api_key))
+        assert resp.status_code == 200
+        html = resp.text
+
+        # Tab structure
+        assert 'data-tab="form"' in html
+        assert 'data-tab="yaml"' in html
+
+        # Working Apply buttons (replaced the dead saveConfigForm()/reloadConfig() calls)
+        assert 'id="apply-form-btn"' in html
+        assert 'id="apply-yaml-btn"' in html
+        assert 'saveConfigForm' not in html  # dead handler removed
+        assert 'reloadConfig()' not in html  # dead handler removed
+
+        # Dropdown-eligible enum keys are declared client-side
+        assert "'llm.provider'" in html
+        assert "'logging.level'" in html
+        assert "'governance.pii.action'" in html
+
+        # Restart-required leaves are flagged in the same JS so the UI can badge them
+        assert "'llm.model'" in html or '"llm.model"' in html
+        assert "'embedding.provider'" in html or '"embedding.provider"' in html
