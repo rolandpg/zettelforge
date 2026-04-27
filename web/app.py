@@ -462,6 +462,19 @@ async def get_config_endpoint():
         return JSONResponse(status_code=500, content={"error": str(e)})
 
 
+@app.get("/api/config/meta", dependencies=[Depends(require_api_guard)])
+async def get_config_meta():
+    """Return UI-side config metadata so the editor stays in sync with server.
+
+    Currently exposes the dotted-leaf paths that require a process restart.
+    This is the canonical source for the UI's "restart required" badge —
+    hardcoded fallbacks in the editor exist only for offline-server safety.
+    """
+    return {
+        "restart_required_fields": sorted(_RESTART_REQUIRED_FIELDS),
+    }
+
+
 class ConfigUpdateRequest(BaseModel):
     """Accepted fields: any config section key, value pairs."""
     pass
