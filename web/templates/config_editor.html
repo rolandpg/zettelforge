@@ -679,7 +679,10 @@
                 var s = String(v);
                 if (isSecret(k)) s = '***';
                 if (s.indexOf(':') !== -1 || s === '') {
-                    out += indent + k + ': "' + s.replace(/"/g, '\\"') + '"\n';
+                    // Escape backslashes BEFORE quotes so a literal `\` in the
+                    // value isn't turned into a YAML escape sequence and a
+                    // value like `foo\"bar` doesn't terminate the scalar early.
+                    out += indent + k + ': "' + s.replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"\n';
                 } else {
                     out += indent + k + ': ' + s + '\n';
                 }

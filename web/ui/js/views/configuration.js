@@ -577,7 +577,10 @@ window.ConfigurationView = (function() {
           var s = String(v);
           if (isSecretKey(k)) s = '***';
           if (s.indexOf('#') !== -1 || s.indexOf(':') !== -1 || s === '') {
-            yaml += indent + k + ': "' + s.replace(/"/g, '\\"') + '"\n';
+            // Escape backslashes BEFORE quotes so a literal `\` in the value
+            // isn't turned into a YAML escape sequence and a value like
+            // `foo\"bar` doesn't terminate the scalar early.
+            yaml += indent + k + ': "' + s.replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"\n';
           } else {
             yaml += indent + k + ': ' + s + '\n';
           }
